@@ -5,15 +5,16 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <locale.h>
 
 // 棋子颜色类型
-enum PieceColor {
+typedef enum {
     RED,
     BLACK
-};
+} PieceColor;
 
 // 棋子种类类型
-enum PieceKind {
+typedef enum {
     KING = L'K',
     ADVISOR = L'A',
     BISHOP = L'B',
@@ -21,12 +22,12 @@ enum PieceKind {
     ROOK = L'R',
     CANNON = L'C',
     PAWN = L'P'
-};
+} PieceKind;
 
 // 棋子结构类型
 typedef struct {
-    enum PieceColor color;
-    enum PieceKind kind;
+    PieceColor color;
+    PieceKind kind;
 } Piece;
 
 // 一副棋子结构类型
@@ -75,7 +76,7 @@ void testPiece(void)
 {
     for (int i = 0; i < 16; ++i) {
         const Piece *redPie = &(pieces.redPiece[i]), *blackPie = &(pieces.blackPiece[i]);
-        wprintf(L"%2d red: %lc%lc black: %lc%lc \n",
+        wprintf(L"%2d 红: %c%c 黑: %c%c \n",
             i + 1, getChar(redPie), getName(redPie), getChar(blackPie), getName(blackPie));
     }
 }
