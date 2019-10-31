@@ -7,14 +7,18 @@
 #include <wctype.h>
 #include <locale.h>
 
+#define PIECENUM 16 // 一方棋子个数
+
 // 棋子颜色类型
-typedef enum {
+typedef enum
+{
     RED,
     BLACK
 } PieceColor;
 
 // 棋子种类类型
-typedef enum {
+typedef enum
+{
     KING = L'K',
     ADVISOR = L'A',
     BISHOP = L'B',
@@ -25,61 +29,23 @@ typedef enum {
 } PieceKind;
 
 // 棋子结构类型
-typedef struct {
-    PieceColor color;
-    PieceKind kind;
+typedef struct
+{
+    const PieceColor color;
+    const PieceKind kind;
 } Piece;
 
 // 一副棋子结构类型
-typedef struct {
-    Piece redPiece[16];
-    Piece blackPiece[16];
+typedef struct
+{
+    const Piece redPiece[PIECENUM];
+    const Piece blackPiece[PIECENUM];
 } Pieces;
 
-const Pieces pieces = {
-    { { RED, KING }, { RED, ADVISOR }, { RED, ADVISOR },
-        { RED, BISHOP }, { RED, BISHOP }, { RED, KNIGHT }, { RED, KNIGHT },
-        { RED, ROOK }, { RED, ROOK }, { RED, CANNON }, { RED, CANNON },
-        { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN } },
-    { { BLACK, KING }, { BLACK, ADVISOR }, { BLACK, ADVISOR },
-        { BLACK, BISHOP }, { BLACK, BISHOP }, { BLACK, KNIGHT }, { BLACK, KNIGHT },
-        { BLACK, ROOK }, { BLACK, ROOK }, { BLACK, CANNON }, { BLACK, CANNON },
-        { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN } }
-};
+wchar_t getChar(const Piece *ppiece);
 
-wchar_t getChar(const Piece* piece)
-{
-    return piece->color == RED ? piece->kind : towlower(piece->kind);
-}
+wchar_t getName(const Piece *ppiece);
 
-wchar_t getName(const Piece* piece)
-{
-    switch (piece->kind) {
-    case KING:
-        return piece->color == RED ? L'帅' : L'将';
-    case ADVISOR:
-        return piece->color == RED ? L'仕' : L'士';
-    case BISHOP:
-        return piece->color == RED ? L'相' : L'象';
-    case ROOK:
-        return L'车';
-    case KNIGHT:
-        return L'马';
-    case CANNON:
-        return L'炮';
-    default:
-        return piece->color == RED ? L'兵' : L'卒';
-    }
-}
-
-void testPiece(void)
-{
-    for (int i = 0; i < 16; ++i) {
-        const Piece *redPie = &(pieces.redPiece[i]), *blackPie = &(pieces.blackPiece[i]);
-        wprintf(L"%2d 红: %c%c 黑: %c%c \n",
-            i + 1, getChar(redPie), getName(redPie), getChar(blackPie), getName(blackPie));
-    }
-}
-
+void testPiece(void);
 
 #endif
