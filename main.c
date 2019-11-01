@@ -8,5 +8,8 @@ int main(int argc, char const *argv[])
 
     void testPiece(void);
     testPiece();
+
+    void testBoard(void);
+    testBoard();
     return 0;
 }

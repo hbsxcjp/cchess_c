@@ -1,44 +1,53 @@
 #include "board.h"
 
-const Seat *getSeat(const Board *board, int row, int col)
+void setPiece(Board* board, int row, int col, const Piece* piece)
 {
-    return &(board->seat[row][col]);
+    board->piece[row][col] = piece;
 }
 
-Board creatBoard(void)
+wchar_t* toString(wchar_t* wstr, Board* board)
 {
-    Board board;
-    for (int row = 0; row < BOARDROW; ++row)
-    {
-        for (int col = 0; col < BOARDCOL; ++col)
-        {
-            Seat seat = {row, col, NULL};
-            board.seat[row][col] = seat;
+    static wchar_t textBlankBoard[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
+                                      "┃　│　│　│╲│╱│　│　│　┃\n"
+                                      "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                      "┃　│　│　│╱│╲│　│　│　┃\n"
+                                      "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                      "┃　│　│　│　│　│　│　│　┃\n"
+                                      "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                      "┃　│　│　│　│　│　│　│　┃\n"
+                                      "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+                                      "┃　　　　　　　　　　　　　　　┃\n"
+                                      "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+                                      "┃　│　│　│　│　│　│　│　┃\n"
+                                      "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                      "┃　│　│　│　│　│　│　│　┃\n"
+                                      "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                      "┃　│　│　│╲│╱│　│　│　┃\n"
+                                      "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                      "┃　│　│　│╱│╲│　│　│　┃\n"
+                                      "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线
+    for (int row = 0; row < BOARDROW; ++row) {
+        for (int col = 0; col < BOARDCOL; ++col) {
+            const Piece* piece = board->piece[row][col];
+            if (piece)
+                textBlankBoard[(BOARDCOL - row) * 2 * (BOARDCOL * 2) + col * 2] = getName(piece);
         }
     }
-    board.bottomColor = RED;
-    return board;
+    return wcscpy(wstr, textBlankBoard);
 }
 
-void toString(wchar_t *wstr, size_t count, const Board *board)
+// 测试本翻译单元各种对象、函数
+void testBoard(void)
 {
-    wchar_t textBlankBoard[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
-                               "┃　│　│　│╲│╱│　│　│　┃\n"
-                               "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                               "┃　│　│　│╱│╲│　│　│　┃\n"
-                               "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                               "┃　│　│　│　│　│　│　│　┃\n"
-                               "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                               "┃　│　│　│　│　│　│　│　┃\n"
-                               "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
-                               "┃　　　　　　　　　　　　　　　┃\n"
-                               "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
-                               "┃　│　│　│　│　│　│　│　┃\n"
-                               "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                               "┃　│　│　│　│　│　│　│　┃\n"
-                               "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                               "┃　│　│　│╲│╱│　│　│　┃\n"
-                               "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                               "┃　│　│　│╱│╲│　│　│　┃\n"
-                               "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线
+    Board board;
+    for (int row = 0; row < BOARDROW; ++row) {
+        for (int col = 0; col < BOARDCOL; ++col) {
+            if (row < BOARDROW / 2)
+                setPiece(&board, row, col, &(pieces.redPiece[(row * col + col) / PIECENUM]));
+            else
+                setPiece(&board, row, col, &(pieces.blackPiece[(row * col + col) / PIECENUM]));
+        }
+    }
+    wchar_t wstr[1024];
+    wprintf(L"%s", toString(wstr, &board));
 }

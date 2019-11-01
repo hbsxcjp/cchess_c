@@ -1,31 +1,30 @@
 #ifndef PIECE_H
 #define PIECE_H
 
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
-#include <locale.h>
 
-#define PIECENUM 16 // 一方棋子个数
+// 一方棋子个数
+#define PIECENUM 16 
 
 // 棋子颜色类型
-typedef enum
-{
+typedef enum {
     RED,
     BLACK
 } PieceColor;
 
 // 棋子种类类型
-typedef enum
-{
-    KING = L'K',
-    ADVISOR = L'A',
-    BISHOP = L'B',
-    KNIGHT = L'N',
-    ROOK = L'R',
-    CANNON = L'C',
-    PAWN = L'P'
+typedef enum {
+    KING,
+    ADVISOR,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    CANNON,
+    PAWN
 } PieceKind;
 
 // 棋子结构类型
@@ -42,10 +41,16 @@ typedef struct
     const Piece blackPiece[PIECENUM];
 } Pieces;
 
-wchar_t getChar(const Piece *ppiece);
+// 一副棋子的全局常量
+const Pieces pieces;
 
-wchar_t getName(const Piece *ppiece);
+//  取得表示棋子的字符
+wchar_t getChar(const Piece* piece);
 
+// 取得表示棋子的名称
+wchar_t getName(const Piece* piece);
+
+// 测试本翻译单元各种对象、函数
 void testPiece(void);
 
 #endif
