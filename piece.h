@@ -7,6 +7,8 @@
 #include <wchar.h>
 #include <wctype.h>
 
+// 两方
+#define PIECEKINDNUM 2 
 // 一方棋子个数
 #define PIECENUM 16 
 
@@ -37,8 +39,7 @@ typedef struct
 // 一副棋子结构类型
 typedef struct
 {
-    const Piece redPiece[PIECENUM];
-    const Piece blackPiece[PIECENUM];
+    const Piece piece[PIECEKINDNUM][PIECENUM];
 } Pieces;
 
 // 一副棋子的全局常量

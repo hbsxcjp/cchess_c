@@ -40,14 +40,10 @@ wchar_t* toString(wchar_t* wstr, Board* board)
 void testBoard(void)
 {
     Board board;
-    for (int row = 0; row < BOARDROW; ++row) {
-        for (int col = 0; col < BOARDCOL; ++col) {
-            if (row < BOARDROW / 2)
-                setPiece(&board, row, col, &(pieces.redPiece[(row * col + col) / PIECENUM]));
-            else
-                setPiece(&board, row, col, &(pieces.blackPiece[(row * col + col) / PIECENUM]));
-        }
-    }
+    for (int row = 0; row < BOARDROW; ++row)
+        for (int col = 0; col < BOARDCOL; ++col)
+            setPiece(&board, row, col, &(pieces.piece[row < BOARDROW / 2 ? RED : BLACK][(row * col + col) / PIECENUM]));
+
     wchar_t wstr[1024];
     wprintf(L"%s", toString(wstr, &board));
 }

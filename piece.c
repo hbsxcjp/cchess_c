@@ -1,10 +1,8 @@
 #include "piece.h"
 
 // 一副棋子的全局常量
-const Pieces pieces = {
-    { { RED, KING }, { RED, ADVISOR }, { RED, ADVISOR }, { RED, BISHOP }, { RED, BISHOP }, { RED, KNIGHT }, { RED, KNIGHT }, { RED, ROOK }, { RED, ROOK }, { RED, CANNON }, { RED, CANNON }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN } },
-    { { BLACK, KING }, { BLACK, ADVISOR }, { BLACK, ADVISOR }, { BLACK, BISHOP }, { BLACK, BISHOP }, { BLACK, KNIGHT }, { BLACK, KNIGHT }, { BLACK, ROOK }, { BLACK, ROOK }, { BLACK, CANNON }, { BLACK, CANNON }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN } }
-};
+const Pieces pieces = { { { { RED, KING }, { RED, ADVISOR }, { RED, ADVISOR }, { RED, BISHOP }, { RED, BISHOP }, { RED, KNIGHT }, { RED, KNIGHT }, { RED, ROOK }, { RED, ROOK }, { RED, CANNON }, { RED, CANNON }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN }, { RED, PAWN } },
+    { { BLACK, KING }, { BLACK, ADVISOR }, { BLACK, ADVISOR }, { BLACK, BISHOP }, { BLACK, BISHOP }, { BLACK, KNIGHT }, { BLACK, KNIGHT }, { BLACK, ROOK }, { BLACK, ROOK }, { BLACK, CANNON }, { BLACK, CANNON }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN }, { BLACK, PAWN } } } };
 
 wchar_t getChar(const Piece* piece)
 {
@@ -20,11 +18,12 @@ wchar_t getName(const Piece* piece)
 
 void testPiece(void)
 {
-    for (int i = 0; i < PIECENUM; ++i) {
-        const Piece *rppie = &(pieces.redPiece[i]),
-                    *bppie = &(pieces.blackPiece[i]);
-        wprintf(L"%2d %d:%c%c  %d:%c%c\n", i + 1,
-            rppie->color, getChar(rppie), getName(rppie),
-            bppie->color, getChar(bppie), getName(bppie));
+    for (int k = 0; k < PIECEKINDNUM; ++k) {
+        for (int i = 0; i < PIECENUM; ++i) {
+            const Piece* pie = &(pieces.piece[k][i]);
+            wprintf(L"%2d:%c%c ",
+                pie->color, getChar(pie), getName(pie));
+        }
+        wprintf(L"\n");
     }
 }
