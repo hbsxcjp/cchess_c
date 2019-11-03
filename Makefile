@@ -1,4 +1,4 @@
-head = piece.h board.h
+head = base.h piece.h board.h
 src = piece.c board.c main.c
 obj = piece.o board.o main.o
 
