@@ -11,6 +11,10 @@ $(OBJS): %.o : %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 $(OBJS): *.h
+#dependencies: $(OBJS: .o=.c)
+#	$(CC) -M $^ > $@\
+#
+#include dependencies
 
 .PHONY: clean
 clean:

@@ -1,15 +1,15 @@
-#include "piece.h"
 #include "board.h"
+#include "piece.h"
 
-int main(int argc, char const *argv[])
+int main(int argc, char const* argv[])
 {
     setlocale(LC_ALL, "chs");
     wprintf(L"%s\n", L"输出中文成功了！");
 
-    void testPiece(void);
-    testPiece();
+    wchar_t* testPiece(void);
+    wprintf(L"%s", testPiece());
 
-    void testBoard(void);
-    testBoard();
+    wchar_t* testBoard(void);
+    wprintf(L"%s", testBoard());
     return 0;
 }

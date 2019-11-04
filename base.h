@@ -1,9 +1,10 @@
 #ifndef BASE_H
 #define BASE_H
 
+#include <assert.h>
 #include <locale.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
@@ -20,15 +21,13 @@
 #define BLANKCHAR L'_'
 
 // 棋子颜色类型
-typedef enum
-{
+typedef enum {
     RED,
     BLACK
 } PieceColor;
 
 // 棋子种类类型
-typedef enum
-{
+typedef enum {
     KING,
     ADVISOR,
     BISHOP,
@@ -63,11 +62,10 @@ const Pieces pieces;
 // 棋盘列数
 #define BOARDCOL 9
 // 棋盘位置个数
-#define SEATNUM 90
+#define SEATNUM BOARDROW* BOARDCOL
 
 // 棋子移动方向
-typedef enum
-{
+typedef enum {
     SW,
     SE,
     NW,
@@ -87,21 +85,26 @@ typedef struct
 // 一副棋盘结构类型
 typedef struct
 {
-    const Piece *piece[BOARDROW][BOARDCOL];
+    const Piece* piece[BOARDROW][BOARDCOL];
     PieceColor bottomColor;
 } Board;
 
 // 棋盘变换类型
-enum ChangeType
-{
+typedef enum {
     EXCHANGE,
     ROTATE,
     SYMMETRY
-};
-
+} ChangeType;
 
 //=================================================================
 //着法相关的类型
 //=================================================================
+
+struct Move;
+typedef struct {
+    Seat fseat, tseat;
+    const Piece* tpiece;
+    struct Move *nmove, *omove;
+} Move;
 
 #endif
