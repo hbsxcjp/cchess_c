@@ -54,6 +54,7 @@ wchar_t getTextName(const Piece *piece)
 
 void testPiece(void)
 {
+    wprintf(L"\n%s\n", L"testPiece：");
     for (int k = 0; k < PIECECOLORNUM; ++k)
     {
         for (int i = 0; i < PIECENUM; ++i)

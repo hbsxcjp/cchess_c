@@ -1,14 +1,17 @@
-head = base.h piece.h board.h
-src = piece.c board.c main.c
-obj = piece.o board.o main.o
+# 参考《C语言核心技术》第19章
+CC = gcc
+CFLAGS = -Wall -std=c11
+LDFLAGS = -lm
+OBJS = piece.o board.o main.o
 
-a.exe: $(obj)
-	gcc -std=c11 -Wall $(obj) -o a.exe
+a: $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
 
-$(obj): $(src) $(head)
-	gcc -std=c11 -Wall -c $(src)
+$(OBJS): %.o : %.c
+	$(CC) $(CFLAGS) -o $@ -c $<
 
+$(OBJS): *.h
 
 .PHONY: clean
 clean:
-	rm a.exe $(obj)
+	rm a *.o

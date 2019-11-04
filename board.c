@@ -471,6 +471,7 @@ wchar_t *toString(wchar_t *wstr, Board *board)
 // 测试本翻译单元各种对象、函数
 void testBoard(void)
 {
+    wprintf(L"\n%s\n", L"testBoard：");
     wchar_t *FENs[2] = {L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
                         L"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5"};
     for (int i = 0; i < 2; ++i)
