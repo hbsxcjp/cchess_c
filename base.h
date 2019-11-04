@@ -19,6 +19,10 @@
 #define PIECENUM 16
 // 空子的字符表示
 #define BLANKCHAR L'_'
+// 临时字符串长度
+#define TEMPSTR_SIZE 1024
+// 临时字符串长度
+#define OUTSTR_SIZE TEMPSTR_SIZE * 100
 
 // 棋子颜色类型
 typedef enum {

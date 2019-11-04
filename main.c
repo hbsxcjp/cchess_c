@@ -1,15 +1,16 @@
 #include "board.h"
 #include "piece.h"
 
-int main(int argc, char const* argv[])
+int main(int argc, char const *argv[])
 {
     setlocale(LC_ALL, "chs");
-    wprintf(L"%s\n", L"输出中文成功了！");
+    //FILE *fout = stdout;
+    FILE *fout = fopen("s", "w");
 
-    wchar_t* testPiece(void);
-    wprintf(L"%s", testPiece());
+    fwprintf(fout, L"输出中文成功了！");
+    testPiece(fout);
+    testBoard(fout);
 
-    wchar_t* testBoard(void);
-    wprintf(L"%s", testBoard());
+    fclose(fout);
     return 0;
 }
