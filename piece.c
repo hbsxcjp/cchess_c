@@ -34,11 +34,11 @@ const Pieces pieces = {{{{RED, KING},
                          {BLACK, PAWN},
                          {BLACK, PAWN}}}};
 
-const wchar_t *PieceChars[PIECECOLORNUM] = {L"KABNRCP", L"kabnrcp"};
+static const wchar_t *PieceChars[PIECECOLORNUM] = {L"KABNRCP", L"kabnrcp"};
 
-const wchar_t *PieceNames[PIECECOLORNUM] = {L"帅仕相马车炮兵", L"将士象马车炮卒"};
+static const wchar_t *PieceNames[PIECECOLORNUM] = {L"帅仕相马车炮兵", L"将士象马车炮卒"};
 
-const wchar_t *PieceNames_b[PIECECOLORNUM] = {L"帅仕相马车炮兵", L"将士象馬車砲卒"};
+static const wchar_t *PieceNames_b[PIECECOLORNUM] = {L"帅仕相马车炮兵", L"将士象馬車砲卒"};
 
 wchar_t getChar(const Piece *piece)
 {

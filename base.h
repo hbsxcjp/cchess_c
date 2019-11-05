@@ -21,8 +21,6 @@
 #define BLANKCHAR L'_'
 // 临时字符串长度
 #define TEMPSTR_SIZE 1024
-// 临时字符串长度
-#define OUTSTR_SIZE TEMPSTR_SIZE * 100
 
 // 棋子颜色类型
 typedef enum {
@@ -54,9 +52,6 @@ typedef struct
     const Piece piece[PIECECOLORNUM][PIECENUM];
 } Pieces;
 
-// 一副棋子的全局常量
-const Pieces pieces;
-
 //=================================================================
 //棋盘相关的类型
 //=================================================================
@@ -67,6 +62,9 @@ const Pieces pieces;
 #define BOARDCOL 9
 // 棋盘位置个数
 #define SEATNUM BOARDROW* BOARDCOL
+// Seat初始赋值语句
+#define SetSeat(seat, row, col) \
+    (seat) = (Seat) { row, col }
 
 // 棋子移动方向
 typedef enum {
