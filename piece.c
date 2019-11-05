@@ -55,9 +55,8 @@ wchar_t getPieName_T(const Piece *piece)
     return PieceNames_b[piece->color][piece->kind];
 }
 
-wchar_t *getPieString(const Piece *piece)
+wchar_t *getPieString(wchar_t* pieString, size_t n, const Piece *piece)
 {
-    static wchar_t pieString[8];
     swprintf(pieString, 20, L"%c%c%c%c",
              piece->color == RED ? L'红' : L'黑',
              getPieName(piece), getPieName_T(piece), getChar(piece));
@@ -66,13 +65,14 @@ wchar_t *getPieString(const Piece *piece)
 
 void testPiece(FILE *fout)
 {
+    wchar_t pieString[TEMPSTR_SIZE];
     fwprintf(fout, L"\ntestPiece：\n");
     for (int k = 0; k < PIECECOLORNUM; ++k)
     {
         for (int i = 0; i < PIECENUM; ++i)
         {
             const Piece *piece = &(pieces.piece[k][i]);
-            fwprintf(fout, L"%s ", getPieString(piece));
+            fwprintf(fout, L"%s ", getPieString(pieString, TEMPSTR_SIZE, piece));
         }
         fwprintf(fout, L"\n");
     }

@@ -36,19 +36,21 @@ int putSeats(Seat* seats, bool isBottom, const Piece* piece);
 int moveSeats(Seat* seats, Board* board, const Seat* fseat);
 
 // 移动棋子，返回目的地棋子
-const Piece* seatMoveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece);
+const Piece* seatMoveTo(Board* board, const Seat* fseat,
+    const Seat* tseat, const Piece* eatPiece);
 
 // 取得某方"兵"的棋子位置seats
-int getSortPawnLiveSeats(Seat* seats, size_t n, const Board* board, PieceColor color); //?
+int getSortPawnLiveSeats(Seat* seats, size_t n,
+    const Board* board, PieceColor color); //?
 
 // 根据中文着法取得内部着法表示
-bool getMove(const Board* board, const wchar_t* zhStr, size_t n, Move* move); //?
+bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n); //?
 
 // 根据内部着法表示取得中文着法
-wchar_t* getZhStr(const Board* board, size_t n, const Move* move); //?
+wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); //?
 
 // 按某种变换类型变换棋盘局面
-bool changeSide(const Board* board, ChangeType ct); //?
+bool changeSide(Board* board, ChangeType ct); //?
 
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board);
