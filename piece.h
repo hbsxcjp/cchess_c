@@ -6,6 +6,12 @@
 //  取得表示棋子的字符
 wchar_t getChar(const Piece *piece);
 
+//  取得表示棋子的颜色
+PieceKind getColor(wchar_t ch);
+
+//  取得表示棋子的字符
+PieceKind getKind(wchar_t ch);
+
 // 取得表示棋子的名称
 wchar_t getPieName(const Piece *piece);
 

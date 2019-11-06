@@ -15,6 +15,8 @@
 
 // 两方
 #define PIECECOLORNUM 2
+// 棋子种类数量
+#define PIECEKINDNUM 7
 // 一方棋子个数
 #define PIECENUM 16
 // 空子的字符表示
@@ -47,10 +49,12 @@ typedef struct
 } Piece;
 
 // 一副棋子结构类型
-typedef struct
-{
-    const Piece piece[PIECECOLORNUM][PIECENUM];
-} Pieces;
+//typedef struct
+//{
+//const Piece piece[PIECECOLORNUM][PIECENUM];
+
+//const Piece piece[PIECECOLORNUM][PIECEKINDNUM];
+//} Pieces;
 
 //=================================================================
 //棋盘相关的类型
@@ -99,11 +103,23 @@ typedef enum {
 //着法相关的类型
 //=================================================================
 
+// 着法类型
 struct Move;
 typedef struct {
     Seat fseat, tseat;
     const Piece* tpiece;
-    struct Move *nmove, *omove;
+    wchar_t* remark;
+    struct Move *pmove, *nmove, *omove;
 } Move;
+
+// 棋局存储类型
+typedef enum {
+    XQF,
+    PGN_ICCS,
+    PGN_ZH,
+    PGN_CC,
+    BIN,
+    JSON
+} RecFormat;
 
 #endif

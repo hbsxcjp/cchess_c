@@ -2,22 +2,37 @@
 #include "piece.h"
 
 // 着法相关的字符数组静态全局变量
-static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
+/* static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
 static const wchar_t PRECHAR[] = L"前中后";
 static const wchar_t MOVCHAR[] = L"退平进";
-static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = { L"一二三四五六七八九", L"１２３４５６７８９" };
+static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
+    L"一二三四五六七八九", L"１２３４５６７８９"
+};
 static const wchar_t ICCSCHAR[] = L"abcdefghi";
 static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
+*/
 
-// 棋盘行列相关的全局变量
+// 棋盘行列相关的静态全局变量
 static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-// 设置seat
-inline static void setSeat(Seat* seat, int row, int col)
+// 根据行、列值获取seat
+inline static Seat getSeat_rc(int row, int col)
 {
-    *seat = (Seat){ row, col };
+    return (Seat){ row, col };
+}
+
+// 根据字面行列整数获取seat
+inline static Seat getSeat_i(int rowcol)
+{
+    return getSeat_rc(rowcol / 10, rowcol % 10);
+}
+
+// 根据seat获取字面行列整数
+inline static int getRowcol(Seat seat)
+{
+    return seat.row * 10 + seat.col;
 }
 
 // 从某棋盘内某行、某列位置取得一个棋子
@@ -30,7 +45,6 @@ inline static const Piece* getPiece_rc(const Board* board,
 inline static const Piece* getPiece_s(const Board* board,
     const Seat* seat)
 {
-    //wprintf(L"seat: %d%d=>", seat->row, seat->col);
     return getPiece_rc(board, seat->row, seat->col);
 }
 
@@ -49,56 +63,82 @@ inline static void setPiece_s(Board* board,
 
 wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n)
 {
-    for (int index = 0, i = 0; i < n; ++i) {
+    for (int index = 0, i = 0; i < n && index < SEATNUM; ++i) {
         wchar_t ch = FEN[i];
         if (iswdigit(ch))
             for (int j = ch - L'0'; j > 0; --j)
                 pieChars[index++] = BLANKCHAR;
         else if (iswalpha(ch))
             pieChars[index++] = ch;
-        if (index == SEATNUM)
-            break;
     }
+    pieChars[SEATNUM] = L'\x0';
     return pieChars;
 }
 
-bool setBoard(Board* board, wchar_t* pieChars)
+wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 {
-    extern const Pieces pieces;
-    bool isSet = false, used[PIECECOLORNUM][PIECENUM] = { false };
-    for (int index = 0; index < SEATNUM; ++index) {
-        wchar_t ch = pieChars[index];
-        if (iswalpha(ch)) {
-            PieceColor color = iswupper(ch) ? RED : BLACK;
-            const Piece* rbpiece = pieces.piece[color];
-            for (int i = 0; i < PIECENUM; ++i) {
-                if (!used[color][i] && ch == getChar(&rbpiece[i])) {
-                    setPiece_rc(board, RowUpIndex_ - index / BOARDCOL, index % BOARDCOL, &(rbpiece[i]));
-                    used[color][i] = true;
-                    break;
-                }
-            }
-        } else
-            setPiece_rc(board, BOARDCOL - index / BOARDCOL, index % BOARDCOL, NULL);
+    for (int i = 0; i < SEATNUM; ++i)
+        pieChars[i] = getChar(getPiece_rc(board,
+            RowUpIndex_ - i / BOARDCOL, i % BOARDCOL));
+    pieChars[SEATNUM] = L'\x0';
+    return pieChars;
+}
+
+wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
+{
+    int index = 0, size = 0;
+    for (int row = RowUpIndex_; row >= RowLowIndex_; --row) { // 从最高行开始
+        int blankNum = 0;
+        for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
+            if (iswalpha(pieChars[index])) {
+                if (blankNum > 0)
+                    FEN[size++] = L'0' + blankNum;
+                FEN[size++] = pieChars[index++];
+                blankNum = 0;
+            } else if (pieChars[index++] == BLANKCHAR) // 肯定为真, index+1
+                blankNum++;
+        }
+        if (blankNum > 0)
+            FEN[size++] = L'0' + blankNum;
+        FEN[size++] = L'/'; // 插入行分隔符
     }
-    for (int row = RowLowIndex_; row <= RowLowMidIndex_; ++row) {
+    FEN[--size] = L'\x0';
+    return FEN;
+}
+
+void setBoard(Board* board, wchar_t* pieChars)
+{
+    extern const Piece PIECES[PIECECOLORNUM][PIECEKINDNUM];
+    int seatNum = wcslen(pieChars);
+    assert(seatNum == SEATNUM);
+    for (int index = 0; index < seatNum; ++index) {
+        wchar_t ch = pieChars[index];
+        setPiece_rc(board, RowUpIndex_ - index / BOARDCOL, index % BOARDCOL,
+            iswalpha(ch) ? &(PIECES[getColor(ch)][getKind(ch)]) : NULL);
+    }
+    setBottomColor(board);
+}
+
+void setBottomColor(Board* board)
+{
+    for (int row = RowLowIndex_; row <= RowLowMidIndex_; ++row)
         for (int col = ColMidLowIndex_; col <= ColMidUpIndex_; ++col) {
             const Piece* pie = getPiece_rc(board, row, col);
             if (pie && pie->kind == KING) {
                 board->bottomColor = pie->color;
-                isSet = true;
-                break;
+                return;
             }
         }
-        if (isSet)
-            break;
-    }
-    return isSet;
+}
+
+bool isBottomSide(const Board* board, PieceColor color)
+{
+    return board->bottomColor == color;
 }
 
 Seat getKingSeat(const Board* board, PieceColor color)
 {
-    bool isBottom = (board->bottomColor == color);
+    bool isBottom = isBottomSide(board, color);
     int rowLow = (isBottom ? RowLowIndex_ : RowUpMidIndex_),
         rowUp = (isBottom ? RowLowMidIndex_ : RowUpIndex_);
     for (int row = rowLow; row <= rowUp; ++row)
@@ -107,7 +147,7 @@ Seat getKingSeat(const Board* board, PieceColor color)
             if (pie && pie->kind == KING)
                 return ((Seat){ row, col });
         }
-    assert(true);
+    assert(false); // 永远不该运行该句
     return ((Seat){ -1, -1 });
 }
 
@@ -122,21 +162,20 @@ int getLiveSeats(Seat* seats, size_t n, const Board* board, PieceColor color,
                 && (name == L'\x0' || name == getPieName(pie))
                 && (findCol == -1 || col == findCol)
                 && (!getStronge || pie->kind >= KNIGHT))
-                setSeat(&seats[count++], row, col);
+                seats[count++] = getSeat_rc(row, col);
         }
     return count;
 }
 
 bool isKilled(Board* board, PieceColor color)
 {
-    PieceColor othColor = color == RED ? BLACK : RED;
-    //*
+    PieceColor othColor = (color == RED ? BLACK : RED);
     Seat kingSeat = getKingSeat(board, color),
          othKingSeat = getKingSeat(board, othColor);
     int frow = kingSeat.row, fcol = kingSeat.col,
         trow = othKingSeat.row, tcol = othKingSeat.col;
     if (fcol == tcol) {
-        bool isBottom = board->bottomColor == color, isBlank = true;
+        bool isBottom = isBottomSide(board, color), isBlank = true;
         int rowLow = isBottom ? frow : trow,
             rowUp = isBottom ? trow : frow;
         for (int row = rowLow + 1; row < rowUp; ++row)
@@ -144,24 +183,22 @@ bool isKilled(Board* board, PieceColor color)
                 isBlank = false;
                 break;
             }
-        if (isBlank) // 将帅之间全空，没有间隔棋子
+        // 将帅之间全空，没有间隔棋子
+        if (isBlank)
             return true;
     }
-    //*/
 
     Seat seats[PIECENUM] = {};
-    //*// 取得对方可杀将棋子(活的强子)全部可走的位置
     int count = getLiveSeats(seats, PIECENUM, board,
         othColor, L'\x0', -1, true);
     for (int i = 0; i < count; ++i) {
         Seat mseats[BOARDROW + BOARDCOL] = {};
         int mcount = moveSeats(mseats, board, &(seats[i]));
         for (int m = 0; m < mcount; ++m)
-            // 对方强子可走位置有本方将帅位置
+            // 本方将帅位置在对方强子可走位置范围内
             if (mseats[m].row == frow && mseats[m].col == fcol)
                 return true;
     }
-    //*/
     return false;
 }
 
@@ -173,52 +210,23 @@ bool isDied(Board* board, PieceColor color)
     for (int i = 0; i < count; ++i) {
         Seat* fseat = &(fseats[i]);
         int mcount = moveSeats(mseats, board, fseat);
+        // 有棋子可走
         if (getMoveSeats(mseats, mcount, board, fseat) > 0)
             return false;
     }
     return true;
 }
 
-wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
-{
-    for (int i = 0; i < SEATNUM; ++i) {
-        pieChars[i] = getChar(getPiece_rc(board, RowUpIndex_ - i / BOARDCOL, i % BOARDCOL));
-    }
-    return pieChars;
-}
-
-wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
-{
-    int index = 0, size = 0;
-    for (int row = RowUpIndex_; row >= RowLowIndex_; --row) {
-        int blankNum = 0;
-        for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
-            if (iswalpha(pieChars[index])) {
-                if (blankNum > 0)
-                    FEN[size++] = L'0' + blankNum;
-                FEN[size++] = pieChars[index++];
-                blankNum = 0;
-            } else if (pieChars[index++] == BLANKCHAR)
-                blankNum++;
-        }
-        if (blankNum > 0)
-            FEN[size++] = L'0' + blankNum;
-        FEN[size++] = L'/';
-    }
-    FEN[--size] = L'\0';
-    return FEN;
-}
-
-int putSeats(Seat* seats, bool isBottom, const Piece* piece)
+int putSeats(Seat* seats, bool isBottom, PieceKind kind)
 {
     int count = 0, rowLow, rowUp, cross, lfrow, ufrow, ltrow, utrow;
-    switch (piece->kind) {
+    switch (kind) {
     case KING:
         rowLow = isBottom ? RowLowIndex_ : RowUpMidIndex_;
         rowUp = isBottom ? RowLowMidIndex_ : RowUpIndex_;
         for (int row = rowLow; row <= rowUp; ++row)
             for (int col = ColMidLowIndex_; col <= ColMidUpIndex_; ++col)
-                setSeat(&seats[count++], row, col);
+                seats[count++] = getSeat_rc(row, col);
         break;
     case ADVISOR:
         rowLow = isBottom ? RowLowIndex_ : RowUpMidIndex_;
@@ -227,7 +235,7 @@ int putSeats(Seat* seats, bool isBottom, const Piece* piece)
         for (int row = rowLow; row <= rowUp; ++row)
             for (int col = ColMidLowIndex_; col <= ColMidUpIndex_; ++col)
                 if ((col + row) % 2 == cross)
-                    setSeat(&seats[count++], row, col);
+                    seats[count++] = getSeat_rc(row, col);
         break;
     case BISHOP:
         rowLow = isBottom ? RowLowIndex_ : RowUpLowIndex_;
@@ -235,8 +243,9 @@ int putSeats(Seat* seats, bool isBottom, const Piece* piece)
         for (int row = rowLow; row <= rowUp; row += 2)
             for (int col = ColLowIndex_; col <= ColUpIndex_; col += 2) {
                 cross = row - col;
-                if ((isBottom && (cross == 2 || cross == -2 || cross == -6)) || (!isBottom && (cross == 7 || cross == 3 || cross == -1)))
-                    setSeat(&seats[count++], row, col);
+                if ((isBottom && (cross == 2 || cross == -2 || cross == -6))
+                    || (!isBottom && (cross == 7 || cross == 3 || cross == -1)))
+                    seats[count++] = getSeat_rc(row, col);
             }
         break;
     case PAWN:
@@ -246,15 +255,15 @@ int putSeats(Seat* seats, bool isBottom, const Piece* piece)
         utrow = isBottom ? RowUpIndex_ : RowLowUpIndex_;
         for (int row = lfrow; row <= ufrow; ++row)
             for (int col = ColLowIndex_; col <= ColUpIndex_; col += 2)
-                setSeat(&seats[count++], row, col);
+                seats[count++] = getSeat_rc(row, col);
         for (int row = ltrow; row <= utrow; ++row)
             for (int col = ColLowIndex_; col <= ColUpIndex_; ++col)
-                setSeat(&seats[count++], row, col);
+                seats[count++] = getSeat_rc(row, col);
         break;
     default: // ROOK, KNIGHT, CANNON
         for (int row = 0; row < BOARDROW; ++row)
             for (int col = 0; col < BOARDCOL; ++col)
-                setSeat(&seats[count++], row, col);
+                seats[count++] = getSeat_rc(row, col);
         break;
     }
     return count;
@@ -265,13 +274,15 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
     int count = 0, frow = fseat->row, fcol = fseat->col;
     const Piece* fpiece = getPiece_rc(board, frow, fcol);
     PieceColor color = fpiece->color;
-    bool isBottom = color == board->bottomColor;
+    bool isBottom = isBottomSide(board, color);
     switch (fpiece->kind) {
     case KING: {
-        Seat tseats[] = { { frow, fcol - 1 }, //W
+        Seat tseats[] = {
+            { frow, fcol - 1 }, //W
             { frow, fcol + 1 }, //E
             { frow - 1, fcol }, //S
-            { frow + 1, fcol } }; //N
+            { frow + 1, fcol } //N
+        };
         //           方向   W,   E,    S,    N
         bool select[] = { true, true, true, true };
         if (fcol == ColMidLowIndex_) // 最左列
@@ -288,12 +299,14 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
                 seats[count++] = tseats[i];
     } break;
     case ADVISOR: {
-        Seat tseats[] = { { frow - 1, fcol - 1 },
+        Seat tseats[] = {
+            { frow - 1, fcol - 1 },
             { frow - 1, fcol + 1 },
             { frow + 1, fcol - 1 },
             { frow + 1, fcol + 1 },
             { (isBottom ? RowLowIndex_ : RowUpMidIndex_) + 1,
-                ColMidLowIndex_ + 1 } };
+                ColMidLowIndex_ + 1 }
+        };
         bool select[] = { true, true, true, true, true };
         if (fcol == ColMidLowIndex_ + 1)
             select[4] = false;
@@ -305,10 +318,12 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
                 seats[count++] = tseats[i];
     } break;
     case BISHOP: {
-        Seat tseats[] = { { frow - 2, fcol - 2 }, //SW
+        Seat tseats[] = {
+            { frow - 2, fcol - 2 }, //SW
             { frow - 2, fcol + 2 }, //SE
             { frow + 2, fcol - 2 }, //NW
-            { frow + 2, fcol + 2 } }; //NE
+            { frow + 2, fcol + 2 } //NE
+        };
         bool select[] = { true, true, true, true };
         if (fcol == ColLowIndex_)
             select[SW] = select[NW] = false;
@@ -320,18 +335,20 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
             select[NW] = select[NE] = false;
 
         for (int i = 0; i < sizeof(tseats) / sizeof(tseats[0]); ++i)
-            if (select[i] && getPiece_rc(board, (frow + tseats[i].row) / 2, (fcol + tseats[i].col) / 2) == NULL)
+            if (select[i] && (getPiece_rc(board, (frow + tseats[i].row) / 2, (fcol + tseats[i].col) / 2) == NULL))
                 seats[count++] = tseats[i];
     } break;
     case KNIGHT: {
-        Seat tseats[] = { { frow - 2, fcol - 1 }, //SW
+        Seat tseats[] = {
+            { frow - 2, fcol - 1 }, //SW
             { frow - 2, fcol + 1 }, //SE
             { frow + 2, fcol - 1 }, //NW
             { frow + 2, fcol + 1 }, //NE
             { frow - 1, fcol - 2 }, //WS
             { frow - 1, fcol + 2 }, //ES
             { frow + 1, fcol - 2 }, //WN
-            { frow + 1, fcol + 2 } }; //EN
+            { frow + 1, fcol + 2 } //EN
+        };
         //             // {SW, SE, NW, NE, WS, ES, WN, EN}
         bool select[] = { true, true, true, true, true, true, true, true };
         if (fcol == ColLowIndex_) // 最左列
@@ -393,10 +410,12 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
         }
     } break;
     case PAWN: {
-        Seat tseats[] = { { frow, fcol - 1 }, //W
+        Seat tseats[] = {
+            { frow, fcol - 1 }, //W
             { frow, fcol + 1 }, //E
             { frow - 1, fcol }, //S
-            { frow + 1, fcol } }; //N
+            { frow + 1, fcol } //N
+        };
         //           方向   W,   E,    S,    N
         bool select[] = { true, true, true, true };
         if (isBottom) {
@@ -408,7 +427,8 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
             if (frow == RowLowIndex_)
                 select[2] = false;
         }
-        if ((isBottom && frow <= RowLowUpIndex_) || (!isBottom && frow > RowLowUpIndex_))
+        if ((isBottom && frow <= RowLowUpIndex_)
+            || (!isBottom && frow > RowLowUpIndex_))
             select[0] = select[1] = false; // 兵没有过河
         else { // 兵已过河
             if (fcol == ColLowIndex_)
@@ -423,17 +443,16 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
     } break;
     default: // ROOK CANNON
     {
-        // 建立四个方向的位置数组
-        Seat tseats[4][BOARDROW] = {};
-        int tscount[4] = {};
+        Seat tseats[4][BOARDROW] = {}; // 建立四个方向的位置数组
+        int tscount[4] = {}; // 每个方向的个数
         for (int col = fcol - 1; col >= ColLowIndex_; --col)
-            setSeat(&tseats[0][tscount[0]++], frow, col);
+            tseats[0][tscount[0]++] = getSeat_rc(frow, col);
         for (int col = fcol + 1; col <= ColUpIndex_; ++col)
-            setSeat(&tseats[1][tscount[1]++], frow, col);
+            tseats[1][tscount[1]++] = getSeat_rc(frow, col);
         for (int row = frow - 1; row >= RowLowIndex_; --row)
-            setSeat(&tseats[2][tscount[2]++], row, fcol);
+            tseats[2][tscount[2]++] = getSeat_rc(row, fcol);
         for (int row = frow + 1; row <= RowUpIndex_; ++row)
-            setSeat(&tseats[3][tscount[3]++], row, fcol);
+            tseats[3][tscount[3]++] = getSeat_rc(row, fcol);
 
         // 区分车、炮分别查找
         if (fpiece->kind == ROOK) {
@@ -449,8 +468,7 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
                         break;
                     }
                 }
-        } else // CANNON
-        {
+        } else { // CANNON
             for (int line = 0; line < 4; ++line) {
                 bool skip = false;
                 for (int i = 0; i < tscount[line]; ++i) {
@@ -471,15 +489,17 @@ int moveSeats(Seat* seats, Board* board, const Seat* fseat)
         }
     } break;
     }
+
     int index = 0;
     while (index < count) {
         Seat* tseat = &(seats[index]);
         // 筛除己方棋子所占位置
         const Piece* tpiece = getPiece_s(board, tseat);
-        if (tpiece && (tpiece->color == fpiece->color)
-            && (index < --count)) // 减少count, 检查index后是否还有seat？
-            *tseat = seats[count]; // 将最后一个seat代替index处seat
-        else
+        if (tpiece && (tpiece->color == fpiece->color)) {
+            --count; // 减少count
+            if (index < count) // 检查index后是否还有seat？
+                *tseat = seats[count]; // 将最后一个seat代替index处seat
+        } else
             ++index; // 非己方棋子，index前进一个
     }
     return count;
@@ -495,16 +515,17 @@ int getMoveSeats(Seat* seats, int count, Board* board, const Seat* fseat)
         const Piece* eatPiece = seatMoveTo(board, fseat, tseat, NULL);
         bool isKill = isKilled(board, color);
         seatMoveTo(board, tseat, fseat, eatPiece);
-        if (isKill && (index < --count)) // 减少count, 检查index后是否还有seat？
-            *tseat = seats[count]; // 将最后一个seat代替index处seat
-        else
-            ++index; // 移动不会将军后，index前进一个
+        if (isKill) {
+            --count; // 减少count
+            if (index < count) // 检查index后是否还有seat？
+                *tseat = seats[count]; // 将最后一个seat代替index处seat
+        } else
+            ++index; // 不会将军后，index前进一个
     }
     return count;
 }
 
-const Piece* seatMoveTo(Board* board, const Seat* fseat,
-    const Seat* tseat, const Piece* eatPiece)
+const Piece* seatMoveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece)
 {
     const Piece* piece = getPiece_s(board, tseat);
     setPiece_s(board, tseat, getPiece_s(board, fseat));
@@ -512,15 +533,13 @@ const Piece* seatMoveTo(Board* board, const Seat* fseat,
     return piece;
 }
 
-int getSortPawnLiveSeats(Seat* seats, size_t n, const Board* board,
-    PieceColor color)
+int getSortPawnLiveSeats(Seat* seats, size_t n, const Board* board, PieceColor color)
 {
     int count = 0;
     return count;
 }
 
-bool getMove(Move* move, const Board* board, const wchar_t* zhStr,
-    size_t n)
+bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
 {
     bool isOk = false;
     return isOk;
@@ -559,13 +578,12 @@ wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
                                      "┃　│　│　│╱│╲│　│　│　┃\n"
                                      "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线
     wcscpy(boardStr, BOARDSTR);
-    for (int row = 0; row < BOARDROW; ++row) {
+    for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             const Piece* piece = getPiece_rc(board, row, col);
             if (piece)
                 boardStr[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
         }
-    }
     return boardStr;
 }
 
@@ -583,55 +601,53 @@ void testBoard(FILE* fout)
         fwprintf(fout, L"第%d个FEN =============================================\n", i);
 
         //* FEN转换成PieChars
-        wchar_t pieChars[TEMPSTR_SIZE];
+        wchar_t pieChars[SEATNUM + 1];
         getPieChars_F(pieChars, FENs[i], wcslen(FENs[i]));
         fwprintf(fout, L"     FEN:%s size:%d\nPieChars:%s size:%d\n",
             FENs[i], wcslen(FENs[i]), pieChars, wcslen(pieChars));
         //*/
+
         //* 设置棋局，生成PieChars，转换成FEN
         Board aboard = {}, *board = &aboard;
         setBoard(board, pieChars);
 
         getPieChars_B(pieChars, board);
-        wchar_t FEN[TEMPSTR_SIZE];
+        wchar_t FEN[SEATNUM + 1];
         getFEN(FEN, pieChars);
         fwprintf(fout, L"PieChars:%s size:%d\n     FEN:%s size:%d\n",
             pieChars, wcslen(pieChars), FEN, wcslen(FEN));
         //*/
 
         //* 取得将帅位置，打印棋局
-        wchar_t boardStr[TEMPSTR_SIZE], pieString[TEMPSTR_SIZE];
+        wchar_t boardStr[TEMPSTR_SIZE], rpieString[SEATNUM], bpieString[SEATNUM];
         const Seat rkseat = getKingSeat(board, RED),
                    bkseat = getKingSeat(board, BLACK);
-        fwprintf(fout, L"%sboard：@%p ", getBoardString(boardStr, board), *board);
-        fwprintf(fout, L"%s%d%d @%p <--> ",
-            getPieString(pieString, TEMPSTR_SIZE, getPiece_s(board, &rkseat)),
-            rkseat.row, rkseat.col, rkseat);
-        // 下面这条语句不能与上条语句合并，因为同一条语句内，getPieString函数返回值相同？
-        fwprintf(fout, L"%s%d%d @%p\n",
-            getPieString(pieString, TEMPSTR_SIZE, getPiece_s(board, &bkseat)),
+        fwprintf(fout, L"%sboard：@%p %s%d%d @%p <==> %s%d%d @%p\n",
+            getBoardString(boardStr, board), *board,
+            getPieString(rpieString, SEATNUM, getPiece_s(board, &rkseat)),
+            rkseat.row, rkseat.col, rkseat,
+            getPieString(bpieString, SEATNUM, getPiece_s(board, &bkseat)),
             bkseat.row, bkseat.col, bkseat);
         //*/
 
         //* 取得各种条件下活的棋子
-        for (int color = RED; color <= BLACK; ++color) {
+        for (int color = RED; color <= BLACK; ++color)
             for (int stronge = 0; stronge <= 1; ++stronge) {
                 Seat lvseats[PIECENUM] = {};
                 int count = getLiveSeats(lvseats, PIECENUM, board,
-                    color, L'\x0', -1, stronge == 0 ? false : true);
+                    color, L'\x0', -1, stronge);
                 fwprintf(fout, L"%c%c：",
                     color == RED ? L'红' : L'黑', stronge == 1 ? L'强' : L'全');
                 for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L"%s%d%d - ",
-                        getPieString(pieString, TEMPSTR_SIZE,
+                    fwprintf(fout, L"%s%d%d ",
+                        getPieString(rpieString, SEATNUM,
                             getPiece_s(board, &(lvseats[i]))),
                         lvseats[i].row, lvseats[i].col);
-                fwprintf(fout, L"count：%d\n", count);
+                fwprintf(fout, L"count:%d\n", count);
             }
-        }
         //*/
 
-        //* 取得各活的棋子可移动位置
+        //* 取得各活棋子的可移动位置
         for (int color = RED; color <= BLACK; ++color) {
             Seat lvseats[PIECENUM] = {};
             int count = getLiveSeats(lvseats, PIECENUM, board,
@@ -639,43 +655,39 @@ void testBoard(FILE* fout)
             for (int i = 0; i < count; ++i) {
                 Seat* fseat = &(lvseats[i]);
                 const Piece* piece = getPiece_s(board, fseat);
-                fwprintf(fout, L"%s%d%d moveSeats:【",
-                    getPieString(pieString, TEMPSTR_SIZE, piece),
+                fwprintf(fout, L"%s %d%d >>【",
+                    getPieString(rpieString, SEATNUM, piece),
                     fseat->row, fseat->col);
                 Seat mseats[BOARDROW + BOARDCOL] = {};
                 int mcount = moveSeats(mseats, board, fseat);
                 for (int i = 0; i < mcount; ++i)
                     fwprintf(fout, L" %d%d",
                         mseats[i].row, mseats[i].col);
-                fwprintf(fout, L"】 mcount: %d ", mcount);
+                fwprintf(fout, L"】%d ", mcount);
 
-                fwprintf(fout, L"getMoveSeats:【");
+                fwprintf(fout, L">>【");
                 mcount = getMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < mcount; ++i)
                     fwprintf(fout, L" %d%d",
                         mseats[i].row, mseats[i].col);
-                fwprintf(fout, L"】 gmcount: %d\n", mcount);
+                fwprintf(fout, L"】%d\n", mcount);
             }
         }
         //*/
 
         /* 取得各棋子的可放置位置
-        for (int bottom = 0; bottom < 2; ++bottom) {
-            extern const Pieces pieces;
-            fwprintf(fout, L"bottom: %d\n", bottom);
-            for (int color = 0; color < 2; ++color) {
-                for (int index = 0; index < PIECENUM; ++index) {
-                    const Piece* pie = &(pieces.piece[color][index]);
-                    Seat seats[BOARDROW * BOARDCOL];
-                    int count = putSeats(seats, bottom, pie);
-                    fwprintf(fout, L"%s putSeats:【", getPieString(pieString, TEMPSTR_SIZE, pie));
-                    for (int i = 0; i < count; ++i)
-                        fwprintf(fout, L" %d%d", seats[i].row, seats[i].col);
-                    fwprintf(fout, L"】 count: %d\n", count);
-                }
+        extern const Piece PIECES[PIECECOLORNUM][PIECEKINDNUM];
+        for (int color = 0; color < 2; ++color) {
+            for (int index = 0; index < PIECEKINDNUM; ++index) {
+                const Piece* pie = &(PIECES[color][index]);
+                Seat seats[BOARDROW * BOARDCOL];
+                int count = putSeats(seats, true, pie->kind);
+                fwprintf(fout, L"%s ==【", getPieString(rpieString, SEATNUM, pie));
+                for (int i = 0; i < count; ++i)
+                    fwprintf(fout, L" %d%d", seats[i].row, seats[i].col);
+                fwprintf(fout, L"】%d\n", count);
             }
         }
         //*/
-        fwprintf(fout, L"\n");
     }
 }
