@@ -62,9 +62,6 @@ typedef struct
 #define BOARDCOL 9
 // 棋盘位置个数
 #define SEATNUM BOARDROW* BOARDCOL
-// Seat初始赋值语句
-#define SetSeat(seat, row, col) \
-    (seat) = (Seat) { row, col }
 
 // 棋子移动方向
 typedef enum {

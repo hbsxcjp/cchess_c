@@ -57,9 +57,9 @@ wchar_t getPieName_T(const Piece *piece)
 
 wchar_t *getPieString(wchar_t* pieString, size_t n, const Piece *piece)
 {
-    swprintf(pieString, 20, L"%c%c%c%c",
+    swprintf(pieString, 20, L"%c%c%c", // %c
              piece->color == RED ? L'红' : L'黑',
-             getPieName(piece), getPieName_T(piece), getChar(piece));
+             getPieName_T(piece), getChar(piece)); // getPieName(piece), 
     return pieString;
 }
 

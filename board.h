@@ -32,8 +32,11 @@ wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars);
 // 某棋盘红黑定方向后某棋子可置入位置的集合，返回位置个数（至少90个）
 int putSeats(Seat* seats, bool isBottom, const Piece* piece);
 
-// 某棋盘局面下某位置的棋子可移入位置的集合，返回位置个数（至少17个）
+// 某棋盘局面下某位置的棋子“行走规则(筛除同色)”可移入位置的集合，返回位置个数（至少17个）
 int moveSeats(Seat* seats, Board* board, const Seat* fseat);
+
+// 某棋盘局面下，某位置的棋子在“行走规则”基础上被将军情况后，可移入位置的集合，返回位置个数（至少17个）
+int getMoveSeats(Seat* seats, int count, Board* board, const Seat* fseat);
 
 // 移动棋子，返回目的地棋子
 const Piece* seatMoveTo(Board* board, const Seat* fseat,
