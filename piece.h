@@ -19,7 +19,7 @@ wchar_t getPieName(const Piece *piece);
 wchar_t getPieName_T(const Piece *piece);
 
 // 取得表示棋子表示字符串的名称
-wchar_t *getPieString(wchar_t* pieString, size_t n, const Piece *piece);
+wchar_t *getPieString(wchar_t* str, size_t n, const Piece *piece);
 
 // 测试本翻译单元各种对象、函数
 void testPiece(FILE *fout);

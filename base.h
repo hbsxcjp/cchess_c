@@ -106,20 +106,21 @@ typedef enum {
 } RecFormat;
 
 // 着法类型
-struct Move;
-typedef struct {
-    Seat fseat, tseat;
-    const Piece* tpiece;
+struct structMove;
+struct structMove {
+    const Seat **fseat, **tseat;
+    const Piece** tpiece; // 指向const Piece*的指针
     wchar_t* remark;
-    struct Move *pmove, *nmove, *omove;
+    struct structMove *pmove, *nmove, *omove;
     int nextNo_, otherNo_, CC_ColNo_; // 图中列位置
-} Move;
+};
+typedef struct structMove Move;
 
 // 棋局类型
 typedef struct {
     Board* board;
     wchar_t* info;
-    struct Move *rootMove, *currentMove;
+    struct structMove *rootMove, *currentMove;
     int movCount_, remCount_, remLenMax_, maxRow_, maxCol_;
 } Instance;
 

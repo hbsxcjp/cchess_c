@@ -1,93 +1,52 @@
 #include "instance.h"
-
-static const wchar_t ICCSCHAR[] = L"abcdefghi";
-
-Move* addNext(Move* move)
-{
-    Move* nextMove = malloc(sizeof(Move));
-    nextMove->nextNo_ = move->nextNo_ + 1;
-    nextMove->otherNo_ = move->otherNo_;
-    nextMove->pmove = move;
-    return nextMove;
-}
-
-Move* addOther(Move* move)
-{
-    Move* otherMove = malloc(sizeof(Move));
-    otherMove->nextNo_ = move->nextNo_;
-    otherMove->otherNo_ = move->otherNo_ + 1;
-    otherMove->pmove = move;
-    return otherMove;
-}
-
-void delMove(Move* move)
-{
-    Move* cmove = move->nmove;
-    while (cmove=cmove->nmove)
-    {
-        /* code */
-    }
-    
-}
-
-void cutMove(Move* move, bool isNext)
-{
-    Move* cmove = isNext ? move->nmove : move->omove;
-    if (cmove) {
-        if (cmove->omove) {
-            if (isNext)
-                move->nmove = cmove->omove;
-            else
-                move->omove = cmove->omove;
-            cmove->omove = NULL;
-        }
-    }
-    delMove(cmove);
-}
-
-wchar_t* getICCS(wchar_t* str, size_t n, const Move* move)
-{
-    swprintf(str, n, L"%c%d%c%d",
-        ICCSCHAR[move->fseat.col], move->fseat.row,
-        ICCSCHAR[move->tseat.col], move->tseat.row);
-    return str;
-}
-
-wchar_t* getZH(wchar_t* str, size_t n, const Move* move)
-{
-    return str;
-}
-
-void moveDo(const Move* move) {}
-
-void moveUndo(const Move* move) {}
-
-void setMoveFromSeats(Move* move, Seat fseat, Seat tseat, wchar_t* remark) {}
-
-void setMoveFromRowcol(Move* move,
-    int frowcol, int trowcol, const wchar_t* remark) {}
-
-void setMoveFromStr(Move* move,
-    const wchar_t* str, RecFormat fmt, const wchar_t* remark) {}
-
-wchar_t* getMovString(wchar_t* str, size_t n, const Move* move)
-{
-    return str;
-}
+#include "board.h"
+#include "move.h"
+#include "piece.h"
 
 void read(Instance* ins, const char* filename) {}
 
 void write(const Instance* ins, const char* filename) {}
 
-void go(Instance* ins) {}
+void go(Instance* ins)
+{
+    if (ins->currentMove->nmove) {
+        ins->currentMove = ins->currentMove->nmove;
+        moveDo(ins, ins->currentMove);
+    }
+}
 
-void back(Instance* ins) {}
+void back(Instance* ins)
+{
+    if (ins->currentMove->pmove) {
+        moveUndo(ins, ins->currentMove);
+        ins->currentMove = ins->currentMove->pmove;
+    }
+}
 
-void backTo(Instance* ins, const Move* move) {}
+void backTo(Instance* ins, const Move* move)
+{
+    while (!isSame(ins->currentMove, ins->rootMove) && !isSame(ins->currentMove, move)) {
+        back(ins);
+    }
+}
 
-void goOther(Instance* ins) {}
+void goOther(Instance* ins)
+{
+    if (!isSame(ins->currentMove, ins->rootMove) && ins->currentMove->omove != NULL) {
+        moveUndo(ins, ins->currentMove);
+        ins->currentMove = ins->currentMove->omove;
+        moveDo(ins, ins->currentMove);
+    }
+}
 
-void goInc(Instance* ins, int inc) {}
+void goInc(Instance* ins, int inc)
+{
+    for (int i = abs(inc); i != 0; --i)
+        if (inc > 0)
+            go(ins);
+        else
+            back(ins);
+}
 
 void reset(Instance* ins) {}
 
