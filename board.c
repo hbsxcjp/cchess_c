@@ -8,7 +8,6 @@ static const wchar_t MOVCHAR[] = L"退平进";
 static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
     L"一二三四五六七八九", L"１２３４５６７８９"
 };
-static const wchar_t ICCSCHAR[] = L"abcdefghi";
 static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 */
 
@@ -138,6 +137,14 @@ bool isBottomSide(const Board* board, PieceColor color)
 
 Seat getKingSeat(const Board* board, PieceColor color)
 {
+    Seat seats[SEATNUM] = {};
+    int count = putSeats(seats, isBottomSide(board, color), KING);
+    for (int i = 0; i < count; ++i) {
+        const Piece* pie = getPiece_s(board, &(seats[i]));
+        if (pie && pie->kind == KING)
+            return seats[i];
+    }
+    /*
     bool isBottom = isBottomSide(board, color);
     int rowLow = (isBottom ? RowLowIndex_ : RowUpMidIndex_),
         rowUp = (isBottom ? RowLowMidIndex_ : RowUpIndex_);
@@ -147,7 +154,8 @@ Seat getKingSeat(const Board* board, PieceColor color)
             if (pie && pie->kind == KING)
                 return ((Seat){ row, col });
         }
-    assert(false); // 永远不该运行该句
+    */
+    assert(false); // 永远不该运行
     return ((Seat){ -1, -1 });
 }
 
@@ -550,7 +558,7 @@ wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move
     return zhStr;
 }
 
-bool changeSide(Board* board, ChangeType ct)
+bool changeBoardSide(Board* board, ChangeType ct)
 {
     bool changed = false;
     return changed;
@@ -619,14 +627,17 @@ void testBoard(FILE* fout)
         //*/
 
         //* 取得将帅位置，打印棋局
-        wchar_t boardStr[TEMPSTR_SIZE], rpieString[SEATNUM], bpieString[SEATNUM];
+        wchar_t boardStr[TEMPSTR_SIZE], pieString[SEATNUM];
         const Seat rkseat = getKingSeat(board, RED),
                    bkseat = getKingSeat(board, BLACK);
-        fwprintf(fout, L"%sboard：@%p %s%d%d @%p <==> %s%d%d @%p\n",
-            getBoardString(boardStr, board), *board,
-            getPieString(rpieString, SEATNUM, getPiece_s(board, &rkseat)),
-            rkseat.row, rkseat.col, rkseat,
-            getPieString(bpieString, SEATNUM, getPiece_s(board, &bkseat)),
+        // 一条语句内不要包含多个可改变局部变量值且返回局部变量指针的函数(因为可能返回同一个指针地址？)
+        fwprintf(fout, L"%sboard：@%p ",
+            getBoardString(boardStr, board), aboard);
+        fwprintf(fout, L"%s%d%d @%p <==> ",
+            getPieString(pieString, SEATNUM, getPiece_s(board, &rkseat)),
+            rkseat.row, rkseat.col, rkseat);
+        fwprintf(fout, L"%s%d%d @%p\n",
+            getPieString(pieString, SEATNUM, getPiece_s(board, &bkseat)),
             bkseat.row, bkseat.col, bkseat);
         //*/
 
@@ -640,7 +651,7 @@ void testBoard(FILE* fout)
                     color == RED ? L'红' : L'黑', stronge == 1 ? L'强' : L'全');
                 for (int i = 0; i < count; ++i)
                     fwprintf(fout, L"%s%d%d ",
-                        getPieString(rpieString, SEATNUM,
+                        getPieString(pieString, SEATNUM,
                             getPiece_s(board, &(lvseats[i]))),
                         lvseats[i].row, lvseats[i].col);
                 fwprintf(fout, L"count:%d\n", count);
@@ -656,7 +667,7 @@ void testBoard(FILE* fout)
                 Seat* fseat = &(lvseats[i]);
                 const Piece* piece = getPiece_s(board, fseat);
                 fwprintf(fout, L"%s %d%d >>【",
-                    getPieString(rpieString, SEATNUM, piece),
+                    getPieString(pieString, SEATNUM, piece),
                     fseat->row, fseat->col);
                 Seat mseats[BOARDROW + BOARDCOL] = {};
                 int mcount = moveSeats(mseats, board, fseat);
@@ -682,7 +693,7 @@ void testBoard(FILE* fout)
                 const Piece* pie = &(PIECES[color][index]);
                 Seat seats[BOARDROW * BOARDCOL];
                 int count = putSeats(seats, true, pie->kind);
-                fwprintf(fout, L"%s ==【", getPieString(rpieString, SEATNUM, pie));
+                fwprintf(fout, L"%s ==【", getPieString(pieString, SEATNUM, pie));
                 for (int i = 0; i < count; ++i)
                     fwprintf(fout, L" %d%d", seats[i].row, seats[i].col);
                 fwprintf(fout, L"】%d\n", count);

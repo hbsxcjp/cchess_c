@@ -58,7 +58,7 @@ bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n); //
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); //?
 
 // 按某种变换类型变换棋盘局面
-bool changeSide(Board* board, ChangeType ct); //?
+bool changeBoardSide(Board* board, ChangeType ct); //?
 
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board);

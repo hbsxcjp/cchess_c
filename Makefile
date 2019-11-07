@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -Wall -std=c11
 LDFLAGS = -lm
-OBJS = piece.o board.o main.o
+OBJS = piece.o board.o instance.o main.o
 
 a: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^

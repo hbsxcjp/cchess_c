@@ -48,14 +48,6 @@ typedef struct
     const PieceKind kind;
 } Piece;
 
-// 一副棋子结构类型
-//typedef struct
-//{
-//const Piece piece[PIECECOLORNUM][PIECENUM];
-
-//const Piece piece[PIECECOLORNUM][PIECEKINDNUM];
-//} Pieces;
-
 //=================================================================
 //棋盘相关的类型
 //=================================================================
@@ -88,7 +80,7 @@ typedef struct
 // 一副棋盘结构类型
 typedef struct
 {
-    const Piece* piece[BOARDROW][BOARDCOL];
+    const Piece* piece[BOARDROW][BOARDCOL]; // 存储位置可用row,col或Seat表示
     PieceColor bottomColor;
 } Board;
 
@@ -100,17 +92,8 @@ typedef enum {
 } ChangeType;
 
 //=================================================================
-//着法相关的类型
+//棋局相关的类型
 //=================================================================
-
-// 着法类型
-struct Move;
-typedef struct {
-    Seat fseat, tseat;
-    const Piece* tpiece;
-    wchar_t* remark;
-    struct Move *pmove, *nmove, *omove;
-} Move;
 
 // 棋局存储类型
 typedef enum {
@@ -121,5 +104,23 @@ typedef enum {
     BIN,
     JSON
 } RecFormat;
+
+// 着法类型
+struct Move;
+typedef struct {
+    Seat fseat, tseat;
+    const Piece* tpiece;
+    wchar_t* remark;
+    struct Move *pmove, *nmove, *omove;
+    int nextNo_, otherNo_, CC_ColNo_; // 图中列位置
+} Move;
+
+// 棋局类型
+typedef struct {
+    Board* board;
+    wchar_t* info;
+    struct Move *rootMove, *currentMove;
+    int movCount_, remCount_, remLenMax_, maxRow_, maxCol_;
+} Instance;
 
 #endif
