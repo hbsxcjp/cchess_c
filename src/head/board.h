@@ -3,8 +3,13 @@
 
 #include "base.h"
 
-// 根据行、列值获取seat
-const Seat* getSeat_rc(int row, int col);
+// 新建一个board
+Board* newBoard(void);
+
+void delBoard(Board* board);
+
+// 根据seat获取const seat*
+const Seat* getSeat_s(const Seat seat);
 
 // FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
 wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n);

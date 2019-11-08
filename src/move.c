@@ -9,7 +9,7 @@ Move* newMove(void)
     Move* move = malloc(sizeof(Move));
     move->fseat = move->tseat = NULL;
     move->tpiece = NULL;
-    move->remark = NULL;
+    memset(move->remark, 0, sizeof(move->remark));
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -96,8 +96,8 @@ void moveUndo(Instance* ins, const Move* move)
 
 void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat, const wchar_t* remark)
 {
-    *move->fseat = getSeat_rc(fseat.row, fseat.col);
-    *move->tseat = getSeat_rc(tseat.row, tseat.col);
+    *move->fseat = getSeat_s(fseat);
+    *move->tseat = getSeat_s(tseat);
     wcscpy(move->remark, remark);
 }
 
@@ -107,12 +107,12 @@ void setMoveFromStr(Move* move,
 wchar_t* getMovString(wchar_t* str, size_t n, const Move* move)
 {
     wchar_t pieStr[9] = {};
-    swprintf(str, n, L"%d%d => %d%d %s remark: %s pmove:@%p nmove:@%p omove:@%p nextNo_:%d otherNo_:%d CC_ColNo_:%d\n",
-        (*move->fseat) ? (*move->fseat)->row : -1,
-        (*move->fseat) ? (*move->fseat)->col : -1,
-        (*move->tseat) ? (*move->tseat)->row : -1,
-        (*move->tseat) ? (*move->tseat)->col : -1,
-        getPieString(pieStr, 8, *move->tpiece),
+    swprintf(str, n, L"%d%d => %d%d remark: %s pmove:@%p nmove:@%p omove:@%p nextNo_:%d otherNo_:%d CC_ColNo_:%d\n",
+        (move->fseat) ? (*move->fseat)->row : -1,
+        (move->fseat) ? (*move->fseat)->col : -1,
+        (move->tseat) ? (*move->tseat)->row : -1,
+        (move->tseat) ? (*move->tseat)->col : -1,
+        getPieString(pieStr, 8, move->tpiece ? *move->tpiece : NULL),
         move->pmove, move->nmove, move->omove,
         move->nextNo_, move->otherNo_, move->CC_ColNo_);
     return str;

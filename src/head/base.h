@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <string.h>
 
 //=================================================================
 //棋子相关的类型
@@ -80,7 +81,7 @@ typedef struct
 // 一副棋盘结构类型
 typedef struct
 {
-    const Piece* piece[BOARDROW][BOARDCOL]; // 存储位置可用row,col或Seat表示
+    const Piece* pieces[BOARDROW][BOARDCOL]; // 存储位置可用row,col或Seat表示
     PieceColor bottomColor;
 } Board;
 
@@ -110,7 +111,7 @@ struct structMove;
 struct structMove {
     const Seat **fseat, **tseat;
     const Piece** tpiece; // 指向const Piece*的指针
-    wchar_t* remark;
+    wchar_t remark[TEMPSTR_SIZE / 2];
     struct structMove *pmove, *nmove, *omove;
     int nextNo_, otherNo_, CC_ColNo_; // 图中列位置
 };
@@ -119,7 +120,7 @@ typedef struct structMove Move;
 // 棋局类型
 typedef struct {
     Board* board;
-    wchar_t* info;
+    wchar_t info[TEMPSTR_SIZE];
     struct structMove *rootMove, *currentMove;
     int movCount_, remCount_, remLenMax_, maxRow_, maxCol_;
 } Instance;

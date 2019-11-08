@@ -3,6 +3,23 @@
 #include "head/move.h"
 #include "head/piece.h"
 
+Instance* newInstance(void)
+{
+    Instance* ins = malloc(sizeof(Instance));
+    ins->board = newBoard();
+    memset(ins->info, 0, sizeof(ins->info));
+    ins->rootMove = ins->currentMove = newMove();
+    ins->movCount_ = ins->remCount_ = ins->remLenMax_ = ins->maxRow_ = ins->maxCol_ = 0;
+    return ins;
+}
+
+void delInstance(Instance* ins)
+{
+    delMove(ins->rootMove);
+    delBoard(ins->board);
+    free(ins);
+}
+
 void read(Instance* ins, const char* filename) {}
 
 void write(const Instance* ins, const char* filename) {}
@@ -84,4 +101,17 @@ inline void setMoveNums(const Instance* ins) {}
 // 测试本翻译单元各种对象、函数
 void testInstance(FILE* fout)
 {
+    Instance* ins = newInstance();
+    //read(ins, "a.pgn");
+    wchar_t tempStr[TEMPSTR_SIZE];
+    fwprintf(fout, L"testInstance:\n%sinfo:%s\n",
+        getBoardString(tempStr, ins->board), ins->info);
+    fwprintf(fout, L"   rootMove:%s ",
+        getMovString(tempStr, TEMPSTR_SIZE, ins->rootMove));
+    fwprintf(fout, L"currentMove:%s ",
+        getMovString(tempStr, TEMPSTR_SIZE, ins->currentMove));
+    fwprintf(fout, L"movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
+        ins->movCount_, ins->remCount_, ins->remLenMax_,
+        ins->maxRow_, ins->maxCol_);
+    delInstance(ins);
 }

@@ -3,6 +3,11 @@
 
 #include "base.h"
 
+// 新建一个instance
+Instance* newInstance(void);
+
+void delInstance(Instance* ins);
+
 // 从文件读取到instance
 void read(Instance* ins, const char* filename);
 

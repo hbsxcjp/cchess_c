@@ -12,10 +12,13 @@ int main(int argc, char const* argv[])
 
     testPiece(fout);
     testBoard(fout);
+    testInstance(fout);
 
+    /*
     Move* rootMove = newMove();
     wchar_t str[TEMPSTR_SIZE];
-    //fwprintf(fout, getMovString(str, TEMPSTR_SIZE, rootMove));
+    fwprintf(fout, getMovString(str, TEMPSTR_SIZE, rootMove));
+    */
 
     fclose(fout);
     return 0;

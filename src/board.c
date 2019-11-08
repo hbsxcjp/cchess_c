@@ -31,7 +31,7 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
 // 根据行、列值获取seat
-const Seat* getSeat_rc(int row, int col)
+inline static const Seat* getSeat_rc(int row, int col)
 {
     return &SEATS[row][col];
 }
@@ -40,12 +40,6 @@ const Seat* getSeat_rc(int row, int col)
 inline static const Seat* getSeat_i(int rowcol)
 {
     return getSeat_rc(rowcol / 10, rowcol % 10);
-}
-
-// 根据seat获取seat
-inline static const Seat* getSeat_s(const Seat seat)
-{
-    return getSeat_rc(seat.row, seat.col);
 }
 
 // 根据seat获取字面行列整数
@@ -58,7 +52,7 @@ inline static int getRowcol(const Seat* seat)
 inline static const Piece* getPiece_rc(const Board* board,
     int row, int col)
 {
-    return board->piece[row][col];
+    return board->pieces[row][col];
 }
 
 inline static const Piece* getPiece_s(const Board* board, const Seat* seat)
@@ -69,12 +63,31 @@ inline static const Piece* getPiece_s(const Board* board, const Seat* seat)
 // 置入某棋盘内某行、某列位置一个棋子
 inline static void setPiece_rc(Board* board, int row, int col, const Piece* piece)
 {
-    board->piece[row][col] = piece;
+    board->pieces[row][col] = piece;
 }
 
 inline static void setPiece_s(Board* board, const Seat* seat, const Piece* piece)
 {
     setPiece_rc(board, seat->row, seat->col, piece);
+}
+
+Board* newBoard(void)
+{
+    Board* board = malloc(sizeof(Board));
+    memset(board->pieces, 0, sizeof(board->pieces));
+    board->bottomColor = RED;
+    return board;
+}
+
+void delBoard(Board* board)
+{
+    free(board);
+}
+
+// 根据seat获取const seat*
+const Seat* getSeat_s(const Seat seat)
+{
+    return getSeat_rc(seat.row, seat.col);
 }
 
 wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n)
@@ -626,7 +639,7 @@ void testBoard(FILE* fout)
         //*/
 
         //* 设置棋局，生成PieChars，转换成FEN
-        Board aboard = {}, *board = &aboard;
+        Board* board = newBoard();
         setBoard(board, pieChars);
 
         getPieChars_B(pieChars, board);
@@ -642,7 +655,7 @@ void testBoard(FILE* fout)
                    *bkseat = getKingSeat(board, BLACK);
         // 一条语句内不要包含多个可改变局部变量值且返回局部变量指针的函数(因为可能返回同一个指针地址？)
         fwprintf(fout, L"%sboard：@%p ",
-            getBoardString(boardStr, board), aboard);
+            getBoardString(boardStr, board), *board);
         fwprintf(fout, L"%s%d%d @%p <==> ",
             getPieString(pieString, SEATNUM, getPiece_s(board, rkseat)),
             rkseat->row, rkseat->col, rkseat);

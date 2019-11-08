@@ -46,6 +46,7 @@ wchar_t* getPieString(wchar_t* str, size_t n, const Piece* piece)
         swprintf(str, n, L"%c%c%c",
             piece->color == RED ? L'红' : L'黑',
             getPieName_T(piece), getChar(piece)); // getPieName(piece),
+    else str = L"空";
     return str;
 }
 
