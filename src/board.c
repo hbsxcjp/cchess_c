@@ -1,5 +1,5 @@
-#include "board.h"
-#include "piece.h"
+#include "head/board.h"
+#include "head/piece.h"
 
 // 棋盘位置的全局常量
 const Seat SEATS[BOARDROW][BOARDCOL] = {

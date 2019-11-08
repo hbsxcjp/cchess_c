@@ -1,6 +1,6 @@
-#include "move.h"
-#include "board.h"
-#include "piece.h"
+#include "head/move.h"
+#include "head/board.h"
+#include "head/piece.h"
 
 static const wchar_t ICCSCHAR[] = L"abcdefghi";
 
@@ -9,7 +9,7 @@ Move* newMove(void)
     Move* move = malloc(sizeof(Move));
     move->fseat = move->tseat = NULL;
     move->tpiece = NULL;
-    //move->remark = NULL;
+    move->remark = NULL;
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -40,6 +40,8 @@ Move* addOther(Move* move)
 
 void delMove(Move* move)
 {
+    if (move == NULL)
+        return;
     if (move->omove)
         delMove(move->omove);
     else if (move->nmove)
@@ -48,17 +50,23 @@ void delMove(Move* move)
         free(move);
 }
 
-void cutMove(Move* move, bool isNext)
+void cutNextMove(Move* move)
 {
-    Move* cmove = isNext ? move->nmove : move->omove;
-    if (cmove) {
-        if (cmove->omove) {
-            if (isNext)
-                move->nmove = cmove->omove;
-            else
-                move->omove = cmove->omove;
-            cmove->omove = NULL;
-        }
+    Move* cmove = move->nmove;
+    if (cmove && cmove->omove) {
+        move->nmove = cmove->omove;
+        cmove->omove = NULL;
+    }
+    delMove(cmove);
+}
+
+void cutOhterMove(Move* move)
+{
+
+    Move* cmove = move->omove;
+    if (cmove && cmove->omove) {
+        move->omove = cmove->omove;
+        cmove->omove = NULL;
     }
     delMove(cmove);
 }
@@ -86,7 +94,7 @@ void moveUndo(Instance* ins, const Move* move)
     seatMoveTo(ins->board, *move->tseat, *move->fseat, *move->tpiece);
 }
 
-void setMoveFromSeats(Move* move, Seat fseat, Seat tseat, wchar_t* remark)
+void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat, const wchar_t* remark)
 {
     *move->fseat = getSeat_rc(fseat.row, fseat.col);
     *move->tseat = getSeat_rc(tseat.row, tseat.col);

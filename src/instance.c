@@ -1,7 +1,7 @@
-#include "instance.h"
-#include "board.h"
-#include "move.h"
-#include "piece.h"
+#include "head/instance.h"
+#include "head/board.h"
+#include "head/move.h"
+#include "head/piece.h"
 
 void read(Instance* ins, const char* filename) {}
 

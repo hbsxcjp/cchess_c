@@ -18,8 +18,11 @@ Move* addOther(Move* move);
 // 删除move的所有下着move、变着move及自身
 void delMove(Move* move);
 
-// 切除move的下着或变着
-void cutMove(Move* move, bool isNext);
+// 切除move的下着
+void cutNextMove(Move* move);
+
+// 切除move的变着
+void cutOhterMove(Move* move);
 
 // 取得ICCS字符串
 wchar_t* getICCS(wchar_t* str, size_t n, const Move* move);
@@ -34,14 +37,14 @@ void moveDo(Instance* ins, const Move* move);
 void moveUndo(Instance* ins, const Move* move);
 
 // 根据seats设置move
-void setMoveFromSeats(Move* move, Seat fseat, Seat tseat, wchar_t* remark);
+void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat,
+    const wchar_t* remark);
 
 // 根据str设置move
 void setMoveFromStr(Move* move,
     const wchar_t* str, RecFormat fmt, const wchar_t* remark);
 
-// 取得move的表示字符串
+// 取得表示move的字符串
 wchar_t* getMovString(wchar_t* str, size_t n, const Move* move);
-
 
 #endif

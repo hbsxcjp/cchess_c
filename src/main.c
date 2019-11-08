@@ -1,7 +1,7 @@
-#include "board.h"
-#include "instance.h"
-#include "move.h"
-#include "piece.h"
+#include "head/board.h"
+#include "head/instance.h"
+#include "head/move.h"
+#include "head/piece.h"
 
 int main(int argc, char const* argv[])
 {

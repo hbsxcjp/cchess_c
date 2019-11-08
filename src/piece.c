@@ -1,4 +1,4 @@
-#include "piece.h"
+#include "head/piece.h"
 
 // 棋子的全局常量
 const Piece PIECES[PIECECOLORNUM][PIECEKINDNUM] = {

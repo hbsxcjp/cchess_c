@@ -110,7 +110,7 @@ struct structMove;
 struct structMove {
     const Seat **fseat, **tseat;
     const Piece** tpiece; // 指向const Piece*的指针
-    wchar_t remark[TEMPSTR_SIZE];
+    wchar_t* remark;
     struct structMove *pmove, *nmove, *omove;
     int nextNo_, otherNo_, CC_ColNo_; // 图中列位置
 };

@@ -27,8 +27,10 @@ void goInc(Instance* ins, int inc);
 // 重置instance到初始状态
 void reset(Instance* ins);
 
+// move信息描述
 const wchar_t* moveInfo(wchar_t* str, size_t n, const Instance* ins);
 
+// 转换棋局实例
 void changeInstanceSide(Instance* ins, ChangeType ct);
 
 // 测试本翻译单元各种对象、函数

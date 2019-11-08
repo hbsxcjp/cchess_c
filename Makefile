@@ -2,15 +2,15 @@
 CC = gcc
 CFLAGS = -Wall -std=c11
 LDFLAGS = -lm
-OBJS = piece.o board.o move.o instance.o main.o
+OBJS = obj/piece.o obj/board.o obj/move.o obj/instance.o obj/main.o
 
 a: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-$(OBJS): %.o : %.c
+$(OBJS): obj/%.o : src/%.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
-$(OBJS): *.h
+$(OBJS): src/head/*.h
 #dependencies: $(OBJS: .o=.c)
 #	$(CC) -M $^ > $@\
 #
@@ -18,4 +18,4 @@ $(OBJS): *.h
 
 .PHONY: clean
 clean:
-	rm a *.o
+	rm a obj/*.o
