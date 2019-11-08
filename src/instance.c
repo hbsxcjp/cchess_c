@@ -20,6 +20,11 @@ void delInstance(Instance* ins)
     free(ins);
 }
 
+bool isRootMove(Move* move)
+{
+    return move->nextNo_ == 0 && move->otherNo_ == 0;
+}
+
 void read(Instance* ins, const char* filename) {}
 
 void write(const Instance* ins, const char* filename) {}
@@ -42,14 +47,16 @@ void back(Instance* ins)
 
 void backTo(Instance* ins, const Move* move)
 {
-    while (!isSame(ins->currentMove, ins->rootMove) && !isSame(ins->currentMove, move)) {
+    while (!isRootMove(ins->currentMove)
+        && !isSame(ins->currentMove, move)) {
         back(ins);
     }
 }
 
 void goOther(Instance* ins)
 {
-    if (!isSame(ins->currentMove, ins->rootMove) && ins->currentMove->omove != NULL) {
+    if (!isRootMove(ins->currentMove)
+        && ins->currentMove->omove != NULL) {
         moveUndo(ins, ins->currentMove);
         ins->currentMove = ins->currentMove->omove;
         moveDo(ins, ins->currentMove);

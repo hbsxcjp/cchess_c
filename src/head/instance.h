@@ -3,10 +3,14 @@
 
 #include "base.h"
 
-// 新建一个instance
+// 新建instance
 Instance* newInstance(void);
 
+// 删除instance
 void delInstance(Instance* ins);
+
+// 是否为根move
+bool isRootMove(Move* move);
 
 // 从文件读取到instance
 void read(Instance* ins, const char* filename);
