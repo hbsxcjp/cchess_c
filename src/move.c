@@ -107,13 +107,13 @@ void setMoveFromStr(Move* move,
 wchar_t* getMovString(wchar_t* str, size_t n, const Move* move)
 {
     wchar_t pieStr[9] = {};
-    swprintf(str, n, L"%d%d => %d%d remark: %s pmove:@%p nmove:@%p omove:@%p nextNo_:%d otherNo_:%d CC_ColNo_:%d\n",
+    swprintf(str, n, L"%d%d => %d%d remark: %s nextNo_:%d otherNo_:%d CC_ColNo_:%d\npmove:@%p nmove:@%p omove:@%p\n",
         (move->fseat) ? (*move->fseat)->row : -1,
         (move->fseat) ? (*move->fseat)->col : -1,
         (move->tseat) ? (*move->tseat)->row : -1,
         (move->tseat) ? (*move->tseat)->col : -1,
         getPieString(pieStr, 8, move->tpiece ? *move->tpiece : NULL),
-        move->pmove, move->nmove, move->omove,
-        move->nextNo_, move->otherNo_, move->CC_ColNo_);
+        move->nextNo_, move->otherNo_, move->CC_ColNo_,
+        move->pmove, move->nmove, move->omove);
     return str;
 }
