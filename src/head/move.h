@@ -36,9 +36,11 @@ void moveDo(Instance* ins, const Move* move);
 // 反向执行move
 void moveUndo(Instance* ins, const Move* move);
 
+// 设置remark
+void setRemark(Move* move, const wchar_t* remark);
+
 // 根据seats设置move
-void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat,
-    const wchar_t* remark);
+void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat);
 
 // 根据str设置move
 void setMoveFromStr(Move* move,

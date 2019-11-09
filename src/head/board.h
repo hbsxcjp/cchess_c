@@ -6,8 +6,6 @@
 // 新建一个board
 Board* newBoard(void);
 
-void delBoard(Board* board);
-
 // 根据seat获取const seat*
 const Seat* getSeat_s(const Seat seat);
 

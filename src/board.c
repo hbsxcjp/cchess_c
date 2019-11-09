@@ -79,11 +79,6 @@ Board* newBoard(void)
     return board;
 }
 
-void delBoard(Board* board)
-{
-    free(board);
-}
-
 // 根据seat获取const seat*
 const Seat* getSeat_s(const Seat seat)
 {
@@ -724,5 +719,6 @@ void testBoard(FILE* fout)
         }
         //*/
         fwprintf(fout, L"\n");
+        free(board);
     }
 }

@@ -10,16 +10,11 @@ int main(int argc, char const* argv[])
     FILE* fout = stdout;
     //FILE *fout = fopen("s", "w");
     if (fout) {
-        fwprintf(fout, L"输出中文成功了！");
-        testPiece(fout);
-        testBoard(fout);
+        //fwprintf(fout, L"输出中文成功了！");
+        //testPiece(fout);
+        //testBoard(fout);
         testInstance(fout);
 
-        /*
-    Move* rootMove = newMove();
-    wchar_t str[TEMPSTR_SIZE];
-    fwprintf(fout, getMovString(str, TEMPSTR_SIZE, rootMove));
-    */
         fclose(fout);
     }
     return 0;

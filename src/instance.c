@@ -2,55 +2,96 @@
 #include "head/board.h"
 #include "head/move.h"
 #include "head/piece.h"
-
-inline static const char* getExt(const char* filename)
-{
-    return strrchr(filename, '.');
-}
+#include "head/tools.h"
 
 // 根据存储记录类型取得文件扩展名
-inline static const char* getExtName(const RecFormat fmt)
-{
-    switch (fmt) {
-    case XQF:
-        return ".xqf";
-    case BIN:
-        return ".bin";
-    case JSON:
-        return ".json";
-    case PGN_ICCS:
-        return ".pgn_iccs";
-    case PGN_ZH:
-        return ".pgn_zh";
-    case PGN_CC:
-        return ".pgn_cc";
-    default:
-        return ".pgn_cc";
-    }
-}
+static char* EXTNAMES[] = { ".xqf", ".pgn_iccs", ".pgn_zh", ".pgn_cc", ".bin", ".json" };
 
 // 根据文件扩展名取得存储记录类型
-inline static RecFormat getRecFormat(const char* ext)
+static RecFormat getRecFormat(const char* ext)
 {
-    if (strcmp(ext, ".xqf"))
-        return XQF;
-    else if (strcmp(ext, ".bin"))
-        return BIN;
-    else if (strcmp(ext, ".json"))
-        return JSON;
-    else if (strcmp(ext, ".pgn_iccs"))
-        return PGN_ICCS;
-    else if (strcmp(ext, ".pgn_zh"))
-        return PGN_ZH;
-    else if (strcmp(ext, ".pgn_cc"))
-        return PGN_CC;
-    else
-        return PGN_CC;
+    for (int i = XQF; i <= JSON; ++i)
+        if (strcmp(ext, EXTNAMES[i]) == 0)
+            return i;
+    return XQF;
 }
 
-inline static unsigned char __calkey(unsigned char bKey, unsigned char cKey)
+static unsigned char __calkey(unsigned char bKey, unsigned char cKey)
 {
     return (((((bKey * bKey) * 3 + 9) * 3 + 8) * 2 + 1) * 3 + 8) * cKey; // % 256; // 保持为<256
+}
+
+static unsigned char __sub(unsigned char a, unsigned char b)
+{
+    return (unsigned char)(a - b); // 保持为<256
+}
+
+static void __readBytes(char* bytes, int size, FILE* fin, int Version, unsigned char F32Keys[])
+{
+    long pos = ftell(fin);
+    fread(bytes, sizeof(char), size, fin);
+    if (Version > 10) // '字节解密'
+        for (int i = 0; i != size; ++i)
+            bytes[i] = __sub(bytes[i], F32Keys[(pos + i) % 32]);
+}
+
+static int __getRemarksize(FILE* fin, int Version, unsigned char F32Keys[], int KeyRMKSize)
+{
+    char clen[4] = {};
+    __readBytes(clen, 4, fin, Version, F32Keys);
+    return *(int*)clen - KeyRMKSize;
+}
+
+static wchar_t* __readDataAndGetRemark(wchar_t* wstr, char* data, char* tag,
+    FILE* fin, int Version, unsigned char F32Keys[], int KeyRMKSize)
+{
+    __readBytes(data, 4, fin, Version, F32Keys);
+    int RemarkSize = 0;
+    *tag = data[2];
+    /*
+    if (Version <= 10) {
+        tag = ((tag & 0xF0) ? 0x80 : 0) | ((tag & 0x0F) ? 0x40 : 0);
+        RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
+    } else {
+        tag &= 0xE0;
+        if (tag & 0x20)
+            RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
+    }*/
+    if (Version <= 10 || (*tag &= 0xE0) & 0x20) {
+        if (Version <= 10)
+            *tag = ((*tag & 0xF0) ? 0x80 : 0) | ((*tag & 0x0F) ? 0x40 : 0);
+        //RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
+        char clen[4] = {};
+        __readBytes(clen, 4, fin, Version, F32Keys);
+        RemarkSize = *(int*)clen - KeyRMKSize;
+    }
+    char rem[REMARKSIZE] = {};
+    if (RemarkSize > 0) { // # 如果有注解
+        __readBytes(rem, RemarkSize, fin, Version, F32Keys);
+        mbstowcs(wstr, rem, RemarkSize);
+    }
+    return wstr;
+}
+
+static void __readMove(Move* move, wchar_t* remark, char* data, char* frc, char* trc, char* tag,
+    unsigned char KeyXYf, unsigned char KeyXYt,
+    FILE* fin, int Version, unsigned char F32Keys[], int KeyRMKSize)
+{
+    remark = __readDataAndGetRemark(remark, data, tag,
+        fin, Version, F32Keys, KeyRMKSize);
+    //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
+    int fcolrow = __sub(*frc, 0X18 + KeyXYf), tcolrow = __sub(*trc, 0X20 + KeyXYt);
+    assert(fcolrow <= 89 && tcolrow <= 89);
+    setMoveFromSeats(move, (Seat){ fcolrow % 10, fcolrow / 10 },
+        (Seat){ tcolrow % 10, tcolrow / 10 });
+    setRemark(move, remark);
+
+    if (*tag & 0x80) //# 有左子树
+        __readMove(addNext(move), remark, data, frc, trc, tag, KeyXYf, KeyXYt,
+            fin, Version, F32Keys, KeyRMKSize);
+    if (*tag & 0x40) // # 有右子树
+        __readMove(addOther(move), remark, data, frc, trc, tag, KeyXYf, KeyXYt,
+            fin, Version, F32Keys, KeyRMKSize);
 }
 
 inline static void readXQF(Instance* ins, FILE* fin)
@@ -141,7 +182,8 @@ inline static void readXQF(Instance* ins, FILE* fin)
 
     // 取得棋子字符串
     wchar_t pieChars[SEATNUM + 1];
-    memset(pieChars, BLANKCHAR, sizeof(pieChars));
+    wmemset(pieChars, BLANKCHAR, sizeof(pieChars));
+    pieChars[SEATNUM] = L'\x0';
     wchar_t QiziChars[] = L"RNBAKABNRCCPPPPPrnbakabnrccppppp"; // QiziXY设定的棋子顺序
     for (int i = 0; i != pieceNum; ++i) {
         int xy = head_QiziXY[i];
@@ -149,83 +191,38 @@ inline static void readXQF(Instance* ins, FILE* fin)
             pieChars[xy % 10 * 9 + xy / 10] = QiziChars[i];
     }
     setBoard(ins->board, pieChars);
-    
-    /*   
-    swprintf(ins->info, TEMPSTR_SIZE, 
-    L"", );
-        { L"Version", std::to_wstring(Version) },
-        { L"Result", (std::map<unsigned char, std::wstring>{ { 0, L"未知" }, { 1, L"红胜" }, { 2, L"黑胜" }, { 3, L"和棋" } })[headPlayResult] },
-        { L"PlayType", (std::map<unsigned char, std::wstring>{ { 0, L"全局" }, { 1, L"开局" }, { 2, L"中局" }, { 3, L"残局" } })[headCodeA_H[0]] },
-        { L"TitleA", Tools::s2ws(TitleA) },
-        { L"Event", Tools::s2ws(Event) },
-        { L"Date", Tools::s2ws(Date) },
-        { L"Site", Tools::s2ws(Site) },
-        { L"Red", Tools::s2ws(Red) },
-        { L"Black", Tools::s2ws(Black) },
-        { L"Opening", Tools::s2ws(Opening) },
-        { L"RMKWriter", Tools::s2ws(RMKWriter) },
-        { L"Author", Tools::s2ws(Author) },
-        { L"FEN", pieCharsToFEN(pieChars) } // 可能存在不是红棋先走的情况？
-    };
- 
-    std::function<unsigned char(unsigned char, unsigned char)>
-        __sub = [](unsigned char a, unsigned char b) {
-            return a - b;
-        }; // 保持为<256
-    auto __readBytes = [&](char* bytes, int size) {
-        int pos = is.tellg();
-        isfread(bytes, size);
-        if (Version > 10) // '字节解密'
-            for (int i = 0; i != size; ++i)
-                bytes[i] = __sub(bytes[i], F32Keys[(pos + i) % 32]);
-    };
-    char data[4]{}, &frc{ data[0] }, &trc{ data[1] }, &tag{ data[2] };
-    auto __getRemarksize = [&]() {
-        char clen[4]{};
-        __readBytes(clen, 4);
-        return *(int*)clen - KeyRMKSize;
-    };
-    std::function<std::wstring()>
-        __readDataAndGetRemark = [&]() {
-            __readBytes(data, 4);
-            int RemarkSize{};
-            if (Version <= 10) {
-                tag = ((tag & 0xF0) ? 0x80 : 0) | ((tag & 0x0F) ? 0x40 : 0);
-                RemarkSize = __getRemarksize();
-            } else {
-                tag &= 0xE0;
-                if (tag & 0x20)
-                    RemarkSize = __getRemarksize();
-            }
-            if (RemarkSize > 0) { // # 如果有注解
-                char rem[RemarkSize + 1]{};
-                __readBytes(rem, RemarkSize);
-                return Tools::s2ws(rem);
-            } else
-                return std::wstring{};
-        };
-    std::function<void(const std::shared_ptr<Move>&)>
-        __readMove = [&](const std::shared_ptr<Move>& move) {
-            auto remark = __readDataAndGetRemark();
-            //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
-            int fcolrow = __sub(frc, 0X18 + KeyXYf), tcolrow = __sub(trc, 0X20 + KeyXYt);
-            assert(fcolrow <= 89 && tcolrow <= 89);
-            __setMoveFromRowcol(move, (fcolrow % 10) * 10 + fcolrow / 10,
-                (tcolrow % 10) * 10 + tcolrow / 10, remark);
 
-            char ntag{ tag };
-            if (ntag & 0x80) //# 有左子树
-                __readMove(move->addNext());
-            if (ntag & 0x40) // # 有右子树
-                __readMove(move->addOther());
-        };
+    wchar_t infoTempStr[REMARKSIZE];
+    swprintf(infoTempStr, REMARKSIZE, L"%d", Version);
+    addInfoItem(ins, L"Version", infoTempStr);
 
-    is.seekg(1024);
-    rootMove_->setRemark(__readDataAndGetRemark());
-    char rtag{ tag };
-    if (rtag & 0x80) //# 有左子树
-        __readMove(rootMove_->addNext());
-    */
+    wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
+    addInfoItem(ins, L"Result", Result[(int)headPlayResult]);
+
+    wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
+    addInfoItem(ins, L"PlayType", PlayType[(int)(headCodeA_H[0])]);
+    char* values[] = {
+        TitleA, Event, Date, Site, Red, Black,
+        Opening, RMKWriter, Author
+    };
+    wchar_t* names[] = {
+        L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
+        L"Opening", L"RMKWriter", L"Author"
+    };
+    for (int i = 3; i != 12; ++i) {
+        mbstowcs(infoTempStr, values[i], strlen(values[i]));
+        addInfoItem(ins, names[i], infoTempStr);
+    }
+    addInfoItem(ins, L"FEN", getFEN(infoTempStr, pieChars)); // 可能存在不是红棋先走的情况？
+
+    char data[4] = {}, *tag = 0, *frc = 0, *trc = 0;
+    wchar_t remark[REMARKSIZE] = {};
+    fseek(fin, 1024, SEEK_SET);
+    setRemark(ins->rootMove,
+        __readDataAndGetRemark(remark, data, tag, fin, Version, F32Keys, KeyRMKSize));
+    if (*tag & 0x80) //# 有左子树
+        __readMove(addNext(ins->rootMove), remark, data, frc, trc, tag, KeyXYf, KeyXYt,
+            fin, Version, F32Keys, KeyRMKSize);
 }
 
 inline static void readBIN(Instance* ins, FILE* fin) {}
@@ -267,17 +264,31 @@ Instance* newInstance(void)
 {
     Instance* ins = malloc(sizeof(Instance));
     ins->board = newBoard();
-    memset(ins->info, 0, sizeof(ins->info));
     ins->rootMove = ins->currentMove = newMove();
-    ins->movCount_ = ins->remCount_ = ins->remLenMax_ = ins->maxRow_ = ins->maxCol_ = 0;
+    ins->info_name = ins->info_value = NULL;
+    ins->infoCount = ins->movCount_ = ins->remCount_ = ins->remLenMax_ = ins->maxRow_ = ins->maxCol_ = 0;
     return ins;
 }
 
 void delInstance(Instance* ins)
 {
+    ins->currentMove = NULL;
+    for (int i = ins->infoCount - 1; i >= 0; --i) {
+        free(ins->info_name[i]);
+        free(ins->info_value[i]);
+    }
     delMove(ins->rootMove);
-    delBoard(ins->board);
+    free(ins->board);
     free(ins);
+}
+
+void addInfoItem(Instance* ins, wchar_t* name, wchar_t* value)
+{
+    ins->info_name[ins->infoCount] = (wchar_t*)malloc(wcslen(name));
+    wcscpy(ins->info_name[ins->infoCount], name);
+    ins->info_value[ins->infoCount] = (wchar_t*)malloc(wcslen(value));
+    wcscpy(ins->info_value[ins->infoCount], value);
+    ++ins->infoCount;
 }
 
 void read(Instance* ins, const char* filename)
@@ -392,14 +403,21 @@ void changeSide(Instance* ins, ChangeType ct) {}
 void testInstance(FILE* fout)
 {
     Instance* ins = newInstance();
-    //read(ins, "a.pgn");
+    const char* filename = "01.xqf";
+    const char* ext = getExt(filename);
+    printf("%s Ext:%s RecFormat:%d\n", filename, ext, getRecFormat(ext));
+    read(ins, filename);
+
+    /*
     wchar_t tempStr[TEMPSTR_SIZE];
-    fwprintf(fout, L"testInstance:\n%sinfo:%s\n",
-        getBoardString(tempStr, ins->board), ins->info);
+    fwprintf(fout, L"testInstance:\n%s\n", getBoardString(tempStr, ins->board));
+    for (int i = 0; i < ins->infoCount; ++i)
+        fwprintf(fout, L"info[%d]%s==%s\n", i, ins->info_name[i], ins->info_value[i]);
     fwprintf(fout, L"   rootMove:%s",
         getMovString(tempStr, TEMPSTR_SIZE, ins->rootMove));
     fwprintf(fout, L"currentMove:%s",
         getMovString(tempStr, TEMPSTR_SIZE, ins->currentMove));
     fwprintf(fout, L"moveInfo:%s", moveInfo(tempStr, TEMPSTR_SIZE, ins));
+    //*/
     delInstance(ins);
 }

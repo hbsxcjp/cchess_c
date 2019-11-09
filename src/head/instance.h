@@ -9,6 +9,9 @@ Instance* newInstance(void);
 // 删除instance
 void delInstance(Instance* ins);
 
+// 添加一个info条目
+void addInfoItem(Instance* ins, wchar_t* name, wchar_t* value);
+
 // 从文件读取到instance
 void read(Instance* ins, const char* filename);
 

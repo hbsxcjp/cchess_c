@@ -6,10 +6,10 @@ static const wchar_t ICCSCHAR[] = L"abcdefghi";
 
 Move* newMove(void)
 {
-    Move* move = malloc(sizeof(Move));
+    Move* move = (Move*)malloc(sizeof(Move));
     move->fseat = move->tseat = NULL;
     move->tpiece = NULL;
-    memset(move->remark, 0, sizeof(move->remark));
+    move->remark = NULL;
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -40,14 +40,17 @@ Move* addOther(Move* move)
 
 void delMove(Move* move)
 {
-    if (move == NULL)
+    if (!move)
         return;
     if (move->omove)
         delMove(move->omove);
     else if (move->nmove)
         delMove(move->nmove);
-    else
+    else {
+        if (move->remark)
+            free(move->remark);
         free(move);
+    }
 }
 
 void cutNextMove(Move* move)
@@ -94,11 +97,16 @@ void moveUndo(Instance* ins, const Move* move)
     seatMoveTo(ins->board, *move->tseat, *move->fseat, *move->tpiece);
 }
 
-void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat, const wchar_t* remark)
+void setRemark(Move* move, const wchar_t* remark)
+{
+    move->remark = (wchar_t*)malloc(sizeof(remark));
+    wcscpy(move->remark, remark);
+}
+
+void setMoveFromSeats(Move* move, const Seat fseat, const Seat tseat)
 {
     *move->fseat = getSeat_s(fseat);
     *move->tseat = getSeat_s(tseat);
-    wcscpy(move->remark, remark);
 }
 
 void setMoveFromStr(Move* move,
