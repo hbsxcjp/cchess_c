@@ -99,7 +99,7 @@ void moveUndo(Instance* ins, const Move* move)
 
 void setRemark(Move* move, const wchar_t* remark)
 {
-    move->remark = (wchar_t*)malloc(sizeof(remark));
+    move->remark = (wchar_t*)malloc((strlen(remark) + 1) * sizeof(remark[0]));
     wcscpy(move->remark, remark);
 }
 

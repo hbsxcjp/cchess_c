@@ -47,23 +47,13 @@ static wchar_t* __readDataAndGetRemark(wchar_t* wstr, char* data, char* tag,
 {
     __readBytes(data, 4, fin, Version, F32Keys);
     int RemarkSize = 0;
-    *tag = data[2];
-    /*
     if (Version <= 10) {
-        tag = ((tag & 0xF0) ? 0x80 : 0) | ((tag & 0x0F) ? 0x40 : 0);
+        *tag = ((*tag & 0xF0) ? 0x80 : 0) | ((*tag & 0x0F) ? 0x40 : 0);
         RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
     } else {
-        tag &= 0xE0;
-        if (tag & 0x20)
+        *tag &= 0xE0;
+        if (*tag & 0x20)
             RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
-    }*/
-    if (Version <= 10 || (*tag &= 0xE0) & 0x20) {
-        if (Version <= 10)
-            *tag = ((*tag & 0xF0) ? 0x80 : 0) | ((*tag & 0x0F) ? 0x40 : 0);
-        //RemarkSize = __getRemarksize(fin, Version, F32Keys, KeyRMKSize);
-        char clen[4] = {};
-        __readBytes(clen, 4, fin, Version, F32Keys);
-        RemarkSize = *(int*)clen - KeyRMKSize;
     }
     char rem[REMARKSIZE] = {};
     if (RemarkSize > 0) { // # 如果有注解
@@ -77,7 +67,7 @@ static void __readMove(Move* move, wchar_t* remark, char* data, char* frc, char*
     unsigned char KeyXYf, unsigned char KeyXYt,
     FILE* fin, int Version, unsigned char F32Keys[], int KeyRMKSize)
 {
-    remark = __readDataAndGetRemark(remark, data, tag,
+    __readDataAndGetRemark(remark, data, tag,
         fin, Version, F32Keys, KeyRMKSize);
     //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
     int fcolrow = __sub(*frc, 0X18 + KeyXYf), tcolrow = __sub(*trc, 0X20 + KeyXYt);
@@ -181,6 +171,7 @@ inline static void readXQF(Instance* ins, FILE* fin)
         F32Keys[i] = copyright[i] & KeyBytes[i % 4]; // ord(c)
 
     // 取得棋子字符串
+    wchar_t infoTempStr[REMARKSIZE] = {};
     wchar_t pieChars[SEATNUM + 1];
     wmemset(pieChars, BLANKCHAR, sizeof(pieChars));
     pieChars[SEATNUM] = L'\x0';
@@ -191,16 +182,19 @@ inline static void readXQF(Instance* ins, FILE* fin)
             pieChars[xy % 10 * 9 + xy / 10] = QiziChars[i];
     }
     setBoard(ins->board, pieChars);
+    //wchar_t boardStr[TEMPSTR_SIZE];
+    //wprintf(L"%s ins->board@:%p\n", getBoardString(boardStr, ins->board), ins->board);
 
-    wchar_t infoTempStr[REMARKSIZE];
-    swprintf(infoTempStr, REMARKSIZE, L"%d", Version);
+    swprintf(infoTempStr, REMARKSIZE, L"%d", (int)Version);
     addInfoItem(ins, L"Version", infoTempStr);
-
-    wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    addInfoItem(ins, L"Result", Result[(int)headPlayResult]);
+    wchar_t* FEN = getFEN(infoTempStr, pieChars);
+    addInfoItem(ins, L"FEN", wcscat(FEN, headWhoPlay ? L" -r" : L" -b")); // 存在不是红棋先走的情况？
 
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
     addInfoItem(ins, L"PlayType", PlayType[(int)(headCodeA_H[0])]);
+    wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
+    addInfoItem(ins, L"Result", Result[(int)headPlayResult]);
+
     char* values[] = {
         TitleA, Event, Date, Site, Red, Black,
         Opening, RMKWriter, Author
@@ -209,20 +203,22 @@ inline static void readXQF(Instance* ins, FILE* fin)
         L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
         L"Opening", L"RMKWriter", L"Author"
     };
-    for (int i = 3; i != 12; ++i) {
-        mbstowcs(infoTempStr, values[i], strlen(values[i]));
+    for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
+        mbstowcs(infoTempStr, values[i], strlen(values[i]) + 1);
         addInfoItem(ins, names[i], infoTempStr);
     }
-    addInfoItem(ins, L"FEN", getFEN(infoTempStr, pieChars)); // 可能存在不是红棋先走的情况？
+    wprintf(L"%s", getInfoString(infoTempStr, ins));
 
-    char data[4] = {}, *tag = 0, *frc = 0, *trc = 0;
-    wchar_t remark[REMARKSIZE] = {};
+    char data[4] = {}, *tag = &data[2], *frc = 0, *trc = 0;
     fseek(fin, 1024, SEEK_SET);
+    wchar_t remark[REMARKSIZE] = {};
+    //*
     setRemark(ins->rootMove,
         __readDataAndGetRemark(remark, data, tag, fin, Version, F32Keys, KeyRMKSize));
     if (*tag & 0x80) //# 有左子树
-        __readMove(addNext(ins->rootMove), remark, data, frc, trc, tag, KeyXYf, KeyXYt,
-            fin, Version, F32Keys, KeyRMKSize);
+        ;//__readMove(addNext(ins->rootMove), remark, data, frc, trc, tag, KeyXYf, KeyXYt,
+          //  fin, Version, F32Keys, KeyRMKSize);
+    //*/
 }
 
 inline static void readBIN(Instance* ins, FILE* fin) {}
@@ -255,17 +251,12 @@ inline static const wchar_t* moveInfo(wchar_t* str, size_t n, const Instance* in
     return str;
 }
 
-inline static bool isRootMove(Move* move)
-{
-    return move->nextNo_ == 0 && move->otherNo_ == 0;
-}
-
 Instance* newInstance(void)
 {
     Instance* ins = malloc(sizeof(Instance));
     ins->board = newBoard();
     ins->rootMove = ins->currentMove = newMove();
-    ins->info_name = ins->info_value = NULL;
+    memset(ins->info, 0, sizeof(ins->info));
     ins->infoCount = ins->movCount_ = ins->remCount_ = ins->remLenMax_ = ins->maxRow_ = ins->maxCol_ = 0;
     return ins;
 }
@@ -273,22 +264,36 @@ Instance* newInstance(void)
 void delInstance(Instance* ins)
 {
     ins->currentMove = NULL;
-    for (int i = ins->infoCount - 1; i >= 0; --i) {
-        free(ins->info_name[i]);
-        free(ins->info_value[i]);
-    }
+    for (int i = ins->infoCount; i > 0; --i)
+        for (int j = 0; j < 2; ++j)
+            free(ins->info[i][j]);
     delMove(ins->rootMove);
     free(ins->board);
     free(ins);
 }
 
-void addInfoItem(Instance* ins, wchar_t* name, wchar_t* value)
+void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value)
 {
-    ins->info_name[ins->infoCount] = (wchar_t*)malloc(wcslen(name));
-    wcscpy(ins->info_name[ins->infoCount], name);
-    ins->info_value[ins->infoCount] = (wchar_t*)malloc(wcslen(value));
-    wcscpy(ins->info_value[ins->infoCount], value);
-    ++ins->infoCount;
+    int count = ins->infoCount;
+    if (count == 32)
+        return;
+    ins->info[count][0] = (wchar_t*)malloc((wcslen(name) + 1) * sizeof(name[0]));
+    wcscpy(ins->info[count][0], name);
+    ins->info[count][1] = (wchar_t*)malloc((wcslen(value) + 1) * sizeof(name[0]));
+    wcscpy(ins->info[count][1], value);
+    ++(ins->infoCount);
+}
+
+wchar_t* getInfoString(wchar_t* infoString, Instance* ins)
+{
+    infoString[0] = L'\x0';
+    wchar_t tempStr[REMARKSIZE];
+    for (int i = 0; i < ins->infoCount; ++i) {
+        swprintf(tempStr, REMARKSIZE, L"[%s \"%s\"]\n",
+            ins->info[i][0], ins->info[i][1]);
+        wcscat(infoString, tempStr);
+    }
+    return infoString;
 }
 
 void read(Instance* ins, const char* filename)
@@ -305,19 +310,19 @@ void read(Instance* ins, const char* filename)
     case JSON:
         readJSON(ins, fin);
         break;
-    case PGN_ICCS:
-        readInfo_PGN(ins, fin);
-        readMove_PGN_ICCSZH(ins, fin, PGN_ICCS);
-        break;
-    case PGN_ZH:
-        readInfo_PGN(ins, fin);
-        readMove_PGN_ICCSZH(ins, fin, PGN_ZH);
-        break;
-    case PGN_CC:
-        readInfo_PGN(ins, fin);
-        readMove_PGN_CC(ins, fin);
-        break;
     default:
+        readInfo_PGN(ins, fin);
+        switch (fmt) {
+        case PGN_ICCS:
+            readMove_PGN_ICCSZH(ins, fin, PGN_ICCS);
+            break;
+        case PGN_ZH:
+            readMove_PGN_ICCSZH(ins, fin, PGN_ZH);
+            break;
+        default: // PGN_CC:
+            readMove_PGN_CC(ins, fin);
+            break;
+        }
         break;
     }
     ins->currentMove = ins->rootMove;
@@ -337,19 +342,19 @@ void write(const Instance* ins, const char* filename)
     case JSON:
         writeJSON(ins, fout);
         break;
-    case PGN_ICCS:
-        writeInfo_PGN(ins, fout);
-        writeMove_PGN_ICCSZH(ins, fout, PGN_ICCS);
-        break;
-    case PGN_ZH:
-        writeInfo_PGN(ins, fout);
-        writeMove_PGN_ICCSZH(ins, fout, PGN_ZH);
-        break;
-    case PGN_CC:
-        writeInfo_PGN(ins, fout);
-        writeMove_PGN_CC(ins, fout);
-        break;
     default:
+        writeInfo_PGN(ins, fout);
+        switch (fmt) {
+        case PGN_ICCS:
+            writeMove_PGN_ICCSZH(ins, fout, PGN_ICCS);
+            break;
+        case PGN_ZH:
+            writeMove_PGN_ICCSZH(ins, fout, PGN_ZH);
+            break;
+        default: // PGN_CC:
+            writeMove_PGN_CC(ins, fout);
+            break;
+        }
         break;
     }
 }
@@ -372,15 +377,14 @@ void back(Instance* ins)
 
 void backTo(Instance* ins, const Move* move)
 {
-    while (!isRootMove(ins->currentMove)
-        && !isSame(ins->currentMove, move)) {
+    while (ins->currentMove->pmove
+        && !isSame(ins->currentMove, move))
         back(ins);
-    }
 }
 
 void goOther(Instance* ins)
 {
-    if (!isRootMove(ins->currentMove)
+    if (ins->currentMove->pmove
         && ins->currentMove->omove != NULL) {
         moveUndo(ins, ins->currentMove);
         ins->currentMove = ins->currentMove->omove;
@@ -408,15 +412,15 @@ void testInstance(FILE* fout)
     printf("%s Ext:%s RecFormat:%d\n", filename, ext, getRecFormat(ext));
     read(ins, filename);
 
-    /*
+    //*
     wchar_t tempStr[TEMPSTR_SIZE];
     fwprintf(fout, L"testInstance:\n%s\n", getBoardString(tempStr, ins->board));
-    for (int i = 0; i < ins->infoCount; ++i)
-        fwprintf(fout, L"info[%d]%s==%s\n", i, ins->info_name[i], ins->info_value[i]);
-    fwprintf(fout, L"   rootMove:%s",
-        getMovString(tempStr, TEMPSTR_SIZE, ins->rootMove));
-    fwprintf(fout, L"currentMove:%s",
-        getMovString(tempStr, TEMPSTR_SIZE, ins->currentMove));
+    fwprintf(fout, L"%s", getInfoString(tempStr, ins));
+    if (ins->rootMove->nmove)
+        fwprintf(fout, L"   rootMove:%s",
+            getMovString(tempStr, TEMPSTR_SIZE, ins->rootMove->nmove));
+    //fwprintf(fout, L"currentMove:%s",
+    //    getMovString(tempStr, TEMPSTR_SIZE, ins->currentMove));
     fwprintf(fout, L"moveInfo:%s", moveInfo(tempStr, TEMPSTR_SIZE, ins));
     //*/
     delInstance(ins);

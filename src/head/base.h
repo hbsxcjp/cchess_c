@@ -125,8 +125,7 @@ typedef struct structMove Move;
 typedef struct {
     Board* board;
     Move *rootMove, *currentMove;
-    wchar_t** info_name;
-    wchar_t** info_value;
+    wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, remLenMax_, maxRow_, maxCol_;
 } Instance;
 
