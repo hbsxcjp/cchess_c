@@ -30,14 +30,12 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-// 根据行、列值获取seat
-inline static const Seat* getSeat_rc(int row, int col)
+const Seat* getSeat_rc(int row, int col)
 {
     return &SEATS[row][col];
 }
 
-// 根据字面行列整数获取seat
-inline static const Seat* getSeat_i(int rowcol)
+const Seat* getSeat_i(int rowcol)
 {
     return getSeat_rc(rowcol / 10, rowcol % 10);
 }
@@ -74,7 +72,7 @@ inline static void setPiece_s(Board* board, const Seat* seat, const Piece* piece
 Board* newBoard(void)
 {
     Board* board = malloc(sizeof(Board));
-    memset(board->pieces, 0, sizeof(board->pieces));
+    memset(board, 0, sizeof(Board));
     board->bottomColor = RED;
     return board;
 }
@@ -87,6 +85,7 @@ const Seat* getSeat_s(const Seat seat)
 
 wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n)
 {
+    pieChars[0] = L'\x0';
     for (int index = 0, i = 0; i < n && index < SEATNUM; ++i) {
         wchar_t ch = FEN[i];
         if (iswdigit(ch))
@@ -101,6 +100,7 @@ wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n)
 
 wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 {
+    pieChars[0] = L'\x0';
     for (int i = 0; i < SEATNUM; ++i)
         pieChars[i] = getChar(getPiece_rc(board,
             RowUpIndex_ - i / BOARDCOL, i % BOARDCOL));
@@ -110,16 +110,18 @@ wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 
 wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
 {
-    int index = 0, size = 0;
+    FEN[0] = L'\x0';
+    int size = 0;
     for (int row = RowUpIndex_; row >= RowLowIndex_; --row) { // 从最高行开始
         int blankNum = 0;
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
+            int index = row * BOARDCOL + col;
             if (iswalpha(pieChars[index])) {
                 if (blankNum > 0)
                     FEN[size++] = L'0' + blankNum;
-                FEN[size++] = pieChars[index++];
+                FEN[size++] = pieChars[index];
                 blankNum = 0;
-            } else if (pieChars[index++] == BLANKCHAR) // 肯定为真, index+1
+            } else if (pieChars[index] == BLANKCHAR) // 肯定为真, index+1
                 blankNum++;
         }
         if (blankNum > 0)
@@ -130,7 +132,7 @@ wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
     return FEN;
 }
 
-void setBoard(Board* board, wchar_t* pieChars)
+void setBoard(Board* board, const wchar_t* pieChars)
 {
     extern const Piece PIECES[PIECECOLORNUM][PIECEKINDNUM];
     int seatNum = wcslen(pieChars);
@@ -538,9 +540,9 @@ int getMoveSeats(const Seat** pseats, int count, Board* board, const Seat* fseat
     while (index < count) {
         // 筛除移动后被将军位置
         const Seat** ptseat = &(pseats[index]);
-        const Piece* eatPiece = seatMoveTo(board, fseat, *ptseat, NULL);
+        const Piece* eatPiece = moveTo(board, fseat, *ptseat, NULL);
         bool isKill = isKilled(board, color);
-        seatMoveTo(board, *ptseat, fseat, eatPiece);
+        moveTo(board, *ptseat, fseat, eatPiece);
         if (isKill) {
             --count; // 减少count
             if (index < count) // 检查index后是否还有seat？
@@ -551,7 +553,7 @@ int getMoveSeats(const Seat** pseats, int count, Board* board, const Seat* fseat
     return count;
 }
 
-const Piece* seatMoveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece)
+const Piece* moveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece)
 {
     const Piece* piece = getPiece_s(board, tseat);
     setPiece_s(board, tseat, getPiece_s(board, fseat));
@@ -573,6 +575,7 @@ bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
 
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move)
 {
+    zhStr[0] = L'\x0';
     return zhStr;
 }
 

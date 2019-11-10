@@ -16,7 +16,7 @@ void addInfoItem(Instance* ins,const  wchar_t* name,const  wchar_t* value);
 wchar_t* getInfoString(wchar_t* infoString, Instance* ins);
 
 // 从文件读取到instance
-void read(Instance* ins, const char* filename);
+Instance* read(const char* filename);
 
 // 从instance存储到文件
 void write(const Instance* ins, const char* filename);

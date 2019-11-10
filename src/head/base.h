@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <wchar.h>
+//#include <math.h>
 #include <ctype.h>
 #include <wctype.h>
 #include <string.h>
@@ -25,6 +26,8 @@
 #define BLANKCHAR L'_'
 // 临时字符串长度
 #define TEMPSTR_SIZE 1024
+// 临时字符串长度
+#define MOVES_SIZE TEMPSTR_SIZE * 100
 
 // 棋子颜色类型
 typedef enum {
@@ -126,7 +129,7 @@ typedef struct {
     Board* board;
     Move *rootMove, *currentMove;
     wchar_t* info[INFOSIZE][2];
-    int infoCount, movCount_, remCount_, remLenMax_, maxRow_, maxCol_;
+    int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 } Instance;
 
 #endif

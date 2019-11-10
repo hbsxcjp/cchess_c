@@ -3,11 +3,14 @@
 
 #include "base.h"
 
+// 根据行、列值获取seat
+const Seat* getSeat_rc(int row, int col);
+
+// 根据字面行列整数获取seat
+const Seat* getSeat_i(int rowcol);
+
 // 新建一个board
 Board* newBoard(void);
-
-// 根据seat获取const seat*
-const Seat* getSeat_s(const Seat seat);
 
 // FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
 wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n);
@@ -19,7 +22,7 @@ wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board);
 wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars);
 
 // 使用一个字符串设置棋盘局面, pieChars包含90个字符
-void setBoard(Board* board, wchar_t* pieChars);
+void setBoard(Board* board, const wchar_t* pieChars);
 
 // 设置棋盘底边的颜色
 void setBottomColor(Board* board);
@@ -52,7 +55,7 @@ int moveSeats(const Seat** pseats, Board* board, const Seat* fseat);
 int getMoveSeats(const Seat** pseats, int count, Board* board, const Seat* fseat);
 
 // 移动棋子，返回目的地棋子
-const Piece* seatMoveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece);
+const Piece* moveTo(Board* board, const Seat* fseat, const Seat* tseat, const Piece* eatPiece);
 
 // 取得某方"兵"的棋子位置seats
 int getSortPawnLiveSeats(const Seat** pseats, size_t n, const Board* board, PieceColor color); //?
