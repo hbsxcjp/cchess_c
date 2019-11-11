@@ -9,8 +9,8 @@
 #include <wchar.h>
 //#include <math.h>
 #include <ctype.h>
-#include <wctype.h>
 #include <string.h>
+#include <wctype.h>
 
 //=================================================================
 //棋子相关的类型
@@ -24,10 +24,6 @@
 #define PIECENUM 16
 // 空子的字符表示
 #define BLANKCHAR L'_'
-// 临时字符串长度
-#define TEMPSTR_SIZE 1024
-// 临时字符串长度
-#define MOVES_SIZE TEMPSTR_SIZE * 100
 
 // 棋子颜色类型
 typedef enum {
@@ -35,22 +31,23 @@ typedef enum {
     BLACK
 } PieceColor;
 
-// 棋子种类类型
+// 棋子种类类型 高四位表示颜色，低四位表示种类(-1为空)
 typedef enum {
-    KING,
+    BLANKPIECE = -1,
+    KING = 0x0,
     ADVISOR,
     BISHOP,
     KNIGHT,
     ROOK,
     CANNON,
-    PAWN
-} PieceKind;
-
-// 棋子结构类型
-typedef struct
-{
-    const PieceColor color;
-    const PieceKind kind;
+    PAWN,
+    king = 0x10,
+    advisor,
+    bishop,
+    knight,
+    rook,
+    cannon,
+    pawn
 } Piece;
 
 //=================================================================
@@ -76,16 +73,10 @@ typedef enum {
     EN
 } MoveDirection;
 
-// 棋子可置入位置结构类型
-typedef struct
-{
-    int row, col;
-} Seat;
-
 // 一副棋盘结构类型
 typedef struct
 {
-    const Piece* pieces[BOARDROW][BOARDCOL]; // 存储位置可用row,col或Seat表示
+    Piece pieces[0x99]; // 存储位置0x00, 高四位表示行，低四位表示列
     PieceColor bottomColor;
 } Board;
 
@@ -100,7 +91,13 @@ typedef enum {
 //棋局相关的类型
 //=================================================================
 
+// 临时字符串长度
+#define TEMPSTR_SIZE 1024
+// 存储棋局字符串长度
+#define MOVES_SIZE TEMPSTR_SIZE * 100
+// 注释字符串长度
 #define REMARKSIZE (TEMPSTR_SIZE / 2)
+// 棋局信息数量
 #define INFOSIZE 32
 
 // 棋局存储类型
@@ -116,18 +113,18 @@ typedef enum {
 // 着法类型
 struct structMove;
 struct structMove {
-    const Seat **fseat, **tseat;
-    const Piece** tpiece; // 指向const Piece*的指针
-    wchar_t* remark; 
-    struct structMove *pmove, *nmove, *omove;
-    int nextNo_, otherNo_, CC_ColNo_; // 图中列位置
+    int fseat, tseat; // 起止位置0x00
+    Piece tpiece; // 目标位置棋子
+    wchar_t* remark; // 本着注解
+    struct structMove *pmove, *nmove, *omove; // 前着、下着、变着
+    int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 typedef struct structMove Move;
 
 // 棋局类型
 typedef struct {
     Board* board;
-    Move *rootMove, *currentMove;
+    Move *rootMove, *currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 } Instance;
