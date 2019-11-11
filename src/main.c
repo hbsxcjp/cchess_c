@@ -10,9 +10,9 @@ int main(int argc, char const* argv[])
     FILE* fout = stdout;
     //FILE *fout = fopen("s", "w");
     if (fout) {
-        fwprintf(fout, L"输出中文成功了！");
-        testPiece(fout);
-        testBoard(fout);
+        fwprintf(fout, L"输出中文成功了！\n");
+        //testPiece(fout);
+        //testBoard(fout);
         testInstance(fout);
 
         fclose(fout);
