@@ -2,7 +2,7 @@
 #include "head/piece.h"
 
 // 棋盘位置的全局常量
-const Seat SEATS[BOARDROW][BOARDCOL] = {
+static const Seat SEATS[BOARDROW][BOARDCOL] = {
     { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 0, 8 } },
     { { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 1, 6 }, { 1, 7 }, { 1, 8 } },
     { { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 6 }, { 2, 7 }, { 2, 8 } },
@@ -111,24 +111,24 @@ wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
 {
     FEN[0] = L'\x0';
-    int size = 0;
-    for (int row = RowUpIndex_; row >= RowLowIndex_; --row) { // 从最高行开始
+    int index_F = 0;
+    for (int row = 0; row <= RowUpIndex_; ++row) { // 从最高行开始
         int blankNum = 0;
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
-            int index = row * BOARDCOL + col;
-            if (iswalpha(pieChars[index])) {
+            int index_p = row * BOARDCOL + col;
+            if (iswalpha(pieChars[index_p])) {
                 if (blankNum > 0)
-                    FEN[size++] = L'0' + blankNum;
-                FEN[size++] = pieChars[index];
+                    FEN[index_F++] = L'0' + blankNum;
+                FEN[index_F++] = pieChars[index_p];
                 blankNum = 0;
-            } else if (pieChars[index] == BLANKCHAR) // 肯定为真, index+1
+            } else if (pieChars[index_p] == BLANKCHAR) // 肯定为真, index_p+1
                 blankNum++;
         }
         if (blankNum > 0)
-            FEN[size++] = L'0' + blankNum;
-        FEN[size++] = L'/'; // 插入行分隔符
+            FEN[index_F++] = L'0' + blankNum;
+        FEN[index_F++] = L'/'; // 插入行分隔符
     }
-    FEN[--size] = L'\x0';
+    FEN[--index_F] = L'\x0';
     return FEN;
 }
 

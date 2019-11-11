@@ -100,7 +100,7 @@ typedef enum {
 //棋局相关的类型
 //=================================================================
 
-#define REMARKSIZE TEMPSTR_SIZE / 2
+#define REMARKSIZE (TEMPSTR_SIZE / 2)
 #define INFOSIZE 32
 
 // 棋局存储类型
