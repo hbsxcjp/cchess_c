@@ -31,23 +31,34 @@ typedef enum {
     BLACK
 } PieceColor;
 
-// 棋子种类类型 高四位表示颜色，低四位表示种类(-1为空)
+// 棋子种类类型
 typedef enum {
-    BLANKPIECE = -1,
-    KING = 0x0,
+    KING,
     ADVISOR,
     BISHOP,
     KNIGHT,
     ROOK,
     CANNON,
-    PAWN,
-    king = 0x10,
-    advisor,
-    bishop,
-    knight,
-    rook,
-    cannon,
-    pawn
+    PAWN
+} PieceKind;
+
+// 棋子类型 高四位表示颜色，低四位表示种类(-1为空)
+typedef enum {
+    BLANKPIECE = -1,
+    REDKING = 0x0,
+    REDADVISOR,
+    REDBISHOP,
+    REDKNIGHT,
+    REDROOK,
+    REDCANNON,
+    REDPAWN,
+    BLACKKING = 0x10,
+    BLACKADVISOR,
+    BLACKBISHOP,
+    BLACKKNIGHT,
+    BLACKROOK,
+    BLACKCANNON,
+    BLACKPAWN
 } Piece;
 
 //=================================================================
@@ -60,6 +71,10 @@ typedef enum {
 #define BOARDCOL 9
 // 棋盘位置个数
 #define SEATNUM BOARDROW* BOARDCOL
+// 棋盘位置类型
+#define Seat int
+// 棋子数组长度
+#define BOARDLEN 0x99
 
 // 棋子移动方向
 typedef enum {
@@ -76,7 +91,7 @@ typedef enum {
 // 一副棋盘结构类型
 typedef struct
 {
-    Piece pieces[0x99]; // 存储位置0x00, 高四位表示行，低四位表示列
+    Piece pieces[BOARDLEN]; // 位置0x00, 高四位表示行，低四位表示列
     PieceColor bottomColor;
 } Board;
 
@@ -113,7 +128,7 @@ typedef enum {
 // 着法类型
 struct structMove;
 struct structMove {
-    int fseat, tseat; // 起止位置0x00
+    Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 本着注解
     struct structMove *pmove, *nmove, *omove; // 前着、下着、变着

@@ -1,4 +1,4 @@
-//#include "head/board.h"
+#include "head/board.h"
 //#include "head/instance.h"
 //#include "head/move.h"
 #include "head/piece.h"
@@ -12,7 +12,7 @@ int main(int argc, char const* argv[])
     if (fout) {
         fwprintf(fout, L"输出中文成功了！\n");
         testPiece(fout);
-        //testBoard(fout);
+        testBoard(fout);
         //testInstance(fout);
 
         fclose(fout);

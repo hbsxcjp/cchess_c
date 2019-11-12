@@ -7,7 +7,7 @@
 PieceColor getColor(Piece piece);
 
 // 取得表示棋子的种类
-int getKind(Piece piece);
+PieceKind getKind(Piece piece);
 
 //  取得表示棋子的字符
 wchar_t getChar(Piece piece);
