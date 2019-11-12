@@ -10,7 +10,7 @@ a: $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(OBJS): obj/%.o : src/%.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -g -o $@ -c $<
 
 $(OBJS): src/head/*.h
 #dependencies: $(OBJS: .o=.c)

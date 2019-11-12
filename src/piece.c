@@ -60,11 +60,8 @@ void testPiece(FILE* fout)
     fwprintf(fout, L"testPiece：\n");
     for (int k = 0; k < PIECECOLORNUM; ++k) {
         for (int i = 0; i < PIECEKINDNUM; ++i) {
-            wchar_t ch = PieceChars[k][i];
-            Piece piece1 = getPiece_ch(ch);
-            Piece piece = PIECES[k][i];
-            fwprintf(fout, L"%s ", getPieString(pieString, TEMPSTR_SIZE, piece1));
-            fwprintf(fout, L"%s ", getPieString(pieString, TEMPSTR_SIZE, piece));
+            fwprintf(fout, L"%s %s ", getPieString(pieString, TEMPSTR_SIZE, getPiece_ch(PieceChars[k][i])),
+                getPieString(pieString, TEMPSTR_SIZE, PIECES[k][i]));
         }
         fwprintf(fout, L"\n");
     }
