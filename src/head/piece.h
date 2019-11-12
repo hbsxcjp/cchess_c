@@ -6,7 +6,7 @@
 //  取得表示棋子的颜色
 PieceColor getColor(Piece piece);
 
-// 棋子种类取值
+// 取得表示棋子的种类
 int getKind(Piece piece);
 
 //  取得表示棋子的字符
