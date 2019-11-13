@@ -1,6 +1,6 @@
 #include "head/board.h"
-//#include "head/instance.h"
-//#include "head/move.h"
+#include "head/instance.h"
+#include "head/move.h"
 #include "head/piece.h"
 
 int main(int argc, char const* argv[])
@@ -11,9 +11,9 @@ int main(int argc, char const* argv[])
     //FILE *fout = fopen("s", "w");
     if (fout) {
         fwprintf(fout, L"输出中文成功了！\n");
-        testPiece(fout);
-        testBoard(fout);
-        //testInstance(fout);
+        //testPiece(fout);
+        //testBoard(fout);
+        testInstance(fout);
 
         fclose(fout);
     }

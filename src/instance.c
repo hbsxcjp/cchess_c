@@ -4,26 +4,24 @@
 #include "head/piece.h"
 #include "head/tools.h"
 
-// 根据存储记录类型取得文件扩展名
-static const char* EXTNAMES[] = { ".xqf", ".pgn_iccs", ".pgn_zh", ".pgn_cc", ".bin", ".json" };
-
-inline static void doMove(Instance* ins, const Move* move)
-{
-    *move->tpiece = moveTo(ins->board, *move->fseat, *move->tseat, NULL);
-}
-
-inline static void undoMove(Instance* ins, const Move* move)
-{
-    moveTo(ins->board, *move->tseat, *move->fseat, *move->tpiece);
-}
-
 // 根据文件扩展名取得存储记录类型
 static RecFormat getRecFormat(const char* ext)
 {
-    for (int i = XQF; i <= JSON; ++i)
-        if (strcmp(ext, EXTNAMES[i]) == 0)
-            return i;
+    static const char* EXTNAMES[] = { ".xqf", ".pgn_iccs", ".pgn_zh", ".pgn_cc", ".bin", ".json" };
+    for (int fmt = XQF; fmt <= JSON; ++fmt)
+        if (strcmp(ext, EXTNAMES[fmt]) == 0)
+            return fmt;
     return XQF;
+}
+
+inline static void doMove(Instance* ins, Move* move)
+{
+    move->tpiece = moveTo(ins->board, move->fseat, move->tseat, BLANKPIECE);
+}
+
+inline static void undoMove(Instance* ins, Move* move)
+{
+    moveTo(ins->board, move->tseat, move->fseat, move->tpiece);
 }
 
 // 供readXQF使用的有关解密钥匙
@@ -57,17 +55,18 @@ static void __readMoveData(char* data, wchar_t* remark, FILE* fin)
         data[2] = (data[2] & 0xF0 ? 0x80 : 0) | (data[2] & 0x0F ? 0x40 : 0);
     else
         data[2] &= 0xE0;
-    int RemarkSize = 0;
     if (Version <= 10 || (data[2] & 0x20)) {
         char clen[4] = { 0 };
         __readBytes(clen, 4, fin);
-        RemarkSize = *(__int32*)clen - KeyRMKSize;
+        int RemarkSize = *(__int32*)clen - KeyRMKSize;
+        if (RemarkSize > 0) {
+            char rem[REMARKSIZE] = { 0 };
+            __readBytes(rem, RemarkSize, fin);
+            mbstowcs(remark, rem, REMARKSIZE - 1);
+        }
     }
-    if (RemarkSize > 0) {
-        char rem[REMARKSIZE] = { 0 };
-        __readBytes(rem, RemarkSize, fin);
-        mbstowcs(remark, rem, REMARKSIZE - 1);
-    }
+    if (wcslen(remark) > 0)
+        wprintf(L"%3d=> %s\n", __LINE__, remark);
 }
 
 static void __readMove(Move* move, FILE* fin)
@@ -78,16 +77,16 @@ static void __readMove(Move* move, FILE* fin)
     //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
     int fcolrow = __sub(data[0], 0X18 + KeyXYf),
         tcolrow = __sub(data[1], 0X20 + KeyXYt);
+    wprintf(L"%3d=> %d->%d\n", __LINE__, fcolrow, tcolrow);
     assert(fcolrow <= 89 && tcolrow <= 89);
-    wprintf(L"%3d: %d->%d\n", __LINE__, fcolrow, tcolrow);
-    *move->fseat = getSeat_rc(fcolrow % 10, fcolrow / 10);
-    *move->tseat = getSeat_rc(tcolrow % 10, tcolrow / 10);
+    move->fseat = getSeat_rc(fcolrow % 10, fcolrow / 10);
+    move->tseat = getSeat_rc(tcolrow % 10, tcolrow / 10);
     setRemark(move, remark);
 
-    char tag = data[2]; // 保存一个标志副本，在递归调用中记住tag
-    if (tag & 0x80) //# 有左子树
+    //char tag = data[2]; // 保存一个标志副本，在递归调用中记住tag
+    if (data[2] & 0x80) //# 有左子树
         __readMove(addNext(move), fin);
-    if (tag & 0x40) // # 有右子树
+    if (data[2] & 0x40) // # 有右子树
         __readMove(addOther(move), fin);
 }
 
@@ -109,10 +108,9 @@ static void __setMoveNums(Instance* ins, Move* move)
     }
     //move->setZhStr(board_->getZhStr(move->fseat(), move->tseat()));
 
-    assert(*move->fseat);
-    wprintf(L"%3d: %d%d->%d%d\n", __LINE__,
-        (*move->fseat)->row, (*move->fseat)->col,
-        (*move->tseat)->row, (*move->tseat)->col);
+    assert(move->fseat >= 0);
+    wprintf(L"%3d=> %02x->%02x\n", __LINE__,
+        move->fseat, move->tseat);
     doMove(ins, move);
     __setMoveNums(ins, move->nmove); // 先深度搜索
     undoMove(ins, move);
@@ -273,7 +271,7 @@ static void readXQF(Instance* ins, FILE* fin)
     }
     setBoard(ins->board, pieChars);
 
-    wchar_t tempStr[REMARKSIZE];
+    wchar_t tempStr[REMARKSIZE] = { 0 };
     swprintf(tempStr, REMARKSIZE, L"%d", (int)Version);
     addInfoItem(ins, L"Version", tempStr); // 整数存储
 
@@ -308,7 +306,6 @@ static void readXQF(Instance* ins, FILE* fin)
     char data[4] = { 0 };
     __readMoveData(data, tempStr, fin);
     setRemark(ins->rootMove, tempStr);
-    wprintf(L"%3d: %s\n", __LINE__, tempStr);
     if (data[2] & 0x80) //# 有左子树
         __readMove(addNext(ins->rootMove), fin);
 }
@@ -367,10 +364,10 @@ void delInstance(Instance* ins)
 
 void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value)
 {
-    int count = ins->infoCount;
-    if (count == 32)
+    int count = ins->infoCount, nameLen = wcslen(name);
+    if (count == 32 || nameLen == 0)
         return;
-    ins->info[count][0] = (wchar_t*)calloc(wcslen(name) + 1, sizeof(name[0]));
+    ins->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
     wcscpy(ins->info[count][0], name);
     ins->info[count][1] = (wchar_t*)calloc(wcslen(value) + 1, sizeof(value[0]));
     wcscpy(ins->info[count][1], value);
@@ -393,7 +390,8 @@ Instance* read(const char* filename)
 {
     Instance* ins = newInstance();
     RecFormat fmt = getRecFormat(getExt(filename));
-    FILE* fin = fopen(filename, (fmt == XQF || fmt == BIN || fmt == JSON) ? "r" : "r");
+    FILE* fin = fopen(filename,
+        (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
     switch (fmt) {
     case XQF:
         readXQF(ins, fin);
@@ -469,7 +467,7 @@ void back(Instance* ins)
     }
 }
 
-void backTo(Instance* ins, const Move* move)
+void backTo(Instance* ins, Move* move)
 {
     while (ins->currentMove->pmove != NULL
         && !isSame(ins->currentMove, move))
@@ -489,10 +487,7 @@ void goOther(Instance* ins)
 void goInc(Instance* ins, int inc)
 {
     for (int i = abs(inc); i != 0; --i)
-        if (inc > 0)
-            go(ins);
-        else
-            back(ins);
+        (inc > 0) ? go(ins) : back(ins);
 }
 
 void changeSide(Instance* ins, ChangeType ct) {}

@@ -28,7 +28,7 @@ void go(Instance* ins);
 void back(Instance* ins);
 
 // 后退至指定move
-void backTo(Instance* ins, const Move* move);
+void backTo(Instance* ins, Move* move);
 
 // 前进到变着
 void goOther(Instance* ins);

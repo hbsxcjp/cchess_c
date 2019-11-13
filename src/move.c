@@ -7,12 +7,9 @@ static const wchar_t ICCSCHAR[] = L"abcdefghi";
 Move* newMove(void)
 {
     Move* move = (Move*)malloc(sizeof(Move));
-    move->fseat = calloc(1, sizeof(move->fseat));
-    move->tseat = calloc(1, sizeof(move->tseat));
-    *move->fseat = *move->tseat = NULL;
-    move->tpiece = calloc(1, sizeof(move->tpiece));
-    *move->tpiece = NULL;
-    move->remark = NULL;
+    move->fseat = move->tseat = -1;
+    move->tpiece = BLANKPIECE;
+    move->remark = L'\x0';
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -47,7 +44,8 @@ void delMove(Move* move)
         return;
     delMove(move->omove);
     delMove(move->nmove);
-    free(move->remark);
+    if (move->remark != NULL)
+        free(move->remark);
     free(move);
 }
 
@@ -75,8 +73,8 @@ void cutOhterMove(Move* move)
 wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move)
 {
     swprintf(ICCSStr, n, L"%c%d%c%d",
-        ICCSCHAR[(*move->fseat)->col], (*move->fseat)->row,
-        ICCSCHAR[(*move->tseat)->col], (*move->tseat)->row);
+        ICCSCHAR[getCol_s(move->fseat)], getRow_s(move->fseat),
+        ICCSCHAR[getCol_s(move->tseat)], getRow_s(move->tseat));
     return ICCSStr;
 }
 
@@ -87,8 +85,11 @@ wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move)
 
 void setRemark(Move* move, const wchar_t* remark)
 {
-    move->remark = (wchar_t*)calloc(wcslen(remark) + 1, sizeof(remark[0]));
-    wcscpy(move->remark, remark);
+    int len = wcslen(remark);
+    if (len > 0) {
+        move->remark = (wchar_t*)calloc(len + 1, sizeof(remark[0]));
+        wcscpy(move->remark, remark);
+    }
 }
 
 static wchar_t* __getRemarkStr(wchar_t* remark, size_t n, const Move* move)
@@ -127,7 +128,7 @@ static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
 wchar_t* getMovString_iccszh(wchar_t* movStr, size_t n, const Move* move, RecFormat fmt)
 {
     movStr[0] = L'\x0';
-    if (move->pmove == NULL) // 为根目录
+    if (move->pmove == NULL)
         __getRemarkStr(movStr, n, move);
     __getMovString(movStr, n, move->pmove == NULL ? move->nmove : move, fmt == PGN_ZH, false);
     /*
