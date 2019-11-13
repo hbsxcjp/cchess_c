@@ -3,11 +3,10 @@
 
 #include "base.h"
 
-//  取得表示棋子的颜色
-PieceColor getColor(Piece piece);
-
-// 取得表示棋子的种类
-PieceKind getKind(Piece piece);
+// 取得表示棋子的颜色(取棋子值的高四位)
+#define getColor(piece) ((bool)((piece) & 0x10))
+//  取得表示棋子的种类(取棋子值的低四位)
+#define getKind(piece) ((piece) & 0x0F)
 
 //  取得表示棋子的字符
 wchar_t getChar(Piece piece);

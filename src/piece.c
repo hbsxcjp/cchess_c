@@ -4,16 +4,6 @@ static const wchar_t* PieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
 
 static const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
 
-PieceColor getColor(Piece piece)
-{
-    return (bool)(piece & 0x10); // 取棋子值的高四位
-}
-
-PieceKind getKind(Piece piece)
-{
-    return piece & 0x0F; // 取棋子值的低四位
-}
-
 wchar_t getChar(Piece piece)
 {
     return piece == BLANKPIECE ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)];

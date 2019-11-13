@@ -4,7 +4,15 @@
 #include "base.h"
 
 // 根据行、列值获取seat
-Seat getSeat_rc(int row, int col);
+#define getSeat_rc(row, col) ((row) << 4 | (col))
+// 获取行值
+#define getRow_s(seat) ((seat) >> 4)
+// 获取列值
+#define getCol_s(seat) ((seat) & 0x0F)
+// 根据seat获取棋子
+#define getPiece_s(board, seat) ((board)->pieces[(seat)])
+// 在seat位置设置棋子
+#define setPiece_s(board, seat, piece) ((board)->pieces[(seat)] = (piece))
 
 // 新建一个board
 Board* newBoard(void);

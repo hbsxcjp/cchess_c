@@ -1,20 +1,7 @@
 #include "head/board.h"
 #include "head/piece.h"
 
-/*// 棋盘位置的全局常量
-static Seat SEATS[BOARDROW][BOARDCOL] = {
-    { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 0, 8 } },
-    { { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 1, 6 }, { 1, 7 }, { 1, 8 } },
-    { { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 6 }, { 2, 7 }, { 2, 8 } },
-    { { 3, 0 }, { 3, 1 }, { 3, 2 }, { 3, 3 }, { 3, 4 }, { 3, 5 }, { 3, 6 }, { 3, 7 }, { 3, 8 } },
-    { { 4, 0 }, { 4, 1 }, { 4, 2 }, { 4, 3 }, { 4, 4 }, { 4, 5 }, { 4, 6 }, { 4, 7 }, { 4, 8 } },
-    { { 5, 0 }, { 5, 1 }, { 5, 2 }, { 5, 3 }, { 5, 4 }, { 5, 5 }, { 5, 6 }, { 5, 7 }, { 5, 8 } },
-    { { 6, 0 }, { 6, 1 }, { 6, 2 }, { 6, 3 }, { 6, 4 }, { 6, 5 }, { 6, 6 }, { 6, 7 }, { 6, 8 } },
-    { { 7, 0 }, { 7, 1 }, { 7, 2 }, { 7, 3 }, { 7, 4 }, { 7, 5 }, { 7, 6 }, { 7, 7 }, { 7, 8 } },
-    { { 8, 0 }, { 8, 1 }, { 8, 2 }, { 8, 3 }, { 8, 4 }, { 8, 5 }, { 8, 6 }, { 8, 7 }, { 8, 8 } },
-    { { 9, 0 }, { 9, 1 }, { 9, 2 }, { 9, 3 }, { 9, 4 }, { 9, 5 }, { 9, 6 }, { 9, 7 }, { 9, 8 } }
-};
-
+/*
 // 着法相关的字符数组静态全局变量
  static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
 static const wchar_t PRECHAR[] = L"前中后";
@@ -30,38 +17,11 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-Seat getSeat_rc(int row, int col)
-{
-    return (row << 4) | col;
-}
-
-// 获取行值
-inline static int getRow_s(Seat seat)
-{
-    return seat >> 4;
-}
-
-// 获取列值
-inline static int getCol_s(Seat seat)
-{
-    return seat & 0x0F;
-}
-
-inline static Piece getPiece_s(const Board* board, Seat seat)
-{
-    return board->pieces[seat];
-}
-
 // 从某棋盘内某行、某列位置取得一个棋子
 inline static Piece getPiece_rc(const Board* board,
     int row, int col)
 {
     return getPiece_s(board, getSeat_rc(row, col));
-}
-
-inline static void setPiece_s(Board* board, Seat seat, Piece piece)
-{
-    board->pieces[seat] = piece;
 }
 
 // 置入某棋盘内某行、某列位置一个棋子
@@ -98,12 +58,6 @@ wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
     for (int index = 0, row = RowUpIndex_; row >= RowLowIndex_; --row)
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col)
             pieChars[index++] = getChar(getPiece_rc(board, row, col));
-
-    /*
-    for (int i = 0; i < SEATNUM; ++i)
-        pieChars[i] = getChar(getPiece_rc(board,
-            RowUpIndex_ - i / BOARDCOL, i % BOARDCOL));
-            */
     pieChars[SEATNUM] = L'\x0';
     return pieChars;
 }
