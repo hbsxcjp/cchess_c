@@ -6,15 +6,6 @@
 // 根据行、列值获取seat
 Seat getSeat_rc(int row, int col);
 
-// 获取行值
-//int getRow_s(Seat seat);
-
-// 获取列值
-//int getCol_s(Seat seat);
-
-// 根据字面行列整数获取seat
-//Seat* getSeat_i(int rowcol);
-
 // 新建一个board
 Board* newBoard(void);
 
@@ -61,7 +52,7 @@ int moveSeats(Seat* pseats, Board* board, Seat fseat);
 int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat);
 
 // 移动棋子，返回目的地棋子
-const Piece moveTo(Board* board, Seat fseat, Seat tseat, const Piece eatPiece);
+Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece);
 
 // 取得某方"兵"的棋子位置seats
 int getSortPawnLiveSeats(Seat* pseats, size_t n, const Board* board, PieceColor color); //?

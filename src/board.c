@@ -35,11 +35,13 @@ Seat getSeat_rc(int row, int col)
     return (row << 4) | col;
 }
 
+// 获取行值
 inline static int getRow_s(Seat seat)
 {
     return seat >> 4;
 }
 
+// 获取列值
 inline static int getCol_s(Seat seat)
 {
     return seat & 0x0F;
@@ -93,7 +95,7 @@ wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n)
 
 wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 {
-    for (int index = 0, row = RowLowIndex_; row <= RowUpIndex_; ++row)
+    for (int index = 0, row = RowUpIndex_; row >= RowLowIndex_; --row)
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col)
             pieChars[index++] = getChar(getPiece_rc(board, row, col));
 
@@ -109,10 +111,10 @@ wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board)
 wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
 {
     int index_F = 0;
-    for (int row = RowLowIndex_; row <= RowUpIndex_; ++row) {
+    for (int rowIndex = RowLowIndex_; rowIndex <= RowUpIndex_; ++rowIndex) {
         int blankNum = 0;
-        for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
-            int index_p = row * BOARDCOL + col;
+        for (int colIndex = ColLowIndex_; colIndex <= ColUpIndex_; ++colIndex) {
+            int index_p = rowIndex * BOARDCOL + colIndex;
             if (iswalpha(pieChars[index_p])) {
                 if (blankNum > 0)
                     FEN[index_F++] = L'0' + blankNum;
@@ -214,7 +216,7 @@ bool isKilled(Board* board, PieceColor color)
         int mcount = moveSeats(mseats, board, pseats[i]);
         for (int m = 0; m < mcount; ++m)
             // 本方将帅位置在对方强子可走位置范围内
-            if (getRow_s(mseats[m]) == frow && getCol_s(mseats[m]) == fcol)
+            if (mseats[m] == kingSeat)
                 return true;
     }
     return false;
@@ -513,7 +515,7 @@ int moveSeats(Seat* pseats, Board* board, Seat fseat)
         // 筛除己方棋子所占位置
         Seat* ptseat = &(pseats[index]);
         Piece tpiece = getPiece_s(board, *ptseat);
-        if (tpiece != BLANKPIECE && (getColor(tpiece) != getColor(fpiece))) {
+        if (tpiece != BLANKPIECE && (getColor(tpiece) == getColor(fpiece))) {
             --count; // 减少count
             if (index < count) // 检查index后是否还有seat？
                 *ptseat = pseats[count]; // 将最后一个seat代替index处seat
@@ -531,6 +533,7 @@ int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat)
         // 筛除移动后被将军位置
         Seat* ptseat = &(pseats[index]);
         Piece eatPiece = moveTo(board, fseat, *ptseat, BLANKPIECE);
+        // isKilled函数需要调用moveSeats函数，因此getMoveSeats与moveSeats必须分离
         bool isKill = isKilled(board, color);
         moveTo(board, *ptseat, fseat, eatPiece);
         if (isKill) {
@@ -644,12 +647,12 @@ void testBoard(FILE* fout)
         // 一条语句内不要包含多个可改变局部变量值且返回局部变量指针的函数(因为可能返回同一个指针地址？)
         fwprintf(fout, L"%sboard：@%p ",
             getBoardString(boardStr, board), *board);
-        fwprintf(fout, L"%s%d%d @%p <==> ",
+        fwprintf(fout, L"%s_%02x @%p <==> ",
             getPieString(pieString, SEATNUM, getPiece_s(board, rkseat)),
-            getRow_s(rkseat), getCol_s(rkseat), rkseat);
-        fwprintf(fout, L"%s%d%d @%p\n",
+            rkseat, &rkseat);
+        fwprintf(fout, L"%s_%02x @%p\n",
             getPieString(pieString, SEATNUM, getPiece_s(board, bkseat)),
-            getRow_s(bkseat), getCol_s(bkseat), bkseat);
+            bkseat, &bkseat);
         //*/
 
         //* 取得各种条件下活的棋子
@@ -661,10 +664,8 @@ void testBoard(FILE* fout)
                 fwprintf(fout, L"%c%c：",
                     color == RED ? L'红' : L'黑', stronge == 1 ? L'强' : L'全');
                 for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L"%s%d%d ",
-                        getPieString(pieString, SEATNUM,
-                            getPiece_s(board, lvseats[i])),
-                        getRow_s(lvseats[i]), getCol_s(lvseats[i]));
+                    fwprintf(fout, L"%s_%02x ",
+                        getPieString(pieString, SEATNUM, getPiece_s(board, lvseats[i])), lvseats[i]);
                 fwprintf(fout, L"count:%d\n", count);
             }
         //*/
@@ -677,27 +678,24 @@ void testBoard(FILE* fout)
             for (int i = 0; i < count; ++i) {
                 Seat fseat = lvseats[i];
                 Piece piece = getPiece_s(board, fseat);
-                fwprintf(fout, L"%s %d%d >>【",
-                    getPieString(pieString, SEATNUM, piece),
-                    getRow_s(fseat), getCol_s(fseat));
+                fwprintf(fout, L"%s_%02x >>【",
+                    getPieString(pieString, SEATNUM, piece), fseat);
                 Seat mseats[BOARDROW + BOARDCOL] = {};
                 int mcount = moveSeats(mseats, board, fseat);
                 for (int i = 0; i < mcount; ++i)
-                    fwprintf(fout, L" %d%d",
-                        getRow_s(mseats[i]), getCol_s(mseats[i]));
+                    fwprintf(fout, L" %02x", mseats[i]);
                 fwprintf(fout, L"】%d ", mcount);
 
                 fwprintf(fout, L">>【");
                 mcount = getMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < mcount; ++i)
-                    fwprintf(fout, L" %d%d",
-                        getRow_s(mseats[i]), getCol_s(mseats[i]));
+                    fwprintf(fout, L" %02x", mseats[i]);
                 fwprintf(fout, L"】%d\n", mcount);
             }
         }
         //*/
 
-        //* 取得各棋子的可放置位置
+        /* 取得各棋子的可放置位置
         for (int color = 0; color < 2; ++color) {
             for (int index = 0; index < PIECEKINDNUM; ++index) {
                 Piece piece = (color << 4) | index;
@@ -705,7 +703,7 @@ void testBoard(FILE* fout)
                 int count = putSeats(seats, true, getKind(piece));
                 fwprintf(fout, L"%s ==【", getPieString(pieString, SEATNUM, piece));
                 for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L" %d%d", getRow_s(seats[i]), getCol_s(seats[i]));
+                    fwprintf(fout, L" %02x", seats[i]);
                 fwprintf(fout, L"】%d\n", count);
             }
         }

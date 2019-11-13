@@ -39,9 +39,8 @@ wchar_t getPieName_T(Piece piece)
 wchar_t* getPieString(wchar_t* pieStr, size_t n, Piece piece)
 {
     if (piece != BLANKPIECE)
-        swprintf(pieStr, n, L"%c%c%c%c",
-            getColor(piece) == RED ? L'红' : L'黑',
-            getPieName(piece), getPieName_T(piece), getChar(piece));
+        swprintf(pieStr, n, L"%c%c%c", // %c
+            getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece)); // getPieName(piece),
     else
         pieStr = L"空";
     return pieStr;
