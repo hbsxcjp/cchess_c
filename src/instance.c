@@ -65,8 +65,6 @@ static void __readMoveData(char* data, wchar_t* remark, FILE* fin)
             mbstowcs(remark, rem, REMARKSIZE - 1);
         }
     }
-    //if (wcslen(remark) > 0)
-    //    wprintf(L"%3d=> %s\n", __LINE__, remark);
 }
 
 static void __readMove(Move* move, FILE* fin)
@@ -77,8 +75,8 @@ static void __readMove(Move* move, FILE* fin)
     //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
     int fcolrow = __sub(data[0], 0X18 + KeyXYf),
         tcolrow = __sub(data[1], 0X20 + KeyXYt);
-    wprintf(L"%3d=> %d->%d\n", __LINE__, fcolrow, tcolrow);
-    assert(fcolrow <= 89 && tcolrow <= 89);
+    //wprintf(L"%3d=> %d->%d\n", __LINE__, fcolrow, tcolrow);
+    // assert(fcolrow <= 89 && tcolrow <= 89); 根节点不能断言！
     move->fseat = getSeat_rc(fcolrow % 10, fcolrow / 10);
     move->tseat = getSeat_rc(tcolrow % 10, tcolrow / 10);
     setRemark(move, remark);
@@ -179,12 +177,12 @@ static void readXQF(Instance* ins, FILE* fin)
     // 计算解密数据
     unsigned char KeyXY, *head_QiziXY = (unsigned char*)headQiziXY; //KeyXYf, KeyXYt, F32Keys[PIECENUM],//int KeyRMKSize = 0;
     if (Version <= 10) { // version <= 10 兼容1.0以前的版本
-        KeyRMKSize = KeyXYf = KeyXYt = 0;
+        KeyXY = KeyRMKSize = KeyXYf = KeyXYt = 0;
     } else {
         KeyXY = __calkey(headKeyXY, headKeyXY);
         KeyXYf = __calkey(headKeyXYf, KeyXY);
         KeyXYt = __calkey(headKeyXYt, KeyXYf);
-        KeyRMKSize = (unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY % 32000 + 767; // % 65536
+        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 65536 % 32000 + 767; //
         if (Version >= 12) { // 棋子位置循环移动
             unsigned char Qixy[PIECENUM] = { 0 };
             memcpy(Qixy, head_QiziXY, PIECENUM);
@@ -242,23 +240,13 @@ static void readXQF(Instance* ins, FILE* fin)
         L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
         L"Opening", L"RMKWriter", L"Author"
     };
-    //*
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
         mbstowcs(tempStr, values[i], REMARKSIZE - 1);
         addInfoItem(ins, names[i], tempStr); // 多字节字符串存储
     }
-    //*/
-    //wprintf(L"=> %s ", names[i], __LINE__);
-    //wprintf(L"=> %s ", tempStr, __LINE__);
-    //printf("%s line:%d\n", values[i], __LINE__);
-    //wprintf(L"testInstance:\n%s", getInfoString(tempStr, ins));
 
     fseek(fin, 1024, SEEK_SET);
-    char data[4] = { 0 };
-    __readMoveData(data, tempStr, fin);
-    setRemark(ins->rootMove, tempStr);
-    if (data[2] & 0x80) //# 有左子树
-        __readMove(addNext(ins->rootMove), fin);
+    __readMove(ins->rootMove, fin);
 }
 
 inline static void readBIN(Instance* ins, FILE* fin) {}
