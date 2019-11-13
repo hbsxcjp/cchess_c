@@ -1,4 +1,5 @@
 #include "head/move.h"
+#include "head/tools.h"
 #include "head/board.h"
 #include "head/piece.h"
 
@@ -85,10 +86,14 @@ wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move)
     return ZHStr;
 }
 
-void setRemark(Move* move, const wchar_t* remark)
+void setRemark(Move* move, wchar_t* remark)
 {
-    move->remark = (wchar_t*)calloc(wcslen(remark) + 1, sizeof(remark[0]));
-    wcscpy(move->remark, remark);
+    remark = wtrim(remark);
+    int len = wcslen(remark);
+    if (len > 0) {
+        move->remark = (wchar_t*)calloc(wcslen(remark) + 1, sizeof(remark[0]));
+        wcscpy(move->remark, remark);
+    }
 }
 
 static wchar_t* __getRemarkStr(wchar_t* remark, size_t n, const Move* move)
