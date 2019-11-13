@@ -6,6 +6,8 @@ char* trim(char* str)
     for (int i = size - 1; i >= 0; --i)
         if (isspace(str[i]))
             str[i] = '\x0';
+        else
+            break;
     size = strlen(str);
     int offset = 0;
     for (int i = 0; i < size; ++i)
@@ -22,6 +24,8 @@ wchar_t* wtrim(wchar_t* wstr)
     for (int i = size - 1; i >= 0; --i)
         if (iswspace(wstr[i]))
             wstr[i] = L'\x0';
+        else
+            break;
     size = wcslen(wstr);
     int offset = 0;
     for (int i = 0; i < size; ++i)

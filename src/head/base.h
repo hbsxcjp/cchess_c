@@ -21,7 +21,7 @@
 // 棋子种类数量
 #define PIECEKINDNUM 7
 // 一方棋子个数
-#define PIECENUM 16
+#define PIECENUM 32
 // 空子的字符表示
 #define BLANKCHAR L'_'
 

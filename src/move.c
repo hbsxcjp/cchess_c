@@ -1,4 +1,5 @@
 #include "head/move.h"
+#include "head/tools.h"
 #include "head/board.h"
 #include "head/piece.h"
 
@@ -83,8 +84,9 @@ wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move)
     return ZHStr;
 }
 
-void setRemark(Move* move, const wchar_t* remark)
+void setRemark(Move* move, wchar_t* remark)
 {
+    remark = wtrim(remark);
     int len = wcslen(remark);
     if (len > 0) {
         move->remark = (wchar_t*)calloc(len + 1, sizeof(remark[0]));
@@ -94,16 +96,14 @@ void setRemark(Move* move, const wchar_t* remark)
 
 static wchar_t* __getRemarkStr(wchar_t* remark, size_t n, const Move* move)
 {
-    if (move->remark == NULL)
-        remark[0] = L'\x0';
-    else
-        swprintf(remark, n, L" \n{%s}\n ", move->remark);
+    swprintf(remark, n, L" \n{%s}\n ", move->remark);
     return remark;
 }
 
 static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
     bool isPGN_ZH, bool isOther)
 {
+    assert(wcslen(movStr) < n - 1);
     wchar_t boutStr[6] = {}, tempStr[REMARKSIZE] = {};
     swprintf(boutStr, 6, L"%d. ", (move->nextNo_ + 1) / 2);
     bool isEven = move->nextNo_ % 2 == 0;
@@ -114,7 +114,8 @@ static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
         wcscat(movStr, isEven ? L" " : boutStr);
     wcscat(movStr, isPGN_ZH ? getZH(tempStr, REMARKSIZE, move) : getICCS(tempStr, REMARKSIZE, move));
     wcscat(movStr, L" ");
-    wcscat(movStr, __getRemarkStr(tempStr, REMARKSIZE, move));
+    if (move->remark != NULL)
+        wcscat(movStr, __getRemarkStr(tempStr, REMARKSIZE, move));
 
     if (move->omove != NULL) {
         __getMovString(movStr, n, move->omove, isPGN_ZH, true);
@@ -128,7 +129,7 @@ static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
 wchar_t* getMovString_iccszh(wchar_t* movStr, size_t n, const Move* move, RecFormat fmt)
 {
     movStr[0] = L'\x0';
-    if (move->pmove == NULL)
+    if (move->pmove == NULL && move->remark != NULL)
         __getRemarkStr(movStr, n, move);
     __getMovString(movStr, n, move->pmove == NULL ? move->nmove : move, fmt == PGN_ZH, false);
     /*
