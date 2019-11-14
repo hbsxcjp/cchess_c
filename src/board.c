@@ -1,17 +1,6 @@
 #include "head/board.h"
 #include "head/piece.h"
 
-/*
-// 着法相关的字符数组静态全局变量
- static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
-static const wchar_t PRECHAR[] = L"前中后";
-static const wchar_t MOVCHAR[] = L"退平进";
-static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
-    L"一二三四五六七八九", L"１２３４５６７８９"
-};
-static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
-*/
-
 // 棋盘行列相关的静态全局变量
 static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
@@ -510,6 +499,26 @@ Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece)
 
 int getSortPawnLiveSeats(Seat* pseats, size_t n, const Board* board, PieceColor color)
 {
+
+    /*
+    // 最多5个兵
+    std::vector<std::shared_ptr<Seat>>
+        pawnSeats{ getLiveSeats(color, name) }, seats{};
+    // 按列建立字典，按列排序
+    std::map<int, std::vector<std::shared_ptr<Seat>>> colSeats{};
+    std::for_each(pawnSeats.begin(), pawnSeats.end(),
+        [&](const std::shared_ptr<Seat>& seat) {
+            colSeats[isBottom ? -seat->col() : seat->col()].push_back(seat);
+        }); // 底边则列倒序,每列位置倒序
+
+    // 整合成一个数组
+    std::for_each(colSeats.begin(), colSeats.end(),
+        [&](const std::pair<int, std::vector<std::shared_ptr<Seat>>>& colSeat) {
+            if (colSeat.second.size() > 1) // 筛除只有一个位置的列
+                copy(colSeat.second.begin(), colSeat.second.end(), std::back_inserter(seats));
+        }); //按列存入
+    return seats;
+    */
     int count = 0;
     return count;
 }
@@ -522,6 +531,16 @@ bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
 
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move)
 {
+    /*
+// 着法相关的字符数组静态全局变量
+ static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
+static const wchar_t PRECHAR[] = L"前中后";
+static const wchar_t MOVCHAR[] = L"退平进";
+static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
+    L"一二三四五六七八九", L"１２３４５６７８９"
+};
+static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
+*/
     zhStr[0] = L'\x0';
     return zhStr;
 }

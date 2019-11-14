@@ -79,7 +79,7 @@ wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move)
     return ICCSStr;
 }
 
-wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move)
+wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move, const Board* board)
 {
     return ZHStr;
 }

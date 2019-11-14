@@ -28,7 +28,7 @@ void cutOhterMove(Move* move);
 wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move);
 
 // 取得Zh字符串
-wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move);
+wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move, const Board* board);
 
 // 设置remark
 void setRemark(Move* move, wchar_t* remark);
