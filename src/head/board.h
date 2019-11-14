@@ -8,7 +8,7 @@
 // 获取行值
 #define getRow_s(seat) ((seat) >> 4)
 // 获取列值
-#define getCol_s(seat) ((seat) & 0x0F)
+#define getCol_s(seat) ((seat)&0x0F)
 // 根据seat获取棋子
 #define getPiece_s(board, seat) ((board)->pieces[(seat)])
 // 在seat位置设置棋子
@@ -63,10 +63,10 @@ int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat);
 Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece);
 
 // 取得某方"兵"的棋子位置seats
-int getSortPawnLiveSeats(Seat* pseats, size_t n, const Board* board, PieceColor color); //?
+int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wchar_t name);
 
 // 根据中文着法取得内部着法表示
-bool getMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n); //?
+void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n);
 
 // 根据内部着法表示取得中文着法
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); //?

@@ -329,12 +329,8 @@ Instance* read(const char* filename)
 {
     Instance* ins = newInstance();
     RecFormat fmt = getRecFormat(getExt(filename));
-<<<<<<< HEAD
     FILE* fin = fopen(filename,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
-=======
-    FILE* fin = fopen(filename, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
->>>>>>> 37b3b7b1892a8f5c3669068e839a120b0aafb3a4
     switch (fmt) {
     case XQF:
         readXQF(ins, fin);
