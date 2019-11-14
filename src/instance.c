@@ -182,7 +182,7 @@ static void readXQF(Instance* ins, FILE* fin)
         KeyXY = __calkey(headKeyXY, headKeyXY);
         KeyXYf = __calkey(headKeyXYf, KeyXY);
         KeyXYt = __calkey(headKeyXYt, KeyXYf);
-        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 65536 % 32000 + 767; //
+        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 32000 + 767; // % 65536
         if (Version >= 12) { // 棋子位置循环移动
             unsigned char Qixy[PIECENUM] = { 0 };
             memcpy(Qixy, head_QiziXY, PIECENUM);
@@ -329,8 +329,12 @@ Instance* read(const char* filename)
 {
     Instance* ins = newInstance();
     RecFormat fmt = getRecFormat(getExt(filename));
+<<<<<<< HEAD
     FILE* fin = fopen(filename,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
+=======
+    FILE* fin = fopen(filename, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
+>>>>>>> 37b3b7b1892a8f5c3669068e839a120b0aafb3a4
     switch (fmt) {
     case XQF:
         readXQF(ins, fin);
