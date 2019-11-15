@@ -571,7 +571,7 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
     Seat seats[PIECENUM] = {};
 
     if (wcschr(PieceNames[RED], name) != NULL || wcschr(PieceNames[BLACK], name) != NULL) {
-        int count = getLiveSeats(seats, PIECENUM,
+        count = getLiveSeats(seats, PIECENUM,
             board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])), false);
         assert(count > 0);
         // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为退时，修正index
@@ -590,7 +590,7 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
             index = count - 1 - index;
     }
 
-    wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
+    //wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
     assert(index < count);
     move->fseat = seats[index];
     int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
@@ -612,6 +612,7 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move)
 {
     Piece fpiece = getPiece_s(board, move->fseat);
+    assert(fpiece != BLANKPIECE);
     PieceColor color = getColor(fpiece);
     wchar_t name = getPieName(fpiece);
     int frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat),
@@ -643,10 +644,11 @@ wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move
             : (isBottom ? BOARDCOL - 1 - tcol : tcol)];
     zhStr[4] = L'\x0';
 
-    //Move* amove = newMove();
-    //setMove(amove, board, zhStr, 5);
-    //assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
-
+    //*
+    Move* amove = newMove();
+    setMove(amove, board, zhStr, 5);
+    assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
+    //*/
     return zhStr;
 }
 

@@ -10,16 +10,13 @@ Instance* newInstance(void);
 void delInstance(Instance* ins);
 
 // 添加一个info条目
-void addInfoItem(Instance* ins,const  wchar_t* name,const  wchar_t* value);
-
-// 取得表示info的字符串
-wchar_t* getInfoString(wchar_t* infoString, Instance* ins);
+void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value);
 
 // 从文件读取到instance
 Instance* read(const char* filename);
 
 // 从instance存储到文件
-void write(const Instance* ins, const char* filename);
+void write(Instance* ins, const char* filename);
 
 // 前进一步
 void go(Instance* ins);
