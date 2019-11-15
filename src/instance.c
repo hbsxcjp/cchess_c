@@ -182,7 +182,7 @@ static void readXQF(Instance* ins, FILE* fin)
         KeyXY = __calkey(headKeyXY, headKeyXY);
         KeyXYf = __calkey(headKeyXYf, KeyXY);
         KeyXYt = __calkey(headKeyXYt, KeyXYf);
-        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 65536 % 32000 + 767; //
+        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 32000 + 767; // % 65536
         if (Version >= 12) { // 棋子位置循环移动
             unsigned char Qixy[PIECENUM] = { 0 };
             memcpy(Qixy, head_QiziXY, PIECENUM);
