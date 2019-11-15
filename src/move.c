@@ -1,7 +1,7 @@
 #include "head/move.h"
-#include "head/tools.h"
 #include "head/board.h"
 #include "head/piece.h"
+#include "head/tools.h"
 
 static const wchar_t ICCSCHAR[] = L"abcdefghi";
 
@@ -79,11 +79,6 @@ wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move)
     return ICCSStr;
 }
 
-wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move, const Board* board)
-{
-    return ZHStr;
-}
-
 void setRemark(Move* move, wchar_t* remark)
 {
     remark = wtrim(remark);
@@ -100,7 +95,7 @@ static wchar_t* __getRemarkStr(wchar_t* remark, size_t n, const Move* move)
     return remark;
 }
 
-static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
+static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Board* board, const Move* move,
     bool isPGN_ZH, bool isOther)
 {
     assert(wcslen(movStr) < n - 1);
@@ -112,26 +107,26 @@ static wchar_t* __getMovString(wchar_t* movStr, size_t n, const Move* move,
         wcscat(movStr, tempStr);
     } else
         wcscat(movStr, isEven ? L" " : boutStr);
-    wcscat(movStr, isPGN_ZH ? getZH(tempStr, REMARKSIZE, move) : getICCS(tempStr, REMARKSIZE, move));
+    wcscat(movStr, isPGN_ZH ? getZhStr(tempStr, REMARKSIZE, board, move) : getICCS(tempStr, REMARKSIZE, move));
     wcscat(movStr, L" ");
     if (move->remark != NULL)
         wcscat(movStr, __getRemarkStr(tempStr, REMARKSIZE, move));
 
     if (move->omove != NULL) {
-        __getMovString(movStr, n, move->omove, isPGN_ZH, true);
+        __getMovString(movStr, n, board, move->omove, isPGN_ZH, true);
         wcscat(movStr, L")");
     }
     if (move->nmove != NULL)
-        __getMovString(movStr, n, move->nmove, isPGN_ZH, false);
+        __getMovString(movStr, n, board, move->nmove, isPGN_ZH, false);
     return movStr;
 }
 
-wchar_t* getMovString_iccszh(wchar_t* movStr, size_t n, const Move* move, RecFormat fmt)
+wchar_t* getMovString_iccszh(wchar_t* movStr, size_t n,const Board* board,  const Move* move, RecFormat fmt)
 {
     movStr[0] = L'\x0';
     if (move->pmove == NULL && move->remark != NULL)
         __getRemarkStr(movStr, n, move);
-    __getMovString(movStr, n, move->pmove == NULL ? move->nmove : move, fmt == PGN_ZH, false);
+    __getMovString(movStr, n, board, move->pmove == NULL ? move->nmove : move, fmt == PGN_ZH, false);
     /*
     wchar_t pieStr[9] = {};
     swprintf(movStr, n, L"%d%d => %d%d remark: %s nextNo_:%d otherNo_:%d CC_ColNo_:%d\npmove:@%p nmove:@%p omove:@%p\n",

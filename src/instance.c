@@ -445,7 +445,7 @@ void testInstance(FILE* fout)
     fwprintf(fout, L"%s", getBoardString(tempStr, ins->board));
     fwprintf(fout, L"getMoveInfo:%s", getMoveInfo(tempStr, TEMPSTR_SIZE, ins));
     fwprintf(fout, L"   rootMove:%s",
-        getMovString_iccszh(tempStr, MOVES_SIZE, ins->rootMove, PGN_ICCS));
+        getMovString_iccszh(tempStr, MOVES_SIZE, ins->board, ins->rootMove, PGN_ZH)); // PGN_ICCS
     //fwprintf(fout, L"currentMove:%s",
     //    getMovString_iccszh(tempStr, MOVES_SIZE, ins->currentMove, PGN_ICCS));
     //*/

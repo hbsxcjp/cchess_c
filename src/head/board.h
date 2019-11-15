@@ -69,7 +69,7 @@ int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wch
 void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n);
 
 // 根据内部着法表示取得中文着法
-wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); //?
+wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); 
 
 // 按某种变换类型变换棋盘局面
 bool changeBoardSide(Board* board, ChangeType ct); //?

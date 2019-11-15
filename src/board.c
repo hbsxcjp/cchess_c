@@ -2,8 +2,6 @@
 #include "head/move.h"
 #include "head/piece.h"
 
-<<<<<<< HEAD
-=======
 //*
 // 着法相关的字符数组静态全局变量
 //static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
@@ -15,7 +13,6 @@ static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
 //static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 //*/
 
->>>>>>> 025a058fae83dcf26a4efd95a0cbce2c2cb87c53
 // 棋盘行列相关的静态全局变量
 static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
@@ -585,13 +582,15 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
             count = getSortPawnLiveSeats(seats, board, color, name);
         else
             count = getLiveSeats(seats, PIECENUM, board, color, name, -1, false);
-        wchar_t preChars[PIECENUM] = { 0 };
+        wchar_t preChars[6] = { 0 };
         __getPreCHars(preChars, count);
+        assert(wcschr(preChars, zhStr[0]) != NULL);
         index = wcschr(preChars, zhStr[0]) - preChars;
         if (isBottom)
             index = count - 1 - index;
     }
 
+    wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
     assert(index < count);
     move->fseat = seats[index];
     int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
@@ -612,19 +611,6 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
 
 wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move)
 {
-<<<<<<< HEAD
-    /*
-// 着法相关的字符数组静态全局变量
- static const wchar_t NAMECHAR[] = L"帅将仕士相象马车炮兵卒";
-static const wchar_t PRECHAR[] = L"前中后";
-static const wchar_t MOVCHAR[] = L"退平进";
-static const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
-    L"一二三四五六七八九", L"１２３４５６７８９"
-};
-static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
-*/
-    zhStr[0] = L'\x0';
-=======
     Piece fpiece = getPiece_s(board, move->fseat);
     PieceColor color = getColor(fpiece);
     wchar_t name = getPieName(fpiece);
@@ -637,7 +623,7 @@ static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1
     if (count > 1 && wcschr(PieceNames[color] + 3, name) != NULL) {
         if (getKind(fpiece) == PAWN)
             count = getSortPawnLiveSeats(seats, board, color, name);
-        wchar_t preChars[PIECENUM] = { 0 };
+        wchar_t preChars[6] = { 0 };
         __getPreCHars(preChars, count);
         int index = 0;
         for (int i = 0; i < count; ++i)
@@ -657,11 +643,10 @@ static const wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1
             : (isBottom ? BOARDCOL - 1 - tcol : tcol)];
     zhStr[4] = L'\x0';
 
-    Move* amove = newMove();
-    setMove(amove, board, zhStr, 5);
-    assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
+    //Move* amove = newMove();
+    //setMove(amove, board, zhStr, 5);
+    //assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
 
->>>>>>> 025a058fae83dcf26a4efd95a0cbce2c2cb87c53
     return zhStr;
 }
 

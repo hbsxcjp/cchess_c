@@ -27,13 +27,10 @@ void cutOhterMove(Move* move);
 // 取得ICCS字符串
 wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move);
 
-// 取得Zh字符串
-wchar_t* getZH(wchar_t* ZHStr, size_t n, const Move* move, const Board* board);
-
 // 设置remark
 void setRemark(Move* move, wchar_t* remark);
 
 // 取得表示move的字符串
-wchar_t* getMovString_iccszh(wchar_t* MovStr, size_t n, const Move* move, RecFormat fmt);
+wchar_t* getMovString_iccszh(wchar_t* MovStr, size_t n,const Board* board,  const Move* move, RecFormat fmt);
 
 #endif
