@@ -1,8 +1,45 @@
 #include "head/instance.h"
 #include "head/board.h"
+#include "head/cJSON.h"
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
+
+static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
+
+Instance* newInstance(void)
+{
+    Instance* ins = malloc(sizeof(Instance));
+    memset(ins, 0, sizeof(Instance));
+    ins->board = newBoard();
+    ins->rootMove = newMove();
+    ins->currentMove = ins->rootMove;
+    ins->infoCount = ins->movCount_ = ins->remCount_ = ins->maxRemLen_ = ins->maxRow_ = ins->maxCol_ = 0;
+    return ins;
+}
+
+void delInstance(Instance* ins)
+{
+    ins->currentMove = NULL;
+    for (int i = ins->infoCount - 1; i >= 0; --i)
+        for (int j = 0; j < 2; ++j)
+            free(ins->info[i][j]);
+    delMove(ins->rootMove);
+    free(ins->board);
+    free(ins);
+}
+
+void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value)
+{
+    int count = ins->infoCount, nameLen = wcslen(name);
+    if (count == 32 || nameLen == 0)
+        return;
+    ins->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
+    wcscpy(ins->info[count][0], name);
+    ins->info[count][1] = (wchar_t*)calloc(wcslen(value) + 1, sizeof(value[0]));
+    wcscpy(ins->info[count][1], value);
+    ++(ins->infoCount);
+}
 
 // 根据文件扩展名取得存储记录类型
 static RecFormat __getRecFormat(const char* ext)
@@ -14,6 +51,21 @@ static RecFormat __getRecFormat(const char* ext)
         if (strcmp(ext, EXTNAMES[fmt]) == 0)
             return fmt;
     return XQF;
+}
+
+static wchar_t* getFEN_ins(Instance* ins)
+{
+    wchar_t* FEN = FEN_0;
+    bool hasFEN = false;
+    for (int i = 0; i < ins->infoCount; ++i)
+        if (wcscmp(ins->info[i][0], L"FEN") == 0) {
+            FEN = ins->info[i][1];
+            hasFEN = true;
+            break;
+        }
+    if (!hasFEN)
+        addInfoItem(ins, L"FEN", FEN_0);
+    return FEN;
 }
 
 inline static void __doMove(Instance* ins, Move* move)
@@ -89,7 +141,7 @@ static void __readMove(Move* move, FILE* fin)
         __readMove(addOther(move), fin);
 }
 
-static void __setMoveNums(Instance* ins, Move* move)
+void setMoveNums(Instance* ins, Move* move)
 {
     if (move == NULL)
         return;
@@ -98,6 +150,7 @@ static void __setMoveNums(Instance* ins, Move* move)
         ins->maxCol_ = move->otherNo_;
     if (move->nextNo_ > ins->maxRow_)
         ins->maxRow_ = move->nextNo_;
+
     move->CC_ColNo_ = ins->maxCol_; // # 本着在视图中的列数
     if (move->remark != NULL) {
         ++ins->remCount_;
@@ -108,13 +161,13 @@ static void __setMoveNums(Instance* ins, Move* move)
 
     assert(move->fseat >= 0);
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
-    __doMove(ins, move);
-    __setMoveNums(ins, move->nmove); // 先深度搜索
-    __undoMove(ins, move);
+    //__doMove(ins, move);
+    setMoveNums(ins, move->nmove); // 先深度搜索
+    //__undoMove(ins, move);
 
     if (move->omove != NULL)
         ++ins->maxCol_;
-    __setMoveNums(ins, move->omove); // 后广度搜索
+    setMoveNums(ins, move->omove); // 后广度搜索
 }
 
 static void readXQF(Instance* ins, FILE* fin)
@@ -214,7 +267,7 @@ static void readXQF(Instance* ins, FILE* fin)
             // 棋盘的左下角为原点(0, 0)，需转换成FEN格式：以左上角为原点(0, 0)
             pieChars[(9 - xy % 10) * 9 + xy / 10] = QiziChars[i];
     }
-    setBoard(ins->board, pieChars);
+    //setBoard(ins->board, pieChars);
 
     wchar_t tempStr[REMARKSIZE] = { 0 };
     char* values[] = {
@@ -242,13 +295,194 @@ static void readXQF(Instance* ins, FILE* fin)
     __readMove(ins->rootMove, fin);
 }
 
-static void readBIN(Instance* ins, FILE* fin) {}
+static void __readWstring_BIN(wchar_t* wstr, FILE* fin)
+{
+    int len = 0;
+    fread(&len, sizeof(int), 1, fin);
+    fread(wstr, sizeof(wchar_t), len, fin);
+}
 
-static void writeBIN(const Instance* ins, FILE* fout) {}
+static void __readRemark_BIN(Move* move, FILE* fin)
+{
+    wchar_t remark[REMARKSIZE] = { 0 };
+    __readWstring_BIN(remark, fin);
+    setRemark(move, remark);
+}
 
-static void readJSON(Instance* ins, FILE* fin) {}
+static void __readMove_BIN(Move* move, FILE* fin)
+{
+    fread(&move->fseat, sizeof(int), 1, fin);
+    fread(&move->tseat, sizeof(int), 1, fin);
+    int tag = 0;
+    fread(&tag, sizeof(int), 1, fin);
+    if (tag & 0x20)
+        __readRemark_BIN(move, fin);
 
-static void writeJSON(const Instance* ins, FILE* fout) {}
+    if (tag & 0x80)
+        __readMove_BIN(addNext(move), fin);
+    if (tag & 0x40)
+        __readMove_BIN(addOther(move), fin);
+}
+
+static void __getFENToSetBoard(Instance* ins)
+{
+    wchar_t* FEN = getFEN_ins(ins);
+    wchar_t pieChars[SEATNUM + 1] = { 0 };
+    setBoard(ins->board, getPieChars_F(pieChars, FEN, wcslen(FEN)));
+}
+
+static void readBIN(Instance* ins, FILE* fin)
+{
+    int tag = 0, infoCount = 0;
+    fread(&tag, sizeof(int), 1, fin);
+    if (tag & 0x10) {
+        fread(&infoCount, sizeof(int), 1, fin);
+        for (int i = 0; i < infoCount; ++i) {
+            wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
+            __readWstring_BIN(name, fin);
+            __readWstring_BIN(value, fin);
+            addInfoItem(ins, name, value);
+        }
+    }
+    /*
+    wchar_t* FEN = getFEN_ins(ins);
+    wchar_t pieChars[SEATNUM + 1] = { 0 };
+    setBoard(ins->board, getPieChars_F(pieChars, FEN, wcslen(FEN)));
+    //*/
+
+    __readMove_BIN(ins->rootMove, fin);
+}
+
+static void __writeWstring_BIN(const wchar_t* wstr, FILE* fout)
+{
+    int len = wcslen(wstr) + 1;
+    fwrite(&len, sizeof(int), 1, fout);
+    fwrite(wstr, sizeof(wchar_t), len, fout);
+}
+
+static void __writeMove_BIN(const Move* move, FILE* fout)
+{
+    fwrite(&move->fseat, sizeof(int), 1, fout);
+    fwrite(&move->tseat, sizeof(int), 1, fout);
+    int tag = ((move->nmove != NULL ? 0x80 : 0x00)
+        | (move->omove != NULL ? 0x40 : 0x00)
+        | (move->remark != NULL ? 0x20 : 0x00));
+    fwrite(&tag, sizeof(int), 1, fout);
+    if (tag & 0x20)
+        __writeWstring_BIN(move->remark, fout);
+    if (tag & 0x80)
+        __writeMove_BIN(move->nmove, fout);
+    if (tag & 0x40)
+        __writeMove_BIN(move->omove, fout);
+}
+
+static void writeBIN(const Instance* ins, FILE* fout)
+{
+    int tag = ((ins->infoCount > 0 ? 0x10 : 0x00)
+        | (ins->rootMove->remark != NULL ? 0x20 : 0x00)
+        | (ins->rootMove->nmove != NULL ? 0x80 : 0x00));
+    fwrite(&tag, sizeof(int), 1, fout);
+    if (tag & 0x10) {
+        fwrite(&ins->infoCount, sizeof(int), 1, fout);
+        for (int i = 0; i < ins->infoCount; ++i) {
+            __writeWstring_BIN(ins->info[i][0], fout);
+            __writeWstring_BIN(ins->info[i][1], fout);
+        }
+    }
+
+    __writeMove_BIN(ins->rootMove, fout);
+}
+
+static void __readMove_JSON(const cJSON* moveJSON, Move* move)
+{
+    move->fseat = cJSON_GetObjectItem(moveJSON, "f")->valueint;
+    move->tseat = cJSON_GetObjectItem(moveJSON, "t")->valueint;
+    cJSON* remarkJSON = cJSON_GetObjectItem(moveJSON, "r");
+    if (remarkJSON != NULL) {
+        wchar_t remark[REMARKSIZE] = { 0 };
+        mbstowcs(remark, remarkJSON->valuestring, REMARKSIZE - 1);
+        setRemark(move, remark);
+    }
+
+    cJSON* nmoveJSON = cJSON_GetObjectItem(moveJSON, "n");
+    if (nmoveJSON != NULL)
+        __readMove_JSON(nmoveJSON, addNext(move));
+
+    cJSON* omoveJSON = cJSON_GetObjectItem(moveJSON, "o");
+    if (omoveJSON != NULL)
+        __readMove_JSON(omoveJSON, addOther(move));
+}
+
+static void readJSON(Instance* ins, FILE* fin)
+{
+    fseek(fin, 0L, SEEK_END); // 定位到文件末尾
+    long last = ftell(fin);
+    char* insJSONString = (char*)calloc(last + 1, sizeof(char));
+    fseek(fin, 0L, SEEK_SET); // 定位到文件开始
+    fread(insJSONString, sizeof(char), last, fin);
+    cJSON* insJSON = cJSON_Parse(insJSONString);
+    free(insJSONString);
+
+    cJSON* infoJSON = cJSON_GetObjectItem(insJSON, "info");
+    int infoCount = cJSON_GetArraySize(infoJSON);
+    for (int i = 0; i < infoCount; ++i) {
+        cJSON* keyValueJSON = cJSON_GetArrayItem(infoJSON, i);
+        wchar_t nameValue[2][REMARKSIZE] = { 0 };
+        for (int j = 0; j < 2; ++j)
+            mbstowcs(nameValue[j],
+                cJSON_GetStringValue(cJSON_GetArrayItem(keyValueJSON, j)), REMARKSIZE - 1);
+        addInfoItem(ins, nameValue[0], nameValue[1]);
+    }
+
+    cJSON* rootMoveJSON = cJSON_GetObjectItem(insJSON, "rootmove");
+    if (rootMoveJSON != NULL)
+        __readMove_JSON(rootMoveJSON, ins->rootMove);
+    cJSON_Delete(insJSON);
+}
+
+static void __writeMove_JSON(cJSON* moveJSON, const Move* move)
+{
+    cJSON_AddNumberToObject(moveJSON, "f", move->fseat);
+    cJSON_AddNumberToObject(moveJSON, "t", move->tseat);
+    if (move->remark != NULL) {
+        char remark[REMARKSIZE] = { 0 };
+        wcstombs(remark, move->remark, REMARKSIZE - 1);
+        cJSON_AddStringToObject(moveJSON, "r", remark);
+    }
+
+    if (move->nmove != NULL) {
+        cJSON* nmoveJSON = cJSON_CreateObject();
+        __writeMove_JSON(nmoveJSON, move->nmove);
+        cJSON_AddItemToObject(moveJSON, "n", nmoveJSON);
+    }
+    if (move->omove != NULL) {
+        cJSON* omoveJSON = cJSON_CreateObject();
+        __writeMove_JSON(omoveJSON, move->omove);
+        cJSON_AddItemToObject(moveJSON, "o", omoveJSON);
+    }
+}
+
+static void writeJSON(const Instance* ins, FILE* fout)
+{
+    cJSON *insJSON = cJSON_CreateObject(),
+          *infoJSON = cJSON_CreateArray(),
+          *rootmoveJSON = cJSON_CreateObject();
+    for (int i = 0; i < ins->infoCount; ++i) {
+        char name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
+        wcstombs(name, ins->info[i][0], REMARKSIZE - 1);
+        wcstombs(value, ins->info[i][1], REMARKSIZE - 1);
+        cJSON_AddItemToArray(infoJSON,
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+    }
+    cJSON_AddItemToObject(insJSON, "info", infoJSON);
+
+    __writeMove_JSON(rootmoveJSON, ins->rootMove);
+    cJSON_AddItemToObject(insJSON, "rootmove", rootmoveJSON);
+
+    char* insJSONString = cJSON_Print(insJSON);
+    fwrite(insJSONString, sizeof(char), strlen(insJSONString) + 1, fout);
+    cJSON_Delete(insJSON);
+}
 
 static void readInfo_PGN(Instance* ins, FILE* fin) {}
 
@@ -292,94 +526,64 @@ static void writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, RecFormat fmt)
 
 static void readMove_PGN_CC(Instance* ins, FILE* fin) {}
 
-wchar_t* __getRemarkStr(wchar_t* remStr, Move* move)
+wchar_t* __getRemarkStr_PGN(wchar_t* remStr, Move* move)
 {
     swprintf(remStr, REMARKSIZE, L"(%d,%d): {%s}\n",
         move->nextNo_, move->CC_ColNo_, move->remark);
     return remStr;
 }
 
-static void __writeMove_PGN_CC(wchar_t* lineStr[], wchar_t* remarkStr, Instance* ins, Move* move)
+static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][colNum],
+    wchar_t* remarkStr, Instance* ins, Move* move)
 {
     int firstCol = move->CC_ColNo_ * 5, row = move->nextNo_ * 2;
     wchar_t zhStr[6] = { 0 }, remStr[REMARKSIZE] = { 0 };
     getZhStr(zhStr, 6, ins->board, move);
+    assert(wcslen(zhStr) == 4);
     for (int i = 0; i < 4; ++i)
         lineStr[row][firstCol + i] = zhStr[i];
     if (move->remark != NULL)
-        wcscat(remarkStr, __getRemarkStr(remStr, move));
+        wcscat(remarkStr, __getRemarkStr_PGN(remStr, move));
 
     __doMove(ins, move);
     if (move->nmove != NULL) {
         lineStr[row + 1][firstCol + 2] = L'↓';
-        __writeMove_PGN_CC(lineStr, remarkStr, ins, move->nmove);
+        __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, move->nmove);
     }
     __undoMove(ins, move);
 
     if (move->omove != NULL) {
-        int fcol = firstCol + 4, num = move->omove->CC_ColNo_ * 5 - fcol;
-        for (int i = 0; i < num; ++i)
+        int fcol = firstCol + 4, tnum = move->omove->CC_ColNo_ * 5 - fcol;
+        for (int i = 0; i < tnum; ++i)
             lineStr[row][fcol + i] = L'…';
-        __writeMove_PGN_CC(lineStr, remarkStr, ins, move->omove);
+        __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, move->omove);
     }
 }
 
 static void writeMove_PGN_CC(Instance* ins, FILE* fout)
 {
-    wchar_t lineStr[(BOARDROW + 1) * 2][(BOARDCOL + 1) * 5];
+    int rowNum = (ins->maxRow_ + 1) * 2, colNum = (ins->maxCol_ + 1) * 5 + 1;
+    wchar_t lineStr[rowNum][colNum];
     wmemset(lineStr[0], L'　', sizeof(lineStr));
+    for (int row = 0; row < rowNum; ++row)
+        lineStr[row][colNum - 1] = L'\x0'; // 加尾字符后，每行数组可直接转换成字符串
     lineStr[0][0] = L'　';
     lineStr[0][1] = L'开';
     lineStr[0][2] = L'始';
     lineStr[1][2] = L'↓';
     wchar_t remarkStr[MOVES_SIZE] = { 0 }, remStr[REMARKSIZE] = { 0 };
     if (ins->rootMove->remark != NULL)
-        wcscat(remarkStr, __getRemarkStr(remStr, ins->rootMove));
+        wcscat(remarkStr, __getRemarkStr_PGN(remStr, ins->rootMove));
 
     if (ins->rootMove->nmove != NULL)
-        __writeMove_PGN_CC(lineStr, remarkStr, ins, ins->rootMove->nmove);
-    for (int i = 0; i < (BOARDROW + 1) * 2; ++i)
+        __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, ins->rootMove->nmove);
+    for (int i = 0; i < rowNum; ++i)
         fwprintf(fout, L"%s\n", lineStr[i]);
     fwprintf(fout, L"%s", remarkStr);
 }
 
-Instance* newInstance(void)
+Instance* read(Instance* ins, const char* filename)
 {
-    Instance* ins = malloc(sizeof(Instance));
-    memset(ins, 0, sizeof(Instance));
-    ins->board = newBoard();
-    ins->rootMove = newMove();
-    ins->currentMove = ins->rootMove;
-    ins->infoCount = ins->movCount_ = ins->remCount_ = ins->maxRemLen_ = ins->maxRow_ = ins->maxCol_ = 0;
-    return ins;
-}
-
-void delInstance(Instance* ins)
-{
-    ins->currentMove = NULL;
-    for (int i = ins->infoCount - 1; i >= 0; --i)
-        for (int j = 0; j < 2; ++j)
-            free(ins->info[i][j]);
-    delMove(ins->rootMove);
-    free(ins->board);
-    free(ins);
-}
-
-void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value)
-{
-    int count = ins->infoCount, nameLen = wcslen(name);
-    if (count == 32 || nameLen == 0)
-        return;
-    ins->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
-    wcscpy(ins->info[count][0], name);
-    ins->info[count][1] = (wchar_t*)calloc(wcslen(value) + 1, sizeof(value[0]));
-    wcscpy(ins->info[count][1], value);
-    ++(ins->infoCount);
-}
-
-Instance* read(const char* filename)
-{
-    Instance* ins = newInstance();
     RecFormat fmt = __getRecFormat(getExt(filename));
     FILE* fin = fopen(filename,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
@@ -411,7 +615,9 @@ Instance* read(const char* filename)
         }
         break;
     }
-    __setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
+    fclose(fin);
+    __getFENToSetBoard(ins);
+    setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
     return ins;
 }
 
@@ -434,12 +640,11 @@ void write(Instance* ins, const char* filename)
         for (int i = 0; i < ins->infoCount; ++i)
             fwprintf(fout, L"[%s \"%s\"]\n", ins->info[i][0], ins->info[i][1]);
         fwprintf(fout, L"\n");
-        //*
+
         wchar_t tempStr[REMARKSIZE] = { 0 };
         fwprintf(fout, L"%s", getBoardString(tempStr, ins->board));
-        fwprintf(fout, L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
+        fwprintf(fout, L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
             ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
-        //*/
         switch (fmt) {
         case PGN_ICCS:
         case PGN_ZH:
@@ -454,6 +659,7 @@ void write(Instance* ins, const char* filename)
         }
         break;
     }
+    fclose(fout);
 }
 
 void go(Instance* ins)
@@ -500,8 +706,21 @@ void changeSide(Instance* ins, ChangeType ct) {}
 // 测试本翻译单元各种对象、函数
 void testInstance(FILE* fout)
 {
-    Instance* ins = read("01.xqf");
-    write(ins, "s.pgn_cc");
+    Instance* ins = newInstance();
+    read(ins, "01.xqf");
+    write(ins, "01.bin");
+    delInstance(ins);
 
+    ins = newInstance();
+    read(ins, "01.bin");
+
+    write(ins, "01.json");
+    delInstance(ins);
+    //*
+    ins = newInstance();
+    read(ins, "01.json");
+    //*/
+
+    write(ins, "01.pgn_cc");
     delInstance(ins);
 }

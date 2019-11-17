@@ -12,8 +12,11 @@ void delInstance(Instance* ins);
 // 添加一个info条目
 void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value);
 
+// 增删改move后，更新ins、move的行列数值
+void setMoveNums(Instance* ins, Move* move);
+
 // 从文件读取到instance
-Instance* read(const char* filename);
+Instance* read(Instance*, const char* filename);
 
 // 从instance存储到文件
 void write(Instance* ins, const char* filename);

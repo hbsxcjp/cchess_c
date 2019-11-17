@@ -109,7 +109,7 @@ typedef enum {
 // 临时字符串长度
 #define TEMPSTR_SIZE 1024
 // 存储棋局字符串长度
-#define MOVES_SIZE TEMPSTR_SIZE * 100
+#define MOVES_SIZE TEMPSTR_SIZE * 1000
 // 注释字符串长度
 #define REMARKSIZE (TEMPSTR_SIZE / 2)
 // 棋局信息数量
@@ -126,15 +126,13 @@ typedef enum {
 } RecFormat;
 
 // 着法类型
-struct structMove;
-struct structMove {
+typedef struct Move {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 本着注解
-    struct structMove *pmove, *nmove, *omove; // 前着、下着、变着
+    struct Move *pmove, *nmove, *omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
-};
-typedef struct structMove Move;
+} Move;
 
 // 棋局类型
 typedef struct {
