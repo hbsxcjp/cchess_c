@@ -143,8 +143,6 @@ static void __readMove(Move* move, FILE* fin)
 
 void setMoveNums(Instance* ins, Move* move)
 {
-    if (move == NULL)
-        return;
     ++ins->movCount_;
     if (move->otherNo_ > ins->maxCol_)
         ins->maxCol_ = move->otherNo_;
@@ -162,12 +160,14 @@ void setMoveNums(Instance* ins, Move* move)
     assert(move->fseat >= 0);
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
     //__doMove(ins, move);
-    setMoveNums(ins, move->nmove); // 先深度搜索
+    if (move->nmove != NULL)
+        setMoveNums(ins, move->nmove); // 先深度搜索
     //__undoMove(ins, move);
 
-    if (move->omove != NULL)
+    if (move->omove != NULL) {
         ++ins->maxCol_;
-    setMoveNums(ins, move->omove); // 后广度搜索
+        setMoveNums(ins, move->omove); // 后广度搜索
+    }
 }
 
 static void readXQF(Instance* ins, FILE* fin)
@@ -556,12 +556,12 @@ static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][c
     }
 
     //*
-    __doMove(ins, move);
     if (move->nmove != NULL) {
         lineStr[row + 1][firstCol + 2] = L'↓';
+        __doMove(ins, move);
         __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, move->nmove);
+        __undoMove(ins, move);
     }
-    __undoMove(ins, move);
     //*/
 }
 
@@ -570,16 +570,16 @@ static void writeMove_PGN_CC(Instance* ins, FILE* fout)
     int rowNum = (ins->maxRow_ + 1) * 2, colNum = (ins->maxCol_ + 1) * 5 + 1;
     wchar_t lineStr[rowNum][colNum];
     wmemset(lineStr[0], L'　', rowNum * colNum);
-    for (int row = 0; row < rowNum; ++row) 
+    for (int row = 0; row < rowNum; ++row)
         lineStr[row][colNum - 1] = L'\x0'; // 加尾0字符后，每行数组可直接转换成字符串
     lineStr[0][0] = L'　';
     lineStr[0][1] = L'开';
     lineStr[0][2] = L'始';
     lineStr[1][2] = L'↓';
-    wchar_t remarkStr[MOVES_SIZE] = { 0 }, remStr[REMARKSIZE] = { 0 };    
+    wchar_t remarkStr[MOVES_SIZE] = { 0 }, remStr[REMARKSIZE] = { 0 };
     if (ins->rootMove->remark != NULL)
         wcscat(remarkStr, __getRemarkStr_PGN(remStr, ins->rootMove));
-    
+
     if (ins->rootMove->nmove != NULL)
         __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, ins->rootMove->nmove);
     for (int i = 0; i < rowNum; ++i)
@@ -622,7 +622,8 @@ Instance* read(Instance* ins, const char* filename)
     }
     fclose(fin);
     __getFENToSetBoard(ins);
-    setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
+    if (ins->rootMove->nmove != NULL)
+        setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
     return ins;
 }
 
