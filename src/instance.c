@@ -4,6 +4,9 @@
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
+#include <regex.h>
+#include <sys/types.h>
+//#include <tre/tre.h>
 
 static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 
@@ -484,7 +487,31 @@ static void writeJSON(const Instance* ins, FILE* fout)
     cJSON_Delete(insJSON);
 }
 
-static void readInfo_PGN(Instance* ins, FILE* fin) {}
+static void readInfo_PGN(Instance* ins, FILE* fin)
+{
+    const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
+    const size_t nmatch = 3;
+    regmatch_t pmatch[nmatch];
+    regex_t* infoReg = NULL;
+    int status = 0;
+    status = tre_regwcomp(infoReg, infoPat, REG_EXTENDED);
+    if (status != 0)
+        return;
+    wchar_t lineStr[REMARKSIZE] = { 0 };
+    while (fgetws(lineStr, REMARKSIZE, fin) && wcslen(lineStr) > 0) { // 以空行为终止特征
+        status = tre_regwexec(infoReg, lineStr, nmatch, pmatch, 0);
+        if (status)
+            continue;
+        int nameIndex = 0, valueIndex = 0;
+        wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
+        for (int i = pmatch[1].rm_so; i < pmatch[1].rm_eo; ++i)
+            name[nameIndex] = lineStr[i];
+        for (int i = pmatch[2].rm_so; i < pmatch[2].rm_eo; ++i)
+            value[valueIndex] = lineStr[i];
+        addInfoItem(ins, name, value);
+    }
+    tre_regfree(infoReg);
+}
 
 static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt) {}
 
@@ -539,12 +566,11 @@ static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][c
     int firstCol = move->CC_ColNo_ * 5, row = move->nextNo_ * 2;
     wchar_t zhStr[6] = { 0 }, remStr[REMARKSIZE] = { 0 };
     getZhStr(zhStr, 6, ins->board, move);
-
     wprintf(L"line:%3d=> (%d,%d) %s\n", __LINE__, move->nextNo_, move->CC_ColNo_, zhStr);
     assert(wcslen(zhStr) == 4);
-
     for (int i = 0; i < 4; ++i)
         lineStr[row][firstCol + i] = zhStr[i];
+
     if (move->remark != NULL)
         wcscat(remarkStr, __getRemarkStr_PGN(remStr, move));
 
