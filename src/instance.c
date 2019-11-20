@@ -1,12 +1,13 @@
+#define PCRE_STATIC
 #include "head/instance.h"
 #include "head/board.h"
 #include "head/cJSON.h"
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
-#include <regex.h>
-#include <sys/types.h>
-//#include <tre/tre.h>
+//#include <regex.h>
+//#include <sys/types.h>
+#include "pcre.h"
 
 static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 
@@ -489,28 +490,30 @@ static void writeJSON(const Instance* ins, FILE* fout)
 
 static void readInfo_PGN(Instance* ins, FILE* fin)
 {
+    pcre16* infoReg;
+    const char* error;
+    int erroffset;
+    const int OVECCOUNT = (INFOSIZE + 1) * 2;
+    int ovector[OVECCOUNT];
+    int infoCount;
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
-    const size_t nmatch = 3;
-    regmatch_t pmatch[nmatch];
-    regex_t* infoReg = NULL;
-    int status = 0;
-    status = tre_regwcomp(infoReg, infoPat, REG_EXTENDED);
-    if (status != 0)
+    infoReg = pcre16_compile(infoPat, 0, &error, &erroffset, NULL);
+    assert(infoReg);
+    wchar_t lineStr[REMARKSIZE] = { 0 }, infoStr[MOVES_SIZE] = { 0 };
+    while (fgetws(lineStr, REMARKSIZE, fin) && wcslen(lineStr) > 0) // 以空行为终止特征
+        wcscat(infoStr, lineStr);
+
+    infoCount = pcre16_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, ovector, OVECCOUNT);
+    if (infoCount < 0)
         return;
-    wchar_t lineStr[REMARKSIZE] = { 0 };
-    while (fgetws(lineStr, REMARKSIZE, fin) && wcslen(lineStr) > 0) { // 以空行为终止特征
-        status = tre_regwexec(infoReg, lineStr, nmatch, pmatch, 0);
-        if (status)
-            continue;
-        int nameIndex = 0, valueIndex = 0;
+    for (int i = 1; i < infoCount; i += 2) {
         wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
-        for (int i = pmatch[1].rm_so; i < pmatch[1].rm_eo; ++i)
-            name[nameIndex] = lineStr[i];
-        for (int i = pmatch[2].rm_so; i < pmatch[2].rm_eo; ++i)
-            value[valueIndex] = lineStr[i];
+        wcsncpy(name, infoStr + ovector[2 * i], ovector[2 * i + 1] - ovector[2 * i]);
+        wcsncpy(value, infoStr + ovector[2 * i + 2], ovector[2 * i + 3] - ovector[2 * i + 2]);
         addInfoItem(ins, name, value);
+        wprintf(L"%s: %s\n\n", name, value);
     }
-    tre_regfree(infoReg);
+    pcre16_free(infoReg);
 }
 
 static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt) {}
@@ -754,7 +757,12 @@ void testInstance(FILE* fout)
     //*/
 
     write(ins, "01.pgn_iccs");
+    delInstance(ins);
+
+    ins = newInstance();
+    read(ins, "01.pgn_iccs");
+
     write(ins, "01.pgn_zh");
-    write(ins, "01.pgn_cc");
+    //write(ins, "01.pgn_cc");
     delInstance(ins);
 }

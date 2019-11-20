@@ -3,7 +3,7 @@
 CC = gcc
 #CFLAGS = -Wall -std=c11
 CFLAGS = -g -Wall -std=c11
-LDFLAGS = -lm
+LDFLAGS = -l/C/msys64/mingw64/include -l/C/msys64/mingw64/lib -lpcre
 #OBJS = obj/piece.o obj/board.o obj/move.o obj/main.o
 OBJS = obj/cJSON.o obj/tools.o obj/piece.o obj/board.o obj/move.o obj/instance.o obj/main.o
 
