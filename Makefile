@@ -3,13 +3,13 @@
 CC = gcc
 #CFLAGS = -Wall -std=c11
 CFLAGS = -g -Wall -std=c11
-LDFLAGS = -l/C/msys64/mingw64/include -l/C/msys64/mingw64/lib -lpcre
+LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
 #OBJS = obj/piece.o obj/board.o obj/move.o obj/main.o
 OBJS = obj/cJSON.o obj/tools.o obj/piece.o obj/board.o obj/move.o obj/instance.o obj/main.o
 
 a: $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^
-
+	$(CC) -o $@ $^ $(LDFLAGS) 
+	
 $(OBJS): obj/%.o : src/%.c
 	$(CC) $(CFLAGS) -g -o $@ -c $<
 

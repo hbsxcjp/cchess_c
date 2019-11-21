@@ -44,6 +44,9 @@ int getLiveSeats(Seat* pseats, size_t n, const Board* board, PieceColor color,
 // 当name == L'\x0', findCol == -1, getStronge == false时，查找全部棋子；
 // 否则，按给定参数查找棋子。
 
+// 取得某方"兵"的棋子位置seats
+int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wchar_t name);
+
 // 某方棋子是否被将军
 bool isKilled(Board* board, PieceColor color);
 
@@ -61,15 +64,6 @@ int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat);
 
 // 移动棋子，返回目的地棋子
 Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece);
-
-// 取得某方"兵"的棋子位置seats
-int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wchar_t name);
-
-// 根据中文着法取得内部着法表示
-void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n);
-
-// 根据内部着法表示取得中文着法
-wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move); 
 
 // 按某种变换类型变换棋盘局面
 bool changeBoardSide(Board* board, ChangeType ct); //?

@@ -490,33 +490,108 @@ static void writeJSON(const Instance* ins, FILE* fout)
 
 static void readInfo_PGN(Instance* ins, FILE* fin)
 {
-    pcre16* infoReg;
     const char* error;
-    int erroffset;
-    const int OVECCOUNT = (INFOSIZE + 1) * 2;
-    int ovector[OVECCOUNT];
-    int infoCount;
+    int erroffset = 0, infoCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
-    infoReg = pcre16_compile(infoPat, 0, &error, &erroffset, NULL);
+    pcre16* infoReg = pcre16_compile(infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
-    wchar_t lineStr[REMARKSIZE] = { 0 }, infoStr[MOVES_SIZE] = { 0 };
-    while (fgetws(lineStr, REMARKSIZE, fin) && wcslen(lineStr) > 0) // 以空行为终止特征
-        wcscat(infoStr, lineStr);
-
-    infoCount = pcre16_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, ovector, OVECCOUNT);
-    if (infoCount < 0)
-        return;
-    for (int i = 1; i < infoCount; i += 2) {
+    wchar_t lineStr[REMARKSIZE] = { 0 };
+    while (fgetws(lineStr, REMARKSIZE, fin) && lineStr[0] != L'\n') { // 以空行为终止特征
+        infoCount = pcre16_exec(infoReg, NULL, lineStr, wcslen(lineStr),
+            0, 0, ovector, OVECCOUNT);
+        if (infoCount < 0)
+            continue;
+        wprintf(L"%d: lineStr: %sinfoCount: %d\n", __LINE__, lineStr, infoCount);
         wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
-        wcsncpy(name, infoStr + ovector[2 * i], ovector[2 * i + 1] - ovector[2 * i]);
-        wcsncpy(value, infoStr + ovector[2 * i + 2], ovector[2 * i + 3] - ovector[2 * i + 2]);
+        wcsncpy(name, lineStr + ovector[2], ovector[3] - ovector[2]);
+        wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
         addInfoItem(ins, name, value);
-        wprintf(L"%s: %s\n\n", name, value);
+        wprintf(L"name:%s value: %s\n", name, value);
+
+        for (int i = 0; i < OVECCOUNT; ++i)
+            wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
     }
     pcre16_free(infoReg);
 }
 
-static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt) {}
+static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
+{
+    extern const wchar_t PRECHAR[4];
+    extern const wchar_t MOVCHAR[4];
+    extern const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1];
+    extern const wchar_t* PieceNames[PIECECOLORNUM];
+    extern const wchar_t ICCSCHAR[BOARDCOL + 1];
+    wchar_t ZhChars[REMARKSIZE] = { 0 }, ICCSChars[REMARKSIZE] = { 0 },
+            ICCSZHStr[REMARKSIZE] = { 0 },
+            movePat[REMARKSIZE] = { 0 }, remPat[REMARKSIZE] = { 0 };
+    wcscat(ZhChars, PRECHAR);
+    wcscat(ZhChars, PieceNames[RED]);
+    wcscat(ZhChars, PieceNames[BLACK]);
+    wcscat(ZhChars, MOVCHAR);
+    wcscat(ZhChars, NUMCHAR[RED]);
+    wcscat(ZhChars, NUMCHAR[BLACK]);
+
+    wcscat(ICCSChars, L"1234567890");
+    wcscat(ICCSChars, ICCSCHAR);
+    wprintf(L"%d: ZhChars: %s\n", __LINE__, ZhChars);
+    wprintf(L"%d: ICCSChars: %s\n", __LINE__, ICCSChars);
+
+    wcscat(ICCSZHStr, L"([");
+    wcscat(ICCSZHStr, fmt == PGN_ZH ? ZhChars : ICCSChars);
+    wcscat(ICCSZHStr, L"]{4})\b");
+    wprintf(L"%d: ICCSZHStr: %s\n", __LINE__, ICCSZHStr);
+
+    const wchar_t remarkStr[] = L"(?:\\s*\\{([\\s\\S]*?)\\})?",
+                  otherEndStr[] = L"\\s*(\\)+)?"; // 可能存在多个右括号;
+    wcscat(movePat, L"(\\()?(\\d+\\.)?[\\s...]*\b");
+    wcscat(movePat, ICCSZHStr);
+    wcscat(movePat, remarkStr);
+    wcscat(movePat, otherEndStr);
+
+    wcscat(remPat, remarkStr);
+    wcscat(remPat, L"1\\.");
+    wprintf(L"%d: movePat: %s\n", __LINE__, movePat);
+    wprintf(L"%d: remPat: %s\n", __LINE__, remPat);
+
+    const char* error;
+    int erroffset = 0, infoCount = 0, OVECCOUNT = 32, ovector[OVECCOUNT];
+    pcre16* moveReg = pcre16_compile(movePat, 0, &error, &erroffset, NULL);
+    assert(moveReg);
+    pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
+    assert(remReg);
+
+    int offsetEnd = TEMPSTR_SIZE, length = 1;
+    wchar_t* moveStr = calloc(offsetEnd, sizeof(wchar_t));
+    wchar_t lineStr[TEMPSTR_SIZE] = { 0 };
+    while (fgetws(lineStr, TEMPSTR_SIZE, fin) != NULL) {
+        length += wcslen(lineStr);
+        if (offsetEnd < length) {
+            offsetEnd += TEMPSTR_SIZE;
+            realloc(moveStr, offsetEnd);
+        }
+        wcscat(moveStr, lineStr);
+    }
+    wprintf(L"%d: moveStr: %s\n", __LINE__, moveStr);
+
+    wchar_t tempStr[REMARKSIZE] = { 0 };
+    infoCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
+        0, 0, ovector, OVECCOUNT);
+    if (infoCount > 0) {
+        wcsncpy(tempStr, moveStr + ovector[2], ovector[3] - ovector[2]);
+        setRemark(ins->rootMove, tempStr);
+    }
+
+    Move *preMove = ins->rootMove, *move = preMove,
+         *preOtherMoves[TEMPSTR_SIZE] = { NULL };
+
+    /*
+    
+
+    //*/
+    free(moveStr);
+    pcre16_free(remReg);
+    pcre16_free(moveReg);
+}
 
 static void __writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, Move* move,
     bool isPGN_ZH, bool isOther)
