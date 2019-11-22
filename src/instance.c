@@ -501,15 +501,15 @@ static void readInfo_PGN(Instance* ins, FILE* fin)
             0, 0, ovector, OVECCOUNT);
         if (infoCount < 0)
             continue;
-        wprintf(L"%d: lineStr: %sinfoCount: %d\n", __LINE__, lineStr, infoCount);
+        //wprintf(L"%d: lineStr: %sinfoCount: %d\n", __LINE__, lineStr, infoCount);
         wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
         wcsncpy(name, lineStr + ovector[2], ovector[3] - ovector[2]);
         wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
         addInfoItem(ins, name, value);
-        wprintf(L"name:%s value: %s\n", name, value);
+        //wprintf(L"name:%s value: %s\n", name, value);
 
-        for (int i = 0; i < OVECCOUNT; ++i)
-            wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
+        //for (int i = 0; i < OVECCOUNT; ++i)
+        //    wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
     }
     pcre16_free(infoReg);
 }
@@ -537,6 +537,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
     wprintf(L"%d: ICCSChars: %s\n", __LINE__, ICCSChars);
 
     wcscat(ICCSZHStr, L"([");
+    //wcscat(ICCSZHStr, fmt != PGN_ZH ? ZhChars : ICCSChars);
     wcscat(ICCSZHStr, fmt == PGN_ZH ? ZhChars : ICCSChars);
     wcscat(ICCSZHStr, L"]{4})\b");
     wprintf(L"%d: ICCSZHStr: %s\n", __LINE__, ICCSZHStr);
@@ -560,6 +561,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
     pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
     assert(remReg);
 
+    /*
     int offsetEnd = TEMPSTR_SIZE, length = 1;
     wchar_t* moveStr = calloc(offsetEnd, sizeof(wchar_t));
     wchar_t lineStr[TEMPSTR_SIZE] = { 0 };
@@ -571,19 +573,82 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
         }
         wcscat(moveStr, lineStr);
     }
-    wprintf(L"%d: moveStr: %s\n", __LINE__, moveStr);
+    //*/
+    long start = ftell(fin);
+    fseek(fin, 0, SEEK_END);
+    long end = ftell(fin), length = end - start;
+    fseek(fin, start, SEEK_SET);
+    char* cmoveStr = malloc(length + 1);
+    cmoveStr[length] = '\0';
+    fread(cmoveStr, sizeof(char), length, fin);
+    wchar_t* moveStr = malloc((length + 1) * sizeof(wchar_t));
+    mbstowcs(moveStr, cmoveStr, length);
+    free(cmoveStr);
 
     wchar_t tempStr[REMARKSIZE] = { 0 };
-    infoCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
+    length = wcslen(moveStr);
+    infoCount = pcre16_exec(remReg, NULL, moveStr, length,
         0, 0, ovector, OVECCOUNT);
-    if (infoCount > 0) {
+    if (infoCount <= 0)
+        return; // 没有move
+    if (infoCount == 2) {
         wcsncpy(tempStr, moveStr + ovector[2], ovector[3] - ovector[2]);
         setRemark(ins->rootMove, tempStr);
     }
 
-    Move *preMove = ins->rootMove, *move = preMove,
-         *preOtherMoves[TEMPSTR_SIZE] = { NULL };
+    Move *preMove = ins->rootMove,
+         *move = preMove,
+         *preOtherMoves[REMARKSIZE] = { NULL };
+    int curIndex = 0, movRegCount = 0, preOthIndex = 0;
+    wprintf(L"%d: moveStr:\n%s\n", __LINE__, moveStr + curIndex);
+    //*
+    while ((curIndex += ovector[1]) < length) {
+        movRegCount = pcre16_exec(moveReg, NULL, moveStr + curIndex,
+            wcslen(moveStr + curIndex), 0, 0, ovector, OVECCOUNT);
+        wprintf(L"%d: \ncurIndex: %d\nmoveStr: %s\nmovRegCount: %d\n",
+            __LINE__, curIndex, moveStr + curIndex, movRegCount);
+        if (movRegCount <= 0)
+            break;
+        for (int i = 0; i < OVECCOUNT; ++i)
+            wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
+        if (ovector[3] > ovector[2]) { // 第1个子匹配成功，有"("
+            move = addOther(preMove);
+            preOtherMoves[preOthIndex++] = preMove;
+            if (fmt == PGN_ZH)
+                __undoMove(ins, preMove);
+        } else
+            move = addNext(preMove);
+        wchar_t zhStr[6] = { 0 }, remarkStr[REMARKSIZE] = { 0 };
+        wcsncpy(zhStr, moveStr + curIndex + ovector[6], ovector[7] - ovector[6]);
+        wcsncpy(remarkStr, moveStr + curIndex + ovector[8], ovector[9] - ovector[8]);
+        setMove(move, ins->board, zhStr, 6);
+        setRemark(move, remarkStr);
+        if (fmt == PGN_ZH)
+            __doMove(ins, move);
 
+        if (ovector[11] > ovector[10]) { // 第5个子匹配成功，有")+"
+            int num = ovector[11] - ovector[10];
+            for (int i = 0; i < num; ++i) {
+                preMove = preOtherMoves[--preOthIndex];
+                if (fmt == PGN_ZH) {
+                    do
+                        __undoMove(ins, move);
+                    while ((move = move->pmove) != preMove);
+                    __doMove(ins, preMove);
+                }
+            }
+        } else
+            preMove = move;
+
+                //moveStr += ovector[1];
+    }
+
+    if (fmt == PGN_ZH)
+        while (move != ins->rootMove) {
+            __undoMove(ins, move);
+            move = move->pmove;
+        }
+            //*/
     /*
     
 
