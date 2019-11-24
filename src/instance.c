@@ -571,14 +571,26 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
 
     long start = ftell(fin);
     fseek(fin, 0, SEEK_END);
-    long end = ftell(fin), length = end - start;
+    long end = ftell(fin);
     fseek(fin, start, SEEK_SET);
-    char* cmoveStr = malloc(length + 1);
-    cmoveStr[length] = '\0';
-    fread(cmoveStr, sizeof(char), length, fin);
-    wchar_t* moveStr = malloc((length + 1) * sizeof(wchar_t));
-    mbstowcs(moveStr, cmoveStr, length);
+    //char* cmoveStr = malloc(length + 1);
+    //cmoveStr[length] = '\0';
+    //fread(cmoveStr, sizeof(char), length, fin);
+    int index = 0;
+    wchar_t* moveStr[end - start + 1];
+    while ((*moveStr[index++] = fgetwc(fin)) != EOF)
+        ;
+    moveStr[index] = L'\x0';
 
+    //mbstowcs(moveStr, cmoveStr, length+1);
+    //if (fmt == PGN_ZH)
+    //  printf("\n%d: cmoveStr:\n%s\nstart: %ld end: %ld\n",
+    //    __LINE__, cmoveStr, start, end);
+    if (fmt == PGN_ZH)
+        wprintf(L"\n%d: moveStr:\n%s\nstart: %d end: %d\n",
+            __LINE__, moveStr, start, end);
+
+    /*
     wchar_t iccs_zhStr[6] = { 0 }, remarkStr[REMARKSIZE] = { 0 };
     infoCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
         0, 0, ovector, OVECCOUNT);
@@ -594,7 +606,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
          *preOtherMoves[REMARKSIZE] = { NULL };
     int movRegCount = 0, preOthIndex = 0, mLength = 0;
     wchar_t* mStr = moveStr;
-    //*
+
     while ((mStr += ovector[1]) && (mLength = wcslen(mStr)) > 0) {
         movRegCount = pcre16_exec(moveReg, NULL, mStr,
             mLength, 0, 0, ovector, OVECCOUNT);
@@ -659,7 +671,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
             move = move->pmove;
         }
     //*/
-    free(cmoveStr);
+    //free(cmoveStr);
     free(moveStr);
     pcre16_free(remReg);
     pcre16_free(moveReg);
