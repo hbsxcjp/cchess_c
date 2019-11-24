@@ -665,6 +665,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
             move = move->pmove;
         }
     //*/
+    free(cmoveStr);
     free(moveStr);
     pcre16_free(remReg);
     pcre16_free(moveReg);
