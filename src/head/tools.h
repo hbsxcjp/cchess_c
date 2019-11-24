@@ -12,6 +12,9 @@ wchar_t* wtrim(wchar_t* wstr);
 // 从文件名提取扩展名
 const char* getExt(const char* filename);
 
+// 从文件当前指针至尾部获取宽字符串
+wchar_t* getWString(FILE* fin);
+
 // 提取目录下的文件名列表
 int getFiles(char* fileNames[],const char* path);
 
