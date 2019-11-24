@@ -501,57 +501,66 @@ static void readInfo_PGN(Instance* ins, FILE* fin)
             0, 0, ovector, OVECCOUNT);
         if (infoCount < 0)
             continue;
-        wprintf(L"%d: lineStr: %sinfoCount: %d\n", __LINE__, lineStr, infoCount);
+        //wprintf(L"%d: lineStr: %sinfoCount: %d\n", __LINE__, lineStr, infoCount);
         wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
         wcsncpy(name, lineStr + ovector[2], ovector[3] - ovector[2]);
         wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
         addInfoItem(ins, name, value);
-        wprintf(L"name:%s value: %s\n", name, value);
+        //wprintf(L"name:%s value: %s\n", name, value);
 
-        for (int i = 0; i < OVECCOUNT; ++i)
-            wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
+        //for (int i = 0; i < OVECCOUNT; ++i)
+        //    wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
     }
     pcre16_free(infoReg);
 }
 
 static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
 {
-    extern const wchar_t PRECHAR[4];
-    extern const wchar_t MOVCHAR[4];
-    extern const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1];
-    extern const wchar_t* PieceNames[PIECECOLORNUM];
-    extern const wchar_t ICCSCHAR[BOARDCOL + 1];
-    wchar_t ZhChars[REMARKSIZE] = { 0 }, ICCSChars[REMARKSIZE] = { 0 },
-            ICCSZHStr[REMARKSIZE] = { 0 },
-            movePat[REMARKSIZE] = { 0 }, remPat[REMARKSIZE] = { 0 };
-    wcscat(ZhChars, PRECHAR);
-    wcscat(ZhChars, PieceNames[RED]);
-    wcscat(ZhChars, PieceNames[BLACK]);
-    wcscat(ZhChars, MOVCHAR);
-    wcscat(ZhChars, NUMCHAR[RED]);
-    wcscat(ZhChars, NUMCHAR[BLACK]);
-
-    wcscat(ICCSChars, L"1234567890");
-    wcscat(ICCSChars, ICCSCHAR);
-    wprintf(L"%d: ZhChars: %s\n", __LINE__, ZhChars);
-    wprintf(L"%d: ICCSChars: %s\n", __LINE__, ICCSChars);
-
+    wchar_t ICCSZHStr[REMARKSIZE] = { 0 };
     wcscat(ICCSZHStr, L"([");
-    wcscat(ICCSZHStr, fmt == PGN_ZH ? ZhChars : ICCSChars);
-    wcscat(ICCSZHStr, L"]{4})\b");
-    wprintf(L"%d: ICCSZHStr: %s\n", __LINE__, ICCSZHStr);
+    if (fmt == PGN_ZH) {
+        extern const wchar_t PRECHAR[4];
+        extern const wchar_t MOVCHAR[4];
+        extern const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1];
+        extern const wchar_t* PieceNames[PIECECOLORNUM];
+        wchar_t ZhChars[REMARKSIZE] = { 0 };
+        wcscat(ZhChars, PRECHAR);
+        wcscat(ZhChars, PieceNames[RED]);
+        wcscat(ZhChars, PieceNames[BLACK]);
+        wcscat(ZhChars, MOVCHAR);
+        wcscat(ZhChars, NUMCHAR[RED]);
+        wcscat(ZhChars, NUMCHAR[BLACK]);
+        wprintf(L"%d: ZhChars: %s\n", __LINE__, ZhChars);
 
-    const wchar_t remarkStr[] = L"(?:\\s*\\{([\\s\\S]*?)\\})?",
-                  otherEndStr[] = L"\\s*(\\)+)?"; // 可能存在多个右括号;
-    wcscat(movePat, L"(\\()?(\\d+\\.)?[\\s...]*\b");
+        wcscat(ICCSZHStr, ZhChars);
+    } else {
+        extern const wchar_t ICCSCOLCHAR[BOARDCOL + 1];
+        extern const wchar_t ICCSROWCHAR[BOARDROW + 1];
+        wchar_t ICCSChars[REMARKSIZE] = { 0 };
+        wcscat(ICCSChars, ICCSCOLCHAR);
+        wcscat(ICCSChars, ICCSROWCHAR);
+        // wprintf(L"%d: ICCSChars: %s\n", __LINE__, ICCSChars);
+
+        wcscat(ICCSZHStr, ICCSChars);
+    }
+    wcscat(ICCSZHStr, L"]{4})");
+    if (fmt == PGN_ZH)
+        wprintf(L"%d: ICCSZHStr: %s\n", __LINE__, ICCSZHStr);
+
+    const wchar_t remStr[] = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
+    wchar_t movePat[REMARKSIZE] = { 0 };
+    wcscat(movePat, L"(\\()?(?:[\\d\\.\\s]+)");
     wcscat(movePat, ICCSZHStr);
-    wcscat(movePat, remarkStr);
-    wcscat(movePat, otherEndStr);
+    wcscat(movePat, remStr);
+    wcscat(movePat, L"(?:[\\s\\n]*(\\)+))?"); // 可能存在多个右括号
+    if (fmt == PGN_ZH)
+        wprintf(L"%d: movePat: %s\n", __LINE__, movePat);
 
-    wcscat(remPat, remarkStr);
+    wchar_t remPat[REMARKSIZE] = { 0 };
+    wcscat(remPat, remStr);
     wcscat(remPat, L"1\\.");
-    wprintf(L"%d: movePat: %s\n", __LINE__, movePat);
-    wprintf(L"%d: remPat: %s\n", __LINE__, remPat);
+    if (fmt == PGN_ZH)
+        wprintf(L"%d: remPat: %s\n", __LINE__, remPat);
 
     const char* error;
     int erroffset = 0, infoCount = 0, OVECCOUNT = 32, ovector[OVECCOUNT];
@@ -560,33 +569,101 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
     pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
     assert(remReg);
 
-    int offsetEnd = TEMPSTR_SIZE, length = 1;
-    wchar_t* moveStr = calloc(offsetEnd, sizeof(wchar_t));
-    wchar_t lineStr[TEMPSTR_SIZE] = { 0 };
-    while (fgetws(lineStr, TEMPSTR_SIZE, fin) != NULL) {
-        length += wcslen(lineStr);
-        if (offsetEnd < length) {
-            offsetEnd += TEMPSTR_SIZE;
-            realloc(moveStr, offsetEnd);
-        }
-        wcscat(moveStr, lineStr);
-    }
-    wprintf(L"%d: moveStr: %s\n", __LINE__, moveStr);
+    long start = ftell(fin);
+    fseek(fin, 0, SEEK_END);
+    long end = ftell(fin);
+    fseek(fin, start, SEEK_SET);
+    wchar_t* moveStr = malloc((end - start + 1) * sizeof(wchar_t));
+    int index = 0;
+    while (!feof(fin))
+        moveStr[index++] = fgetwc(fin);
+    moveStr[index] = L'\x0';
 
-    wchar_t tempStr[REMARKSIZE] = { 0 };
+    //*
+    if (fmt == PGN_ZH)
+        wprintf(L"\n%d: moveStr:\n%s\nstart: %d end: %d\n",
+            __LINE__, moveStr, start, end);
+
+    wchar_t remarkStr[REMARKSIZE] = { 0 };
     infoCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
         0, 0, ovector, OVECCOUNT);
-    if (infoCount > 0) {
-        wcsncpy(tempStr, moveStr + ovector[2], ovector[3] - ovector[2]);
-        setRemark(ins->rootMove, tempStr);
+    if (infoCount <= 0)
+        return; // 没有move
+    if (infoCount == 2) {
+        wcsncpy(remarkStr, moveStr + ovector[2], ovector[3] - ovector[2]);
+        setRemark(ins->rootMove, remarkStr);
     }
 
-    Move *preMove = ins->rootMove, *move = preMove,
-         *preOtherMoves[TEMPSTR_SIZE] = { NULL };
+    Move *move = NULL,
+         *preMove = ins->rootMove,
+         *preOtherMoves[REMARKSIZE] = { NULL };
+    int movRegCount = 0, preOthIndex = 0, length = 0;
+    wchar_t* mStr = moveStr;
 
-    /*
-    
+    while ((mStr += ovector[1]) && (length = wcslen(mStr)) > 0) {
+        movRegCount = pcre16_exec(moveReg, NULL, mStr,
+            length, 0, 0, ovector, OVECCOUNT);
+        if (fmt == PGN_ZH)
+            wprintf(L"\n%d: length: %d movRegCount: %d\n", //mStr: %s \n
+                __LINE__, length, movRegCount); //mStr,
+        if (movRegCount <= 0)
+            break;
+        //if (fmt == PGN_ZH)            for (int i = 0; i < 10; ++i)                wprintf(L"ovector[%d]:%d \n", i, ovector[i]);
 
+        // 第1个子匹配成功，有"("
+        if (ovector[3] > ovector[2]) {
+            move = addOther(preMove);
+            preOtherMoves[preOthIndex++] = preMove;
+            if (fmt == PGN_ZH)
+                __undoMove(ins, preMove);
+        } else
+            move = addNext(preMove);
+
+        // 提取第2个匹配zhStr，设置move
+        int num = ovector[5] - ovector[4];
+        assert(num > 0);
+        wchar_t iccs_zhStr[6] = { 0 };
+        wcsncpy(iccs_zhStr, mStr + ovector[4], num);
+        if (fmt == PGN_ZH)
+            setMove_zh(move, ins->board, iccs_zhStr);
+        else
+            setMove_iccs(move, iccs_zhStr);
+        if (fmt == PGN_ZH)
+            wprintf(L"%d: iccs_zhStr: %s\n", __LINE__, iccs_zhStr);
+
+        // 提取第3个匹配remark，设置move
+        num = ovector[7] - ovector[6];
+        if (num > 0) {
+            wcsncpy(remarkStr, mStr + ovector[6], num);
+            remarkStr[num] = L'\x0';
+            setRemark(move, remarkStr);
+            if (fmt == PGN_ZH)
+                wprintf(L"%d: remarkStr: %s\n", __LINE__, remarkStr);
+        }
+        if (fmt == PGN_ZH)
+            __doMove(ins, move);
+
+        // 第4个子匹配成功，有")+"
+        num = ovector[9] - ovector[8];
+        if (num > 0) {
+            for (int i = 0; i < num; ++i) {
+                preMove = preOtherMoves[--preOthIndex];
+                if (fmt == PGN_ZH) {
+                    do {
+                        __undoMove(ins, move);
+                        move = move->pmove;
+                    } while (!isSameMove(move, preMove));
+                    __doMove(ins, preMove);
+                }
+            }
+        } else
+            preMove = move;
+    }
+    if (fmt == PGN_ZH)
+        while (!isSameMove(move, ins->rootMove)) {
+            __undoMove(ins, move);
+            move = move->pmove;
+        }
     //*/
     free(moveStr);
     pcre16_free(remReg);
@@ -599,11 +676,17 @@ static void __writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, Move* move,
     wchar_t boutStr[6] = { 0 }, tempStr[REMARKSIZE] = { 0 };
     swprintf(boutStr, 6, L"%d. ", (move->nextNo_ + 1) / 2);
     bool isEven = move->nextNo_ % 2 == 0;
-    if (isOther)
-        fwprintf(fout, L"(%s%s", boutStr, isEven ? L"... " : L"");
-    else
+    if (isOther) {
+        fwprintf(fout, L"(%s", boutStr);
+        if (isEven)
+            fwprintf(fout, L"... ");
+    } else
         fwprintf(fout, isEven ? L" " : boutStr);
-    fwprintf(fout, isPGN_ZH ? getZhStr(tempStr, REMARKSIZE, ins->board, move) : getICCS(tempStr, REMARKSIZE, move));
+
+    if (isPGN_ZH)
+        fwprintf(fout, getZhStr(tempStr, ins->board, move));
+    else
+        fwprintf(fout, getICCS(tempStr, move));
     fwprintf(fout, L" ");
     if (move->remark != NULL)
         fwprintf(fout, L" \n{%s}\n ", move->remark);
@@ -643,7 +726,7 @@ static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][c
 {
     int firstCol = move->CC_ColNo_ * 5, row = move->nextNo_ * 2;
     wchar_t zhStr[6] = { 0 }, remStr[REMARKSIZE] = { 0 };
-    getZhStr(zhStr, 6, ins->board, move);
+    getZhStr(zhStr, ins->board, move);
     wprintf(L"line:%3d=> (%d,%d) %s\n", __LINE__, move->nextNo_, move->CC_ColNo_, zhStr);
     assert(wcslen(zhStr) == 4);
     for (int i = 0; i < 4; ++i)
@@ -707,7 +790,13 @@ Instance* read(Instance* ins, const char* filename)
         readJSON(ins, fin);
         break;
     default:
+        if (fmt != PGN_ICCS && fmt != PGN_ZH && fmt != PGN_CC) {
+            wprintf(L"未实现的打开文件扩展名！");
+            break;
+        }
         readInfo_PGN(ins, fin);
+        // PGN_ZH, PGN_CC在读取move之前需要先设置board
+        __getFENToSetBoard(ins);
         switch (fmt) {
         case PGN_ICCS:
             readMove_PGN_ICCSZH(ins, fin, PGN_ICCS);
@@ -719,15 +808,16 @@ Instance* read(Instance* ins, const char* filename)
             readMove_PGN_CC(ins, fin);
             break;
         default:
-            wprintf(L"未实现的打开文件扩展名！");
             break;
         }
         break;
     }
-    fclose(fin);
-    __getFENToSetBoard(ins);
+    if (fmt == XQF || fmt == BIN || fmt == JSON)
+        __getFENToSetBoard(ins);
+
     if (ins->rootMove->nmove != NULL)
         setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
+    fclose(fin);
     return ins;
 }
 
@@ -791,7 +881,7 @@ void back(Instance* ins)
 void backTo(Instance* ins, Move* move)
 {
     while (ins->currentMove->pmove != NULL
-        && !isSame(ins->currentMove, move))
+        && !isSameMove(ins->currentMove, move))
         back(ins);
 }
 
@@ -828,16 +918,18 @@ void testInstance(FILE* fout)
 
     ins = newInstance();
     read(ins, "01.json");
-    /*
-    //*/
-
     write(ins, "01.pgn_iccs");
     delInstance(ins);
 
     ins = newInstance();
     read(ins, "01.pgn_iccs");
-
     write(ins, "01.pgn_zh");
-    //write(ins, "01.pgn_cc");
+    delInstance(ins);
+
+    ins = newInstance();
+    read(ins, "01.pgn_zh");
+    write(ins, "01.pgn_cc");
+    /*
+    //*/
     delInstance(ins);
 }

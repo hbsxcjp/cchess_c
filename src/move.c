@@ -3,8 +3,9 @@
 #include "head/piece.h"
 #include "head/tools.h"
 
-const wchar_t ICCSCHAR[BOARDCOL + 1] = L"abcdefghi";
 // 着法相关的字符数组静态全局变量
+const wchar_t ICCSCOLCHAR[] = L"abcdefghi";
+const wchar_t ICCSROWCHAR[] = L"0123456789";
 const wchar_t PRECHAR[] = L"前中后";
 const wchar_t MOVCHAR[] = L"退平进";
 const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
@@ -22,9 +23,9 @@ Move* newMove(void)
     return move;
 }
 
-bool isSame(const Move* amove, const Move* bmove)
+bool isSameMove(const Move* amove, const Move* bmove)
 {
-    return amove->nextNo_ == bmove->nextNo_ && amove->otherNo_ == bmove->otherNo_;
+    return (amove->nextNo_ == bmove->nextNo_) && (amove->otherNo_ == bmove->otherNo_);
 }
 
 Move* addNext(Move* move)
@@ -77,11 +78,21 @@ void cutOhterMove(Move* move)
     delMove(cmove);
 }
 
-wchar_t* getICCS(wchar_t* ICCSStr, size_t n, const Move* move)
+void setMove_iccs(Move* move, const wchar_t* iccsStr)
 {
-    swprintf(ICCSStr, n, L"%c%d%c%d",
-        ICCSCHAR[getCol_s(move->fseat)], getRow_s(move->fseat),
-        ICCSCHAR[getCol_s(move->tseat)], getRow_s(move->tseat));
+    move->fseat = getSeat_rc(
+        wcschr(ICCSROWCHAR, iccsStr[1]) - ICCSROWCHAR,
+        wcschr(ICCSCOLCHAR, iccsStr[0]) - ICCSCOLCHAR);
+    move->tseat = getSeat_rc(
+        wcschr(ICCSROWCHAR, iccsStr[3]) - ICCSROWCHAR,
+        wcschr(ICCSCOLCHAR, iccsStr[2]) - ICCSCOLCHAR);
+}
+
+wchar_t* getICCS(wchar_t* ICCSStr, const Move* move)
+{
+    swprintf(ICCSStr, 5, L"%c%d%c%d",
+        ICCSCOLCHAR[getCol_s(move->fseat)], getRow_s(move->fseat),
+        ICCSCOLCHAR[getCol_s(move->tseat)], getRow_s(move->tseat));
     return ICCSStr;
 }
 
@@ -113,7 +124,7 @@ static wchar_t* __getPreCHars(wchar_t* preChars, int count)
 
 extern const wchar_t* PieceNames[PIECECOLORNUM];
 
-void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
+void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
     // 根据最后一个字符判断该着法属于哪一方
@@ -159,11 +170,13 @@ void setMove(Move* move, const Board* board, const wchar_t* zhStr, size_t n)
         move->tseat = getSeat_rc(trow, toCol);
     }
 
-    //wchar_t azhStr[5];
-    //assert(wcscmp(zhStr, getZhStr(azhStr, 5, board, move)) == 0);
+    //*
+    wchar_t azhStr[5];
+    assert(wcscmp(zhStr, getZhStr(azhStr, board, move)) == 0);
+    //*/
 }
 
-wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move)
+wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
 {
     Piece fpiece = getPiece_s(board, move->fseat);
     assert(fpiece != BLANKPIECE);
@@ -198,10 +211,11 @@ wchar_t* getZhStr(wchar_t* zhStr, size_t n, const Board* board, const Move* move
             : (isBottom ? BOARDCOL - 1 - tcol : tcol)];
     zhStr[4] = L'\x0';
 
-    //*
+    /*
     Move* amove = newMove();
-    setMove(amove, board, zhStr, 5);
+    setMove_zh(amove, board, zhStr);
     assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
+    delMove(amove);
     //*/
     return zhStr;
 }
