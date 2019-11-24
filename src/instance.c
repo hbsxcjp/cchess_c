@@ -665,7 +665,6 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
             move = move->pmove;
         }
     //*/
-    free(cmoveStr);
     free(moveStr);
     pcre16_free(remReg);
     pcre16_free(moveReg);
@@ -715,7 +714,7 @@ static void writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, RecFormat fmt)
 
 static void readMove_PGN_CC(Instance* ins, FILE* fin) {}
 
-wchar_t* __getRemarkStr_PGN(wchar_t* remStr, Move* move)
+static wchar_t* __getRemarkStr_PGN_CC(wchar_t* remStr, Move* move)
 {
     swprintf(remStr, REMARKSIZE, L"(%d,%d): {%s}\n",
         move->nextNo_, move->CC_ColNo_, move->remark);
@@ -730,16 +729,18 @@ static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][c
     getZhStr(zhStr, ins->board, move);
     wprintf(L"line:%3d=> (%d,%d) %s\n", __LINE__, move->nextNo_, move->CC_ColNo_, zhStr);
     assert(wcslen(zhStr) == 4);
-    for (int i = 0; i < 4; ++i)
-        lineStr[row][firstCol + i] = zhStr[i];
+    wcsncpy(lineStr[row] + firstCol, zhStr, 4);
+    //for (int i = 0; i < 4; ++i)
+    //    lineStr[row][firstCol + i] = zhStr[i];
 
     if (move->remark != NULL)
-        wcscat(remarkStr, __getRemarkStr_PGN(remStr, move));
+        wcscat(remarkStr, __getRemarkStr_PGN_CC(remStr, move));
 
     if (move->omove != NULL) {
         int fcol = firstCol + 4, tnum = move->omove->CC_ColNo_ * 5 - fcol;
-        for (int i = 0; i < tnum; ++i)
-            lineStr[row][fcol + i] = L'…';
+        wmemset(lineStr[row] + fcol, L'…', tnum);
+        //for (int i = 0; i < tnum; ++i)
+        //    lineStr[row][fcol + i] = L'…';
         __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, move->omove);
     }
 
@@ -755,21 +756,23 @@ static void __writeMove_PGN_CC(int rowNum, int colNum, wchar_t lineStr[rowNum][c
 
 static void writeMove_PGN_CC(Instance* ins, FILE* fout)
 {
-    int rowNum = (ins->maxRow_ + 1) * 2, colNum = (ins->maxCol_ + 1) * 5 + 1;
+    int rowNum = (ins->maxRow_ + 1) * 2,
+        colNum = (ins->maxCol_ + 1) * 5 + 1;
     wchar_t lineStr[rowNum][colNum];
     wmemset(lineStr[0], L'　', rowNum * colNum);
     for (int row = 0; row < rowNum; ++row)
         lineStr[row][colNum - 1] = L'\x0'; // 加尾0字符后，每行数组可直接转换成字符串
-    lineStr[0][0] = L'　';
+    //lineStr[0][0] = L'　';
     lineStr[0][1] = L'开';
     lineStr[0][2] = L'始';
     lineStr[1][2] = L'↓';
-    wchar_t remarkStr[MOVES_SIZE] = { 0 }, remStr[REMARKSIZE] = { 0 };
-    if (ins->rootMove->remark != NULL)
-        wcscat(remarkStr, __getRemarkStr_PGN(remStr, ins->rootMove));
 
+    wchar_t remarkStr[MOVES_SIZE] = { 0 };
+    if (ins->rootMove->remark != NULL)
+        __getRemarkStr_PGN_CC(remarkStr, ins->rootMove);
     if (ins->rootMove->nmove != NULL)
         __writeMove_PGN_CC(rowNum, colNum, lineStr, remarkStr, ins, ins->rootMove->nmove);
+
     for (int i = 0; i < rowNum; ++i)
         fwprintf(fout, L"%s\n", lineStr[i]);
     fwprintf(fout, L"%s", remarkStr);
@@ -838,6 +841,10 @@ void write(Instance* ins, const char* filename)
         writeJSON(ins, fout);
         break;
     default:
+        if (fmt != PGN_ICCS && fmt != PGN_ZH && fmt != PGN_CC) {
+            wprintf(L"未实现的写入文件扩展名！");
+            break;
+        }
         for (int i = 0; i < ins->infoCount; ++i)
             fwprintf(fout, L"[%s \"%s\"]\n", ins->info[i][0], ins->info[i][1]);
         fwprintf(fout, L"\n");
@@ -855,7 +862,6 @@ void write(Instance* ins, const char* filename)
             writeMove_PGN_CC(ins, fout);
             break;
         default:
-            wprintf(L"未实现的写入文件扩展名！");
             break;
         }
         break;
@@ -924,13 +930,13 @@ void testInstance(FILE* fout)
 
     ins = newInstance();
     read(ins, "01.pgn_iccs");
-    write(ins, "01.pgn_zh");
+    write(ins, "01.pgn_cc");
+    /*
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.pgn_zh");
-    write(ins, "01.pgn_cc");
-    /*
+    read(ins, "01.pgn_cc");
+    write(ins, "01.pgn_zh");
     //*/
     delInstance(ins);
 }
