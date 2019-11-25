@@ -689,7 +689,7 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     assert(remReg);
 
     //wchar_t* moveStr = getWString(fin);
-    int row = 1, regCount = 0;
+    int row = 1;
     wchar_t lineStr[TEMPSTR_SIZE] = { 0 };
     while ((fgetws(lineStr, TEMPSTR_SIZE, fin)) && lineStr[0] != L'\n') { // 以空行为终止特征
         int length = wcslen(lineStr);
@@ -699,7 +699,7 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
             regCount = pcre16_exec(moveReg, NULL, mStr, wcslen(mStr),
                 0, 0, ovector, OVECCOUNT);
             if(regCount>0){
-                setMove_zh(move, ins->board, mStr);
+                ;//setMove_zh(move, ins->board, mStr);
             }
         }
         fgetws(lineStr, TEMPSTR_SIZE, fin);
