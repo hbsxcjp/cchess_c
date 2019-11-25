@@ -41,6 +41,20 @@ const char* getExt(const char* filename)
     return strrchr(filename, '.');
 }
 
+wchar_t* getWString(FILE* fin)
+{
+    long start = ftell(fin);
+    fseek(fin, 0, SEEK_END);
+    long end = ftell(fin);
+    fseek(fin, start, SEEK_SET);
+    wchar_t* wStr = malloc((end - start + 1) * sizeof(wchar_t));
+    int index = 0;
+    while (!feof(fin))
+        wStr[index++] = fgetwc(fin);
+    wStr[index] = L'\x0';
+    return wStr;
+}
+
 int getFiles(char* fileNames[], const char* path)
 {
     /* long hFile = 0; //文件句柄
