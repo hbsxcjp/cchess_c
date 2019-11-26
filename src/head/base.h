@@ -5,6 +5,7 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <io.h>
 #include <stdlib.h>
 #include <wchar.h>
 //#include <math.h>

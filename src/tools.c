@@ -36,6 +36,13 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
+char* getFileName(char* filename)
+{
+    int offset = strrchr(filename, '.') - filename;
+    filename[offset] = '\x0';
+    return filename;
+}
+
 const char* getExt(const char* filename)
 {
     return strrchr(filename, '.');

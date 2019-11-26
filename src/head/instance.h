@@ -36,8 +36,14 @@ void goOther(Instance* ins);
 // 前进数步
 void goInc(Instance* ins, int inc);
 
-// 转换棋局实例
+// 转变棋局实例
 void changeInstanceSide(Instance* ins, ChangeType ct);
+
+// 转换棋局存储格式
+void transDir(const char* dirfrom, RecFormat fmt);
+
+// 批量转换目录的存储格式
+void testTransDir(int fd, int td, int ff, int ft, int tf, int tt);
 
 // 测试本翻译单元各种对象、函数
 void testInstance(FILE* fout);

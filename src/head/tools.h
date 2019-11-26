@@ -9,6 +9,9 @@ char* trim(char* str);
 // 去掉宽字符串前后的空白字符
 wchar_t* wtrim(wchar_t* wstr);
 
+// 从文件名去掉扩展名
+char* getFileName(char* filename);
+
 // 从文件名提取扩展名
 const char* getExt(const char* filename);
 
