@@ -677,41 +677,42 @@ static void writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, RecFormat fmt)
         __writeMove_PGN_ICCSZH(ins, fout, ins->rootMove->nmove, fmt == PGN_ZH, false);
 }
 
-static void __setRemark_PGN_CC(Move* move, wchar_t* remLines[], int remCount)
+static void __setRemark_PGN_CC(Move* move, int row, int col, wchar_t* remLines[], int remCount)
 {
     wchar_t name[12] = { 0 };
-    swprintf(name, 12, L"(%d,%d)", move->nextNo_, move->otherNo_);
+    swprintf(name, 12, L"(%d,%d)", row, col);
     for (int index = 0; index < remCount; ++index)
         if (wcscmp(name, remLines[index * 2]) == 0)
             setRemark(move, remLines[index * 2 + 1]);
 }
 
 static void __setMove_PGN_CC(Instance* ins, Move* move, pcre16* moveReg,
-    wchar_t* moveLines[], int maxRow, int maxCol, int row, int col, wchar_t* remLines[], int remCount)
+    wchar_t* moveLines[], int rowNum, int colNum, int row, int col, wchar_t* remLines[], int remCount)
 {
-    int regCount = 0, OVECCOUNT = 8, ovector[OVECCOUNT];
-    wchar_t* mStr = moveLines[row * maxCol + col];
+    wchar_t* mStr = moveLines[row * colNum + col];
     while (mStr[0] == L'…')
-        mStr += 5;
+        mStr = moveLines[row * colNum + (++col)];
+    //wprintf(L"%d: %s\n", __LINE__, mStr);
 
+    int regCount = 0, OVECCOUNT = 8, ovector[OVECCOUNT];
     regCount = pcre16_exec(moveReg, NULL, mStr, wcslen(mStr),
         0, 0, ovector, OVECCOUNT);
-    wprintf(L"%d: %s\n", __LINE__, mStr);
     assert(regCount > 0);
-    
+
     wchar_t lastwc = mStr[4];
     mStr[4] = L'\x0';
     setMove_zh(move, ins->board, mStr);
-    __setRemark_PGN_CC(move, remLines, remCount);
+    __setRemark_PGN_CC(move, row, col, remLines, remCount);
 
     if (lastwc == L'…')
         __setMove_PGN_CC(ins, addOther(move), moveReg,
-            moveLines, maxRow, maxCol, row, col + 1, remLines, remCount);
-    if (move->nextNo_ < maxRow
-        && moveLines[(row + 1) * maxCol + col][0] != L'　') {
+            moveLines, rowNum, colNum, row, col + 1, remLines, remCount);
+
+    if (move->nextNo_ < rowNum - 1
+        && moveLines[(row + 1) * colNum + col][0] != L'　') {
         __doMove(ins, move);
         __setMove_PGN_CC(ins, addNext(move), moveReg,
-            moveLines, maxRow, maxCol, row + 1, col, remLines, remCount);
+            moveLines, rowNum, colNum, row + 1, col, remLines, remCount);
         __undoMove(ins, move);
     }
 }
@@ -727,19 +728,19 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     assert(moveReg);
     assert(remReg);
 
-    wchar_t *moveLines[TEMPSTR_SIZE], lineStr[TEMPSTR_SIZE];
-    fgetws(lineStr, TEMPSTR_SIZE, fin); // 弃掉行
-    fgetws(lineStr, TEMPSTR_SIZE, fin); // 弃掉行
-    int maxRow = 0, maxCol = wcslen(lineStr) / 5;
+    wchar_t *moveLines[TEMPSTR_SIZE * 2], lineStr[TEMPSTR_SIZE];
+    int rowNum = 0, colNum = -1;
     while (fgetws(lineStr, TEMPSTR_SIZE, fin) && lineStr[0] != L'\n') {
         //wprintf(L"%d: %s", __LINE__, lineStr);
-        for (int col = 0; col < maxCol; ++col) {
+        if (colNum < 0)
+            colNum = wcslen(lineStr) / 5;
+        for (int col = 0; col < colNum; ++col) {
             wchar_t* mStr = calloc(6, sizeof(wchar_t));
             wcsncpy(mStr, lineStr + col * 5, 5);
-            moveLines[maxRow * maxCol + col] = mStr;
-            //wprintf(L"%d: %s\n", __LINE__, moveLines[maxRow * maxCol + col]);
+            moveLines[rowNum * colNum + col] = mStr;
+            //wprintf(L"%d: %s\n", __LINE__, moveLines[rowNum * colNum + col]);
         }
-        ++maxRow;
+        ++rowNum;
         fgetws(lineStr, TEMPSTR_SIZE, fin); // 弃掉行
     }
     int remCount = 0;
@@ -759,12 +760,11 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
         }
     }
 
-    __setRemark_PGN_CC(ins->rootMove, remLines, remCount);
-    if (maxRow > 0)
-        __setMove_PGN_CC(ins, addNext(ins->rootMove), moveReg,
-            moveLines, maxRow, maxCol, 1, 0, remLines, remCount);
+    __setRemark_PGN_CC(ins->rootMove, 0, 0, remLines, remCount);
+    if (rowNum > 0)
+        __setMove_PGN_CC(ins, addNext(ins->rootMove), moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount);
 
-    for (int i = maxRow * maxCol - 1; i >= 0; --i)
+    for (int i = rowNum * colNum - 1; i >= 0; --i)
         if (remLines[i] != NULL)
             free(remLines[i]);
     for (int i = 0; i < remCount; ++i)
@@ -990,8 +990,9 @@ void testInstance(FILE* fout)
 
     ins = newInstance();
     read(ins, "01.pgn_cc");
-    //write(ins, "01.pgn_cc");
-    /*
-    //*/
+    write(ins, "01.pgn_cc");
+
+    wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
+        ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
     delInstance(ins);
 }
