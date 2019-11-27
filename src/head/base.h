@@ -119,11 +119,12 @@ typedef enum {
 // 棋局存储类型
 typedef enum {
     XQF,
+    BIN,
+    JSON,
     PGN_ICCS,
     PGN_ZH,
     PGN_CC,
-    BIN,
-    JSON
+    NOTFMT
 } RecFormat;
 
 // 着法类型
