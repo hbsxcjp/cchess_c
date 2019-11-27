@@ -36,7 +36,7 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
-char* getFileName(char* filename)
+char* cutExt(char* filename)
 {
     int offset = strrchr(filename, '.') - filename;
     filename[offset] = '\x0';
@@ -60,6 +60,36 @@ wchar_t* getWString(FILE* fin)
         wStr[index++] = fgetwc(fin);
     wStr[index] = L'\x0';
     return wStr;
+}
+
+/*****************************************************************************************
+Function:       CopyFile
+Description:    复制文件
+Input:          SourceFile:原文件路径 NewFile:复制后的文件路径
+Return:         1:成功 0:失败
+******************************************************************************************/
+int copyFile(const char* SourceFile, const char* NewFile)
+{
+    FILE* fin = fopen(SourceFile, "rb"); //打开源文件
+    if (fin == NULL) //打开源文件失败
+    {
+        printf("Error 1: Fail to open the source file.");
+        return 0;
+    }
+    FILE* fout = fopen(NewFile, "wb"); //创建目标文件
+    if (fout == NULL) //创建文件失败
+    {
+        printf("Error 2: Fail to create the new file.");
+        return 0;
+    } else { //复制文件
+        char data[1024] = { 0 };
+        size_t n = 0;
+        while (!feof(fin)) {
+            n = fread(data, sizeof(char), 1024, fin);
+            fwrite(data, sizeof(char), n, fout);
+        }
+        return 1;
+    }
 }
 
 int getFiles(char* fileNames[], const char* path)

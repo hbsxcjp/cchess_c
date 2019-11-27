@@ -16,10 +16,10 @@ void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value);
 void setMoveNums(Instance* ins, Move* move);
 
 // 从文件读取到instance
-Instance* read(Instance*, const char* filename);
+Instance* readInstance(Instance*, const char* filename);
 
 // 从instance存储到文件
-void write(Instance* ins, const char* filename);
+void writeInstance(Instance* ins, const char* filename);
 
 // 前进一步
 void go(Instance* ins);
@@ -40,7 +40,7 @@ void goInc(Instance* ins, int inc);
 void changeInstanceSide(Instance* ins, ChangeType ct);
 
 // 转换棋局存储格式
-void transDir(const char* dirfrom, RecFormat fmt);
+void transDir(char* dirfrom, RecFormat fmt);
 
 // 批量转换目录的存储格式
 void testTransDir(int fd, int td, int ff, int ft, int tf, int tt);

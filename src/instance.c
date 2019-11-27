@@ -10,6 +10,7 @@
 #include "pcre.h"
 
 static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
+static const char* extensions[] = { ".xqf", ".pgn_iccs", ".pgn_zh", ".pgn_cc", ".bin", ".json" };
 
 Instance* newInstance(void)
 {
@@ -826,7 +827,7 @@ static void writeMove_PGN_CC(Instance* ins, FILE* fout)
     free(lineStr);
 }
 
-Instance* read(Instance* ins, const char* filename)
+Instance* readInstance(Instance* ins, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     FILE* fin = fopen(filename,
@@ -873,7 +874,7 @@ Instance* read(Instance* ins, const char* filename)
     return ins;
 }
 
-void write(Instance* ins, const char* filename)
+void writeInstance(Instance* ins, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     FILE* fout = fopen(filename,
@@ -961,7 +962,6 @@ void changeSide(Instance* ins, ChangeType ct) {}
 static void __transDir(const char* dirfrom, char* dirto, RecFormat fmt,
     int fcount, int dcount, int movcount, int remcount, int remlenmax)
 {
-    static const char extensions[] = ".xqf.pgn_iccs.pgn_zh.pgn_cc.bin.json";
     long hFile = 0; //文件句柄
     struct _finddata_t fileinfo; //文件信息
 
@@ -972,7 +972,7 @@ static void __transDir(const char* dirfrom, char* dirto, RecFormat fmt,
     if ((hFile = _findfirst(strcat(dirName, "/*"), &fileinfo)) != -1) {
         do {
             char* filename = fileinfo.name;
-            char* subdirfrom_filename[128] = { 0 };
+            char subdirfrom_filename[128] = { 0 };
             strcpy(subdirfrom_filename, dirfrom);
             strcat(strcat(subdirfrom_filename, "/"), filename);
             if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
@@ -981,22 +981,28 @@ static void __transDir(const char* dirfrom, char* dirto, RecFormat fmt,
                     char* subdirto[128] = { 0 };
                     strcpy(subdirto, dirto);
                     strcat(strcat(dirto, "/"), filename);
-                    __transDir(subdirfrom_filename, subdirto);
+                    __transDir(subdirfrom_filename, subdirto, fmt, fcount, dcount, movcount, remcount, remlenmax);
                 }
             } else { //如果是文件,执行转换
-                char* ext_old[32] = { 0 };
-                ext_old = getExt(filename);
-                char* fileto[128] = { 0 };
+                const char* ext_old = getExt(filename);
+                char fileto[128] = { 0 };
                 strcpy(fileto, dirto);
-                strcat(strcat(fileto, "/"), getFileName(filename));
-                if (strstr(extensions, ext_old) != NULL) {
+                strcat(strcat(fileto, "/"), cutExt(filename));
+                bool hasExt = false;
+                for (int i = sizeof(extensions) / sizeof(extensions[0]); i >= 0; --i)
+                    if (strcmp(extensions[i], ext_old) == 0) {
+                        hasExt = true;
+                        break;
+                    }
+                if (hasExt) {
                     ++fcount;
                     Instance* ins = newInstance();
-                    read(ins, subdirfrom_filename);
-                    write(ins, strcat(fileto, getExt(fmt)));
+                    readInstance(ins, subdirfrom_filename);
+                    writeInstance(ins, strcat(fileto, extensions[fmt]));
                     movcount += ins->movCount_;
                     remcount += ins->remCount_;
-                    remlenmax = max(remlenmax, ins->maxRemLen_);
+                    if (remlenmax < ins->maxRemLen_)
+                        remlenmax = ins->maxRemLen_;
                     delInstance(ins);
                 } else
                     copyFile(subdirfrom_filename, strcat(fileto, ext_old));
@@ -1006,15 +1012,15 @@ static void __transDir(const char* dirfrom, char* dirto, RecFormat fmt,
     }
 }
 
-void transDir(const char* dirfrom, RecFormat fmt)
+void transDir(char* dirfrom, RecFormat fmt)
 {
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
     char dirto[128] = { 0 };
-    wcscat(getFileName(dirto, dirfrom), getExt(fmt));
+    wcscat(cutExt(dirfrom), extensions[fmt]);
 
     __transDir(dirfrom, dirto, fmt, fcount, dcount, movcount, remcount, remlenmax);
     printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d",
-        dirfrom, getExt(fmt), fcount, dcount, movcount, remcount, remlenmax);
+        dirfrom, extensions[fmt], fcount, dcount, movcount, remcount, remlenmax);
 }
 
 void testTransDir(int fd, int td, int ff, int ft, int tf, int tt);
@@ -1023,33 +1029,33 @@ void testTransDir(int fd, int td, int ff, int ft, int tf, int tt);
 void testInstance(FILE* fout)
 {
     Instance* ins = newInstance();
-    read(ins, "01.xqf");
-    write(ins, "01.bin");
+    readInstance(ins, "01.xqf");
+    writeInstance(ins, "01.bin");
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.bin");
-    write(ins, "01.json");
+    readInstance(ins, "01.bin");
+    writeInstance(ins, "01.json");
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.json");
-    write(ins, "01.pgn_iccs");
+    readInstance(ins, "01.json");
+    writeInstance(ins, "01.pgn_iccs");
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.pgn_iccs");
-    write(ins, "01.pgn_zh");
+    readInstance(ins, "01.pgn_iccs");
+    writeInstance(ins, "01.pgn_zh");
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.pgn_zh");
-    write(ins, "01.pgn_cc");
+    readInstance(ins, "01.pgn_zh");
+    writeInstance(ins, "01.pgn_cc");
     delInstance(ins);
 
     ins = newInstance();
-    read(ins, "01.pgn_cc");
-    write(ins, "01.pgn_cc");
+    readInstance(ins, "01.pgn_cc");
+    writeInstance(ins, "01.pgn_cc");
 
     wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
         ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
