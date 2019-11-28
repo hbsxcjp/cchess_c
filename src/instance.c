@@ -128,7 +128,7 @@ static void __readMoveData(char* data, wchar_t* remark, FILE* fin)
     }
 }
 
-static void __readMove(Move* move, FILE* fin)
+static void __readMove_XQF(Move* move, FILE* fin)
 {
     char data[4] = { 0 };
     wchar_t remark[REMARKSIZE] = { 0 };
@@ -143,9 +143,9 @@ static void __readMove(Move* move, FILE* fin)
     setRemark(move, remark);
 
     if (data[2] & 0x80) //# 有左子树
-        __readMove(addNext(move), fin);
+        __readMove_XQF(addNext(move), fin);
     if (data[2] & 0x40) // # 有右子树
-        __readMove(addOther(move), fin);
+        __readMove_XQF(addOther(move), fin);
 }
 
 void setMoveNums(Instance* ins, Move* move)
@@ -302,7 +302,7 @@ static void readXQF(Instance* ins, FILE* fin)
     addInfoItem(ins, L"Version", tempStr); // 整数存储
 
     fseek(fin, 1024, SEEK_SET);
-    __readMove(ins->rootMove, fin);
+    __readMove_XQF(ins->rootMove, fin);
 }
 
 static void __readWstring_BIN(wchar_t* wstr, FILE* fin)
@@ -962,7 +962,7 @@ void goInc(Instance* ins, int inc)
 void changeSide(Instance* ins, ChangeType ct) {}
 
 static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
-    int fcount, int dcount, int movcount, int remcount, int remlenmax)
+    int *pfcount, int *pdcount, int *pmovcount, int *premcount, int *premlenmax)
 {
     long hFile = 0; //文件句柄
     struct _finddata_t fileinfo; //文件信息
@@ -970,8 +970,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
         mkdir(dirto);
     char dirName[FILENAME_MAX] = { 0 };
     strcpy(dirName, dirfrom);
-    printf("%d: %s\n", __LINE__, dirName);
-
+    //printf("%d: %s\n", __LINE__, dirName);
     if ((hFile = _findfirst(strcat(dirName, "\\*"), &fileinfo)) == -1)
         return;
 
@@ -986,39 +985,39 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
         if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
             if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
                 continue;
-            ++dcount;
+            ++*pdcount;
             char subdirto[FILENAME_MAX] = { 0 };
             strcpy(subdirto, dirto);
             strcat(strcat(subdirto, "\\"), name);
             __transDir(dir_fileName, subdirto, tofmt,
-                fcount, dcount, movcount, remcount, remlenmax);
+                pfcount, pdcount, pmovcount, premcount, premlenmax);
         } else { //如果是文件,执行转换
             const char* fromExt = getExt(name);
 
             char tofilename[FILENAME_MAX] = { 0 }, filename_cut[FILENAME_MAX] = { 0 };
             strcpy(tofilename, dirto);
             strcat(strcat(tofilename, "\\"), getFileName_cut(filename_cut, name));
-            printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
-                __LINE__, dirto, fromExt, __getRecFormat(fromExt));
+            //printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
+            //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
 
             if (__getRecFormat(fromExt) != NOTFMT) {
                 Instance* ins = newInstance();
                 if (readInstance(ins, dir_fileName) == NULL)
                     return;
                 strcat(tofilename, EXTNAMES[tofmt]);
-                printf("%d: %s\n", __LINE__, tofilename);
+                //printf("%d: %s\n", __LINE__, tofilename);
                 writeInstance(ins, tofilename);
 
-                ++fcount;
-                movcount += ins->movCount_;
-                remcount += ins->remCount_;
-                if (remlenmax < ins->maxRemLen_)
-                    remlenmax = ins->maxRemLen_;
+                ++*pfcount;
+                *pmovcount += ins->movCount_;
+                *premcount += ins->remCount_;
+                if (*premlenmax < ins->maxRemLen_)
+                    *premlenmax = ins->maxRemLen_;
                 delInstance(ins);
             } else {
                 strcat(tofilename, fromExt);
                 copyFile(dir_fileName, tofilename);
-                printf("%d: %s\n", __LINE__, tofilename);
+                //printf("%d: %s\n", __LINE__, tofilename);
             }
         }
         //*/
@@ -1027,13 +1026,14 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
 }
 
 void transDir(const char* dirfrom, RecFormat tofmt)
-{
+{    
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
     char dirto[FILENAME_MAX];
     strcat(getFileName_cut(dirto, dirfrom), EXTNAMES[tofmt]);
+    //printf("%d: %s tofmt:%s\n", __LINE__, dirto, EXTNAMES[tofmt]);
 
-    __transDir(dirfrom, dirto, tofmt, fcount, dcount, movcount, remcount, remlenmax);
-    wchar_t wformatStr[] = L"%s =>%s: 转换%d个文件, %d个目录成功！着法数量: %d, 注释数量: %d, 最大注释长度: %d\n";
+    __transDir(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
+    wchar_t wformatStr[] = L"%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n";
     char formatStr[REMARKSIZE];
     wcstombs(formatStr, wformatStr, REMARKSIZE);
     printf(formatStr, dirfrom, EXTNAMES[tofmt], fcount, dcount, movcount, remcount, remlenmax);

@@ -14,7 +14,7 @@ int main(int argc, char const* argv[])
         //testPiece(fout);
         //testBoard(fout);
         testInstance(fout);
-        testTransDir(0, 1, 0, 1, 1, 6);
+        testTransDir(0, 2, 0, 3, 1, 6);
 
         fclose(fout);
     }

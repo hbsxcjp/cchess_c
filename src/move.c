@@ -222,7 +222,7 @@ wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
 
 void setRemark(Move* move, wchar_t* remark)
 {
-    remark = wtrim(remark);
+    //remark = wtrim(remark);
     int len = wcslen(remark);
     if (len > 0) {
         move->remark = (wchar_t*)calloc(len + 1, sizeof(remark[0]));

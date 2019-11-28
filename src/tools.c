@@ -40,6 +40,7 @@ char* getFileName_cut(char* filename_cut, const char* filename)
 {
     int offset = strrchr(filename, '.') - filename;
     strncpy(filename_cut, filename, offset);
+    filename_cut[offset] = '\0';
     return filename_cut;
 }
 
