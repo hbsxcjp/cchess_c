@@ -113,9 +113,11 @@ inline static bool __isLinePiece(wchar_t name)
 
 static wchar_t* __getPreCHars(wchar_t* preChars, int count)
 {
-    if (count == 2)
-        wcsncpy(wcsncpy(preChars, PRECHAR, 1), PRECHAR + 2, 1);
-    else if (count == 3)
+    if (count == 2) {
+        preChars[0] = PRECHAR[0];
+        preChars[1] = PRECHAR[2];
+        preChars[2] = L'\x0';
+    } else if (count == 3)
         wcscpy(preChars, PRECHAR);
     else // count == 4,5
         wcsncpy(preChars, NUMCHAR[RED], 5);
@@ -170,7 +172,7 @@ void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
         move->tseat = getSeat_rc(trow, toCol);
     }
 
-    //*
+    /*
     wchar_t azhStr[5];
     assert(wcscmp(zhStr, getZhStr(azhStr, board, move)) == 0);
     //*/
@@ -212,6 +214,13 @@ wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
     zhStr[4] = L'\x0';
 
     /*
+    wchar_t iccsStr[12], boardStr[TEMPSTR_SIZE];
+    wprintf(L"iccs: %s zh:%s\n%s\n",
+        getICCS(iccsStr, move), zhStr, getBoardString(boardStr, board));
+    //*/
+    assert(wcslen(zhStr) == 4);
+
+    //*
     Move* amove = newMove();
     setMove_zh(amove, board, zhStr);
     assert(move->fseat == amove->fseat && move->tseat == amove->tseat);

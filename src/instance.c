@@ -576,9 +576,9 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
          *preMove = ins->rootMove,
          *preOtherMoves[REMARKSIZE] = { NULL };
     int preOthIndex = 0, length = 0;
-    wchar_t* mStr = moveStr;
-    while ((mStr += ovector[1]) && (length = wcslen(mStr)) > 0) {
-        regCount = pcre16_exec(moveReg, NULL, mStr,
+    wchar_t* pmoveStr = moveStr;
+    while ((pmoveStr += ovector[1]) && (length = wcslen(pmoveStr)) > 0) {
+        regCount = pcre16_exec(moveReg, NULL, pmoveStr,
             length, 0, 0, ovector, OVECCOUNT);
         if (regCount <= 0)
             break;
@@ -596,7 +596,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
         int num = ovector[5] - ovector[4];
         assert(num > 0);
         wchar_t iccs_zhStr[6] = { 0 };
-        wcsncpy(iccs_zhStr, mStr + ovector[4], num);
+        wcsncpy(iccs_zhStr, pmoveStr + ovector[4], num);
         if (isPGN_ZH)
             setMove_zh(move, ins->board, iccs_zhStr);
         else
@@ -605,7 +605,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
         // 提取第3个匹配remark，设置move
         num = ovector[7] - ovector[6];
         if (num > 0) {
-            wcsncpy(remarkStr, mStr + ovector[6], num);
+            wcsncpy(remarkStr, pmoveStr + ovector[6], num);
             remarkStr[num] = L'\x0';
             setRemark(move, remarkStr);
         }
@@ -685,24 +685,27 @@ static void __setRemark_PGN_CC(Move* move, int row, int col, wchar_t* remLines[]
     wchar_t name[12] = { 0 };
     swprintf(name, 12, L"(%d,%d)", row, col);
     for (int index = 0; index < remCount; ++index)
-        if (wcscmp(name, remLines[index * 2]) == 0)
+        if (wcscmp(name, remLines[index * 2]) == 0) {
             setRemark(move, remLines[index * 2 + 1]);
+            wprintf(L"%d: %s: %s\n", __LINE__, name, remLines[index * 2 + 1]);
+            break;
+        }
 }
 
 static void __setMove_PGN_CC(Instance* ins, Move* move, pcre16* moveReg,
     wchar_t* moveLines[], int rowNum, int colNum, int row, int col, wchar_t* remLines[], int remCount)
 {
-    wchar_t* mStr = moveLines[row * colNum + col];
-    while (mStr[0] == L'…')
-        mStr = moveLines[row * colNum + (++col)];
+    wchar_t* moveStr = moveLines[row * colNum + col];
+    while (moveStr[0] == L'…')
+        moveStr = moveLines[row * colNum + (++col)];
     int regCount = 0, OVECCOUNT = 8, ovector[OVECCOUNT];
-    regCount = pcre16_exec(moveReg, NULL, mStr, wcslen(mStr),
+    regCount = pcre16_exec(moveReg, NULL, moveStr, wcslen(moveStr),
         0, 0, ovector, OVECCOUNT);
     assert(regCount > 0);
 
-    wchar_t lastwc = mStr[4];
-    mStr[4] = L'\x0';
-    setMove_zh(move, ins->board, mStr);
+    wchar_t lastwc = moveStr[4];
+    moveStr[4] = L'\x0';
+    setMove_zh(move, ins->board, moveStr);
     __setRemark_PGN_CC(move, row, col, remLines, remCount);
 
     if (lastwc == L'…')
@@ -723,7 +726,7 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     const wchar_t movePat[] = L"([^…　]{4}[…　])",
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
     const char* error;
-    int erroffset = 0, regCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
+    int erroffset = 0;
     pcre16* moveReg = pcre16_compile(movePat, 0, &error, &erroffset, NULL);
     pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
     assert(moveReg);
@@ -731,23 +734,25 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
 
     wchar_t *moveLines[TEMPSTR_SIZE * 2], lineStr[TEMPSTR_SIZE];
     int rowNum = 0, colNum = -1;
-    while (fgetws(lineStr, TEMPSTR_SIZE, fin) && lineStr[0] != L'\n') {
+    while (fgetws(lineStr, TEMPSTR_SIZE, fin) && lineStr[0] != L'\n') { // 空行截止
         //wprintf(L"%d: %s", __LINE__, lineStr);
         if (colNum < 0)
             colNum = wcslen(lineStr) / 5;
         for (int col = 0; col < colNum; ++col) {
-            wchar_t* mStr = calloc(6, sizeof(wchar_t));
-            wcsncpy(mStr, lineStr + col * 5, 5);
-            moveLines[rowNum * colNum + col] = mStr;
+            wchar_t* moveStr = calloc(6, sizeof(wchar_t));
+            wcsncpy(moveStr, lineStr + col * 5, 5);
+            moveLines[rowNum * colNum + col] = moveStr;
             //wprintf(L"%d: %s\n", __LINE__, moveLines[rowNum * colNum + col]);
         }
         ++rowNum;
         fgetws(lineStr, TEMPSTR_SIZE, fin); // 弃掉行
     }
-    int remCount = 0;
-    wchar_t* remLines[TEMPSTR_SIZE];
-    while (fgetws(lineStr, TEMPSTR_SIZE, fin) && lineStr[0] != L'\n') {
-        regCount = pcre16_exec(remReg, NULL, lineStr, wcslen(lineStr),
+
+    int remCount = 0, regCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
+    wchar_t *remarksStr = getWString(fin), *remLines[TEMPSTR_SIZE];  
+    ovector[1] = 0;  
+    while ((remarksStr += ovector[1]) && wcslen(remarksStr) > 0) {
+        regCount = pcre16_exec(remReg, NULL, lineStr, wcslen(remarksStr),
             0, 0, ovector, OVECCOUNT);
         if (regCount > 0) {
             wchar_t *name = calloc(12, sizeof(wchar_t)),
@@ -756,7 +761,7 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
             wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
             remLines[remCount * 2] = name;
             remLines[remCount * 2 + 1] = value;
-            //wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
+            wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
             ++remCount;
         }
     }
@@ -765,6 +770,8 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     if (rowNum > 0)
         __setMove_PGN_CC(ins, addNext(ins->rootMove), moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount);
 
+    if (remarksStr)
+        free(remarksStr);
     for (int i = rowNum * colNum - 1; i >= 0; --i)
         if (remLines[i] != NULL)
             free(remLines[i]);
@@ -962,7 +969,7 @@ void goInc(Instance* ins, int inc)
 void changeSide(Instance* ins, ChangeType ct) {}
 
 static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
-    int *pfcount, int *pdcount, int *pmovcount, int *premcount, int *premlenmax)
+    int* pfcount, int* pdcount, int* pmovcount, int* premcount, int* premlenmax)
 {
     long hFile = 0; //文件句柄
     struct _finddata_t fileinfo; //文件信息
@@ -1026,7 +1033,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
 }
 
 void transDir(const char* dirfrom, RecFormat tofmt)
-{    
+{
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
     char dirto[FILENAME_MAX];
     strcat(getFileName_cut(dirto, dirfrom), EXTNAMES[tofmt]);
@@ -1099,5 +1106,7 @@ void testInstance(FILE* fout)
 
     //wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
     //    ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
+    //*
+    //*/
     delInstance(ins);
 }
