@@ -1,0 +1,5 @@
+git status
+git branch -av
+git add src/*.c src/head/*.h Makefile push 
+git commit -am "E7150 commit"
+git push origin mini
