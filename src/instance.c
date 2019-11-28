@@ -1104,8 +1104,8 @@ void testInstance(FILE* fout)
     readInstance(ins, "01.pgn_cc");
     writeInstance(ins, "01.pgn_cc");
 
-    //wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
-    //    ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
+    wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
+        ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
     //*
     //*/
     delInstance(ins);

@@ -16,15 +16,15 @@ int main(int argc, char const* argv[])
         //fwprintf(fout, L"输出中文成功了！\n");
         //testPiece(fout);
         //testBoard(fout);
-        testInstance(fout);
-        //testTransDir(0, 2, 0, 2, 1, 6);
+        testInstance(fout); // stdout ?
+        //testTransDir(0, 2, 0, 4, 1, 6);  // 5,6 ?
     }
 
     time_t time1;
     time(&time1);
     double t = difftime(time1, time0);
-    printf("  use:%6.2fs\n", t);
-    //printf("start:%s  end:%s  use:%6.2fs\n", ctime(&time0), ctime(&time1), t);
+    //printf("  use:%6.2fs\n", t);
+    printf("start:%s  end:%s  use:%6.2fs\n", ctime(&time0), ctime(&time1), t);
 
     fclose(fout);
     return 0;
