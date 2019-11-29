@@ -10,7 +10,7 @@ char* trim(char* str);
 wchar_t* wtrim(wchar_t* wstr);
 
 // 从文件名去掉扩展名
-char* getFileName_cut(char* filename_cut, const char* filename);
+char* getFileName_cut(char* filename);
 
 // 从文件名提取扩展名
 const char* getExt(const char* filename);

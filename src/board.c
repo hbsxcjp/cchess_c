@@ -520,10 +520,29 @@ Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece)
     return piece;
 }
 
-bool changeBoardSide(Board* board, ChangeType ct)
-{
-    bool changed = false;
-    return changed;
+void changeBoardSide(Board* board, ChangeType ct)
+{//*
+    if (ct == EXCHANGE)
+        for (int row = 0; row < BOARDROW; ++row)
+            for (int col = 0; col < BOARDCOL; ++col) {
+                Seat seat = getSeat_rc(row, col);
+                Piece piece = board->pieces[seat];
+                board->pieces[seat] = ((piece >= 0x10) ? 0x0 : 0x10) | (piece & 0x0F);
+            }
+    else {
+        Piece oldPieces[BOARDLEN];
+        memcpy(oldPieces, board->pieces, BOARDLEN * sizeof(Piece));
+        for (int row = 0; row < BOARDROW; ++row)
+            for (int col = 0; col < BOARDCOL; ++col) {
+                Seat seat = getSeat_rc(row, col);
+                if (ct == ROTATE)
+                    board->pieces[seat] = oldPieces[((BOARDROW - 1 - row) << 4) | (BOARDCOL - 1 - col)];
+                else
+                    board->pieces[seat] = oldPieces[row | (BOARDCOL - 1 - col)];
+            }
+    }
+    if (ct == EXCHANGE || ct == ROTATE)
+        board->bottomColor = !(board->bottomColor);//*/
 }
 
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
@@ -593,7 +612,7 @@ void testBoard(FILE* fout)
         Seat rkseat = getKingSeat(board, RED),
              bkseat = getKingSeat(board, BLACK);
         // 一条语句内不要包含多个可改变局部变量值且返回局部变量指针的函数(因为可能返回同一个指针地址？)
-        fwprintf(fout, L"%sboard：@%p ",
+        fwprintf(fout, L"%sboard：@%p \n",
             getBoardString(boardStr, board), *board);
         fwprintf(fout, L"%s_%02x @%p <==> ",
             getPieString(pieString, SEATNUM, getPiece_s(board, rkseat)),
@@ -656,7 +675,14 @@ void testBoard(FILE* fout)
             }
         }
         //*/
-        fwprintf(fout, L"\n");
+        fwprintf(fout, L"\n");        
+
+        for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
+            changeBoardSide(board, ct);
+            fwprintf(fout, L"%sboard：@%p ct:%d\n",
+                getBoardString(boardStr, board), *board, ct);
+        }
+
         free(board);
     }
 }

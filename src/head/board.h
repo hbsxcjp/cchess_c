@@ -66,7 +66,7 @@ int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat);
 Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece);
 
 // 按某种变换类型变换棋盘局面
-bool changeBoardSide(Board* board, ChangeType ct); //?
+void changeBoardSide(Board* board, ChangeType ct);
 
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board);

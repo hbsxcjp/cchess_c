@@ -43,7 +43,7 @@ typedef enum {
     PAWN
 } PieceKind;
 
-// 棋子类型 高四位表示颜色，低四位表示种类(-1为空)
+// 棋子类型 高四位表示颜色，低四位表示种类，-1表示空子
 typedef enum {
     BLANKPIECE = -1,
     REDKING = 0x0,
@@ -128,11 +128,11 @@ typedef enum {
 } RecFormat;
 
 // 着法类型
-typedef struct Move {
+typedef struct Move_ {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 本着注解
-    struct Move *pmove, *nmove, *omove; // 前着、下着、变着
+    struct Move_ *pmove, *nmove, *omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 } Move;
 

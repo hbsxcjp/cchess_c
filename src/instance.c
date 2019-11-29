@@ -108,9 +108,10 @@ static void __readBytes(char* bytes, int size, FILE* fin)
             bytes[i] = __sub(bytes[i], F32Keys[(pos + i) % 32]);
 }
 
-static void __readMoveData(char* data, wchar_t* remark, FILE* fin)
+static void __readMove_XQF(Move* move, FILE* fin)
 {
-    remark[0] = L'\x0';
+    char data[4] = { 0 };
+    wchar_t remark[REMARKSIZE] = { 0 };
     __readBytes(data, 4, fin);
     if (Version <= 10)
         data[2] = (data[2] & 0xF0 ? 0x80 : 0) | (data[2] & 0x0F ? 0x40 : 0);
@@ -126,13 +127,7 @@ static void __readMoveData(char* data, wchar_t* remark, FILE* fin)
             mbstowcs(remark, rem, REMARKSIZE - 1);
         }
     }
-}
 
-static void __readMove_XQF(Move* move, FILE* fin)
-{
-    char data[4] = { 0 };
-    wchar_t remark[REMARKSIZE] = { 0 };
-    __readMoveData(data, remark, fin);
     //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
     int fcolrow = __sub(data[0], 0X18 + KeyXYf),
         tcolrow = __sub(data[1], 0X20 + KeyXYt);
@@ -321,10 +316,13 @@ static void __readRemark_BIN(Move* move, FILE* fin)
 
 static void __readMove_BIN(Move* move, FILE* fin)
 {
-    fread(&move->fseat, sizeof(int), 1, fin);
-    fread(&move->tseat, sizeof(int), 1, fin);
-    int tag = 0;
-    fread(&tag, sizeof(int), 1, fin);
+    unsigned char fseat = 0, tseat = 0;
+    fread(&fseat, sizeof(unsigned char), 1, fin);
+    fread(&tseat, sizeof(unsigned char), 1, fin);
+    move->fseat = fseat;
+    move->tseat = tseat;
+    char tag = 0;
+    fread(&tag, sizeof(char), 1, fin);
     if (tag & 0x20)
         __readRemark_BIN(move, fin);
 
@@ -343,10 +341,10 @@ static void __getFENToSetBoard(Instance* ins)
 
 static void readBIN(Instance* ins, FILE* fin)
 {
-    int tag = 0, infoCount = 0;
-    fread(&tag, sizeof(int), 1, fin);
+    char tag = 0, infoCount = 0;
+    fread(&tag, sizeof(char), 1, fin);
     if (tag & 0x10) {
-        fread(&infoCount, sizeof(int), 1, fin);
+        fread(&infoCount, sizeof(char), 1, fin);
         for (int i = 0; i < infoCount; ++i) {
             wchar_t name[REMARKSIZE] = { 0 }, value[REMARKSIZE] = { 0 };
             __readWstring_BIN(name, fin);
@@ -372,12 +370,13 @@ static void __writeWstring_BIN(const wchar_t* wstr, FILE* fout)
 
 static void __writeMove_BIN(const Move* move, FILE* fout)
 {
-    fwrite(&move->fseat, sizeof(int), 1, fout);
-    fwrite(&move->tseat, sizeof(int), 1, fout);
-    int tag = ((move->nmove != NULL ? 0x80 : 0x00)
+    unsigned char fseat = move->fseat, tseat = move->tseat;
+    fwrite(&fseat, sizeof(unsigned char), 1, fout);
+    fwrite(&tseat, sizeof(unsigned char), 1, fout);
+    char tag = ((move->nmove != NULL ? 0x80 : 0x00)
         | (move->omove != NULL ? 0x40 : 0x00)
         | (move->remark != NULL ? 0x20 : 0x00));
-    fwrite(&tag, sizeof(int), 1, fout);
+    fwrite(&tag, sizeof(char), 1, fout);
     if (tag & 0x20)
         __writeWstring_BIN(move->remark, fout);
     if (tag & 0x80)
@@ -388,13 +387,14 @@ static void __writeMove_BIN(const Move* move, FILE* fout)
 
 static void writeBIN(const Instance* ins, FILE* fout)
 {
-    int tag = ((ins->infoCount > 0 ? 0x10 : 0x00)
+    char infoCount = ins->infoCount;
+    char tag = ((infoCount > 0 ? 0x10 : 0x00)
         | (ins->rootMove->remark != NULL ? 0x20 : 0x00)
         | (ins->rootMove->nmove != NULL ? 0x80 : 0x00));
-    fwrite(&tag, sizeof(int), 1, fout);
+    fwrite(&tag, sizeof(char), 1, fout);
     if (tag & 0x10) {
-        fwrite(&ins->infoCount, sizeof(int), 1, fout);
-        for (int i = 0; i < ins->infoCount; ++i) {
+        fwrite(&infoCount, sizeof(char), 1, fout);
+        for (int i = 0; i < infoCount; ++i) {
             __writeWstring_BIN(ins->info[i][0], fout);
             __writeWstring_BIN(ins->info[i][1], fout);
         }
@@ -986,13 +986,13 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
         return;
 
     do {
-        char* name = fileinfo.name;
+        char name[FILENAME_MAX];
+        strcpy(name, fileinfo.name);
         char dir_fileName[FILENAME_MAX] = { 0 };
         strcpy(dir_fileName, dirfrom);
         strcat(strcat(dir_fileName, "\\"), name);
-        //printf("%d: %s\n", __LINE__, dir_fileName);
+        //printf("%d: len:%d %s\n", __LINE__, (int)strlen(dir_fileName), dir_fileName);
 
-        //*
         if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
             if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
                 continue;
@@ -1003,22 +1003,24 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             __transDir(dir_fileName, subdirto, tofmt,
                 pfcount, pdcount, pmovcount, premcount, premlenmax);
         } else { //如果是文件,执行转换
-            const char* fromExt = getExt(name);
+            char fromExt[FILENAME_MAX];
+            strcpy_s(fromExt, FILENAME_MAX, getExt(name));
+            //printf("%d: %s len:%d\n", __LINE__, name, (int)strlen(name));
 
-            char tofilename[FILENAME_MAX] = { 0 }, filename_cut[FILENAME_MAX] = { 0 };
+            char tofilename[FILENAME_MAX] = { 0 };
             strcpy(tofilename, dirto);
-            strcat(strcat(tofilename, "\\"), getFileName_cut(filename_cut, name));
+            strcat(strcat(tofilename, "\\"), getFileName_cut(name));
             //printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
-
+            //*
             if (__getRecFormat(fromExt) != NOTFMT) {
                 Instance* ins = newInstance();
-                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 if (readInstance(ins, dir_fileName) == NULL)
                     return;
                 strcat(tofilename, EXTNAMES[tofmt]);
 
-                printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
+                //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
                 writeInstance(ins, tofilename);
 
                 ++*pfcount;
@@ -1032,8 +1034,8 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 copyFile(dir_fileName, tofilename);
                 //printf("%d: %s\n", __LINE__, tofilename);
             }
+            //*/
         }
-        //*/
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
@@ -1042,7 +1044,8 @@ void transDir(const char* dirfrom, RecFormat tofmt)
 {
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
     char dirto[FILENAME_MAX];
-    strcat(getFileName_cut(dirto, dirfrom), EXTNAMES[tofmt]);
+    strcpy(dirto, dirfrom);
+    strcat(getFileName_cut(dirto), EXTNAMES[tofmt]);
     //printf("%d: %s tofmt:%s\n", __LINE__, dirto, EXTNAMES[tofmt]);
 
     __transDir(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
@@ -1057,25 +1060,28 @@ void testTransDir(int fromDir, int toDir,
 {
     const wchar_t* wdirfroms[] = {
         L"c:\\棋谱\\示例文件",
-        L"c:\\棋谱\\象棋杀着大全" //,
-        //L"c:\\棋谱\\疑难文件",
+        L"c:\\棋谱\\象棋杀着大全",
+        L"c:\\棋谱\\疑难文件",
         //L"c:\\棋谱\\中国象棋棋谱大全"
     };
-    char dirfroms[sizeof(wdirfroms) / sizeof(wdirfroms[0])][FILENAME_MAX];
-    for (int i = 0; i < sizeof(wdirfroms) / sizeof(wdirfroms[0]); ++i)
+    int dirCount = sizeof(wdirfroms) / sizeof(wdirfroms[0]);
+    char dirfroms[dirCount][FILENAME_MAX];
+    for (int i = 0; i < dirCount; ++i)
         wcstombs(dirfroms[i], wdirfroms[i], FILENAME_MAX);
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     // 调节三个循环变量的初值、终值，控制转换目录
-    char fromDirName[FILENAME_MAX] = { 0 };
-    for (int dir = fromDir; dir != toDir; ++dir)
-        for (int fromFmt = fromFmtStart; fromFmt != fromFmtEnd; ++fromFmt)
+    for (int dir = fromDir; dir < dirCount && dir != toDir; ++dir) {
+        for (int fromFmt = fromFmtStart; fromFmt != fromFmtEnd; ++fromFmt) {
+            char fromDirName[FILENAME_MAX];
+            strcpy(fromDirName, dirfroms[dir]);
+            strcat(fromDirName, EXTNAMES[fmts[fromFmt]]);
             for (int toFmt = toFmtStart; toFmt != toFmtEnd; ++toFmt)
                 if (toFmt > XQF && toFmt != fromFmt) {
-                    strcpy(fromDirName, dirfroms[dir]);
-                    strcat(fromDirName, EXTNAMES[fmts[fromFmt]]);
                     transDir(fromDirName, fmts[toFmt]);
                 }
+        }
+    }
 }
 
 // 测试本翻译单元各种对象、函数

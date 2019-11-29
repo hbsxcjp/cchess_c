@@ -36,12 +36,12 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
-char* getFileName_cut(char* filename_cut, const char* filename)
+char* getFileName_cut(char* filename)
 {
-    int offset = strrchr(filename, '.') - filename;
-    strncpy(filename_cut, filename, offset);
-    filename_cut[offset] = '\0';
-    return filename_cut;
+    char* pext = strrchr(filename, '.');
+    if (pext != NULL)
+        *pext = '\0';
+    return filename;
 }
 
 const char* getExt(const char* filename)
