@@ -687,7 +687,7 @@ static void __setRemark_PGN_CC(Move* move, int row, int col, wchar_t* remLines[]
     for (int index = 0; index < remCount; ++index)
         if (wcscmp(name, remLines[index * 2]) == 0) {
             setRemark(move, remLines[index * 2 + 1]);
-            wprintf(L"%d: %s: %s\n", __LINE__, name, remLines[index * 2 + 1]);
+            //wprintf(L"%d: %s: %s\n", __LINE__, name, remLines[index * 2 + 1]);
             break;
         }
 }
@@ -749,21 +749,25 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     }
 
     int remCount = 0, regCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
-    wchar_t *remarksStr = getWString(fin), *remLines[TEMPSTR_SIZE];  
-    ovector[1] = 0;  
-    while ((remarksStr += ovector[1]) && wcslen(remarksStr) > 0) {
-        regCount = pcre16_exec(remReg, NULL, lineStr, wcslen(remarksStr),
+    wchar_t *remarksStr = getWString(fin),
+            *remLines[TEMPSTR_SIZE],
+            *remStr;
+    ovector[1] = 0;
+    remStr = remarksStr;
+    while (wcslen(remStr) > 0) {
+        regCount = pcre16_exec(remReg, NULL, remStr, wcslen(remStr),
             0, 0, ovector, OVECCOUNT);
-        if (regCount > 0) {
-            wchar_t *name = calloc(12, sizeof(wchar_t)),
-                    *value = calloc(REMARKSIZE, sizeof(wchar_t));
-            wcsncpy(name, lineStr + ovector[2], ovector[3] - ovector[2]);
-            wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
-            remLines[remCount * 2] = name;
-            remLines[remCount * 2 + 1] = value;
-            wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
-            ++remCount;
-        }
+        if (regCount <= 0)
+            break;
+        wchar_t *name = calloc(12, sizeof(wchar_t)),
+                *value = calloc(REMARKSIZE, sizeof(wchar_t));
+        wcsncpy(name, remStr + ovector[2], ovector[3] - ovector[2]);
+        wcsncpy(value, remStr + ovector[4], ovector[5] - ovector[4]);
+        remLines[remCount * 2] = name;
+        remLines[remCount * 2 + 1] = value;
+        //wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
+        ++remCount;
+        remStr += ovector[1];
     }
 
     __setRemark_PGN_CC(ins->rootMove, 0, 0, remLines, remCount);
@@ -773,11 +777,11 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     if (remarksStr)
         free(remarksStr);
     for (int i = rowNum * colNum - 1; i >= 0; --i)
-        if (remLines[i] != NULL)
-            free(remLines[i]);
-    for (int i = 0; i < remCount; ++i)
-        if (moveLines[i] != NULL)
-            free(moveLines[i]);
+        free(moveLines[i]);
+    for (int i = 0; i < remCount; ++i) {
+        free(remLines[i * 2]);
+        free(remLines[i * 2 + 1]);
+    }
     pcre16_free(remReg);
     pcre16_free(moveReg);
 }
@@ -1009,10 +1013,12 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
 
             if (__getRecFormat(fromExt) != NOTFMT) {
                 Instance* ins = newInstance();
+                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 if (readInstance(ins, dir_fileName) == NULL)
                     return;
                 strcat(tofilename, EXTNAMES[tofmt]);
-                //printf("%d: %s\n", __LINE__, tofilename);
+
+                printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
                 writeInstance(ins, tofilename);
 
                 ++*pfcount;
@@ -1104,8 +1110,8 @@ void testInstance(FILE* fout)
     readInstance(ins, "01.pgn_cc");
     writeInstance(ins, "01.pgn_cc");
 
-    wprintf(L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
-        ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
+    printf("%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
+        __func__, ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
     //*
     //*/
     delInstance(ins);

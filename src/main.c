@@ -16,8 +16,8 @@ int main(int argc, char const* argv[])
         //fwprintf(fout, L"输出中文成功了！\n");
         //testPiece(fout);
         //testBoard(fout);
-        testInstance(fout); // stdout ?
-        //testTransDir(0, 2, 0, 4, 1, 6);  // 5,6 ?
+        testInstance(fout);
+        testTransDir(0, 2, 3, 4, 1, 6);  // 4,5 ?
     }
 
     time_t time1;
