@@ -285,7 +285,7 @@ static void readXQF(Instance* ins, FILE* fin)
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
         mbstowcs(tempStr, values[i], THOUSAND_SIZE - 1);
-        addInfoItem(ins, names[i], tempStr); // 多字节字符串存储
+        addInfoItem(ins, names[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
     addInfoItem(ins, L"PlayType", PlayType[(int)(headCodeA_H[0])]); // 编码定义存储
@@ -295,6 +295,7 @@ static void readXQF(Instance* ins, FILE* fin)
     addInfoItem(ins, L"Result", Result[(int)headPlayResult]); // 编码定义存储
     swprintf(tempStr, THOUSAND_SIZE, L"%d", (int)Version);
     addInfoItem(ins, L"Version", tempStr); // 整数存储
+    // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 
     fseek(fin, 1024, SEEK_SET);
     __readMove_XQF(ins->rootMove, fin);
