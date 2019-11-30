@@ -1,6 +1,7 @@
 #include "head/board.h"
 #include "head/instance.h"
 #include "head/move.h"
+#include "head/tools.h"
 #include "head/piece.h"
 #include <time.h>
 
@@ -17,7 +18,8 @@ int main(int argc, char const* argv[])
     //fwprintf(fout, L"输出中文成功了！\n");
     //testPiece(fout);
     //testBoard(fout);
-    testInstance(fout);
+    //testTools();
+    //testInstance(fout);
     if (argc == 7) {
         testTransDir(atoi(argv[1]), atoi(argv[2]),
             atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));

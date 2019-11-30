@@ -22,10 +22,9 @@ wchar_t* getWString(FILE* fin);
 int copyFile(const char* SourceFile, const char* NewFile);
 
 // 提取目录下的文件名列表
-int getFiles(char* fileNames[],const char* path);
+void getFiles(char* fileNames[], int* count, const char* path);
 
 // 测试函数
-const wchar_t* testTools(wchar_t* wstr);
-
+void testTools(void);
 
 #endif

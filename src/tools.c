@@ -93,28 +93,52 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-int getFiles(char* fileNames[], const char* path)
+void getFiles(char* fileNames[], int* pcount, const char* path)
 {
-    /* long hFile = 0; //文件句柄
+    long hFile = 0; //文件句柄
     struct _finddata_t fileinfo; //文件信息
-    string p{};
-    if ((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1) {
-        do { //如果是目录,迭代之  //如果不是,加入列表
-            if (fileinfo.attrib & _A_SUBDIR) {
-                if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
-                    getFiles(p.assign(path).append("\\").append(fileinfo.name), files);
-            } else
-                files.push_back(p.assign(path).append("\\").append(fileinfo.name));
-        } while (_findnext(hFile, &fileinfo) == 0);
-        _findclose(hFile);
-    }
-    */
-    return 0;
+    char dirName[FILENAME_MAX] = { 0 };
+    strcpy(dirName, path);
+    //printf("%d: %s\n", __LINE__, dirName);
+
+    if ((hFile = _findfirst(strcat(dirName, "\\*"), &fileinfo)) == -1)
+        return;
+
+    do { //如果是目录,迭代之  //如果不是,加入列表
+        char findName[FILENAME_MAX];
+        strcat(strcat(strcpy(findName, path), "\\"), fileinfo.name);
+        //printf("%d: %s\n", __LINE__, findName);
+        if (fileinfo.attrib & _A_SUBDIR) {
+            if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+                getFiles(fileNames, pcount, findName);
+        } else {
+            char* fileName = malloc(FILENAME_MAX);
+            strcpy(fileName, findName);
+            //printf("%d: %s\n", __LINE__, fileName);
+            fileNames[(*pcount)++] = fileName;
+        }
+    } while (_findnext(hFile, &fileinfo) == 0);
+    _findclose(hFile);
 }
 
-// 测试
 // 测试函数
-const wchar_t* testTools(wchar_t* wstr)
+void testTools(void)
 {
-    return wstr;
+    const wchar_t wpath[] = L"c:\\棋谱\\象棋杀着大全.xqf";
+    //L"c:\\棋谱\\示例文件"
+    //L"c:\\棋谱\\象棋杀着大全"
+    //L"c:\\棋谱\\疑难文件"
+    //L"c:\\棋谱\\中国象棋棋谱大全"
+
+    int count = 0;
+    char path[FILENAME_MAX];
+    char* fileNames[THOUSAND_SIZE];
+    wcstombs(path, wpath, FILENAME_MAX);
+    getFiles(fileNames, &count, path);
+    for (int i = 0; i < count; ++i)
+        printf("%s %d: %s\n", __FILE__, __LINE__, fileNames[i]);
+    printf("%s %d: %s count:%d\n", __FILE__, __LINE__, path, count);
+
+    for (int i = 0; i < count; ++i)
+        free(fileNames[i]);
 }
