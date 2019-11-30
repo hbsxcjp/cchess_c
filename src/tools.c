@@ -93,52 +93,60 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-void getFiles(char* fileNames[], int* pcount, const char* path)
+void getFiles(wchar_t* fileNames[], int* pcount, const wchar_t* path)
 {
     long hFile = 0; //文件句柄
-    struct _finddata_t fileinfo; //文件信息
-    char dirName[FILENAME_MAX] = { 0 };
-    strcpy(dirName, path);
-    //printf("%d: %s\n", __LINE__, dirName);
+    struct _wfinddata_t fileinfo; //文件信息
+    wchar_t dirName[FILENAME_MAX] = { 0 };
+    wcscpy(dirName, path);
+    //wprintf(L"%d: %s\n", __LINE__, dirName);
 
-    if ((hFile = _findfirst(strcat(dirName, "\\*"), &fileinfo)) == -1)
+    if ((hFile = _wfindfirst(wcscat(dirName, L"\\*"), &fileinfo)) == -1)
         return;
 
     do { //如果是目录,迭代之  //如果不是,加入列表
-        char findName[FILENAME_MAX];
-        strcat(strcat(strcpy(findName, path), "\\"), fileinfo.name);
-        //printf("%d: %s\n", __LINE__, findName);
+        wchar_t findName[FILENAME_MAX];
+        wcscat(wcscat(wcscpy(findName, path), L"\\"), fileinfo.name);
+        //wprintf(L"%d: %s\n", __LINE__, findName);
         if (fileinfo.attrib & _A_SUBDIR) {
-            if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+            if (wcscmp(fileinfo.name, L".") != 0 && wcscmp(fileinfo.name, L"..") != 0)
                 getFiles(fileNames, pcount, findName);
         } else {
-            char* fileName = malloc(FILENAME_MAX);
-            strcpy(fileName, findName);
-            //printf("%d: %s\n", __LINE__, fileName);
+            wchar_t* fileName = malloc(FILENAME_MAX);
+            wcscpy(fileName, findName);
+            /*
+            FILE* fin = _wfopen(findName, L"r");
+            wchar_t* wstr = getWString(fin);
+            wprintf(L"%s:\n%s\n\n", findName, wstr);
+            free(wstr);
+            fclose(fin);
+            //*/
             fileNames[(*pcount)++] = fileName;
         }
-    } while (_findnext(hFile, &fileinfo) == 0);
+    } while (_wfindnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
 
 // 测试函数
 void testTools(void)
 {
-    const wchar_t wpath[] = L"c:\\棋谱\\象棋杀着大全.xqf";
-    //L"c:\\棋谱\\示例文件"
-    //L"c:\\棋谱\\象棋杀着大全"
-    //L"c:\\棋谱\\疑难文件"
-    //L"c:\\棋谱\\中国象棋棋谱大全"
-
-    int count = 0;
-    char path[FILENAME_MAX];
-    char* fileNames[THOUSAND_SIZE];
-    wcstombs(path, wpath, FILENAME_MAX);
-    getFiles(fileNames, &count, path);
-    for (int i = 0; i < count; ++i)
-        printf("%s %d: %s\n", __FILE__, __LINE__, fileNames[i]);
-    printf("%s %d: %s count:%d\n", __FILE__, __LINE__, path, count);
-
-    for (int i = 0; i < count; ++i)
-        free(fileNames[i]);
+    const wchar_t* paths[] = {
+        L"c:\\棋谱\\示例文件.pgn_zh",
+        L"c:\\棋谱\\象棋杀着大全.pgn_zh",
+        L"c:\\棋谱\\疑难文件.pgn_iccs",
+        //L"c:\\棋谱\\中国象棋棋谱大全"
+    };
+    int sum = 0;
+    for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
+        int count = 0;
+        wchar_t* fileNames[THOUSAND_SIZE];
+        getFiles(fileNames, &count, paths[i]);
+        for (int i = 0; i < count; ++i) {
+            wprintf(L"%d: %s\n", __LINE__, fileNames[i]);
+            free(fileNames[i]);
+        }
+        sum += count;
+        wprintf(L"%s 包含: %d个文件。\n\n", paths[i], count);
+    }
+    wprintf(L"总共包括:%d个文件。\n", sum);
 }
