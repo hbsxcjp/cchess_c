@@ -37,7 +37,7 @@ void goOther(Instance* ins);
 void goInc(Instance* ins, int inc);
 
 // 转变棋局实例
-void changeInstanceSide(Instance* ins, ChangeType ct);
+void changeInstance(Instance* ins, ChangeType ct);
 
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);

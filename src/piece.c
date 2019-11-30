@@ -38,12 +38,12 @@ wchar_t* getPieString(wchar_t* pieStr, size_t n, Piece piece)
 
 void testPiece(FILE* fout)
 {
-    wchar_t pieString[TEMPSTR_SIZE];
+    wchar_t pieString[THOUSAND_SIZE];
     fwprintf(fout, L"testPiece：\n");
     for (int k = 0; k < PIECECOLORNUM; ++k) {
         for (int i = 0; i < PIECEKINDNUM; ++i)
             fwprintf(fout, L"%s ",
-                getPieString(pieString, TEMPSTR_SIZE, getPiece_ch(PieceChars[k][i])));
+                getPieString(pieString, THOUSAND_SIZE, getPiece_ch(PieceChars[k][i])));
         fwprintf(fout, L"\n");
     }
 }

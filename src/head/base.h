@@ -108,11 +108,9 @@ typedef enum {
 //=================================================================
 
 // 临时字符串长度
-#define TEMPSTR_SIZE 1024
+#define THOUSAND_SIZE 1024
 // 存储棋局字符串长度
-#define MOVES_SIZE TEMPSTR_SIZE * 1000
-// 注释字符串长度
-#define REMARKSIZE (TEMPSTR_SIZE / 2)
+#define HUNDRED_THOUSAND_SIZE THOUSAND_SIZE * 128
 // 棋局信息数量
 #define INFOSIZE 32
 

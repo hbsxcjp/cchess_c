@@ -7,8 +7,12 @@
 #define getSeat_rc(row, col) ((row) << 4 | (col))
 // 获取行值
 #define getRow_s(seat) ((seat) >> 4)
+// 获取对称行值
+#define getOtherRow_s(seat) (BOARDROW - 1 - getRow_s(seat))
 // 获取列值
 #define getCol_s(seat) ((seat)&0x0F)
+// 获取对称列值
+#define getOtherCol_s(seat) (BOARDCOL - 1 - getCol_s(seat))
 // 根据seat获取棋子
 #define getPiece_s(board, seat) ((board)->pieces[(seat)])
 // 在seat位置设置棋子
@@ -18,10 +22,10 @@
 Board* newBoard(void);
 
 // FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
-wchar_t* getPieChars_F(wchar_t* pieChars, wchar_t* FEN, size_t n);
+wchar_t* getPieChars_FEN(wchar_t* pieChars, wchar_t* FEN, size_t n);
 
 // 取得棋盘局面的字符串表示, pieChars包含90个字符
-wchar_t* getPieChars_B(wchar_t* pieChars, const Board* board);
+wchar_t* getPieChars_board(wchar_t* pieChars, const Board* board);
 
 // pieChars表示的棋盘局面转换成FEN字符串，返回FEN长度, pieChars包含90个字符
 wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars);
@@ -66,7 +70,7 @@ int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat);
 Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece);
 
 // 按某种变换类型变换棋盘局面
-void changeBoardSide(Board* board, ChangeType ct);
+void changeBoard(Board* board, ChangeType ct);
 
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board);

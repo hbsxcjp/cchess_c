@@ -214,7 +214,7 @@ wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
     zhStr[4] = L'\x0';
 
     /*
-    wchar_t iccsStr[12], boardStr[TEMPSTR_SIZE];
+    wchar_t iccsStr[12], boardStr[THOUSAND_SIZE];
     wprintf(L"iccs: %s zh:%s\n%s\n",
         getICCS(iccsStr, move), zhStr, getBoardString(boardStr, board));
     //*/
@@ -237,4 +237,23 @@ void setRemark(Move* move, wchar_t* remark)
         move->remark = (wchar_t*)calloc(len + 1, sizeof(remark[0]));
         wcscpy(move->remark, remark);
     }
+}
+
+void changeMove(Move* move, ChangeType ct)
+{
+    if (ct == ROTATE) {
+        Seat fseat = move->fseat, tseat = move->tseat;
+        move->fseat = getSeat_rc(getOtherRow_s(fseat), getOtherCol_s(fseat));
+        move->tseat = getSeat_rc(getOtherRow_s(tseat), getOtherCol_s(tseat));
+    } else if (ct == SYMMETRY) {
+        Seat fseat = move->fseat, tseat = move->tseat;
+        move->fseat = getSeat_rc(getRow_s(fseat), getOtherCol_s(fseat));
+        move->tseat = getSeat_rc(getRow_s(tseat), getOtherCol_s(tseat));
+    }
+
+    if (move->nmove != NULL)
+        changeMove(move->nmove, ct);
+
+    if (move->omove != NULL)
+        changeMove(move->omove, ct);
 }

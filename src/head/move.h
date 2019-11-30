@@ -39,4 +39,7 @@ wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move);
 // 设置remark
 void setRemark(Move* move, wchar_t* remark);
 
+// 按某种变换类型变换着法记录
+void changeMove(Move* move, ChangeType ct);
+
 #endif
