@@ -112,20 +112,20 @@ static void __readBytes(char* bytes, int size, FILE* fin)
 static void __readMove_XQF(Move* move, FILE* fin)
 {
     char data[4] = { 0 };
-    wchar_t remark[THOUSAND_SIZE] = { 0 };
     __readBytes(data, 4, fin);
     if (Version <= 10)
         data[2] = (data[2] & 0xF0 ? 0x80 : 0) | (data[2] & 0x0F ? 0x40 : 0);
     else
         data[2] &= 0xE0;
+    char* rem = NULL;
     if (Version <= 10 || (data[2] & 0x20)) {
         char clen[4] = { 0 };
         __readBytes(clen, 4, fin);
         int RemarkSize = *(__int32*)clen - KeyRMKSize;
         if (RemarkSize > 0) {
-            char rem[THOUSAND_SIZE] = { 0 };
+            rem = malloc(RemarkSize + 1);
             __readBytes(rem, RemarkSize, fin);
-            mbstowcs(remark, rem, THOUSAND_SIZE - 1);
+            rem[RemarkSize] = '\0';
         }
     }
 
@@ -136,7 +136,13 @@ static void __readMove_XQF(Move* move, FILE* fin)
     // assert(fcolrow <= 89 && tcolrow <= 89); 根节点不能断言！
     move->fseat = getSeat_rc(fcolrow % 10, fcolrow / 10);
     move->tseat = getSeat_rc(tcolrow % 10, tcolrow / 10);
-    setRemark(move, remark);
+    if (rem != NULL) {
+        int length = strlen(rem) + 1;
+        wchar_t remark[length];
+        mbstowcs(remark, rem, length);
+        setRemark(move, remark);
+        free(rem);
+    }
 
     if (data[2] & 0x80) //# 有左子树
         __readMove_XQF(addNext(move), fin);
@@ -302,18 +308,20 @@ static void readXQF(Instance* ins, FILE* fin)
     __readMove_XQF(ins->rootMove, fin);
 }
 
-static void __readWstring_BIN(wchar_t* wstr, FILE* fin)
+static wchar_t* __readWstring_BIN(FILE* fin)
 {
     int len = 0;
     fread(&len, sizeof(int), 1, fin);
+    wchar_t* wstr = malloc(len * sizeof(wchar_t));
     fread(wstr, sizeof(wchar_t), len, fin);
+    return wstr;
 }
 
 static void __readRemark_BIN(Move* move, FILE* fin)
 {
-    wchar_t remark[THOUSAND_SIZE] = { 0 };
-    __readWstring_BIN(remark, fin);
+    wchar_t* remark = __readWstring_BIN(fin);
     setRemark(move, remark);
+    free(remark);
 }
 
 static void __readMove_BIN(Move* move, FILE* fin)
@@ -352,10 +360,11 @@ static void readBIN(Instance* ins, FILE* fin)
     if (tag & 0x10) {
         fread(&infoCount, sizeof(char), 1, fin);
         for (int i = 0; i < infoCount; ++i) {
-            wchar_t name[THOUSAND_SIZE] = { 0 }, value[THOUSAND_SIZE] = { 0 };
-            __readWstring_BIN(name, fin);
-            __readWstring_BIN(value, fin);
+            wchar_t* name = __readWstring_BIN(fin);
+            wchar_t* value = __readWstring_BIN(fin);
             addInfoItem(ins, name, value);
+            free(name);
+            free(value);
         }
     }
     /*
@@ -416,8 +425,9 @@ static void __readMove_JSON(const cJSON* moveJSON, Move* move)
     move->tseat = cJSON_GetObjectItem(moveJSON, "t")->valueint;
     cJSON* remarkJSON = cJSON_GetObjectItem(moveJSON, "r");
     if (remarkJSON != NULL) {
-        wchar_t remark[THOUSAND_SIZE] = { 0 };
-        mbstowcs(remark, remarkJSON->valuestring, THOUSAND_SIZE - 1);
+        int len = strlen(remarkJSON->valuestring) + 1;
+        wchar_t remark[len];
+        mbstowcs(remark, remarkJSON->valuestring, len);
         setRemark(move, remark);
     }
 
@@ -462,8 +472,9 @@ static void __writeMove_JSON(cJSON* moveJSON, const Move* move)
     cJSON_AddNumberToObject(moveJSON, "f", move->fseat);
     cJSON_AddNumberToObject(moveJSON, "t", move->tseat);
     if (move->remark != NULL) {
-        char remark[THOUSAND_SIZE] = { 0 };
-        wcstombs(remark, move->remark, THOUSAND_SIZE - 1);
+        int len = wcslen(move->remark) * sizeof(wchar_t) + 1;
+        char remark[len];
+        wcstombs(remark, move->remark, len);
         cJSON_AddStringToObject(moveJSON, "r", remark);
     }
 
@@ -485,9 +496,11 @@ static void writeJSON(const Instance* ins, FILE* fout)
           *infoJSON = cJSON_CreateArray(),
           *rootmoveJSON = cJSON_CreateObject();
     for (int i = 0; i < ins->infoCount; ++i) {
-        char name[THOUSAND_SIZE] = { 0 }, value[THOUSAND_SIZE] = { 0 };
-        wcstombs(name, ins->info[i][0], THOUSAND_SIZE - 1);
-        wcstombs(value, ins->info[i][1], THOUSAND_SIZE - 1);
+        int nameLen = wcslen(ins->info[i][0]) + 1,
+            valueLen = wcslen(ins->info[i][1]) + 1;
+        char name[nameLen], value[valueLen];
+        wcstombs(name, ins->info[i][0], nameLen);
+        wcstombs(value, ins->info[i][1], valueLen);
         cJSON_AddItemToArray(infoJSON,
             cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
@@ -569,13 +582,15 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
     assert(remReg);
 
     wchar_t* moveStr = getWString(fin);
-    wchar_t remarkStr[THOUSAND_SIZE] = { 0 };
     regCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
         0, 0, ovector, OVECCOUNT);
     if (regCount <= 0)
         return; // 没有move
     if (regCount == 2) {
-        wcsncpy(remarkStr, moveStr + ovector[2], ovector[3] - ovector[2]);
+        int len = ovector[3] - ovector[2];
+        wchar_t remarkStr[len + 1];
+        wcsncpy(remarkStr, moveStr + ovector[2], len);
+        remarkStr[len] = L'\x0';
         setRemark(ins->rootMove, remarkStr);
     }
 
@@ -612,6 +627,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
         // 提取第3个匹配remark，设置move
         num = ovector[7] - ovector[6];
         if (num > 0) {
+            wchar_t remarkStr[num + 1];
             wcsncpy(remarkStr, pmoveStr + ovector[6], num);
             remarkStr[num] = L'\x0';
             setRemark(move, remarkStr);
@@ -688,7 +704,8 @@ static void writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, RecFormat fmt)
     fwprintf(fout, L"\n");
 }
 
-static void __setRemark_PGN_CC(Move* move, int row, int col, wchar_t* remLines[], int remCount)
+static void __setRemark_PGN_CC(Move* move, int row, int col,
+    wchar_t* remLines[], int remCount)
 {
     wchar_t name[12] = { 0 };
     swprintf(name, 12, L"(%d,%d)", row, col);
@@ -701,7 +718,8 @@ static void __setRemark_PGN_CC(Move* move, int row, int col, wchar_t* remLines[]
 }
 
 static void __setMove_PGN_CC(Instance* ins, Move* move, pcre16* moveReg,
-    wchar_t* moveLines[], int rowNum, int colNum, int row, int col, wchar_t* remLines[], int remCount)
+    wchar_t* moveLines[], int rowNum, int colNum, int row, int col,
+    wchar_t* remLines[], int remCount)
 {
     wchar_t* moveStr = moveLines[row * colNum + col];
     while (moveStr[0] == L'…')
@@ -757,22 +775,25 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     }
 
     int remCount = 0, regCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
-    wchar_t *remarksStr = getWString(fin),
+    wchar_t *allremarksStr = getWString(fin),
             *remLines[THOUSAND_SIZE],
             *remStr;
     ovector[1] = 0;
-    remStr = remarksStr;
+    remStr = allremarksStr;
     while (wcslen(remStr) > 0) {
         regCount = pcre16_exec(remReg, NULL, remStr, wcslen(remStr),
             0, 0, ovector, OVECCOUNT);
         if (regCount <= 0)
             break;
-        wchar_t *name = calloc(12, sizeof(wchar_t)),
-                *value = calloc(THOUSAND_SIZE, sizeof(wchar_t));
-        wcsncpy(name, remStr + ovector[2], ovector[3] - ovector[2]);
-        wcsncpy(value, remStr + ovector[4], ovector[5] - ovector[4]);
-        remLines[remCount * 2] = name;
-        remLines[remCount * 2 + 1] = value;
+        int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
+        wchar_t *rowcolName = malloc((rclen + 1) * sizeof(wchar_t)),
+                *reamrkStr = malloc((remlen + 1) * sizeof(wchar_t));
+        wcsncpy(rowcolName, remStr + ovector[2], rclen);
+        wcsncpy(reamrkStr, remStr + ovector[4], remlen);
+        rowcolName[rclen] = L'\x0';
+        reamrkStr[remlen] = L'\x0';
+        remLines[remCount * 2] = rowcolName;
+        remLines[remCount * 2 + 1] = reamrkStr;
         //wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
         ++remCount;
         remStr += ovector[1];
@@ -782,8 +803,8 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     if (rowNum > 0)
         __setMove_PGN_CC(ins, addNext(ins->rootMove), moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount);
 
-    if (remarksStr)
-        free(remarksStr);
+    if (allremarksStr)
+        free(allremarksStr);
     for (int i = rowNum * colNum - 1; i >= 0; --i)
         free(moveLines[i]);
     for (int i = 0; i < remCount; ++i) {
@@ -794,33 +815,38 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     pcre16_free(moveReg);
 }
 
-static void __addRemarkStr_PGN_CC(wchar_t* remarkStr, Move* move)
+static void __addRemarkStr_PGN_CC(wchar_t* remarkStr, long* premSize, Move* move)
 {
-    wchar_t remStr[THOUSAND_SIZE] = { 0 };
-    swprintf(remStr, THOUSAND_SIZE, L"(%d,%d): {%s}\n",
+    int len = wcslen(move->remark) + 16;
+    wchar_t remStr[len];
+    swprintf(remStr, len, L"(%d,%d): {%s}\n",
         move->nextNo_, move->CC_ColNo_, move->remark);
+    if (wcslen(remarkStr) + len > *premSize - 1) {
+        *premSize += THOUSAND_SIZE;
+        remarkStr = realloc(remarkStr, (*premSize) * sizeof(wchar_t));
+    }
     wcscat(remarkStr, remStr);
 }
 
 static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum,
-    wchar_t* remarkStr, Instance* ins, Move* move)
+    wchar_t* remarkStr, long* premSize, Instance* ins, Move* move)
 {
     int row = move->nextNo_ * 2, firstCol = move->CC_ColNo_ * 5;
     wchar_t zhStr[6] = { 0 };
     wcsncpy(&lineStr[row * colNum + firstCol], getZhStr(zhStr, ins->board, move), 4);
     if (move->remark != NULL)
-        __addRemarkStr_PGN_CC(remarkStr, move);
+        __addRemarkStr_PGN_CC(remarkStr, premSize, move);
 
     if (move->omove != NULL) {
         int fcol = firstCol + 4, tnum = move->omove->CC_ColNo_ * 5 - fcol;
         wmemset(&lineStr[row * colNum + fcol], L'…', tnum);
-        __writeMove_PGN_CC(lineStr, colNum, remarkStr, ins, move->omove);
+        __writeMove_PGN_CC(lineStr, colNum, remarkStr, premSize, ins, move->omove);
     }
 
     if (move->nmove != NULL) {
         lineStr[(row + 1) * colNum + firstCol + 2] = L'↓';
         __doMove(ins, move);
-        __writeMove_PGN_CC(lineStr, colNum, remarkStr, ins, move->nmove);
+        __writeMove_PGN_CC(lineStr, colNum, remarkStr, premSize, ins, move->nmove);
         __undoMove(ins, move);
     }
 }
@@ -833,18 +859,20 @@ static void writeMove_PGN_CC(Instance* ins, FILE* fout)
     wmemset(lineStr, L'　', rowNum * colNum);
     for (int row = 0; row < rowNum; ++row)
         lineStr[(row + 1) * colNum - 1] = L'\n';
-    lineStr[rowNum * colNum] = L'\x0';
     lineStr[1] = L'开';
     lineStr[2] = L'始';
     lineStr[colNum + 2] = L'↓';
+    lineStr[rowNum * colNum] = L'\x0';
 
-    wchar_t remarkStr[HUNDRED_THOUSAND_SIZE] = { 0 };
+    long remSize = HUNDRED_THOUSAND_SIZE;
+    wchar_t* remarkStr = calloc(remSize, sizeof(wchar_t));
     if (ins->rootMove->remark != NULL)
-        __addRemarkStr_PGN_CC(remarkStr, ins->rootMove);
+        __addRemarkStr_PGN_CC(remarkStr, &remSize, ins->rootMove);
     if (ins->rootMove->nmove != NULL)
-        __writeMove_PGN_CC(lineStr, colNum, remarkStr, ins, ins->rootMove->nmove);
+        __writeMove_PGN_CC(lineStr, colNum, remarkStr, &remSize, ins, ins->rootMove->nmove);
 
     fwprintf(fout, L"%s\n%s", lineStr, remarkStr);
+    free(remarkStr);
     free(lineStr);
 }
 

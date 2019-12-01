@@ -107,9 +107,9 @@ typedef enum {
 //棋局相关的类型
 //=================================================================
 
-// 临时字符串长度
+// 字符串长度
 #define THOUSAND_SIZE 1024
-// 存储棋局字符串长度
+// 字符串长度
 #define HUNDRED_THOUSAND_SIZE THOUSAND_SIZE * 128
 // 棋局信息数量
 #define INFOSIZE 32
