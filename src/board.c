@@ -203,6 +203,8 @@ bool isDied(Board* board, PieceColor color)
     return true;
 }
 
+// 以后如追求速度，可做预先计算保存为数组，运行时直接提取 
+// Seat kingPutSeats[isBottom][91] [0]:count
 int putSeats(Seat* pseats, bool isBottom, PieceKind kind)
 {
     int count = 0, rowLow, rowUp, cross, lfrow, ufrow, ltrow, utrow;
@@ -255,6 +257,9 @@ int putSeats(Seat* pseats, bool isBottom, PieceKind kind)
     return count;
 }
 
+// 以后如追求速度，可做预先计算保存为数组，运行时直接提取
+// Seat kingMoveSeats[fseat][91] [0]:count
+// (象、马、车、炮、卒与board有关,可另起函数筛选)
 int moveSeats(Seat* pseats, Board* board, Seat fseat)
 {
     int count = 0, frow = getRow_s(fseat), fcol = getCol_s(fseat);
