@@ -18,8 +18,8 @@ int main(int argc, char const* argv[])
     //fwprintf(fout, L"输出中文成功了！\n");
     //testPiece(fout);
     //testBoard(fout);
-    testTools();
-    testInstance(fout);
+    //testTools();
+    //testInstance(fout);
     if (argc == 7) {
         testTransDir(atoi(argv[1]), atoi(argv[2]),
             atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
@@ -32,7 +32,7 @@ int main(int argc, char const* argv[])
     time(&time1);
     double t = difftime(time1, time0);
     //printf("  use:%6.2fs\n", t);
-    printf("start:%s  end:%s  use:%6.2fs\n", ctime(&time0), ctime(&time1), t);
+    printf("\nuse:%6.2fs\n", t); // , ctime(&time0), ctime(&time1)
 
     fclose(fout);
     return 0;

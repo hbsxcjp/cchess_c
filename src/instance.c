@@ -13,6 +13,7 @@ static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNB
 static const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
+static const char FILETAG[] = "learnchess";
 
 Instance* newInstance(void)
 {
@@ -342,6 +343,10 @@ static void __getFENToSetBoard(Instance* ins)
 
 static void readBIN(Instance* ins, FILE* fin)
 {
+    char fileTag[sizeof(FILETAG)];
+    fread(&fileTag, sizeof(char), sizeof(FILETAG), fin);
+    if (strcmp(fileTag, FILETAG) != 0)
+        return;
     char tag = 0, infoCount = 0;
     fread(&tag, sizeof(char), 1, fin);
     if (tag & 0x10) {
@@ -388,6 +393,7 @@ static void __writeMove_BIN(const Move* move, FILE* fout)
 
 static void writeBIN(const Instance* ins, FILE* fout)
 {
+    fwrite(&FILETAG, sizeof(char), sizeof(FILETAG), fout);
     char infoCount = ins->infoCount;
     char tag = ((infoCount > 0 ? 0x10 : 0x00)
         | (ins->rootMove->remark != NULL ? 0x20 : 0x00)
@@ -1045,8 +1051,8 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
                     *premlenmax = ins->maxRemLen_;
                 delInstance(ins);
             } else {
-                strcat(tofilename, fromExt);
-                copyFile(dir_fileName, tofilename);
+                //strcat(tofilename, fromExt);
+                //copyFile(dir_fileName, tofilename);
                 //printf("%d: %s\n", __LINE__, tofilename);
             }
             //*/
@@ -1077,7 +1083,7 @@ void testTransDir(int fromDir, int toDir,
         L"c:\\棋谱\\示例文件",
         L"c:\\棋谱\\象棋杀着大全",
         L"c:\\棋谱\\疑难文件",
-        //L"c:\\棋谱\\中国象棋棋谱大全"
+        L"c:\\棋谱\\中国象棋棋谱大全"
     };
     int dirCount = sizeof(wdirfroms) / sizeof(wdirfroms[0]);
     char dirfroms[dirCount][FILENAME_MAX];
