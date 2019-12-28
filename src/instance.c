@@ -980,9 +980,24 @@ void writeInstance(Instance* ins, const char* filename)
     fclose(fout);
 }
 
+bool hasNext(Instance* ins)
+{
+    return ins->currentMove->nmove != NULL;
+}
+
+bool hasPre(Instance* ins)
+{
+    return ins->currentMove->pmove != NULL;
+}
+
+bool hasOther(Instance* ins)
+{
+    return ins->currentMove->omove != NULL;
+}
+
 void go(Instance* ins)
 {
-    if (ins->currentMove->nmove != NULL) {
+    if (hasNext(ins)) {
         ins->currentMove = ins->currentMove->nmove;
         __doMove(ins, ins->currentMove);
     }
@@ -990,7 +1005,7 @@ void go(Instance* ins)
 
 void back(Instance* ins)
 {
-    if (ins->currentMove->pmove != NULL) {
+    if (hasPre(ins)) {
         __undoMove(ins, ins->currentMove);
         ins->currentMove = ins->currentMove->pmove;
     }
@@ -998,15 +1013,13 @@ void back(Instance* ins)
 
 void backTo(Instance* ins, Move* move)
 {
-    while (ins->currentMove->pmove != NULL
-        && !isSameMove(ins->currentMove, move))
+    while (hasPre(ins) && !isSameMove(ins->currentMove, move))
         back(ins);
 }
 
 void goOther(Instance* ins)
 {
-    if (ins->currentMove->pmove != NULL
-        && ins->currentMove->omove != NULL) {
+    if (hasOther(ins)) {
         __undoMove(ins, ins->currentMove);
         ins->currentMove = ins->currentMove->omove;
         __doMove(ins, ins->currentMove);

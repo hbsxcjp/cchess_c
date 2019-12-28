@@ -21,6 +21,15 @@ Instance* readInstance(Instance*, const char* filename);
 // 从instance存储到文件
 void writeInstance(Instance* ins, const char* filename);
 
+// 当前着法有无后着
+bool hasNext(Instance* ins);
+
+// 当前着法有无前着
+bool hasPre(Instance* ins);
+
+// 当前着法有无变着
+bool hasOther(Instance* ins);
+
 // 前进一步
 void go(Instance* ins);
 

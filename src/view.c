@@ -23,7 +23,7 @@ static int getFileIndex(wchar_t* fileNames[], int fileCount, const wchar_t* dirN
             swprintf(wstr, 102, L"%3d. %s\n", i + 1, fileNames[i]);
             wcscat(pageWstr, wstr);
         }
-        wcscat(pageWstr, L"\n数字键: 选择文件(非数字结束)   非数字键: 下一页      q: 退出\n");
+        wcscat(pageWstr, L"\n0-9:选择文件(非数字结束) 非0-9:下页 q:退出\n");
         system("cls");
         wprintf(L"%s\n\n", pageWstr);
         key = getche();
@@ -51,14 +51,30 @@ void displayInstance(const wchar_t* fileName)
         delInstance(ins);
         return;
     }
-    wchar_t boardStr[HUNDRED_THOUSAND_SIZE];
-    system("cls");
-    wprintf(L"s\uA9A4\uA9A5\uA9A6\uA9A7\uA9A8\uA9A9e\n");
-    wprintf(L"s｜＝－︱﹁﹂―─━│┃═║e\n");
-    wprintf(L"s１２３４５６e\n");
-    wprintf(L"%sboard：@%p bottomColor:%d\n",
-        getBoardString(boardStr, ins->board), *ins->board, ins->board->bottomColor);
 
+    int key = 0;
+    while (key != 'q') {
+        wchar_t wstr[THOUSAND_SIZE], pageWstr[THOUSAND_SIZE * 8];
+        swprintf(pageWstr, FILENAME_MAX, L"%s:\n\n", fileName);
+        getBoardString(wstr, ins->board);
+        wcscat(pageWstr, wstr);
+        swprintf(wstr, 100, L"着法位置(n,o)：(%d,%d) 前着:%c 后着:%c 变着:%c\n\n"
+                            L"操作提示:\n空格/n:后着 b/p:前着 g/o:变着 q:退出\n",
+            ins->currentMove->nextNo_, ins->currentMove->otherNo_,
+            hasPre(ins) ? L'有' : L'无', hasNext(ins) ? L'有' : L'无', hasOther(ins) ? L'有' : L'无');
+        wcscat(pageWstr, wstr);
+        //wcscat(pageWstr, L"\n操作提示:\n空格/n:后着 b/p:前着 g/o:变着 q:退出\n");
+        system("cls");
+        wprintf(L"%s\n", pageWstr);
+
+        key = getch();
+        if (key == ' ' || key == 'n')
+            go(ins);
+        else if (key == 'b' || key == 'p')
+            back(ins);
+        else if (key == 'g' || key == 'o')
+            goOther(ins);
+    }
     delInstance(ins);
 }
 
