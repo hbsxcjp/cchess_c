@@ -49,4 +49,5 @@ void testTransDir(int fromDir, int toDir,
 // 测试本翻译单元各种对象、函数
 void testInstance(FILE* fout);
 
+
 #endif

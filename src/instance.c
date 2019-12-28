@@ -885,6 +885,8 @@ Instance* readInstance(Instance* ins, const char* filename)
     }
     FILE* fin = fopen(filename,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
+    if (fin == NULL)
+        return NULL;
     switch (fmt) {
     case XQF:
         readXQF(ins, fin);
@@ -940,6 +942,8 @@ void writeInstance(Instance* ins, const char* filename)
     }
     FILE* fout = fopen(filename,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "wb" : "w");
+    if (fout == NULL)
+        return;
     switch (fmt) {
     case XQF:
         wprintf(L"未实现的写入文件扩展名！");
@@ -1065,8 +1069,10 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             if (__getRecFormat(fromExt) != NOTFMT) {
                 Instance* ins = newInstance();
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                if (readInstance(ins, dir_fileName) == NULL)
+                if (readInstance(ins, dir_fileName) == NULL) {
+                    delInstance(ins);
                     return;
+                }
                 strcat(tofilename, EXTNAMES[tofmt]);
 
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);

@@ -4,8 +4,7 @@ CC = gcc
 #CFLAGS = -Wall -std=c11
 CFLAGS = -g -Wall -std=c11
 LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
-#OBJS = obj/piece.o obj/board.o obj/move.o obj/main.o
-OBJS = obj/cJSON.o obj/tools.o obj/piece.o obj/board.o obj/move.o obj/instance.o obj/main.o
+OBJS = obj/cJSON.o obj/tools.o obj/piece.o obj/board.o obj/move.o obj/instance.o obj/view.o obj/main.o
 
 a: $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS) 

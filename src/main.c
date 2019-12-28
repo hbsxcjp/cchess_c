@@ -1,8 +1,9 @@
+#include "head/view.h"
 #include "head/board.h"
 #include "head/instance.h"
 #include "head/move.h"
-#include "head/tools.h"
 #include "head/piece.h"
+#include "head/tools.h"
 #include <time.h>
 
 int main(int argc, char const* argv[])
@@ -19,7 +20,7 @@ int main(int argc, char const* argv[])
     //testPiece(fout);
     //testBoard(fout);
     //testTools();
-    testInstance(fout);
+    //testInstance(fout);
     if (argc == 7) {
         testTransDir(atoi(argv[1]), atoi(argv[2]),
             atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
@@ -27,6 +28,10 @@ int main(int argc, char const* argv[])
         //testTransDir(0, 2, 0, 1, 1, 6);
         //testTransDir(2, 3, 0, 3, 1, 3);
     }
+
+    wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
+    //wchar_t* dir = L"C:\\棋谱\\象棋杀着大全.xqf";
+    textView(dir);
 
     time_t time1;
     time(&time1);

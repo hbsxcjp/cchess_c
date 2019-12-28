@@ -49,6 +49,13 @@ const char* getExt(const char* filename)
     return strrchr(filename, '.');
 }
 
+/*
+FILE* fin = _wfopen(findName, L"r");
+wchar_t* wstr = getWString(fin);
+wprintf(L"%s:\n%s\n\n", findName, wstr);
+free(wstr);
+fclose(fin);
+//*/
 wchar_t* getWString(FILE* fin)
 {
     long start = ftell(fin);
@@ -93,36 +100,28 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-void getFiles(wchar_t* fileNames[], int* pcount, const wchar_t* path)
+void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
 {
+    if (*fileCount == maxCount) {
+        wprintf(L"文件数量已达到最大值。\n");
+        return;
+    }
     long hFile = 0; //文件句柄
     struct _wfinddata_t fileinfo; //文件信息
-    wchar_t dirName[FILENAME_MAX] = { 0 };
-    wcscpy(dirName, path);
-    //wprintf(L"%d: %s\n", __LINE__, dirName);
-
-    if ((hFile = _wfindfirst(wcscat(dirName, L"\\*"), &fileinfo)) == -1)
+    wchar_t findDirName[FILENAME_MAX] = { 0 };
+    wcscpy(findDirName, dirName);
+    //wprintf(L"%d: %s\n", __LINE__, findDirName);
+    if ((hFile = _wfindfirst(wcscat(findDirName, L"\\*"), &fileinfo)) == -1)
         return;
-
-    do { //如果是目录,迭代之  //如果不是,加入列表
-        wchar_t findName[FILENAME_MAX];
-        wcscat(wcscat(wcscpy(findName, path), L"\\"), fileinfo.name);
+    do {
+        if (wcscmp(fileinfo.name, L".") == 0 || wcscmp(fileinfo.name, L"..") == 0)
+            continue;
+        wchar_t* findName = malloc(FILENAME_MAX);
+        wcscat(wcscat(wcscpy(findName, dirName), L"\\"), fileinfo.name);
         //wprintf(L"%d: %s\n", __LINE__, findName);
-        if (fileinfo.attrib & _A_SUBDIR) {
-            if (wcscmp(fileinfo.name, L".") != 0 && wcscmp(fileinfo.name, L"..") != 0)
-                getFiles(fileNames, pcount, findName);
-        } else {
-            wchar_t* fileName = malloc(FILENAME_MAX);
-            wcscpy(fileName, findName);
-            /*
-            FILE* fin = _wfopen(findName, L"r");
-            wchar_t* wstr = getWString(fin);
-            wprintf(L"%s:\n%s\n\n", findName, wstr);
-            free(wstr);
-            fclose(fin);
-            //*/
-            fileNames[(*pcount)++] = fileName;
-        }
+        fileNames[(*fileCount)++] = findName;
+        if (fileinfo.attrib & _A_SUBDIR) //如果是目录,迭代之
+            getFileNames(fileNames, fileCount, maxCount, findName);
     } while (_wfindnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
@@ -140,7 +139,7 @@ void testTools(void)
     for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
         int count = 0;
         wchar_t* fileNames[THOUSAND_SIZE];
-        getFiles(fileNames, &count, paths[i]);
+        getFileNames(fileNames, &count, 1000, paths[i]);
         for (int i = 0; i < count; ++i) {
             wprintf(L"%d: %s\n", __LINE__, fileNames[i]);
             free(fileNames[i]);
