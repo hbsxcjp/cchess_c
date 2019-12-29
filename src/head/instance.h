@@ -21,6 +21,9 @@ Instance* readInstance(Instance*, const char* filename);
 // 从instance存储到文件
 void writeInstance(Instance* ins, const char* filename);
 
+// 是否开始
+bool isStart(Instance* ins);
+
 // 当前着法有无后着
 bool hasNext(Instance* ins);
 

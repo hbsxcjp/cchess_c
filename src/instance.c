@@ -980,6 +980,11 @@ void writeInstance(Instance* ins, const char* filename)
     fclose(fout);
 }
 
+bool isStart(Instance* ins)
+{
+    return ins->currentMove == ins->rootMove;
+}
+
 bool hasNext(Instance* ins)
 {
     return ins->currentMove->nmove != NULL;

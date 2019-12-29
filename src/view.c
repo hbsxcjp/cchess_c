@@ -1,6 +1,7 @@
 #include "head/view.h"
 #include "head/board.h"
 #include "head/instance.h"
+#include "head/move.h"
 #include "head/tools.h"
 #include <conio.h>
 //#include <termios.h>
@@ -17,13 +18,13 @@ static int getFileIndex(wchar_t* fileNames[], int fileCount, const wchar_t* dirN
         if (last > fileCount)
             last = fileCount;
         wchar_t wstr[FILENAME_MAX], pageWstr[FILENAME_MAX * perPageCount];
-        swprintf(wstr, FILENAME_MAX, L"%s => 第%3d-%3d个文件：\n\n", dirName, first + 1, last);
+        swprintf(wstr, FILENAME_MAX, L"%s >> 第%3d～%3d个文件：\n\n", dirName, first + 1, last);
         wcscpy(pageWstr, wstr);
         for (int i = first; i < last; ++i) {
             swprintf(wstr, 102, L"%3d. %s\n", i + 1, fileNames[i]);
             wcscat(pageWstr, wstr);
         }
-        wcscat(pageWstr, L"\n0-9:选择文件(非数字结束) 非0-9:下页 q:退出\n");
+        wcscat(pageWstr, L"\n0～9:选择编号(非0～9结束)  非0～9:下页  q:退出\n");
         system("cls");
         wprintf(L"%s\n\n", pageWstr);
         key = getche();
@@ -53,27 +54,58 @@ void displayInstance(const wchar_t* fileName)
     }
 
     int key = 0;
+    wchar_t* BLANKSTR = L" － ";
+    wchar_t* zhStr    
+    
+    
+    
+    
+     = BLANKSTR;
     while (key != 'q') {
-        wchar_t wstr[THOUSAND_SIZE], pageWstr[THOUSAND_SIZE * 8];
-        swprintf(pageWstr, FILENAME_MAX, L"%s:\n\n", fileName);
+        wchar_t wstr[THOUSAND_SIZE * 2], pageWstr[THOUSAND_SIZE * 8];
+        swprintf(pageWstr, FILENAME_MAX, L"%s(着数:%d 注数:%d 着深:%d 变深:%d):\n\n",
+            fileName, ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
         getBoardString(wstr, ins->board);
         wcscat(pageWstr, wstr);
-        swprintf(wstr, 100, L"着法位置(n,o)：(%d,%d) 前着:%c 后着:%c 变着:%c\n\n"
-                            L"操作提示:\n空格/n:后着 b/p:前着 g/o:变着 q:退出\n",
-            ins->currentMove->nextNo_, ins->currentMove->otherNo_,
-            hasPre(ins) ? L'有' : L'无', hasNext(ins) ? L'有' : L'无', hasOther(ins) ? L'有' : L'无');
+        swprintf(wstr, 100, L"\n着法>> (%2d,%2d) %s\n       注解:%s\n"
+                            L"\n操作>>  b/p:%s96  空格/n:%s  g/o:%s  q:退出\n",
+            ins->currentMove->nextNo_, ins->currentMove->otherNo_, zhStr,
+            ins->currentMove->remark ? ins->currentMove->remark : BLANKSTR,
+            hasPre(ins) ? L"前着" : BLANKSTR, hasNext(ins) ? L"后着" : BLANKSTR, hasOther(ins) ? L"变着" : BLANKSTR);
         wcscat(pageWstr, wstr);
-        //wcscat(pageWstr, L"\n操作提示:\n空格/n:后着 b/p:前着 g/o:变着 q:退出\n");
         system("cls");
         wprintf(L"%s\n", pageWstr);
 
-        key = getch();
-        if (key == ' ' || key == 'n')
+        switch (key = getch()) {
+        case ' ':
+        case 'n':
+            if (hasNext(ins))
+                getZhStr(zhStr, ins->board, ins->currentMove->nmove);
             go(ins);
-        else if (key == 'b' || key == 'p')
+            break;
+        case 'b':
+        case 'p':
             back(ins);
-        else if (key == 'g' || key == 'o')
+            if (!isStart(ins)) {
+                back(ins);
+                getZhStr(zhStr, ins->board, ins->currentMove->nmove);
+                go(ins);
+            } else
+                zhStr = BLANKSTR;
+            break;
+        case 'g':
+        case 'o':
+            if (hasOther(ins)) {
+                Move* omove = ins->currentMove->omove;
+                back(ins);
+                getZhStr(zhStr, ins->board, omove);
+                go(ins);
+            }
             goOther(ins);
+            break;
+        default:
+            break;
+        }
     }
     delInstance(ins);
 }
