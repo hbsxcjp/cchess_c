@@ -2,10 +2,10 @@
 #define BASE_H
 
 #include <assert.h>
+#include <io.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <io.h>
 #include <stdlib.h>
 #include <wchar.h>
 //#include <math.h>
@@ -129,7 +129,8 @@ typedef enum {
 typedef struct Move_ {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
-    wchar_t* remark; // 本着注解
+    wchar_t* remark; // 注解
+    wchar_t zhStr[6]; // 着法名称
     struct Move_ *pmove, *nmove, *omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 } Move;

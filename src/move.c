@@ -17,7 +17,7 @@ Move* newMove(void)
     Move* move = (Move*)malloc(sizeof(Move));
     move->fseat = move->tseat = -1;
     move->tpiece = BLANKPIECE;
-    move->remark = L'\x0';
+    move->remark = NULL;
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -52,8 +52,7 @@ void delMove(Move* move)
         return;
     delMove(move->omove);
     delMove(move->nmove);
-    if (move->remark != NULL)
-        free(move->remark);
+    free(move->remark);
     free(move);
 }
 
@@ -126,11 +125,16 @@ static wchar_t* __getPreCHars(wchar_t* preChars, int count)
 
 extern const wchar_t* PieceNames[PIECECOLORNUM];
 
+PieceColor getColor_zh(const wchar_t* zhStr)
+{
+    return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED;
+}
+
 void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
     // 根据最后一个字符判断该着法属于哪一方
-    PieceColor color = wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED;
+    PieceColor color = getColor_zh(zhStr);
     bool isBottom = isBottomSide(board, color);
     int index = 0, count = 0,
         movDir = (wcschr(MOVCHAR, zhStr[2]) - MOVCHAR - 1) * (isBottom ? 1 : -1);
@@ -173,12 +177,12 @@ void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
     }
 
     /*
-    wchar_t azhStr[5];
-    assert(wcscmp(zhStr, getZhStr(azhStr, board, move)) == 0);
+    setZhStr(move, board);
+    assert(wcscmp(zhStr, move->zhStr) == 0);
     //*/
 }
 
-wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
+void setZhStr(Move* move, const Board* board)
 {
     Piece fpiece = getPiece_s(board, move->fseat);
     assert(fpiece != BLANKPIECE);
@@ -201,32 +205,31 @@ wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move)
                 index = i;
                 break;
             }
-        zhStr[0] = preChars[isBottom ? count - 1 - index : index];
-        zhStr[1] = name;
+        move->zhStr[0] = preChars[isBottom ? count - 1 - index : index];
+        move->zhStr[1] = name;
     } else { //将帅, 仕(士),相(象): 不用“前”和“后”区别，因为能退的一定在前，能进的一定在后
-        zhStr[0] = name;
-        zhStr[1] = NUMCHAR[color][isBottom ? BOARDCOL - 1 - fcol : fcol];
+        move->zhStr[0] = name;
+        move->zhStr[1] = NUMCHAR[color][isBottom ? BOARDCOL - 1 - fcol : fcol];
     }
-    zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
-    zhStr[3] = NUMCHAR[color][(__isLinePiece(name) && frow != trow)
+    move->zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
+    move->zhStr[3] = NUMCHAR[color][(__isLinePiece(name) && frow != trow)
             ? abs(trow - frow) - 1
             : (isBottom ? BOARDCOL - 1 - tcol : tcol)];
-    zhStr[4] = L'\x0';
+    move->zhStr[4] = L'\x0';
 
     /*
     wchar_t iccsStr[12], boardStr[THOUSAND_SIZE];
     wprintf(L"iccs: %s zh:%s\n%s\n",
         getICCS(iccsStr, move), zhStr, getBoardString(boardStr, board));
     //*/
-    assert(wcslen(zhStr) == 4);
 
     //*
     Move* amove = newMove();
-    setMove_zh(amove, board, zhStr);
+    setMove_zh(amove, board, move->zhStr);
     assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
     delMove(amove);
     //*/
-    return zhStr;
+    //return move->zhStr;
 }
 
 void setRemark(Move* move, wchar_t* remark)

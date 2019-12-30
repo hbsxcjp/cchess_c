@@ -580,7 +580,7 @@ wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
                            "　　┃　│　│　│╲│╱│　│　│　┃\n"
                            "　　┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
                            "　　┃　│　│　│╱│╲│　│　│　┃\n"
-                           "　　┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用 
+                           "　　┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
     //*/
     wchar_t boardStr_t[] = L"　　＋－－－－－－－－－－－－－－－＋\n"
                            "　　︱　︱　︱　︱＼︱／︱　︱　︱　︱\n"
@@ -600,7 +600,7 @@ wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
                            "　　︱　︱　︱　︱＼︱／︱　︱　︱　︱\n"
                            "　　︱－＋－＋－＋－＋－＋－＋－＋－︱\n"
                            "　　︱　︱　︱　︱／︱＼︱　︱　︱　︱\n"
-                           "　　＋－－－－－－－－－－－－－－－＋\n"; // 全角字符，输出控制台屏幕使用
+                           "　　＋－－－－－－－－－－－－－－－＋\n"; // 全角字符，输出控制台屏幕使用 
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             Piece piece = getPiece_rc(board, row, col);

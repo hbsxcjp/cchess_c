@@ -170,10 +170,11 @@ void setMoveNums(Instance* ins, Move* move)
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
 
     // 先深度搜索
-    //__doMove(ins, move);
+    setZhStr(move, ins->board);
+    __doMove(ins, move);
     if (move->nmove != NULL)
-        setMoveNums(ins, move->nmove);
-    //__undoMove(ins, move);
+        setMoveNums(ins, move->nmove);    
+    __undoMove(ins, move);
 
     // 后广度搜索
     if (move->omove != NULL) {
@@ -675,7 +676,7 @@ static void __writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, Move* move,
         fwprintf(fout, isEven ? L" " : boutStr);
 
     if (isPGN_ZH)
-        fwprintf(fout, getZhStr(iccs_zhStr, ins->board, move));
+        fwprintf(fout, move->zhStr);
     else
         fwprintf(fout, getICCS(iccs_zhStr, move));
     fwprintf(fout, L" ");
@@ -832,8 +833,7 @@ static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum,
     wchar_t* remarkStr, long* premSize, Instance* ins, Move* move)
 {
     int row = move->nextNo_ * 2, firstCol = move->CC_ColNo_ * 5;
-    wchar_t zhStr[6] = { 0 };
-    wcsncpy(&lineStr[row * colNum + firstCol], getZhStr(zhStr, ins->board, move), 4);
+    wcsncpy(&lineStr[row * colNum + firstCol], move->zhStr, 4);
     if (move->remark != NULL)
         __addRemarkStr_PGN_CC(remarkStr, premSize, move);
 
@@ -1162,7 +1162,7 @@ void testInstance(FILE* fout)
 {
     Instance* ins = newInstance();
     readInstance(ins, "01.xqf");
-    writeInstance(ins, "01.bin");
+    writeInstance(ins, "01.bin");//*
     delInstance(ins);
 
     ins = newInstance();
@@ -1188,6 +1188,7 @@ void testInstance(FILE* fout)
     ins = newInstance();
     readInstance(ins, "01.pgn_cc");
     writeInstance(ins, "01.pgn_cc");
+    //*/
 
     printf("%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
         __func__, ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);

@@ -30,11 +30,15 @@ void setMove_iccs(Move* move, const wchar_t* iccsStr);
 // 取得ICCS字符串
 wchar_t* getICCS(wchar_t* ICCSStr, const Move* move);
 
+// 辅助函数：根据中文着法取得走棋方颜色
+PieceColor getColor_zh(const wchar_t* zhStr);
+
 // 根据中文着法设置内部着法
 void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr);
 
-// 根据内部着法表示取得中文着法
-wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move); 
+// 根据内部着法表示设置中文着法
+void setZhStr(Move* move, const Board* board);
+//wchar_t* getZhStr(wchar_t* zhStr, const Board* board, const Move* move); 
 
 // 设置remark
 void setRemark(Move* move, wchar_t* remark);

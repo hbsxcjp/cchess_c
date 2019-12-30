@@ -10,8 +10,8 @@
 
 static int getFileIndex(wchar_t* fileNames[], int fileCount, const wchar_t* dirName)
 {
-
-    int key, pageIndex = 0, perPageCount = 25, fileIndex = -1,
+#define perPageCount 20
+    int key, pageIndex = 0, fileIndex = -1,
              pageCount = fileCount / perPageCount + 1;
     while (pageIndex < pageCount) {
         int first = pageIndex++ * perPageCount, last = first + perPageCount;
@@ -54,24 +54,23 @@ void displayInstance(const wchar_t* fileName)
     }
 
     int key = 0;
-    wchar_t* BLANKSTR = L" － ";
-    wchar_t* zhStr    
-    
-    
-    
-    
-     = BLANKSTR;
+    wchar_t* BLANKSTR = L"－";
     while (key != 'q') {
         wchar_t wstr[THOUSAND_SIZE * 2], pageWstr[THOUSAND_SIZE * 8];
         swprintf(pageWstr, FILENAME_MAX, L"%s(着数:%d 注数:%d 着深:%d 变深:%d):\n\n",
             fileName, ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
         getBoardString(wstr, ins->board);
         wcscat(pageWstr, wstr);
-        swprintf(wstr, 100, L"\n着法>> (%2d,%2d) %s\n       注解:%s\n"
-                            L"\n操作>>  b/p:%s96  空格/n:%s  g/o:%s  q:退出\n",
-            ins->currentMove->nextNo_, ins->currentMove->otherNo_, zhStr,
-            ins->currentMove->remark ? ins->currentMove->remark : BLANKSTR,
-            hasPre(ins) ? L"前着" : BLANKSTR, hasNext(ins) ? L"后着" : BLANKSTR, hasOther(ins) ? L"变着" : BLANKSTR);
+        swprintf(wstr, THOUSAND_SIZE, L"\n操作>>  b/p:%s  空格/n:%s  g/o:%s  q:退出\n"
+                L"\n着法>> (%2d,%2d) %c=>%s\n       注解:%s\n",
+            hasPre(ins) ? L"前" : BLANKSTR, 
+            hasNext(ins) ? L"后" : BLANKSTR, 
+            hasOther(ins) ? L"变" : BLANKSTR,
+            ins->currentMove->nextNo_, 
+            ins->currentMove->otherNo_, 
+            (!isStart(ins) ? (getColor_zh(ins->currentMove->zhStr)==RED? L'红' : L'黑'):L'　'),
+            (hasNext(ins) ? ins->currentMove->zhStr : BLANKSTR),
+            (ins->currentMove->remark ? ins->currentMove->remark : BLANKSTR));
         wcscat(pageWstr, wstr);
         system("cls");
         wprintf(L"%s\n", pageWstr);
@@ -79,28 +78,14 @@ void displayInstance(const wchar_t* fileName)
         switch (key = getch()) {
         case ' ':
         case 'n':
-            if (hasNext(ins))
-                getZhStr(zhStr, ins->board, ins->currentMove->nmove);
             go(ins);
             break;
         case 'b':
         case 'p':
             back(ins);
-            if (!isStart(ins)) {
-                back(ins);
-                getZhStr(zhStr, ins->board, ins->currentMove->nmove);
-                go(ins);
-            } else
-                zhStr = BLANKSTR;
             break;
         case 'g':
         case 'o':
-            if (hasOther(ins)) {
-                Move* omove = ins->currentMove->omove;
-                back(ins);
-                getZhStr(zhStr, ins->board, omove);
-                go(ins);
-            }
             goOther(ins);
             break;
         default:
@@ -113,9 +98,9 @@ void displayInstance(const wchar_t* fileName)
 void textView(const wchar_t* dirName)
 {
 #ifdef _WIN32
+#define maxCount 1000
     //system("cls");
     int fileCount = 0;
-    const int maxCount = 1000;
     wchar_t* fileNames[maxCount];
     getFileNames(fileNames, &fileCount, maxCount, dirName);
 

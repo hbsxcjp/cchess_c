@@ -2,8 +2,9 @@
 
 CC = gcc
 #CFLAGS = -Wall -std=c11
-CFLAGS = -g -Wall -std=c11
-LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
+CFLAGS = -Wall -std=c11 # -g 
+#LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
+LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16
 OBJS = obj/cJSON.o obj/tools.o obj/piece.o obj/board.o obj/move.o obj/instance.o obj/view.o obj/main.o
 
 a: $(OBJS)
