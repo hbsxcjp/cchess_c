@@ -980,22 +980,22 @@ void writeInstance(Instance* ins, const char* filename)
     fclose(fout);
 }
 
-bool isStart(Instance* ins)
+bool isStart(const Instance* ins)
 {
     return ins->currentMove == ins->rootMove;
 }
 
-bool hasNext(Instance* ins)
+bool hasNext(const Instance* ins)
 {
     return ins->currentMove->nmove != NULL;
 }
 
-bool hasPre(Instance* ins)
+bool hasPre(const Instance* ins)
 {
     return ins->currentMove->pmove != NULL;
 }
 
-bool hasOther(Instance* ins)
+bool hasOther(const Instance* ins)
 {
     return ins->currentMove->omove != NULL;
 }

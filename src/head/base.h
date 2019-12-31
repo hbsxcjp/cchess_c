@@ -143,4 +143,11 @@ typedef struct {
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 } Instance;
 
+// 演示类型
+typedef enum {
+    FIRST = 0x80,
+    MIDDLE = 0x08,
+    END = 0x01
+} Pos;
+
 #endif

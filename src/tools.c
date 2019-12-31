@@ -4,14 +4,14 @@ char* trim(char* str)
 {
     size_t size = strlen(str);
     for (int i = size - 1; i >= 0; --i)
-        if (isspace(str[i]))
+        if (isspace((int)str[i]))
             str[i] = '\x0';
         else
             break;
     size = strlen(str);
     int offset = 0;
     for (int i = 0; i < size; ++i)
-        if (isspace(str[i]))
+        if (isspace((int)str[i]))
             ++offset;
         else
             break;
@@ -100,12 +100,13 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
+static void __getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
 {
     if (*fileCount == maxCount) {
         wprintf(L"文件数量已达到最大值。\n");
         return;
     }
+
     long hFile = 0; //文件句柄
     struct _wfinddata_t fileinfo; //文件信息
     wchar_t findDirName[FILENAME_MAX] = { 0 };
@@ -121,9 +122,17 @@ void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wcha
         //wprintf(L"%d: %s\n", __LINE__, findName);
         fileNames[(*fileCount)++] = findName;
         if (fileinfo.attrib & _A_SUBDIR) //如果是目录,迭代之
-            getFileNames(fileNames, fileCount, maxCount, findName);
+            __getFileNames(fileNames, fileCount, maxCount, findName);
     } while (_wfindnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
+}
+
+void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
+{
+    wchar_t* objDirName = malloc(FILENAME_MAX);
+    wcscpy(objDirName, dirName);
+    fileNames[(*fileCount)++] = objDirName;
+    __getFileNames(fileNames, fileCount, maxCount, dirName);
 }
 
 // 测试函数

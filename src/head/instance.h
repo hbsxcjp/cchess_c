@@ -22,16 +22,16 @@ Instance* readInstance(Instance*, const char* filename);
 void writeInstance(Instance* ins, const char* filename);
 
 // 是否开始
-bool isStart(Instance* ins);
+bool isStart(const Instance* ins);
 
 // 当前着法有无后着
-bool hasNext(Instance* ins);
+bool hasNext(const Instance* ins);
 
 // 当前着法有无前着
-bool hasPre(Instance* ins);
+bool hasPre(const Instance* ins);
 
 // 当前着法有无变着
-bool hasOther(Instance* ins);
+bool hasOther(const Instance* ins);
 
 // 前进一步
 void go(Instance* ins);
