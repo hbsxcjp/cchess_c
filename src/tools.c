@@ -120,9 +120,11 @@ static void __getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, c
         wchar_t* findName = malloc(FILENAME_MAX);
         wcscat(wcscat(wcscpy(findName, dirName), L"\\"), fileinfo.name);
         //wprintf(L"%d: %s\n", __LINE__, findName);
-        fileNames[(*fileCount)++] = findName;
-        if (fileinfo.attrib & _A_SUBDIR) //如果是目录,迭代之
+        if (fileinfo.attrib & _A_SUBDIR) {
             __getFileNames(fileNames, fileCount, maxCount, findName);
+            free(findName);
+        } else
+            fileNames[(*fileCount)++] = findName;
     } while (_wfindnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }

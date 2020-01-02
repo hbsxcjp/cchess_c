@@ -3,8 +3,7 @@
 #include "head/instance.h"
 #include "head/move.h"
 #include "head/tools.h"
-#include <conio.h>
-//#include <termios.h>
+//#include <conio.h>
 
 // _WIN32 _LINUX
 static const wchar_t* BLANKSTR = L"－－";
@@ -14,28 +13,29 @@ static void __displayFileList(wchar_t* fileNames[], int first, int last, Pos pos
     wchar_t wstr[THOUSAND_SIZE], pageWstr[THOUSAND_SIZE * 8];
     swprintf(pageWstr, FILENAME_MAX, L"%s >> 第%d～%d个文件：\n\n", fileNames[0], first, last);
     for (int i = first; i <= last; ++i) {
-        swprintf(wstr, 102, L"%3d. %s\n", i, fileNames[i]);
+        swprintf(wstr, THOUSAND_SIZE, L"%3d. %s\n", i, fileNames[i]);
         wcscat(pageWstr, wstr);
     }
-    swprintf(wstr, THOUSAND_SIZE, L"\n\n操作>>  b/p:%s  空格/n:%s  q:退出\n"
-                                  L"\n选择>> 0～9:文件编号(非数字键结束)\n",
+    swprintf(wstr, THOUSAND_SIZE, L"\n\n操作>>  b/p(回车):%s  空格/n(回车):%s  q(回车):退出\n"
+                                  L"\n选择>> 0～9:文件编号(回车)\n",
         pos & FIRST ? BLANKSTR : L"前页",
         pos & END ? BLANKSTR : L"后页");
     wcscat(pageWstr, wstr);
-    system("cls");
+    //system("clear");
     wprintf(L"%s\n\n", pageWstr);
+    fflush(stdout);
 }
 
 static int getFileIndex(wchar_t* fileNames[], int fileCount)
 {
     int key = 0, pageIndex = 0, perPageCount = 20,
         pageCount = (fileCount - 1) / perPageCount + 1,
-        first = 1, last = fileCount < perPageCount ? fileCount : perPageCount;
+        first = 1, last = fileCount - 1 < perPageCount ? fileCount - 1 : perPageCount;
     Pos pos = FIRST;
-    if (fileCount <= perPageCount)
-        pos &= END;
+    if (fileCount - 1 <= perPageCount)
+        pos |= END;
     __displayFileList(fileNames, first, last, pos);
-    while ((key = getch()) != 'q') {
+    while ((key = getchar()) != 'q') {
         switch (key) {
         case ' ':
         case 'n':
@@ -43,9 +43,9 @@ static int getFileIndex(wchar_t* fileNames[], int fileCount)
                 first = ++pageIndex * perPageCount + 1;
                 last = first + perPageCount;
                 pos = MIDDLE;
-                if (last >= fileCount) {
-                    last = fileCount;
-                    pos &= END;
+                if (last >= fileCount - 1) {
+                    last = fileCount - 1;
+                    pos |= END;
                 }
                 __displayFileList(fileNames, first, last, pos);
             }
@@ -57,7 +57,7 @@ static int getFileIndex(wchar_t* fileNames[], int fileCount)
                 last = first + perPageCount;
                 pos = MIDDLE;
                 if (pageIndex == 0)
-                    pos &= FIRST;
+                    pos |= FIRST;
                 __displayFileList(fileNames, first, last, pos);
             }
             break;
@@ -65,10 +65,10 @@ static int getFileIndex(wchar_t* fileNames[], int fileCount)
             if (isdigit(key)) {
                 char str[10] = { key, 0 };
                 int i = 1;
-                while ((key = getche()) && isdigit(key) && i < 10)
+                while ((key = getchar()) && isdigit(key) && i < 10)
                     str[i++] = key;
                 int fileIndex = atoi(str);
-                if (fileIndex > fileCount)
+                if (fileIndex > fileCount - 1)
                     wprintf(L" 输入的编号不在可选范围之内，请重新输入.\n");
                 else
                     return fileIndex;
@@ -86,19 +86,20 @@ static void __displayInstance(const Instance* ins, const wchar_t* fileName)
         fileName, ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
     getBoardString(wstr, ins->board);
     wcscat(pageWstr, wstr);
-    swprintf(wstr, THOUSAND_SIZE, L"\n操作>>  b/p:%s  空格/n:%s  g/o:%s  q:退出\n"
-                                  L"\n着法>> (%2d,%2d) %c=>%s  注解:%s\n",
+    swprintf(wstr, THOUSAND_SIZE, L"\n操作>> b/p(回车):%s  空格/n/回车:%s  g/o(回车):%s  q(回车):退出\n"
+                                  L"\n着法>> (%2d,%2d) %c=>%s 注解:%s\n",
         hasPre(ins) ? L"前着" : BLANKSTR,
         hasNext(ins) ? L"后着" : BLANKSTR,
         hasOther(ins) ? L"变着" : BLANKSTR,
         ins->currentMove->nextNo_,
         ins->currentMove->otherNo_,
-        (isStart(ins) ? L'　' : (getColor_zh(ins->currentMove->zhStr) == RED ? L'红' : L'黑')),
+        (isStart(ins) ? L'－' : (getColor_zh(ins->currentMove->zhStr) == RED ? L'红' : L'黑')),
         (isStart(ins) ? BLANKSTR : ins->currentMove->zhStr),
         (ins->currentMove->remark ? ins->currentMove->remark : BLANKSTR));
     wcscat(pageWstr, wstr);
-    system("cls");
+    //system("clear");
     wprintf(L"%s\n", pageWstr);
+    fflush(stdout);
 }
 
 void playInstance(const wchar_t* fileName)
@@ -110,10 +111,11 @@ void playInstance(const wchar_t* fileName)
         __displayInstance(ins, fileName);
         bool changed = false;
         int key = 0;
-        while ((key = getch()) != 'q') {
+        while ((key = getchar()) != 'q') {
             switch (key) {
             case ' ':
             case 'n':
+            case '\n':
                 go(ins);
                 changed = true;
                 break;
@@ -135,14 +137,13 @@ void playInstance(const wchar_t* fileName)
                 __displayInstance(ins, fileName);
         }
     }
-    delInstance(ins);
+    if (ins != NULL)
+        delInstance(ins);
 }
 
 void textView(const wchar_t* dirName)
 {
-#ifdef _WIN32
 #define maxCount 1000
-    //system("cls");
     int fileCount = 0;
     wchar_t* fileNames[maxCount];
     getFileNames(fileNames, &fileCount, maxCount, dirName);
@@ -157,9 +158,4 @@ void textView(const wchar_t* dirName)
 
     for (int i = 0; i < fileCount; ++i)
         free(fileNames[i]);
-
-#endif
-#ifdef _LINUX
-
-#endif
 }

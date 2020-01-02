@@ -8,7 +8,8 @@
 
 int main(int argc, char const* argv[])
 {
-    setlocale(LC_ALL, "chs");
+    setlocale(LC_ALL, "");
+    setbuf(stdin, NULL);
 
     time_t time0;
     time(&time0);
