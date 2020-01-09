@@ -3,7 +3,8 @@
 
 #include "base.h"
 
+
 // 文本界面互动
-void textView(const wchar_t* dirName);
+//void textView(const wchar_t* dirName);
 
 #endif

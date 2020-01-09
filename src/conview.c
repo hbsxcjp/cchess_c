@@ -1,11 +1,13 @@
-#include "head/view.h"
+#include "head/conview.h"
 #include "head/board.h"
 #include "head/instance.h"
 #include "head/move.h"
 #include "head/tools.h"
-//#include <conio.h>
 
-// _WIN32 _LINUX
+
+
+
+/*
 static const wchar_t* BLANKSTR = L"－－";
 
 static void __displayFileList(wchar_t* fileNames[], int first, int last, Pos pos)
@@ -159,3 +161,4 @@ void textView(const wchar_t* dirName)
     for (int i = 0; i < fileCount; ++i)
         free(fileNames[i]);
 }
+//*/
