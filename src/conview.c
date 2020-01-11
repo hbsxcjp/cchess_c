@@ -4,8 +4,80 @@
 #include "head/move.h"
 #include "head/tools.h"
 
+#define MENUCOLOR (COLOR_CYAN | A_BOLD)
+#define MENUREVCOLOR (COLOR_MAGENTA | A_BOLD | A_REVERSE)
+#define STATUSCOLOR (COLOR_BLUE | A_BOLD)
 
+#define MAXSTRLEN 256
+#define KEY_ESC 0x1b /* Escape */
 
+static MENU* rootMenu;
+static WINDOW *menuWin, *bodyWin, *boardWin, *moveWin, *remarkWin, *statusWin;
+
+static void startWin(MENU* rootMenu)
+{
+    initscr();
+    start_color();
+
+    menuWin = subwin(stdscr, 1, COLS, 0, 0);
+    bodyWin = subwin(stdscr, LINES - 3, COLS, 2, 0);
+    boardWin = subwin(bodyWin, 32, 24 * 2, 6, 2);
+    moveWin = subwin(bodyWin, 26, COLS - 24 * 2 - 10, 6, 24 * 2 + 4);
+    remarkWin = subwin(bodyWin, 6, COLS - 24 * 2 - 10, 32, 24 * 2 + 4);
+    statusWin = subwin(stdscr, 2, COLS, LINES - 4, 0);
+
+    //wbkgd(win, attr);
+
+    waddstr(menuWin, "这 是 菜 单 窗 口 。 ");
+    //box(bodyWin, 0, 0);
+    waddstr(bodyWin, "这 是 主 体 窗 口 。 ");
+    box(boardWin, 0, 0);
+    waddstr(boardWin, "这 是 棋 盘 窗 口 。 ");
+    box(moveWin, 0, 0);
+    waddstr(moveWin, "这 是 着 法 窗 口 。 ");
+    box(remarkWin, 0, 0);
+    waddstr(remarkWin, "这 是 注 解 窗 口 。 ");
+    box(statusWin, 0, 0);
+    waddstr(statusWin, "这 是 状 态 窗 口 。 ");
+
+    cbreak(); /* direct input (no newline required)... */
+    noecho(); /* ... without echoing */
+    curs_set(0); /* hide cursor (if possible) */
+    //nodelay(wbody, TRUE); /* don't wait for input... */
+    //halfdelay(10); /* ...well, no more than a second, anyway */
+    keypad(stdscr, TRUE); /* enable cursor keys */
+    scrollok(moveWin, TRUE); /* enable scrolling in main window */
+
+    leaveok(stdscr, TRUE);
+    touchwin(stdscr);
+    wrefresh(stdscr);
+}
+
+static void finishWin(void)
+{
+    delwin(boardWin);
+    delwin(moveWin);
+    delwin(remarkWin);
+    delwin(statusWin);
+    delwin(bodyWin);
+    delwin(menuWin);
+    curs_set(1);
+    endwin();
+}
+
+void startView(void)
+{
+    startWin(rootMenu);
+
+    int ch;
+    while (true) {
+        ch = getch();
+        if (ch == 'q')
+            break;
+    }
+
+    finishWin();
+}
 
 /*
 static const wchar_t* BLANKSTR = L"－－";

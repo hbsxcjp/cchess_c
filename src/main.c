@@ -1,4 +1,4 @@
-#include "head/view.h"
+#include "head/conview.h"
 #include "head/board.h"
 #include "head/instance.h"
 #include "head/move.h"
@@ -30,9 +30,11 @@ int main(int argc, char const* argv[])
         //testTransDir(2, 3, 0, 3, 1, 3);
     }
 
-    wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
+    startView();
+
+    //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
     //wchar_t* dir = L"C:\\棋谱\\象棋杀着大全.xqf";
-    textView(dir);
+    //textView(dir);
 
     time_t time1;
     time(&time1);
