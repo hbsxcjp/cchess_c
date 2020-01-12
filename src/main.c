@@ -30,7 +30,8 @@ int main(int argc, char const* argv[])
         //testTransDir(2, 3, 0, 3, 1, 3);
     }
 
-    startView();
+    doView();
+    //testConview();
 
     //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
     //wchar_t* dir = L"C:\\棋谱\\象棋杀着大全.xqf";

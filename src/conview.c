@@ -11,34 +11,172 @@
 #define MAXSTRLEN 256
 #define KEY_ESC 0x1b /* Escape */
 
-static MENU* rootMenu;
-static WINDOW *menuWin, *bodyWin, *boardWin, *moveWin, *remarkWin, *statusWin;
+// 菜单命令
+typedef void (*MENU_FUNC)(void);
 
-static void startWin(MENU* rootMenu)
+// 菜单节点结构
+typedef struct menuNode {
+    wchar_t name[12]; /* item label */
+    MENU_FUNC func; /* (pointer to) function */
+    wchar_t desc[34]; /* function description */
+    struct menuNode *parentMenu, *childMenu, *preBrotherMenu, *nextBrotherMenu;
+    bool selected;
+    bool childsVisible;
+} MenuNode;
+
+// 控制台焦点区域
+typedef enum {
+    BODYA,
+    MENUA,
+    BOARDA,
+    MOVESA,
+    CURMOVEA
+} FocusArea;
+
+static WINDOW *menuWin, *bodyWin, *boardWin, *movesWin, *curmoveWin, *statusWin; // 六个子窗口
+static MenuNode *rootMenuNode, *selectMenuNode; // 菜单根节点
+//static wchar_t statusWcs[10][50];
+wchar_t wstr[THOUSAND_SIZE * 2]; //, pageWstr[THOUSAND_SIZE * 8];
+
+static wchar_t screenWcs[THOUSAND_SIZE * 8];
+static wchar_t* getScreenWcs(const wchar_t* srcWcs)
+{
+    int srcIndex = 0, desIndex = 0, srcLen = wcslen(srcWcs);
+    while (srcIndex < srcLen) {
+        wchar_t wch = srcWcs[srcIndex++];
+        screenWcs[desIndex++] = wch;
+        if(wch > 255) // 非ASCII字符
+            screenWcs[desIndex++] = L' ';
+    }
+    screenWcs[desIndex] = L'\x0';
+    return screenWcs;
+}
+
+static MenuNode* newMenuNode(MenuNode* parMenu, MenuNode* preBthMenu,
+    wchar_t* name, MENU_FUNC func, wchar_t* desc)
+{
+    MenuNode* menuNode = malloc(sizeof(MenuNode));
+    if (parMenu)
+        parMenu->childMenu = menuNode;
+    if (preBthMenu)
+        preBthMenu->nextBrotherMenu = menuNode;
+    menuNode->parentMenu = parMenu;
+    menuNode->preBrotherMenu = preBthMenu;
+    menuNode->childMenu = NULL;
+    menuNode->nextBrotherMenu = NULL;
+    wcsncpy(menuNode->name, name, 10);
+    menuNode->func = func;
+    wcsncpy(menuNode->desc, desc, 32);
+    return menuNode;
+}
+
+static void initMenu(void)
+{
+    rootMenuNode = newMenuNode(NULL, NULL, L"", NULL, L"");
+    MenuNode* file = newMenuNode(rootMenuNode, NULL, L"文件(F)", NULL, L"新建、打开、保存文件，退出");
+    MenuNode* file_new = newMenuNode(file, NULL, L"新建(N)", NULL, L"新建一个棋局");
+    MenuNode* file_open = newMenuNode(file, file_new, L"打开(O)", NULL, L"打开已有的一个棋局");
+    MenuNode* file_save = newMenuNode(file, file_open, L"保存(S)", NULL, L"保存正在显示的棋局");
+    newMenuNode(file, file_save, L"退出(X)", NULL, L"退出程序");
+
+    MenuNode* board = newMenuNode(rootMenuNode, file, L"棋局(B)", NULL, L"对棋盘局面进行操作");
+    MenuNode* board_exc = newMenuNode(board, NULL, L"换棋(E)", NULL, L"红黑棋子互换");
+    MenuNode* board_rot = newMenuNode(board, board_exc, L"换位(R)", NULL, L"红黑位置互换");
+    newMenuNode(board, board_rot, L"左右(Y)", NULL, L"左右棋子互换");
+
+    MenuNode* option = newMenuNode(rootMenuNode, board, L"设置(S)", NULL, L"设置显示主题，主要是棋盘、棋子的颜色配置");
+    MenuNode* option_gen = newMenuNode(option, NULL, L"普通(G)", NULL, L"比较朴素的颜色配置");
+    MenuNode* option_bea = newMenuNode(option, option_gen, L"漂亮(B)", NULL, L"比较鲜艳的颜色配置");
+    newMenuNode(option, option_bea, L"高亮(I)", NULL, L"高对比度的颜色配置");
+
+    MenuNode* about = newMenuNode(rootMenuNode, option, L"关于(A)", NULL, L"帮助、程序信息");
+    MenuNode* about_help = newMenuNode(about, NULL, L"帮助(H)", NULL, L"显示帮助信息");
+    newMenuNode(about, about_help, L"程序(H)", NULL, L"程序有关的信息");
+
+    mvwaddwstr(menuWin, 0, 0, getScreenWcs(file->name));
+    mvwaddwstr(menuWin, 0, 10, getScreenWcs(board->name));
+    mvwaddwstr(menuWin, 0, 20, getScreenWcs(option->name));
+    mvwaddwstr(menuWin, 0, 30, getScreenWcs(about->name));
+    selectMenuNode = rootMenuNode;
+}
+
+static void repaintMenu()
+{
+    touchwin(menuWin);
+    wrefresh(menuWin);
+}
+
+static void delMenu(MenuNode* menuNode)
+{
+    if (menuNode->childMenu != NULL)
+        delMenu(menuNode->childMenu);
+    if (menuNode->nextBrotherMenu != NULL)
+        delMenu(menuNode->nextBrotherMenu);
+    free(menuNode);
+}
+
+static void repaintBody(void) {}
+static void repaintBoard(void) {}
+static void repaintMoves(void) {}
+static void repaintCurMove(void) {}
+
+static void repaintStatus(FocusArea area)
+{
+    switch (area) {
+    case MENUA:
+        //mvwaddwstr(statusWin, 0, 1, selectMenuNode->name);
+        break;
+
+    default:
+        break;
+    }
+}
+
+static void displayIns(Instance* ins, const wchar_t* fileName)
+{
+    mvwaddstr(bodyWin, 0, 1, "=>");
+    mvwaddwstr(bodyWin, 0, 4, getScreenWcs(fileName));
+    swprintf(wstr, FILENAME_MAX, L"  着数：%d 注数：%d 着深：%d 变深：%d",
+        ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
+    mvwaddwstr(movesWin, 2, 2, getScreenWcs(wstr));
+
+    getBoardString(wstr, ins->board);
+    mvwaddwstr(boardWin, 0, 0, getScreenWcs(wstr));
+}
+
+static void startWin()
 {
     initscr();
     start_color();
 
-    menuWin = subwin(stdscr, 1, COLS, 0, 0);
-    bodyWin = subwin(stdscr, LINES - 3, COLS, 2, 0);
-    boardWin = subwin(bodyWin, 32, 24 * 2, 6, 2);
-    moveWin = subwin(bodyWin, 26, COLS - 24 * 2 - 10, 6, 24 * 2 + 4);
-    remarkWin = subwin(bodyWin, 6, COLS - 24 * 2 - 10, 32, 24 * 2 + 4);
-    statusWin = subwin(stdscr, 2, COLS, LINES - 4, 0);
+    int bodyHeight = LINES - 4, bodyWidth = COLS - 1,
+        boardHeight = 4 + 19 * 1 + 4, boardWidth = 2 + 17 * 2 + 2,
+        movesHeight = bodyHeight - 3, movesWidth = COLS - boardWidth - 8;
+    menuWin = subwin(stdscr, 1, 4 * 20, 0, 0);
+    bodyWin = subwin(stdscr, bodyHeight, bodyWidth, 2, 0);
+    boardWin = subwin(bodyWin, boardHeight, boardWidth, 4, 4);
+    movesWin = subwin(bodyWin, movesHeight, movesWidth, 4, boardWidth + 5);
+    curmoveWin = subwin(bodyWin, movesHeight - boardHeight, boardWidth, boardHeight + 4, 2);
+    statusWin = subwin(stdscr, 2, bodyWidth, LINES - 2, 0);
 
     //wbkgd(win, attr);
+    initMenu();
 
-    waddstr(menuWin, "这 是 菜 单 窗 口 。 ");
-    //box(bodyWin, 0, 0);
-    waddstr(bodyWin, "这 是 主 体 窗 口 。 ");
-    box(boardWin, 0, 0);
-    waddstr(boardWin, "这 是 棋 盘 窗 口 。 ");
-    box(moveWin, 0, 0);
-    waddstr(moveWin, "这 是 着 法 窗 口 。 ");
-    box(remarkWin, 0, 0);
-    waddstr(remarkWin, "这 是 注 解 窗 口 。 ");
+    wchar_t fileName[] = L"01.XQF";
+    char fileName_c[FILENAME_MAX];
+    wcstombs(fileName_c, fileName, FILENAME_MAX);
+    Instance* ins = newInstance();
+    if (readInstance(ins, fileName_c) != NULL) {
+        displayIns(ins, fileName);
+    }
+    delInstance(ins);
+
+    box(movesWin, 0, 0);
+    mvwaddstr(movesWin, 0, 1, " 着 法 图 示 ");
+    box(curmoveWin, 0, 0);
+    mvwaddstr(curmoveWin, 0, 1, " 当 前 着 法 ");
     box(statusWin, 0, 0);
-    waddstr(statusWin, "这 是 状 态 窗 口 。 ");
+    mvwaddstr(statusWin, 0, 1, " 状 态 窗 口 ");
 
     cbreak(); /* direct input (no newline required)... */
     noecho(); /* ... without echoing */
@@ -46,7 +184,7 @@ static void startWin(MENU* rootMenu)
     //nodelay(wbody, TRUE); /* don't wait for input... */
     //halfdelay(10); /* ...well, no more than a second, anyway */
     keypad(stdscr, TRUE); /* enable cursor keys */
-    scrollok(moveWin, TRUE); /* enable scrolling in main window */
+    scrollok(movesWin, TRUE); /* enable scrolling in main window */
 
     leaveok(stdscr, TRUE);
     touchwin(stdscr);
@@ -55,9 +193,10 @@ static void startWin(MENU* rootMenu)
 
 static void finishWin(void)
 {
+    delMenu(rootMenuNode);
     delwin(boardWin);
-    delwin(moveWin);
-    delwin(remarkWin);
+    delwin(movesWin);
+    delwin(curmoveWin);
     delwin(statusWin);
     delwin(bodyWin);
     delwin(menuWin);
@@ -65,18 +204,74 @@ static void finishWin(void)
     endwin();
 }
 
-void startView(void)
+void doView(void)
 {
-    startWin(rootMenu);
+    startWin();
 
     int ch;
+    unsigned long keym;
+    FocusArea curFocusArea = BODYA; // 当前焦点区域
+    PDC_return_key_modifiers(true);
     while (true) {
         ch = getch();
         if (ch == 'q')
             break;
+        switch (ch) {
+        case KEY_ALT_L:
+        case KEY_ALT_R:
+            curFocusArea = MENUA;
+            repaintMenu();
+
+            //wclear(statusWin);
+            mvwaddstr(statusWin, 1, 1, "KEY_ALT_L || KEY_ALT_R");
+            break;
+        case CTL_TAB:
+            curFocusArea = (curFocusArea + 1) % 5;
+
+            //wclear(statusWin);
+            mvwaddstr(statusWin, 1, 1, "CTL_TAB");
+            break;
+        default:
+            switch (curFocusArea) {
+            case BODYA:
+                repaintBody();
+                break;
+            case MENUA:
+                keym = PDC_get_key_modifiers();
+                if (keym == KEY_ALT_L || keym == KEY_ALT_R) {
+                    //wclear(statusWin);
+                    mvwaddstr(statusWin, 1, 1, "KEY_ALT_L || KEY_ALT_R");
+                } else {
+                    //wclear(statusWin);
+                    mvwaddstr(statusWin, 1, 1, "not (KEY_ALT_L || KEY_ALT_R)");
+                }
+                //repaintMenu();
+                break;
+            case BOARDA:
+                repaintBoard();
+                break;
+            case MOVESA:
+                repaintMoves();
+                break;
+            case CURMOVEA:
+                repaintCurMove();
+                break;
+            default:
+                break;
+            }
+            break;
+        }
+        repaintStatus(curFocusArea);
     }
 
     finishWin();
+}
+
+void testConview(void)
+{
+    Instance* ins = newInstance();
+    readInstance(ins, "01.XQF");
+    delInstance(ins);
 }
 
 /*

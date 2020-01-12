@@ -554,34 +554,35 @@ void changeBoard(Board* board, ChangeType ct)
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
 {
     const wchar_t* PRESTR[] = {
-        L"　　　　　　　　　黑　方　　　　　　　\n　　１　２　３　４　５　６　７　８　９\n\n",
-        L"　　　　　　　　　红　方　　　　　　　\n　　一　二　三　四　五　六　七　八　九\n\n"
+        L"　　　　　　　黑　方　　　　　　　\n１　２　３　４　５　６　７　８　９\n\n",
+        L"　　　　　　　红　方　　　　　　　\n一　二　三　四　五　六　七　八　九\n\n"
     };
     const wchar_t* SUFSTR[] = {
-        L"\n　　九　八　七　六　五　四　三　二　一\n　　　　　　　　　红　方　　　　　　　\n",
-        L"\n　　９　８　７　６　５　４　３　２　１\n　　　　　　　　　黑　方　　　　　　　\n"
+        L"\n九　八　七　六　五　四　三　二　一\n　　　　　　　红　方　　　　　　　\n",
+        L"\n９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
     };
-    /*
-    wchar_t boardStr_t[] = L"　　┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
-                           "　　┃　│　│　│╲│╱│　│　│　┃\n"
-                           "　　┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                           "　　┃　│　│　│╱│╲│　│　│　┃\n"
-                           "　　┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                           "　　┃　│　│　│　│　│　│　│　┃\n"
-                           "　　┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                           "　　┃　│　│　│　│　│　│　│　┃\n"
-                           "　　┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
-                           "　　┃　　　　　　　　　　　　　　　┃\n"
-                           "　　┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
-                           "　　┃　│　│　│　│　│　│　│　┃\n"
-                           "　　┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                           "　　┃　│　│　│　│　│　│　│　┃\n"
-                           "　　┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                           "　　┃　│　│　│╲│╱│　│　│　┃\n"
-                           "　　┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                           "　　┃　│　│　│╱│╲│　│　│　┃\n"
-                           "　　┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
+    //*
+    wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
+                           "┃　│　│　│╲│╱│　│　│　┃\n"
+                           "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                           "┃　│　│　│╱│╲│　│　│　┃\n"
+                           "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                           "┃　│　│　│　│　│　│　│　┃\n"
+                           "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                           "┃　│　│　│　│　│　│　│　┃\n"
+                           "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+                           "┃　　　　　　　　　　　　　　　┃\n"
+                           "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+                           "┃　│　│　│　│　│　│　│　┃\n"
+                           "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                           "┃　│　│　│　│　│　│　│　┃\n"
+                           "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                           "┃　│　│　│╲│╱│　│　│　┃\n"
+                           "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                           "┃　│　│　│╱│╲│　│　│　┃\n"
+                           "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
     //*/
+    /*/
     wchar_t boardStr_t[] = L"　　＋－－－－－－－－－－－－－－－＋\n"
                            "　　︱　︱　︱　︱＼︱／︱　︱　︱　︱\n"
                            "　　︱－＋－＋－＋－＋－＋－＋－＋－︱\n"
@@ -600,15 +601,16 @@ wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
                            "　　︱　︱　︱　︱＼︱／︱　︱　︱　︱\n"
                            "　　︱－＋－＋－＋－＋－＋－＋－＋－︱\n"
                            "　　︱　︱　︱　︱／︱＼︱　︱　︱　︱\n"
-                           "　　＋－－－－－－－－－－－－－－－＋\n"; // 全角字符，输出控制台屏幕使用
+                           "　　＋－－－－－－－－－－－－－－－＋\n"; //全角字符，输出控制台屏幕使用
+    //*/
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             Piece piece = getPiece_rc(board, row, col);
             if (piece != BLANKPIECE)
-                boardStr_t[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2 + 2) + col * 2 + 2] = getPieName_T(piece);
+                boardStr_t[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
         }
-    boardStr[0] = L'\x0';
-    wcscat(boardStr, PRESTR[board->bottomColor]);
+    //boardStr[0] = L'\x0';
+    wcscpy(boardStr, PRESTR[board->bottomColor]);
     wcscat(boardStr, boardStr_t);
     wcscat(boardStr, SUFSTR[board->bottomColor]);
     return boardStr;
