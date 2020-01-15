@@ -77,38 +77,15 @@ static Menu* addOtherMenu(Menu* preMenu, Menu* otherMenu)
     return preMenu->otherMenu = otherMenu;
 }
 
-// 找出选中菜单的全部前置菜单项
+// 获取选中菜单及全部前置菜单项
 static int getPreMenus(Menu* preMenus[])
 {
     int level = 0;
     Menu* tempMenu = selectMenu;
-    while (tempMenu != rootMenu) {
+    do {
         preMenus[level++] = tempMenu;
-        tempMenu = tempMenu->preMenu;
-    }
+    } while ((tempMenu = tempMenu->preMenu) != NULL);
     return level;
-}
-
-// 重绘一级菜单区域
-static void repaintMenu(void)
-{
-    if (selectMenu != rootMenu) {
-        int level = 0, index = 0;
-        Menu *tempMenu = selectMenu, *levelOneMenu = selectMenu;
-        while ((tempMenu = tempMenu->preMenu) != rootMenu) {
-            level++;
-            levelOneMenu = tempMenu;
-        }
-        tempMenu = rootMenu->nextMenu;
-        while (tempMenu != levelOneMenu) {
-            index++;
-            tempMenu = tempMenu->otherMenu;
-        }
-        mvwchgat(menuWin, 0, index * MENUWIDTH, MENUWIDTH, A_REVERSE, COLOR_RED, NULL);
-    } else
-        mvwchgat(menuWin, 0, 0, -1, A_STANDOUT, COLOR_RED, NULL);
-
-    wrefresh(menuWin);
 }
 
 // 建立子菜单窗口
@@ -146,6 +123,34 @@ static WINDOW* creatSubMenuWin(const Menu* menu)
     return NULL;
 }
 
+// 重绘菜单
+static void repaintMenu(void)
+{
+    // 绘制菜单区域
+    int index = 0;
+    Menu* tempMenu = rootMenu->nextMenu;
+    while (tempMenu != NULL) {
+        mvwaddwstr(menuWin, 0, 1 + (index++) * MENUWIDTH, getShowWstr(tempMenu->name));
+        tempMenu = tempMenu->otherMenu;
+    }
+    wrefresh(menuWin);
+
+    if (selectMenu != rootMenu) {
+        int level = 0, index = 0;
+        Menu *tempMenu = selectMenu, *levelOneMenu = selectMenu;
+        while ((tempMenu = tempMenu->preMenu) != rootMenu)
+            levelOneMenu = tempMenu; // 找出一级菜单项
+        tempMenu = rootMenu->nextMenu;
+        while (tempMenu != levelOneMenu) {
+            index++; // 找出一级菜单项的排序位置
+            tempMenu = tempMenu->otherMenu;
+        }
+        mvwchgat(menuWin, 0, index * MENUWIDTH, MENUWIDTH, A_REVERSE, COLOR_RED, NULL);
+    } else
+        mvwchgat(menuWin, 0, 0, -1, A_STANDOUT, COLOR_RED, NULL);
+
+}
+
 // 初始化菜单
 static void initMenu(void)
 {
@@ -171,14 +176,7 @@ static void initMenu(void)
     addNextMenu(about_help, newMenu(L"程序(H)", NULL, L"程序有关的信息"));
 
     selectMenu = rootMenu;
-    // 绘制菜单区域
-    int index = 0;
-    Menu* tempMenu = rootMenu->nextMenu;
-    while (tempMenu != NULL) {
-        mvwaddwstr(menuWin, 0, 1 + (index++) * MENUWIDTH, getShowWstr(tempMenu->name));
-        tempMenu = tempMenu->otherMenu;
-    }
-    wrefresh(menuWin);
+    repaintMenu();
 }
 
 // 释放菜单资源
