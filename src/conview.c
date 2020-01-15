@@ -31,11 +31,13 @@ typedef struct Menu_ {
     MENU_FUNC func; /* (pointer to) function */
     wchar_t desc[50]; /* function description */
     struct Menu_ *preMenu, *nextMenu, *otherMenu;
+    //PANEL* panel;
+    int menuIndex, rowIndex;
 } Menu;
 
 // 本翻译单元的公用变量
 static WINDOW *menuWin, *bodyWin, *boardWin, *movesWin, *curmoveWin, *statusWin; // 六个子窗口
-static Menu *rootMenu, *selectMenu; // 菜单根、当前
+static Menu* rootMenu; //, *selectMenu; // 菜单根、当前
 static wchar_t wstr[THOUSAND_SIZE * 2], showWstr[THOUSAND_SIZE * 8]; // 临时字符串
 
 // 使用公用变量，获取用于屏幕显示的字符串（经试验，只有在全角字符后插入空格，才能显示正常）
@@ -60,13 +62,16 @@ static Menu* newMenu(wchar_t* name, MENU_FUNC func, wchar_t* desc)
     menu->func = func;
     wcsncpy(menu->desc, desc, 48);
     menu->preMenu = menu->nextMenu = menu->otherMenu = NULL;
+    menu->menuIndex = menu->rowIndex = 0;
     return menu;
 }
 
-// 增加一个子菜单
+// 增加一个子菜单项
 static Menu* addNextMenu(Menu* preMenu, Menu* nextMenu)
 {
     nextMenu->preMenu = preMenu;
+    nextMenu->menuIndex = preMenu->menuIndex;
+    nextMenu->rowIndex = preMenu->rowIndex + 1;
     return preMenu->nextMenu = nextMenu;
 }
 
@@ -74,82 +79,68 @@ static Menu* addNextMenu(Menu* preMenu, Menu* nextMenu)
 static Menu* addOtherMenu(Menu* preMenu, Menu* otherMenu)
 {
     otherMenu->preMenu = preMenu;
+    otherMenu->menuIndex = preMenu->menuIndex + 1;
+    otherMenu->rowIndex = preMenu->rowIndex;
     return preMenu->otherMenu = otherMenu;
 }
 
-// 获取选中菜单及全部前置菜单项
-static int getPreMenus(Menu* preMenus[])
-{
-    int level = 0;
-    Menu* tempMenu = selectMenu;
-    do {
-        preMenus[level++] = tempMenu;
-    } while ((tempMenu = tempMenu->preMenu) != NULL);
-    return level;
-}
-
-// 建立子菜单窗口
-static WINDOW* creatSubMenuWin(const Menu* menu)
-{
-    /*
-    int level = 0, index = 0, MENUWIDTH = 10;
-    Menu *tempMenu = selectMenu, *preMenus[MENULEVEL] = { NULL };
-
-    // 找出选中菜单的全部前置菜单项
-    while (tempMenu != rootMenu) {
-        preMenus[level++] = tempMenu;
-        tempMenu = tempMenu->preMenu;
-    }
-
-    // 重绘一级菜单区域
-    tempMenu = rootMenu->nextMenu;
-    if (level == 0) { // 不在菜单区域
-        while (tempMenu != NULL) {
-            mvwaddwstr(menuWin, 0, 1 + (index++) * MENUWIDTH, getShowWstr(tempMenu->name));
-            tempMenu = tempMenu->otherMenu;
-        }
-    } else if (level == 1) { // 在一级菜单区域
-        while (tempMenu != selectMenu)
-            index++;
-        mvwchgat(menuWin, 0, index * MENUWIDTH, MENUWIDTH, A_REVERSE, COLOR_RED, NULL);
-    }
-
-    while (--level > 0) { // 在一级以下菜单区域
-        tempMenu = preMenus[level];
-    }
-
-    wrefresh(menuWin);
-    //*/
-    return NULL;
-}
-
 // 重绘菜单
-static void repaintMenu(void)
+static WINDOW* repaintMenu(const Menu* selectMenu)
 {
-    // 绘制菜单区域
-    int index = 0;
-    Menu* tempMenu = rootMenu->nextMenu;
-    while (tempMenu != NULL) {
-        mvwaddwstr(menuWin, 0, 1 + (index++) * MENUWIDTH, getShowWstr(tempMenu->name));
-        tempMenu = tempMenu->otherMenu;
-    }
-    wrefresh(menuWin);
-
-    if (selectMenu != rootMenu) {
-        int level = 0, index = 0;
-        Menu *tempMenu = selectMenu, *levelOneMenu = selectMenu;
-        while ((tempMenu = tempMenu->preMenu) != rootMenu)
-            levelOneMenu = tempMenu; // 找出一级菜单项
-        tempMenu = rootMenu->nextMenu;
-        while (tempMenu != levelOneMenu) {
-            index++; // 找出一级菜单项的排序位置
-            tempMenu = tempMenu->otherMenu;
-        }
-        mvwchgat(menuWin, 0, index * MENUWIDTH, MENUWIDTH, A_REVERSE, COLOR_RED, NULL);
-    } else
+    if (selectMenu == rootMenu) {
         mvwchgat(menuWin, 0, 0, -1, A_STANDOUT, COLOR_RED, NULL);
+        return NULL;
+    } else {
+        int menuIndex = selectMenu->menuIndex;
+        mvwchgat(menuWin, 0, menuIndex * MENUWIDTH, MENUWIDTH, A_REVERSE, COLOR_RED, NULL);
+        if (selectMenu->preMenu == rootMenu)
+            return NULL;
 
+        int rowIndex = selectMenu->rowIndex, row = 0, maxCol = 0;
+        Menu* levelOneMenu = rootMenu->nextMenu;
+        for (int i = 0; i < menuIndex; i++)
+            levelOneMenu = levelOneMenu->otherMenu; // 取得一级菜单项
+        Menu* tempMenu = levelOneMenu;
+        while (tempMenu != NULL) {
+            maxCol = max(maxCol, wcslen(getShowWstr(tempMenu->name)));
+            tempMenu = tempMenu->nextMenu;
+        }
+
+        WINDOW* win = newwin(rowIndex + 1, maxCol + 2, 1, menuIndex * MENUWIDTH);
+        tempMenu = levelOneMenu->nextMenu;
+        while (tempMenu != NULL) {
+            mvwaddwstr(win, row++, 1 + menuIndex * MENUWIDTH, getShowWstr(tempMenu->name));
+            tempMenu = tempMenu->nextMenu;
+        }
+        return win;
+    }
 }
+
+/*
+// 初始化子菜单面板
+static void initSubMenu(Menu* menu, int index)
+{
+    if (menu->otherMenu != NULL)
+        initSubMenu(menu->otherMenu, ++index);
+
+    // 获取子菜单窗口的行、列数
+    int row = 0, maxRow = 0, maxCol = 0;
+    Menu* tempMenu = menu->nextMenu;
+    while (tempMenu != NULL) {
+        maxRow = tempMenu->rowIndex;
+        maxCol = max(maxCol, wcslen(getShowWstr(tempMenu->name)));
+        tempMenu = tempMenu->nextMenu;
+    }
+
+    WINDOW* win = newwin(maxRow + 1, maxCol + 2, 1, index * MENUWIDTH);
+    menu->panel = new_panel(win);
+    tempMenu = menu->nextMenu;
+    while (tempMenu != NULL) {
+        mvwaddwstr(win, row++, 1 + index * MENUWIDTH, getShowWstr(tempMenu->name));
+        tempMenu = tempMenu->nextMenu;
+    }
+}
+//*/
 
 // 初始化菜单
 static void initMenu(void)
@@ -175,8 +166,20 @@ static void initMenu(void)
     Menu* about_help = addNextMenu(about, newMenu(L"帮助(H)", NULL, L"显示帮助信息"));
     addNextMenu(about_help, newMenu(L"程序(H)", NULL, L"程序有关的信息"));
 
-    selectMenu = rootMenu;
-    repaintMenu();
+    int index = 0;
+    Menu* tempMenu = rootMenu->nextMenu;
+    // 绘制菜单区域
+    while (tempMenu != NULL) {
+        mvwaddwstr(menuWin, 0, 1 + (index++) * MENUWIDTH, getShowWstr(tempMenu->name));
+        tempMenu = tempMenu->otherMenu;
+    }
+    wrefresh(menuWin);
+    /*
+    if (rootMenu->nextMenu != NULL)
+        initSubMenu(rootMenu->nextMenu, 0);
+    update_panels();
+    doupdate();
+    //*/
 }
 
 // 释放菜单资源
@@ -186,6 +189,14 @@ static void delMenu(Menu* menu)
         delMenu(menu->nextMenu);
     if (menu->otherMenu != NULL)
         delMenu(menu->otherMenu);
+
+    /*
+    if (menu->panel != NULL) {
+        WINDOW* win = menu->panel->win;
+        del_panel(menu->panel); // panel应先于win删除
+        delwin(win);
+    }
+    //*/
     free(menu);
 }
 
@@ -220,6 +231,7 @@ static void viewInstance(Instance* ins, const wchar_t* fileName)
     char fileName_c[FILENAME_MAX];
     wcstombs(fileName_c, fileName, FILENAME_MAX);
 
+    //*
     if (readInstance(ins, fileName_c) != NULL) {
         //SetConsoleOutputCP(936); // 设置代码页 <windows.h>
         SetConsoleTitle(fileName_c); // 设置窗口标题 <windows.h>
@@ -245,7 +257,7 @@ static void viewInstance(Instance* ins, const wchar_t* fileName)
 
         touchwin(stdscr);
         wrefresh(stdscr);
-    }
+    } //*/
 }
 
 // 启动窗口
@@ -311,14 +323,13 @@ void doView(void)
         ch = getch();
         if (ch == 'q')
             break;
+        //*
         switch (ch) {
         case KEY_ALT_L:
         case KEY_ALT_R:
         case 'b':
-            selectMenu = rootMenu->nextMenu;
-
             curFocusArea = MENUA;
-            repaintMenu();
+            repaintMenu(rootMenu->nextMenu);
 
             //wclear(statusWin);
             mvwaddstr(statusWin, 1, 1, "KEY_ALT_L || KEY_ALT_R");
@@ -360,6 +371,7 @@ void doView(void)
             break;
         }
         repaintStatus(curFocusArea);
+        //*/
     }
 
     delInstance(ins);

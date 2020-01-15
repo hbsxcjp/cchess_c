@@ -3,8 +3,8 @@
 
 #define PDC_WIDE
 
-#include "base.h"
 #include "curses.h"
+//#include <panel.h>
 
 
 void doView(void);
