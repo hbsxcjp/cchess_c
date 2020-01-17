@@ -304,9 +304,12 @@ void doView(void)
     PDC_return_key_modifiers(true);
     while (true) {
         ch = getch();
-        if (ch == 'q')
+        if (ch == KEY_F(40) // alt+F4
+            || (ch == 'w'
+                   && (PDC_get_key_modifiers() | PDC_KEY_MODIFIER_CONTROL))) // ctr+w
             break;
-        operateMenu();
+        if (PDC_get_key_modifiers() & PDC_KEY_MODIFIER_ALT)
+            operateMenu();
         /*
         switch (ch) {
         case KEY_ALT_L:
