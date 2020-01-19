@@ -18,6 +18,7 @@
 
 // 控制台焦点区域类型
 typedef enum {
+    MENUA,
     BOARDA,
     MOVESA,
     CURMOVEA
@@ -46,14 +47,6 @@ typedef struct MenuData_ {
 static WINDOW *menuWin, *bodyWin, *boardWin, *movesWin, *curmoveWin, *statusWin; // 六个子窗口
 static Menu* rootMenu; // 根菜单、选择菜单
 static wchar_t wstr[THOUSAND_SIZE * 2], showWstr[THOUSAND_SIZE * 8]; // 临时字符串
-static FocusArea area = BOARDA;
-
-// 检测是否为强制退出按键
-static void checkExit(int ch)
-{
-    if (ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
-        exit(1);
-}
 
 // 使用公用变量，获取用于屏幕显示的字符串（经试验，只有在全角字符后插入空格，才能显示正常）
 static wchar_t* getShowWstr(const wchar_t* srcWstr)
@@ -142,164 +135,117 @@ static void initMenu(void)
 }
 
 // 选定菜单定位至顶层菜单
-static void setTopMenu(Menu* selectMenu)
+static void setTopMenu(Menu* menu)
 {
-    while (selectMenu->rowIndex > 0)
-        selectMenu = selectMenu->preMenu;
+    while (menu->rowIndex > 0)
+        menu = menu->preMenu;
 }
 
 // 选定菜单定位至底层菜单
-static void setBottomMenu(Menu* selectMenu)
+static void setBottomMenu(Menu* menu)
 {
-    while (selectMenu->nextMenu != NULL)
-        selectMenu = selectMenu->nextMenu;
+    while (menu->nextMenu != NULL)
+        menu = menu->nextMenu;
 }
 
 // 选定菜单定位至某一层菜单
-static void setRowMenu(Menu* selectMenu, int row)
+static void setRowMenu(Menu* menu, int row)
 {
-    while (selectMenu->nextMenu != NULL && row-- > 0)
-        selectMenu = selectMenu->nextMenu;
+    while (menu->nextMenu != NULL && row-- > 0)
+        menu = menu->nextMenu;
 }
 
-// 重绘菜单，返回子菜单窗口
-static WINDOW* repaintMenu(Menu* selectMenu)
+// 重绘菜单
+static void repaintMenu(WINDOW* win, Menu* menu, int ch)
 {
-    WINDOW* win = NULL;
-    mvwchgat(menuWin, 0, 0, -1, A_STANDOUT, MENUCOLOR, NULL);
-    if (selectMenu->colIndex > 0) {
-        int startx = (selectMenu->colIndex - 1) * MENUWIDTH;
-        mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, MENUCOLOR, NULL);
-        if (selectMenu->rowIndex > 0) { // 若不是一级菜单项
-            Menu* tempMenu = selectMenu;
-            setBottomMenu(tempMenu); // 移至最底级菜单
-            int height = tempMenu->rowIndex, width = 0;
-            while (tempMenu->rowIndex > 0) {
-                width = max(width, wcslen(getShowWstr(tempMenu->name)));
-                tempMenu = tempMenu->preMenu;
-            } // 结束循环后，tempMenu为一级菜单
-            win = newwin(height, width + 2, getmaxy(menuWin), startx);
-
-            while ((tempMenu = tempMenu->nextMenu) != NULL)
-                mvwaddwstr(win, tempMenu->rowIndex - 1, 1, getShowWstr(tempMenu->name));
-            mvwchgat(win, selectMenu->rowIndex - 1, 0, -1, A_REVERSE, MENUCOLOR, NULL);
-            wrefresh(win);
-        }
-    }
-    wrefresh(menuWin);
-    return win;
-}
-
-// 操作菜单窗口，返回选择菜单项
-static Menu* operateMenu(Menu* intoMenu)
-{
-    mvwaddstr(curmoveWin, 1, 2, "Into!");
-    wrefresh(curmoveWin);
-
-    int ch = 0, row = 0;
-    char keystr[64] = { 0 };
-    WINDOW* win = NULL;
-    Menu* selectMenu = intoMenu;
-    while (true) {
-        ch = getch();
-
-        sprintf(keystr, "input(ch):%3x", ch);
-        mvwaddstr(curmoveWin, 2, 2, keystr);
-        wrefresh(curmoveWin);
-
-        if (win != NULL) {
-            delwin(win);
-            touchwin(stdscr);
-            wrefresh(stdscr);
-        }
-        if (ch == KEY_ESC || ch == KEY_ALT_L || ch == KEY_ALT_R)
-            return intoMenu;
-        checkExit(ch);
-
-        switch (ch) {
-        case KEY_DOWN:
-            if (selectMenu->nextMenu != NULL)
-                selectMenu = selectMenu->nextMenu;
-            break;
-        case KEY_UP:
-            if (selectMenu->rowIndex > 0)
-                selectMenu = selectMenu->preMenu;
-            break;
-        case KEY_LEFT:
-            if (selectMenu->colIndex > 0) {
-                row = selectMenu->rowIndex;
-                setTopMenu(selectMenu);
-                selectMenu = selectMenu->preMenu;
-                setRowMenu(selectMenu, row);
-            }
-            break;
-        case KEY_RIGHT:
-            row = selectMenu->rowIndex;
-            setTopMenu(selectMenu);
-            if (selectMenu->otherMenu != NULL)
-                selectMenu = selectMenu->otherMenu;
-            setRowMenu(selectMenu, row);
-            break;
-        case KEY_PPAGE:
-        case KEY_HOME:
-            setTopMenu(selectMenu);
-            break;
-        case KEY_NPAGE:
-        case KEY_END:
-            setBottomMenu(selectMenu);
-            break;
-        case '\n':
-            if (selectMenu->rowIndex > 0)
-                return selectMenu;
-            else if (selectMenu->nextMenu != NULL)
-                selectMenu = selectMenu->nextMenu;
-            break;
-        default:
-            break;
-        }
-        win = repaintMenu(selectMenu);
-    }
-
-    mvwaddstr(curmoveWin, 1, 2, " Ou!");
-    wrefresh(curmoveWin);
-    return selectMenu;
-}
-
-// 检测快捷键
-static void checkShortKey(int ch)
-{
-    checkExit(ch);
-
-    Menu* menu = NULL;
+    int row = 0;
     switch (ch) {
-    case 9: // Tab键
-        ++area;
-        area %= 3; // 3个焦点区域循环
+    case KEY_ALT_L:
+    case KEY_ALT_R:
+    case ALT_F:
+        menu = rootMenu->otherMenu;
         break;
+    case ALT_B:
+        menu = rootMenu->otherMenu->otherMenu;
+        break;
+    case ALT_S:
+        menu = rootMenu->otherMenu->otherMenu->otherMenu;
+        break;
+    case ALT_A:
+        menu = rootMenu->otherMenu->otherMenu->otherMenu->otherMenu;
+        break;
+    case KEY_DOWN:
+        if (menu->nextMenu != NULL)
+            menu = menu->nextMenu;
+        break;
+    case KEY_UP:
+        if (menu->rowIndex > 0)
+            menu = menu->preMenu;
+        break;
+    case KEY_LEFT:
+        if (menu->colIndex > 0) {
+            row = menu->rowIndex;
+            setTopMenu(menu);
+            menu = menu->preMenu;
+            setRowMenu(menu, row);
+        }
+        break;
+    case KEY_RIGHT:
+        row = menu->rowIndex;
+        setTopMenu(menu);
+        if (menu->otherMenu != NULL)
+            menu = menu->otherMenu;
+        setRowMenu(menu, row);
+        break;
+    case KEY_PPAGE:
+    case KEY_HOME:
+        setTopMenu(menu);
+        if (menu->nextMenu != NULL)
+            menu = menu->nextMenu;
+        break;
+    case KEY_NPAGE:
+    case KEY_END:
+        setBottomMenu(menu);
+        break;
+    case '\n':
+        return;
     default:
-        switch (ch) {
-        case KEY_ALT_L:
-        case KEY_ALT_R:
-        case ALT_F:
-            menu = rootMenu->otherMenu;
-            break;
-        case ALT_B:
-            menu = rootMenu->otherMenu->otherMenu;
-            break;
-        case ALT_S:
-            menu = rootMenu->otherMenu->otherMenu->otherMenu;
-            break;
-        case ALT_A:
-            menu = rootMenu->otherMenu->otherMenu->otherMenu->otherMenu;
-            break;
-        }
-        if (menu != NULL) {
-            menu = operateMenu(menu);
-            if (menu->func != NULL)
-                menu->func();
-        }
         break;
     }
+
+    mvwchgat(menuWin, 0, 0, -1, getattrs(stdscr), COLOR_BLUE, NULL);
+    if (menu->colIndex > 0) {
+        int startx = (menu->colIndex - 1) * MENUWIDTH;
+        mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, COLOR_BLUE, NULL);
+        //if (menu->rowIndex > 0) { // 若是一级以下菜单项
+        Menu* tempMenu = menu;
+        setBottomMenu(tempMenu); // 移至最底级菜单
+        int height = tempMenu->rowIndex, width = 0;
+        while (tempMenu->rowIndex > 0) {
+            width = max(width, wcslen(getShowWstr(tempMenu->name)) + 2);
+            tempMenu = tempMenu->preMenu;
+        } // 结束循环后，tempMenu为一级菜单
+        if (win != NULL)
+            delwin(win);
+        win = newwin(height, width, getmaxy(menuWin), startx);
+
+        while ((tempMenu = tempMenu->nextMenu) != NULL)
+            mvwaddwstr(win, tempMenu->rowIndex - 1, 1, getShowWstr(tempMenu->name));
+        mvwchgat(win, menu->rowIndex - 1, 0, -1, A_REVERSE, COLOR_BLUE, NULL);
+        //}
+    }
+    touchwin(win);
+    wrefresh(win);
+
+    touchwin(menuWin);
+    wrefresh(menuWin);
+
+    mvwaddwstr(curmoveWin, 2, 3, getShowWstr(menu->name));
+    touchwin(curmoveWin);
+    wrefresh(curmoveWin);
+
+    touchwin(stdscr);
+    wrefresh(stdscr);
 }
 
 // 释放菜单资源
@@ -311,36 +257,23 @@ static void delMenu(Menu* menu)
         delMenu(menu->nextMenu);
     free(menu);
 }
-
-// 重绘棋盘窗口
-static void repaintBoard(void) {}
-
 // 操作棋盘窗口
-static void operateBoard(void)
+static void repaintBoard(Instance* ins, int ch)
 {
-    repaintBoard();
 }
-
-// 重绘着法窗口
-static void repaintMoves(void) {}
 
 // 操作着法窗口
-static void operateMoves(void)
+static void repaintMoves(Instance* ins, int ch)
 {
-    repaintMoves();
 }
 
-// 重绘当前着法窗口
-static void repaintCurMove(void) {}
-
 // 操作当前着法窗口
-static void operateCurmove(void)
+static void repaintCurMove(Instance* ins, int ch)
 {
-    repaintCurMove();
 }
 
 // 重绘状态窗口
-static void repaintStatus()
+static void repaintStatus(FocusArea area)
 {
     switch (area) {
     case BOARDA:
@@ -417,6 +350,11 @@ static void startWin()
     scrollok(movesWin, TRUE); /* enable scrolling in main window */
 
     leaveok(stdscr, TRUE);
+    leaveok(menuWin, TRUE);
+    leaveok(bodyWin, TRUE);
+    leaveok(boardWin, TRUE);
+    leaveok(movesWin, TRUE);
+    leaveok(curmoveWin, TRUE);
     //touchwin(stdscr);
     //wrefresh(stdscr);
 }
@@ -446,25 +384,56 @@ void doView(void)
 
     PDC_return_key_modifiers(true); // 告诉getch（）返回单独按下的修饰键作为击键（KEY_ALT_L等）
     int ch;
+    FocusArea area = BOARDA;
+    WINDOW* win = NULL;
+    Menu* menu = rootMenu;
     while (true) {
         ch = getch();
-        checkShortKey(ch);
+        if (ch == KEY_ESC || ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
+            break;
 
-        switch (area) {
-        case BOARDA:
-            operateBoard();
+        //if (ch == KEY_ESC || ch == KEY_ALT_L || ch == KEY_ALT_R)
+        //    return rootMenu;
+
+        switch (ch) {
+        case 9: // Tab键
+            ++area;
+            area %= 4; // 焦点区域循环
             break;
-        case MOVESA:
-            operateMoves();
-            break;
-        case CURMOVEA:
-            operateCurmove();
+        case KEY_ALT_L:
+        case KEY_ALT_R:
+        case ALT_F:
+        case ALT_B:
+        case ALT_S:
+        case ALT_A:
+            area = MENUA;
+            repaintMenu(win, menu, ch);
+            if (menu->func != NULL)
+                menu->func();
             break;
         default:
+            switch (area) {
+            case MENUA:
+                repaintMenu(win, menu, ch);
+                break;
+            case BOARDA:
+                repaintBoard(ins, ch);
+                break;
+            case MOVESA:
+                repaintMoves(ins, ch);
+                break;
+            case CURMOVEA:
+                repaintCurMove(ins, ch);
+                break;
+            default:
+                break;
+            }
             break;
         }
-        repaintStatus();
+        repaintStatus(area);
     }
+    if (win != NULL)
+        delwin(win);
 
     delInstance(ins);
     finishWin();
