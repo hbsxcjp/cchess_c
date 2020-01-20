@@ -97,24 +97,24 @@ static void initMenu(void)
 {
     MenuData menuDatas[MENUNUM][MENULEVEL] = {
         { { L"文件(F)", NULL, L"新建、打开、保存文件，退出" },
-            { L"新建(N)", NULL, L"新建一个棋局" },
-            { L"打开...(O)", NULL, L"打开已有的一个棋局" },
-            { L"保存(S)", NULL, L"保存正在显示的棋局" },
-            { L"退出(X)", NULL, L"退出程序" },
+            { L"新建", NULL, L"新建一个棋局" },
+            { L"打开...", NULL, L"打开已有的一个棋局" },
+            { L"保存", NULL, L"保存正在显示的棋局" },
+            { L"退出", NULL, L"退出程序" },
             { L"", NULL, L"" } },
         { { L"棋局(B)", NULL, L"对棋盘局面进行操作" },
-            { L"对换棋子(E)", NULL, L"红黑棋子互换" },
-            { L"对换位置(R)", NULL, L"红黑位置互换" },
-            { L"棋子左右换位(Y)", NULL, L"棋子的位置左右对称换位" },
+            { L"对换棋局", NULL, L"红黑棋子互换" },
+            { L"对换位置", NULL, L"红黑位置互换" },
+            { L"棋子左右换位", NULL, L"棋子的位置左右对称换位" },
             { L"", NULL, L"" } },
         { { L"设置(S)", NULL, L"设置显示主题，主要是棋盘、棋子的颜色配置" },
-            { L"朴素静雅(G)", NULL, L"比较朴素的颜色配置" },
-            { L"鲜艳亮丽(B)", NULL, L"比较鲜艳的颜色配置" },
-            { L"高对比度(I)", NULL, L"高对比度的颜色配置" },
+            { L"静雅朴素", NULL, L"比较朴素的颜色配置" },
+            { L"鲜艳亮丽", NULL, L"比较鲜艳的颜色配置" },
+            { L"高对比度", NULL, L"高对比度的颜色配置" },
             { L"", NULL, L"" } },
         { { L"关于(A)", NULL, L"帮助、程序信息" },
-            { L"帮助(H)", NULL, L"显示帮助信息" },
-            { L"版本信息(H)", NULL, L"程序有关的信息" },
+            { L"帮助", NULL, L"显示帮助信息" },
+            { L"版本信息", NULL, L"程序有关的信息" },
             { L"", NULL, L"" } }
     };
     rootMenu = newMenu((MenuData){ L"", NULL, L"" });
@@ -156,7 +156,7 @@ static void setRowMenu(Menu** pmenu, int row)
 }
 
 // 重绘菜单
-static void repaintMenu(const WINDOW** pwin, const Menu** pmenu)
+static void repaintMenu(WINDOW** pwin, Menu** pmenu)
 {
     mvwchgat(menuWin, 0, 0, -1, getattrs(stdscr), COLOR_BLUE, NULL);
 
@@ -193,7 +193,7 @@ static void repaintMenu(const WINDOW** pwin, const Menu** pmenu)
 }
 
 // 操作菜单
-static bool operateMenu(const WINDOW** pwin, const Menu** pmenu, int ch)
+static bool operateMenu(WINDOW** pwin, Menu** pmenu, int ch)
 {
     int row = 0;
     switch (ch) {
@@ -388,7 +388,8 @@ void doView(void)
     Instance* ins = newInstance();
     viewInstance(ins, fileName);
 
-    PDC_return_key_modifiers(true); // 告诉getch（）返回单独按下的修饰键作为击键（KEY_ALT_L等）
+    // 告诉getch（）返回单独按下的修饰键作为击键（KEY_ALT_L等）
+    PDC_return_key_modifiers(true); 
     int ch;
     FocusArea curArea = BOARDA, oldArea = curArea;
     WINDOW* win = NULL;
@@ -404,14 +405,7 @@ void doView(void)
         if (ch == KEY_ESC || ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
             break;
 
-        //if (ch == KEY_ESC || ch == KEY_ALT_L || ch == KEY_ALT_R)
-        //    return rootMenu;
-
         switch (ch) {
-        case 9: // Tab键
-            ++curArea;
-            curArea %= 4; // 焦点区域循环
-            break;
         case KEY_ALT_L:
         case KEY_ALT_R:
         case ALT_F:
@@ -424,6 +418,9 @@ void doView(void)
             if (menuDone)
                 curArea = oldArea;
             break;
+        case 9: // Tab键
+            ++curArea;
+            curArea %= 4; // 焦点区域循环后，不break，直接进入操作区域
         default:
             switch (curArea) {
             case MENUA:
