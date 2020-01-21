@@ -18,6 +18,12 @@ void setMoveNums(Instance* ins, Move* move);
 // 从文件读取到instance
 Instance* readInstance(Instance*, const char* filename);
 
+// 将PGN_CC格式ins的moves信息写入字符串
+void writeMove_PGN_CCtoWstr(Instance* ins, wchar_t** plineStr);
+
+// 将PGN_CC格式ins的remark信息写入字符串
+void writeRemark_PGN_CCtoWstr(Instance* ins, wchar_t** premarkStr);
+
 // 从instance存储到文件
 void writeInstance(Instance* ins, const char* filename);
 
@@ -60,6 +66,5 @@ void testTransDir(int fromDir, int toDir,
 
 // 测试本翻译单元各种对象、函数
 void testInstance(FILE* fout);
-
 
 #endif

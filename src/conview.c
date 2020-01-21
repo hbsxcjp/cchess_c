@@ -5,8 +5,8 @@
 #include "head/tools.h"
 #include <windows.h>
 
-#define MENUCOLOR (COLOR_BLUE)
-//#define MENUCOLOR (COLOR_CYAN | A_BOLD)
+//#define MENUCOLOR (COLOR_BLUE)
+#define MENUCOLOR (COLOR_CYAN | A_BOLD)
 #define MENUREVCOLOR (COLOR_MAGENTA | A_BOLD | A_REVERSE)
 #define STATUSCOLOR (COLOR_BLUE | A_BOLD)
 
@@ -44,20 +44,47 @@ typedef struct MenuData_ {
 } MenuData;
 
 // 本翻译单元的公用变量
-static WINDOW *menuWin, *bodyWin, *boardWin, *movesWin, *curmoveWin, *statusWin; // 六个子窗口
-static Menu* rootMenu; // 根菜单、选择菜单
-static wchar_t wstr[THOUSAND_SIZE * 2], showWstr[THOUSAND_SIZE * 8]; // 临时字符串
+static WINDOW *menuWin, *statusWin, *tempWin = NULL,
+                                    *boardWin, *movesWin, *curMoveWin,
+                                    *iboardWin, *imovesWin, *icurMoveWin;
+static FocusArea curArea = MOVESA, oldArea;
+static Menu *rootMenu, *selectMenu; // 根菜单
+static Instance* ins = NULL;
+static wchar_t fileName[FILENAME_MAX], wstr[THOUSAND_SIZE * 2], showWstr[THOUSAND_SIZE * 8]; // 临时字符串
+
+//static void repaintBoard(void);
+static void repaintInstance(void);
+static void finishWin(void);
+
+static void destroyTempWin(void)
+{
+    if (tempWin != NULL) {
+        werase(tempWin);
+        wrefresh(tempWin);
+        delwin(tempWin);
+        tempWin = NULL;
+        repaintInstance();
+    }
+}
 
 // 使用公用变量，获取用于屏幕显示的字符串（经试验，只有在全角字符后插入空格，才能显示正常）
 static wchar_t* getShowWstr(const wchar_t* srcWstr)
 {
-    int srcIndex = 0, desIndex = 0, srcLen = wcslen(srcWstr);
-    while (srcIndex < srcLen) {
-        wchar_t wch = srcWstr[srcIndex++];
+    int srcIndex = 0, desIndex = 0;
+    wchar_t wch;
+    while ((wch = srcWstr[srcIndex++]) != L'\x0') {
         showWstr[desIndex++] = wch;
-        if (wch > 255) // 非ASCII字符
+        // 非ASCII字符
+        if (wch > 255) {
             showWstr[desIndex++] = L' ';
+            // 调整'↓'的位置
+            if (wch == L'↓') {
+                showWstr[desIndex - 3] = wch;
+                showWstr[desIndex - 2] = L' ';
+            }
+        }
     }
+    //showWstr[desIndex++] = L'.'; // 消除刷新后遗留半边汉字的情况
     showWstr[desIndex] = L'\x0';
     return showWstr;
 }
@@ -92,6 +119,13 @@ static Menu* addNextMenu(Menu* preMenu, Menu* nextMenu)
     return preMenu->nextMenu = nextMenu;
 }
 
+// 退出程序
+static void goodbye(void)
+{
+    finishWin();
+    exit(0);
+}
+
 // 初始化菜单
 static void initMenu(void)
 {
@@ -99,8 +133,9 @@ static void initMenu(void)
         { { L"文件(F)", NULL, L"新建、打开、保存文件，退出" },
             { L"新建", NULL, L"新建一个棋局" },
             { L"打开...", NULL, L"打开已有的一个棋局" },
+            { L"另存为...", NULL, L"将显示的棋局另存为一个棋局" },
             { L"保存", NULL, L"保存正在显示的棋局" },
-            { L"退出", NULL, L"退出程序" },
+            { L"退出", goodbye, L"退出程序" },
             { L"", NULL, L"" } },
         { { L"棋局(B)", NULL, L"对棋盘局面进行操作" },
             { L"对换棋局", NULL, L"红黑棋子互换" },
@@ -125,6 +160,7 @@ static void initMenu(void)
         for (int row = 1; row < MENULEVEL && wcslen(menuDatas[col][row].name) > 0; ++row)
             nextMenu = addNextMenu(nextMenu, newMenu(menuDatas[col][row]));
     }
+    selectMenu = rootMenu->otherMenu;
 
     // 绘制菜单区域
     while (otherMenu->colIndex > 0) {
@@ -156,101 +192,96 @@ static void setRowMenu(Menu** pmenu, int row)
 }
 
 // 重绘菜单
-static void repaintMenu(WINDOW** pwin, Menu** pmenu)
+static void repaintMenu()
 {
     mvwchgat(menuWin, 0, 0, -1, getattrs(stdscr), COLOR_BLUE, NULL);
 
-    int startx = ((*pmenu)->colIndex - 1) * MENUWIDTH;
-    Menu* tempMenu = *pmenu;
-    setBottomMenu(&tempMenu); // 移至最底级菜单
-    int height = tempMenu->rowIndex, width = MENUWIDTH;
-    while (tempMenu->rowIndex > 0) {
-        int len = wcslen(getShowWstr(tempMenu->name));
-        width = max(width, len + 2);
-        tempMenu = tempMenu->preMenu;
-    } // 结束循环后，tempMenu为一级菜单
-    WINDOW* win = newwin(height, width, getmaxy(menuWin), startx);
+    if (selectMenu != rootMenu) {
+        int startx = (selectMenu->colIndex - 1) * MENUWIDTH;
+        Menu* tempMenu = selectMenu;
+        setBottomMenu(&tempMenu); // 移至最底级菜单
+        int height = tempMenu->rowIndex, width = MENUWIDTH;
+        while (tempMenu->rowIndex > 0) {
+            int len = wcslen(getShowWstr(tempMenu->name));
+            width = max(width, len + 2);
+            tempMenu = tempMenu->preMenu;
+        } // 结束循环后，tempMenu为一级菜单
+        destroyTempWin();
+        tempWin = newwin(height, width, getmaxy(menuWin), startx);
 
-    mvwaddwstr(curmoveWin, 2, 3, getShowWstr((*pmenu)->name));
-    char str[80] = { 0 };
-    sprintf(str, "sy:%2d sx:%2d hi:%2d wi:%2d", getmaxy(menuWin), startx, height, width);
-    mvwaddstr(curmoveWin, 4, 3, str);
-    char str1[80] = { 0 };
-    sprintf(str1, "by:%2d bx:%2d my:%2d mx:%2d", getbegy(win), getbegx(win), getmaxy(win), getmaxx(win));
-    mvwaddstr(curmoveWin, 6, 3, str1);
-    wrefresh(curmoveWin);
+        while ((tempMenu = tempMenu->nextMenu) != NULL)
+            mvwaddwstr(tempWin, tempMenu->rowIndex - 1, 1, getShowWstr(tempMenu->name));
+        if (selectMenu->rowIndex == 0)
+            mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, COLOR_BLUE, NULL);
+        else
+            mvwchgat(tempWin, selectMenu->rowIndex - 1, 0, -1, A_REVERSE, COLOR_BLUE, NULL);
+        wrefresh(tempWin);
+    }
 
-    while ((tempMenu = tempMenu->nextMenu) != NULL)
-        mvwaddwstr(win, tempMenu->rowIndex - 1, 1, getShowWstr(tempMenu->name));
-    if ((*pmenu)->rowIndex == 0)
-        mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, COLOR_BLUE, NULL);
-    else
-        mvwchgat(win, (*pmenu)->rowIndex - 1, 0, -1, A_REVERSE, COLOR_BLUE, NULL);
-
-    wrefresh(win);
     wrefresh(menuWin);
-    *pwin = win;
 }
 
 // 操作菜单
-static bool operateMenu(WINDOW** pwin, Menu** pmenu, int ch)
+static bool operateMenu(int ch)
 {
     int row = 0;
     switch (ch) {
     case KEY_ALT_L:
     case KEY_ALT_R:
+        if (curArea == MENUA)
+            return true;
     case ALT_F:
-        *pmenu = rootMenu->otherMenu;
+        selectMenu = rootMenu->otherMenu;
         break;
     case ALT_B:
-        *pmenu = rootMenu->otherMenu->otherMenu;
+        selectMenu = rootMenu->otherMenu->otherMenu;
         break;
     case ALT_S:
-        *pmenu = rootMenu->otherMenu->otherMenu->otherMenu;
+        selectMenu = rootMenu->otherMenu->otherMenu->otherMenu;
         break;
     case ALT_A:
-        *pmenu = rootMenu->otherMenu->otherMenu->otherMenu->otherMenu;
+        selectMenu = rootMenu->otherMenu->otherMenu->otherMenu->otherMenu;
         break;
     case KEY_DOWN:
-        if ((*pmenu)->nextMenu != NULL)
-            *pmenu = (*pmenu)->nextMenu;
+        if (selectMenu->nextMenu != NULL)
+            selectMenu = selectMenu->nextMenu;
         break;
     case KEY_UP:
-        if ((*pmenu)->rowIndex > 0)
-            *pmenu = (*pmenu)->preMenu;
+        if (selectMenu->rowIndex > 0)
+            selectMenu = selectMenu->preMenu;
         break;
     case KEY_LEFT:
-        if ((*pmenu)->colIndex > 1) {
-            row = (*pmenu)->rowIndex;
-            setTopMenu(pmenu);
-            *pmenu = (*pmenu)->preMenu;
-            setRowMenu(pmenu, row);
+        if (selectMenu->colIndex > 1) {
+            row = selectMenu->rowIndex;
+            setTopMenu(&selectMenu);
+            selectMenu = selectMenu->preMenu;
+            setRowMenu(&selectMenu, row);
         }
         break;
     case KEY_RIGHT:
-        row = (*pmenu)->rowIndex;
-        setTopMenu(pmenu);
-        if ((*pmenu)->otherMenu != NULL)
-            *pmenu = (*pmenu)->otherMenu;
-        setRowMenu(pmenu, row);
+        row = selectMenu->rowIndex;
+        setTopMenu(&selectMenu);
+        if (selectMenu->otherMenu != NULL)
+            selectMenu = selectMenu->otherMenu;
+        setRowMenu(&selectMenu, row);
         break;
     case KEY_PPAGE:
     case KEY_HOME:
-        setTopMenu(pmenu);
+        setTopMenu(&selectMenu);
         break;
     case KEY_NPAGE:
     case KEY_END:
-        setBottomMenu(pmenu);
+        setBottomMenu(&selectMenu);
         break;
     case '\n': // 执行菜单命令
-        if ((*pmenu)->func != NULL)
-            (*pmenu)->func();
+        if (selectMenu->func != NULL)
+            (selectMenu->func)();
         return true;
     default:
         break;
     }
 
-    repaintMenu(pwin, pmenu);
+    repaintMenu();
     return false;
 }
 
@@ -263,89 +294,115 @@ static void delMenu(Menu* menu)
         delMenu(menu->nextMenu);
     free(menu);
 }
+
+// 绘制棋盘窗口
+static void repaintBoard()
+{
+    box(boardWin, 0, 0);
+    //box(iboardWin, 0, 0);
+    getBoardString(wstr, ins->board);
+    mvwaddwstr(iboardWin, 0, 0, getShowWstr(wstr));
+
+    touchwin(boardWin);
+    wrefresh(boardWin);
+}
+
+// 绘制着法窗口
+static void repaintMoves()
+{
+    box(movesWin, 0, 0);
+    //box(imovesWin, 0, 0);
+    //mvwaddstr(movesWin, 0, 1, " 着 法 图 示 ");
+
+    wchar_t* lineStr = NULL;
+    writeMove_PGN_CCtoWstr(ins, &lineStr);
+    mvwaddwstr(imovesWin, 0, 0, getShowWstr(lineStr));
+    free(lineStr);
+
+    touchwin(movesWin);
+    wrefresh(movesWin);
+}
+
+// 绘制当前着法窗口
+static void repaintCurMove()
+{
+    box(curMoveWin, 0, 0);
+    //box(icurMoveWin, 0, 0);
+    //mvwaddstr(icurMoveWin, 0, 0, "当 前 着 法 ");
+
+    wchar_t* remarkStr = NULL;
+    writeRemark_PGN_CCtoWstr(ins, &remarkStr);
+    mvwaddwstr(icurMoveWin, 0, 0, getShowWstr(remarkStr));
+    free(remarkStr);
+
+    touchwin(curMoveWin);
+    wrefresh(curMoveWin);
+}
+
 // 操作棋盘窗口
-static void repaintBoard(Instance* ins, int ch)
+static void operateBoard(int ch)
 {
 }
 
 // 操作着法窗口
-static void repaintMoves(Instance* ins, int ch)
+static void operateMoves(int ch)
 {
 }
 
 // 操作当前着法窗口
-static void repaintCurMove(Instance* ins, int ch)
+static void operateCurMove(int ch)
 {
 }
 
 // 重绘状态窗口
-static void repaintStatus(FocusArea curArea)
+static void repaintStatus()
 {
+    wclear(statusWin);
+    //werase(statusWin);
+    //box(statusWin, 0, 0);
+
+    //wmove(statusWin, 0, 0);
+    //wclrtoeol(statusWin);
+    //wmove(statusWin, 1, 0);
+    //wclrtoeol(statusWin);
+
     switch (curArea) {
+    case MENUA:
+        swprintf(wstr, FILENAME_MAX, L"\n【菜单】<%s> %s", selectMenu->name, selectMenu->desc);
+        break;
     case BOARDA:
+        swprintf(wstr, FILENAME_MAX, L"\n【棋盘】使用箭头键移动光标在棋盘上的位置 h%3d w%3d", LINES, COLS);
         break;
     case MOVESA:
+        swprintf(wstr, FILENAME_MAX, L" =>%s\n【棋着】着数:%2d 注数:%2d 着深:%2d 变深:%2d",
+            ins->currentMove->zhStr, ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
         break;
     case CURMOVEA:
+        swprintf(wstr, FILENAME_MAX, L"\n【注解】%s", ins->currentMove->remark ? ins->currentMove->remark : L"");
         break;
     default:
         break;
     }
+    //mvwaddstr(statusWin, 0, 0, "\n【棋盘】使用箭头键移动光标在棋盘上的位置");
+    //mvwaddwstr(statusWin, 0, 0, wstr);
+    mvwaddwstr(statusWin, 0, 0, getShowWstr(wstr));
+    wrefresh(statusWin);
 }
 
-// 显示一个棋局实例
-static void viewInstance(Instance* ins, const wchar_t* fileName)
+// 重绘一个棋局实例
+static void repaintInstance()
 {
-    char fileName_c[FILENAME_MAX];
-    wcstombs(fileName_c, fileName, FILENAME_MAX);
-
-    //*
-    if (readInstance(ins, fileName_c) != NULL) {
-        //SetConsoleOutputCP(936); // 设置代码页 <windows.h>
-        SetConsoleTitle(fileName_c); // 设置窗口标题 <windows.h>
-
-        mvwaddstr(bodyWin, 0, 1, "=>");
-        mvwaddwstr(bodyWin, 0, 4, getShowWstr(fileName));
-
-        getBoardString(wstr, ins->board);
-        mvwaddwstr(boardWin, 0, 0, getShowWstr(wstr));
-
-        swprintf(wstr, FILENAME_MAX, L"  着数：%d 注数：%d 着深：%d 变深：%d",
-            ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
-        mvwaddwstr(movesWin, 2, 2, getShowWstr(wstr));
-
-        box(movesWin, 0, 0);
-        mvwaddstr(movesWin, 0, 1, " 着 法 图 示 ");
-
-        box(curmoveWin, 0, 0);
-        mvwaddstr(curmoveWin, 0, 1, " 当 前 着 法 ");
-
-        box(statusWin, 0, 0);
-        mvwaddstr(statusWin, 0, 1, " 状 态 窗 口 ");
-
-        touchwin(stdscr);
-        wrefresh(stdscr);
-    } //*/
+    repaintBoard();
+    repaintMoves();
+    repaintCurMove();
 }
 
 // 启动窗口
-static void startWin()
+static bool startWin()
 {
     initscr();
     start_color();
-
-    int bodyHeight = LINES - 4, bodyWidth = COLS - 1,
-        boardHeight = 4 + 19 * 1 + 4, boardWidth = 2 + 17 * 2 + 2,
-        movesHeight = bodyHeight - 3, movesWidth = COLS - boardWidth - 8;
-    menuWin = subwin(stdscr, 1, 4 * 20, 0, 0);
-    bodyWin = subwin(stdscr, bodyHeight, bodyWidth, 2, 0);
-    boardWin = subwin(bodyWin, boardHeight, boardWidth, 4, 4);
-    movesWin = subwin(bodyWin, movesHeight, movesWidth, 4, boardWidth + 5);
-    curmoveWin = subwin(bodyWin, movesHeight - boardHeight, boardWidth, boardHeight + 4, 2);
-    statusWin = subwin(stdscr, 2, bodyWidth, LINES - 2, 0);
-
     //wbkgd(win, attr);
-    initMenu();
 
     cbreak(); /* direct input (no newline required)... */
     noecho(); /* ... without echoing */
@@ -354,58 +411,104 @@ static void startWin()
     //halfdelay(10); /* ...well, no more than a second, anyway */
     keypad(stdscr, TRUE); /* enable cursor keys */
     scrollok(movesWin, TRUE); /* enable scrolling in main window */
+    scrollok(curMoveWin, TRUE); /* enable scrolling in main window */
+
+    if (COLS < 120 || LINES < 40) {
+        swprintf(wstr, FILENAME_MAX, L"程序要求窗口高度＞40、宽度＞120，当前窗口高度：%d 宽度：%d",
+            LINES, COLS);
+        getShowWstr(wstr);
+        int startx = (COLS - wcslen(showWstr)) / 2;
+        if (startx < 0)
+            startx = 0;
+        mvaddwstr(LINES / 2, startx, showWstr);
+        getShowWstr(L"调整后，请关闭窗口，再重新打开。");
+        mvaddwstr(LINES / 2 + 2, (COLS - wcslen(showWstr)) / 2, showWstr);
+        refresh();
+        getch();
+        return false;
+    }
+
+    int boardHeight = 4 + 19 * 1 + 4, boardWidth = 2 + 17 * 2 + 2,
+        movesHeight = LINES - 3, movesWidth = COLS - boardWidth;
+    menuWin = newwin(1, COLS, 0, 0);
+    init_pair(1, COLOR_BLUE, COLOR_YELLOW);
+    wbkgd(menuWin, COLOR_PAIR(1));
+
+    boardWin = newwin(boardHeight, boardWidth, 1, 0);
+    iboardWin = subwin(boardWin, boardHeight - 2, boardWidth - 3, 2, 2); // 为打印图形周边留出空白
+    movesWin = newwin(movesHeight, movesWidth, 1, boardWidth);
+    imovesWin = subwin(movesWin, movesHeight - 2, movesWidth - 4, 2, boardWidth + 2);
+    curMoveWin = newwin(movesHeight - boardHeight, boardWidth, boardHeight + 1, 0);
+    icurMoveWin = subwin(curMoveWin, movesHeight - boardHeight - 2, boardWidth - 2, boardHeight + 2, 1);
+    statusWin = newwin(2, COLS, LINES - 2, 0);
 
     leaveok(stdscr, TRUE);
     leaveok(menuWin, TRUE);
-    leaveok(bodyWin, TRUE);
     leaveok(boardWin, TRUE);
     leaveok(movesWin, TRUE);
-    leaveok(curmoveWin, TRUE);
-    //touchwin(stdscr);
-    //wrefresh(stdscr);
+    leaveok(curMoveWin, TRUE);
+
+    touchwin(stdscr);
+    refresh();
+    return true;
 }
 
 // 结束窗口
 static void finishWin(void)
 {
+    delInstance(ins);
     delMenu(rootMenu);
-    delwin(boardWin);
-    delwin(movesWin);
-    delwin(curmoveWin);
-    delwin(statusWin);
-    delwin(bodyWin);
+    if (tempWin != NULL)
+        delwin(tempWin);
     delwin(menuWin);
+    delwin(iboardWin);
+    delwin(boardWin);
+    delwin(imovesWin);
+    delwin(movesWin);
+    delwin(icurMoveWin);
+    delwin(curMoveWin);
+    delwin(statusWin);
     curs_set(1);
     endwin();
+}
+
+// 打开一个棋局文件
+static void openFile()
+{
+    char fileName_c[FILENAME_MAX];
+    wcstombs(fileName_c, fileName, FILENAME_MAX);
+    //SetConsoleOutputCP(936); // 设置代码页 <windows.h>
+    SetConsoleTitle(fileName_c); // 设置窗口标题 <windows.h>
+
+    delInstance(ins);
+    ins = newInstance();
+    readInstance(ins, fileName_c);
 }
 
 // 执行棋局演示
 void doView(void)
 {
-    startWin();
+    if (!startWin())
+        return;
+    initMenu();
+    ins = newInstance();
 
-    wchar_t fileName[] = L"01.XQF";
-    Instance* ins = newInstance();
-    viewInstance(ins, fileName);
+    wcscpy(fileName, L"01.XQF");
+    openFile();
+    repaintInstance();
+    //getch();
 
     // 告诉getch（）返回单独按下的修饰键作为击键（KEY_ALT_L等）
-    PDC_return_key_modifiers(true); 
+    PDC_return_key_modifiers(true);
     int ch;
-    FocusArea curArea = BOARDA, oldArea = curArea;
-    WINDOW* win = NULL;
-    Menu* menu = rootMenu->otherMenu;
-    bool menuDone = false;
+    //bool menuDone = false;
     while (true) {
         ch = getch();
-        if (win != NULL) {
-            werase(win);
-            wrefresh(win);
-            delwin(win);
-        }
-        if (ch == KEY_ESC || ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
+        if (ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
             break;
 
-        switch (ch) {
+        //*
+        switch (ch) { // 快捷键选择区域
         case KEY_ALT_L:
         case KEY_ALT_R:
         case ALT_F:
@@ -413,50 +516,42 @@ void doView(void)
         case ALT_S:
         case ALT_A:
             oldArea = curArea;
+            operateMenu(ch);
             curArea = MENUA;
-            menuDone = operateMenu(&win, &menu, ch);
-            if (menuDone)
-                curArea = oldArea;
+            break;
+        case KEY_ESC:
+            curArea = MOVESA;
             break;
         case 9: // Tab键
             ++curArea;
-            curArea %= 4; // 焦点区域循环后，不break，直接进入操作区域
+            if (curArea == 4)
+                curArea = MENUA; // 焦点区域循环
+            break;
         default:
-            switch (curArea) {
+            switch (curArea) { // 区分不同区域, 进行操作
             case MENUA:
-                menuDone = operateMenu(&win, &menu, ch);
-                if (menuDone)
+                if (operateMenu(ch))
                     curArea = oldArea;
                 break;
             case BOARDA:
-                repaintBoard(ins, ch);
+                operateBoard(ch);
                 break;
             case MOVESA:
-                repaintMoves(ins, ch);
+                operateMoves(ch);
                 break;
             case CURMOVEA:
-                repaintCurMove(ins, ch);
+                operateCurMove(ch);
                 break;
             default:
                 break;
             }
-            break;
         }
-        if (menuDone)
-            ; // 菜单命令执行后，刷新其他区域数据
-        repaintStatus(curArea);
+        repaintStatus();
+        //*/
+        //repaintInstance();
     }
 
-    delInstance(ins);
     finishWin();
-}
-
-// 测试翻译单元
-void testConview(void)
-{
-    Instance* ins = newInstance();
-    readInstance(ins, "01.XQF");
-    delInstance(ins);
 }
 
 /*
