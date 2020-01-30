@@ -554,12 +554,12 @@ void changeBoard(Board* board, ChangeType ct)
 wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
 {
     const wchar_t* PRESTR[] = {
-        L"　　　　　　　黑　方　　　　　　　\n１　２　３　４　５　６　７　８　９\n\n",
-        L"　　　　　　　红　方　　　　　　　\n一　二　三　四　五　六　七　八　九\n\n"
+        L"　　　　　　　黑　方　　　　　　　\n１　２　３　４　５　６　７　８　９\n",
+        L"　　　　　　　红　方　　　　　　　\n一　二　三　四　五　六　七　八　九\n"
     };
     const wchar_t* SUFSTR[] = {
-        L"\n九　八　七　六　五　四　三　二　一\n　　　　　　　红　方　　　　　　　\n",
-        L"\n９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
+        L"九　八　七　六　五　四　三　二　一\n　　　　　　　红　方　　　　　　　\n",
+        L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
     };
     //*
     wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"

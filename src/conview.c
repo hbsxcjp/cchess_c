@@ -5,48 +5,10 @@
 #include "head/tools.h"
 #include <windows.h>
 
-//#define MENUCOLOR (COLOR_BLUE)
-#define MENUCOLOR (COLOR_CYAN | A_BOLD)
-#define MENUREVCOLOR (COLOR_MAGENTA | A_BOLD | A_REVERSE)
-#define STATUSCOLOR (COLOR_BLUE | A_BOLD)
-
-#define MAXSTRLEN 256
-#define MENUNUM 4
-#define MENULEVEL 10
-#define MENUWIDTH 9
-#define KEY_ESC 0x1b /* Escape */
-
-// 控制台焦点区域类型
-typedef enum {
-    MENUA,
-    BOARDA,
-    MOVESA,
-    CURMOVEA
-} FocusArea;
-
-// 菜单命令
-typedef void (*MENU_FUNC)(void);
-
-// 菜单结构
-typedef struct Menu_ {
-    wchar_t name[12]; /* item label */
-    MENU_FUNC func; /* (pointer to) function */
-    wchar_t desc[50]; /* function description */
-    struct Menu_ *preMenu, *nextMenu, *otherMenu;
-    int colIndex, rowIndex;
-} Menu;
-
-// 菜单初始数据结构
-typedef struct MenuData_ {
-    wchar_t name[12]; /* item label */
-    MENU_FUNC func; /* (pointer to) function */
-    wchar_t desc[50]; /* function description */
-} MenuData;
-
 // 本翻译单元的公用变量
 static WINDOW *menuWin, *statusWin, *tempWin = NULL,
-                                    *boardWin, *movesWin, *curMoveWin,
-                                    *iboardWin, *imovesWin, *icurMoveWin;
+                                    *boardWin, *movesWin, *curMoveWin;
+//*iboardWin, *imovesWin, *icurMoveWin;
 static FocusArea curArea = MOVESA, oldArea;
 static Menu *rootMenu, *selectMenu; // 根菜单
 static Instance* ins = NULL;
@@ -84,8 +46,10 @@ static wchar_t* getShowWstr(const wchar_t* srcWstr)
             }
         }
     }
-    //showWstr[desIndex++] = L'.'; // 消除刷新后遗留半边汉字的情况
+    //if (desIndex % 2 == 1)
+        showWstr[desIndex++] = L'.'; // 消除刷新后遗留半边汉字的情况
     showWstr[desIndex] = L'\x0';
+    //showWstr[showWstr[desIndex - 1] == L' ' ? desIndex - 1 : desIndex] = L'\x0'; // 清除最后一个空格
     return showWstr;
 }
 
@@ -130,24 +94,24 @@ static void goodbye(void)
 static void initMenu(void)
 {
     MenuData menuDatas[MENUNUM][MENULEVEL] = {
-        { { L"文件(F)", NULL, L"新建、打开、保存文件，退出" },
+        { { L"文件(F)", NULL, L"新建、打开、保存文件，退出 (Alt+F)" },
             { L"新建", NULL, L"新建一个棋局" },
             { L"打开...", NULL, L"打开已有的一个棋局" },
             { L"另存为...", NULL, L"将显示的棋局另存为一个棋局" },
             { L"保存", NULL, L"保存正在显示的棋局" },
             { L"退出", goodbye, L"退出程序" },
             { L"", NULL, L"" } },
-        { { L"棋局(B)", NULL, L"对棋盘局面进行操作" },
+        { { L"棋局(B)", NULL, L"对棋盘局面进行操作 (Alt+B)" },
             { L"对换棋局", NULL, L"红黑棋子互换" },
             { L"对换位置", NULL, L"红黑位置互换" },
             { L"棋子左右换位", NULL, L"棋子的位置左右对称换位" },
             { L"", NULL, L"" } },
-        { { L"设置(S)", NULL, L"设置显示主题，主要是棋盘、棋子的颜色配置" },
+        { { L"设置(S)", NULL, L"设置显示主题，主要是棋盘、棋子的颜色配置 (Alt+S)" },
             { L"静雅朴素", NULL, L"比较朴素的颜色配置" },
             { L"鲜艳亮丽", NULL, L"比较鲜艳的颜色配置" },
             { L"高对比度", NULL, L"高对比度的颜色配置" },
             { L"", NULL, L"" } },
-        { { L"关于(A)", NULL, L"帮助、程序信息" },
+        { { L"关于(A)", NULL, L"帮助、程序信息 (Alt+A)" },
             { L"帮助", NULL, L"显示帮助信息" },
             { L"版本信息", NULL, L"程序有关的信息" },
             { L"", NULL, L"" } }
@@ -164,7 +128,7 @@ static void initMenu(void)
 
     // 绘制菜单区域
     while (otherMenu->colIndex > 0) {
-        mvwaddwstr(menuWin, 0, (otherMenu->colIndex - 1) * MENUWIDTH + 1, getShowWstr(otherMenu->name));
+        mvwaddwstr(menuWin, 0, (otherMenu->colIndex - 1) * MENUWIDTH, getShowWstr(otherMenu->name));
         otherMenu = otherMenu->preMenu;
     }
     wrefresh(menuWin);
@@ -194,10 +158,13 @@ static void setRowMenu(Menu** pmenu, int row)
 // 重绘菜单
 static void repaintMenu()
 {
-    mvwchgat(menuWin, 0, 0, -1, getattrs(stdscr), COLOR_BLUE, NULL);
+    short menuColorPair = COLOR_PAIR_NUM(SIMPLE, MENUA);
+    mvwchgat(menuWin, 0, 0, -1, getbkgd(menuWin), menuColorPair, NULL);
 
-    if (selectMenu != rootMenu) {
-        int startx = (selectMenu->colIndex - 1) * MENUWIDTH;
+    int startx = (selectMenu->colIndex - 1) * MENUWIDTH;
+    if (selectMenu->rowIndex == 0)
+        mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, menuColorPair, NULL);
+    else {
         Menu* tempMenu = selectMenu;
         setBottomMenu(&tempMenu); // 移至最底级菜单
         int height = tempMenu->rowIndex, width = MENUWIDTH;
@@ -206,15 +173,14 @@ static void repaintMenu()
             width = max(width, len + 2);
             tempMenu = tempMenu->preMenu;
         } // 结束循环后，tempMenu为一级菜单
-        destroyTempWin();
+        if (width % 2 == 1)
+            ++width;
         tempWin = newwin(height, width, getmaxy(menuWin), startx);
+        wbkgd(tempWin, getbkgd(menuWin));
 
         while ((tempMenu = tempMenu->nextMenu) != NULL)
-            mvwaddwstr(tempWin, tempMenu->rowIndex - 1, 1, getShowWstr(tempMenu->name));
-        if (selectMenu->rowIndex == 0)
-            mvwchgat(menuWin, 0, startx, MENUWIDTH, A_REVERSE, COLOR_BLUE, NULL);
-        else
-            mvwchgat(tempWin, selectMenu->rowIndex - 1, 0, -1, A_REVERSE, COLOR_BLUE, NULL);
+            mvwaddwstr(tempWin, tempMenu->rowIndex - 1, 0, getShowWstr(tempMenu->name));
+        mvwchgat(tempWin, selectMenu->rowIndex - 1, 0, -1, A_REVERSE, menuColorPair, NULL);
         wrefresh(tempWin);
     }
 
@@ -296,19 +262,22 @@ static void delMenu(Menu* menu)
 }
 
 // 绘制棋盘窗口
-static void repaintBoard()
+static void repaintBoard(void)
 {
     box(boardWin, 0, 0);
     //box(iboardWin, 0, 0);
     getBoardString(wstr, ins->board);
-    mvwaddwstr(iboardWin, 0, 0, getShowWstr(wstr));
 
-    touchwin(boardWin);
+    //wbkgd(boardWin, THEMECOLOR(SIMPLE, BOARDA));
+    //mvwaddwstr(boardWin, 0, 0, wstr);
+    mvwaddwstr(boardWin, 0, 0, getShowWstr(wstr));
+
+    //touchwin(boardWin);
     wrefresh(boardWin);
 }
 
 // 绘制着法窗口
-static void repaintMoves()
+static void repaintMoves(void)
 {
     box(movesWin, 0, 0);
     //box(imovesWin, 0, 0);
@@ -316,15 +285,16 @@ static void repaintMoves()
 
     wchar_t* lineStr = NULL;
     writeMove_PGN_CCtoWstr(ins, &lineStr);
-    mvwaddwstr(imovesWin, 0, 0, getShowWstr(lineStr));
+    //wbkgd(imovesWin, THEMECOLOR(SIMPLE, MOVESA));
+    mvwaddwstr(movesWin, 0, 0, getShowWstr(lineStr));
     free(lineStr);
 
-    touchwin(movesWin);
+    //touchwin(movesWin);
     wrefresh(movesWin);
 }
 
 // 绘制当前着法窗口
-static void repaintCurMove()
+static void repaintCurMove(void)
 {
     box(curMoveWin, 0, 0);
     //box(icurMoveWin, 0, 0);
@@ -332,10 +302,11 @@ static void repaintCurMove()
 
     wchar_t* remarkStr = NULL;
     writeRemark_PGN_CCtoWstr(ins, &remarkStr);
-    mvwaddwstr(icurMoveWin, 0, 0, getShowWstr(remarkStr));
+    //wbkgd(icurMoveWin, THEMECOLOR(SIMPLE, CURMOVEA));
+    mvwaddwstr(curMoveWin, 0, 0, getShowWstr(remarkStr));
     free(remarkStr);
 
-    touchwin(curMoveWin);
+    //touchwin(curMoveWin);
     wrefresh(curMoveWin);
 }
 
@@ -355,46 +326,79 @@ static void operateCurMove(int ch)
 }
 
 // 重绘状态窗口
-static void repaintStatus()
+static void repaintStatus(void)
 {
     wclear(statusWin);
-    //werase(statusWin);
     //box(statusWin, 0, 0);
-
-    //wmove(statusWin, 0, 0);
-    //wclrtoeol(statusWin);
-    //wmove(statusWin, 1, 0);
-    //wclrtoeol(statusWin);
 
     switch (curArea) {
     case MENUA:
-        swprintf(wstr, FILENAME_MAX, L"\n【菜单】<%s> %s", selectMenu->name, selectMenu->desc);
+        swprintf(wstr, FILENAME_MAX, L"【菜单】<%s> %s", selectMenu->name, selectMenu->desc);
         break;
     case BOARDA:
-        swprintf(wstr, FILENAME_MAX, L"\n【棋盘】使用箭头键移动光标在棋盘上的位置 h%3d w%3d", LINES, COLS);
+        swprintf(wstr, FILENAME_MAX, L"【棋盘】使用箭头键移动光标在棋盘上的位置 h%3d w%3d", LINES, COLS);
         break;
     case MOVESA:
-        swprintf(wstr, FILENAME_MAX, L" =>%s\n【棋着】着数:%2d 注数:%2d 着深:%2d 变深:%2d",
+        swprintf(wstr, FILENAME_MAX, L" =>%s【棋着】着数:%2d 注数:%2d 着深:%2d 变深:%2d",
             ins->currentMove->zhStr, ins->movCount_, ins->remCount_, ins->maxRow_, ins->maxCol_);
         break;
     case CURMOVEA:
-        swprintf(wstr, FILENAME_MAX, L"\n【注解】%s", ins->currentMove->remark ? ins->currentMove->remark : L"");
+        swprintf(wstr, FILENAME_MAX, L"【注解】COLORS:%3d COLOR_PAIRS:%3d", COLORS, COLOR_PAIRS);
         break;
     default:
         break;
     }
-    //mvwaddstr(statusWin, 0, 0, "\n【棋盘】使用箭头键移动光标在棋盘上的位置");
+
     //mvwaddwstr(statusWin, 0, 0, wstr);
     mvwaddwstr(statusWin, 0, 0, getShowWstr(wstr));
     wrefresh(statusWin);
 }
 
 // 重绘一个棋局实例
-static void repaintInstance()
+static void repaintInstance(void)
 {
     repaintBoard();
     repaintMoves();
     repaintCurMove();
+}
+
+// 设置主题
+static void setThemeColor(Theme theme)
+{
+    wbkgd(menuWin, THEMECOLOR(theme, MENUA));
+
+    wbkgd(boardWin, THEMECOLOR(theme, BOARDA));
+    wbkgd(movesWin, THEMECOLOR(theme, MOVESA));
+    wbkgd(curMoveWin, THEMECOLOR(theme, CURMOVEA));
+
+    wbkgd(statusWin, THEMECOLOR(theme, STATUSA));
+}
+
+// 初始化主题颜色配置
+static void init_ThemeColor(void)
+{
+    //short bcolor = 100;
+    //init_color(bcolor++, 107, 133, 131); // 10.jfif 1-3
+    //init_color(bcolor++, COLOR_V(107), COLOR_V(133), COLOR_V(131)); // 10.jfif 1-4
+    init_pair(COLOR_PAIR_NUM(SIMPLE, MENUA), COLOR_MENUTEXT, COLOR_MENU);
+
+    //init_color(bcolor++, 239, 230, 189); // 10.jfif 1-4
+    //init_color(bcolor++, COLOR_V(239), COLOR_V(230), COLOR_V(189)); // 10.jfif 1-4
+    init_pair(COLOR_PAIR_NUM(SIMPLE, BOARDA), COLOR_WHITE, COLOR_BLUE);
+    //init_pair(COLOR_PAIR_NUM(SIMPLE, BOARDA), COLOR_WHITE, bcolor);
+
+    //init_color(bcolor++, 231, 140, 57); // 10.jfif 2-4
+    //init_color(bcolor++, COLOR_V(231), COLOR_V(140), COLOR_V(57)); // 10.jfif 1-4
+    init_pair(COLOR_PAIR_NUM(SIMPLE, MOVESA), COLOR_BLUE, COLOR_CYAN);
+    //init_pair(COLOR_PAIR_NUM(SIMPLE, MOVESA), COLOR_WHITE, bcolor);
+
+    //init_color(bcolor++, 215, 173, 75); // 10.jfif 2-5
+    //init_color(bcolor++, COLOR_V(215), COLOR_V(173), COLOR_V(75)); // 10.jfif 1-4
+    init_pair(COLOR_PAIR_NUM(SIMPLE, CURMOVEA), COLOR_BLUE, COLOR_YELLOW);
+
+    //init_color(bcolor++, 140, 81, 73); // 10.jfif 2-3
+    //init_color(bcolor++, COLOR_V(140), COLOR_V(81), COLOR_V(73)); // 10.jfif 1-4
+    init_pair(COLOR_PAIR_NUM(SIMPLE, STATUSA), COLOR_BLUE, COLOR_GREEN);
 }
 
 // 启动窗口
@@ -402,7 +406,6 @@ static bool startWin()
 {
     initscr();
     start_color();
-    //wbkgd(win, attr);
 
     cbreak(); /* direct input (no newline required)... */
     noecho(); /* ... without echoing */
@@ -414,6 +417,12 @@ static bool startWin()
     scrollok(curMoveWin, TRUE); /* enable scrolling in main window */
 
     if (COLS < 120 || LINES < 40) {
+        /*
+        int lines = LINES < 40 ? 40 : LINES;
+        int cols = COLS < 120 ? 120 : COLS;
+        resize_window(stdscr, lines, cols);
+        //*/
+        //*
         swprintf(wstr, FILENAME_MAX, L"程序要求窗口高度＞40、宽度＞120，当前窗口高度：%d 宽度：%d",
             LINES, COLS);
         getShowWstr(wstr);
@@ -426,21 +435,23 @@ static bool startWin()
         refresh();
         getch();
         return false;
+        //*/
     }
 
-    int boardHeight = 4 + 19 * 1 + 4, boardWidth = 2 + 17 * 2 + 2,
-        movesHeight = LINES - 3, movesWidth = COLS - boardWidth;
+    int boardHeight = 2 + 19 * 1 + 2, boardWidth = 18 * 2,
+        movesHeight = LINES - 2, movesWidth = COLS - boardWidth;
     menuWin = newwin(1, COLS, 0, 0);
-    init_pair(1, COLOR_BLUE, COLOR_YELLOW);
-    wbkgd(menuWin, COLOR_PAIR(1));
-
-    boardWin = newwin(boardHeight, boardWidth, 1, 0);
-    iboardWin = subwin(boardWin, boardHeight - 2, boardWidth - 3, 2, 2); // 为打印图形周边留出空白
+    boardWin = newwin(boardHeight, boardWidth, 1, 0); // 为打印图形周边留出空白
+    //boardWin = newwin(boardHeight, boardWidth, 1, 0);
+    //iboardWin = subwin(boardWin, boardHeight - 2, boardWidth - 4, 2, 2); // 为打印图形周边留出空白
     movesWin = newwin(movesHeight, movesWidth, 1, boardWidth);
-    imovesWin = subwin(movesWin, movesHeight - 2, movesWidth - 4, 2, boardWidth + 2);
+    //imovesWin = subwin(movesWin, movesHeight - 2, movesWidth - 4, 2, boardWidth + 2);
     curMoveWin = newwin(movesHeight - boardHeight, boardWidth, boardHeight + 1, 0);
-    icurMoveWin = subwin(curMoveWin, movesHeight - boardHeight - 2, boardWidth - 2, boardHeight + 2, 1);
-    statusWin = newwin(2, COLS, LINES - 2, 0);
+    //icurMoveWin = subwin(curMoveWin, movesHeight - boardHeight - 2, boardWidth - 4, boardHeight + 2, 2);
+    statusWin = newwin(1, COLS, LINES - 1, 0);
+
+    init_ThemeColor();
+    setThemeColor(SIMPLE);
 
     leaveok(stdscr, TRUE);
     leaveok(menuWin, TRUE);
@@ -449,7 +460,7 @@ static bool startWin()
     leaveok(curMoveWin, TRUE);
 
     touchwin(stdscr);
-    refresh();
+    wrefresh(stdscr);
     return true;
 }
 
@@ -461,11 +472,11 @@ static void finishWin(void)
     if (tempWin != NULL)
         delwin(tempWin);
     delwin(menuWin);
-    delwin(iboardWin);
+    //delwin(iboardWin);
     delwin(boardWin);
-    delwin(imovesWin);
+    //delwin(imovesWin);
     delwin(movesWin);
-    delwin(icurMoveWin);
+    //delwin(icurMoveWin);
     delwin(curMoveWin);
     delwin(statusWin);
     curs_set(1);
@@ -496,6 +507,7 @@ void doView(void)
     wcscpy(fileName, L"01.XQF");
     openFile();
     repaintInstance();
+    repaintStatus();
     //getch();
 
     // 告诉getch（）返回单独按下的修饰键作为击键（KEY_ALT_L等）
@@ -504,6 +516,7 @@ void doView(void)
     //bool menuDone = false;
     while (true) {
         ch = getch();
+        destroyTempWin();
         if (ch == KEY_F(40) || ch == 0x17) // alt+F4 ctr+w
             break;
 
