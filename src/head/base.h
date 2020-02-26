@@ -2,17 +2,21 @@
 #define BASE_H
 
 #include <assert.h>
+#include <conio.h>
+#include <ctype.h>
 #include <io.h>
 #include <locale.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <wchar.h>
-//#include <math.h>
-#include <ctype.h>
 #include <string.h>
+#include <wchar.h>
 #include <wctype.h>
+#include <windows.h>
 
+#define WCHARSIZE 256
+#define WIDEWCHARSIZE 1024
 //=================================================================
 //棋子相关的类型
 //=================================================================
@@ -141,13 +145,60 @@ typedef struct {
     Move *rootMove, *currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
-} Instance;
+} ChessManual;
 
-// 演示类型
+//=================================================================
+//棋局演示相关的类型
+//=================================================================
+/*
 typedef enum {
     FIRST = 0x80,
     MIDDLE = 0x08,
     END = 0x01
 } Pos;
+//*/
+
+// 区域主题颜色配置类型
+typedef enum {
+    SIMPLE,
+    SHOWY,
+    HIGHLIGHT
+} Thema;
+
+// 控制台焦点区域类型
+typedef enum {
+    MOVEA,
+    CURMOVEA,
+    BOARDA,
+    MENUA,
+    STATUSA
+} Area;
+
+// 菜单命令
+typedef void (*MENU_FUNC)(void);
+
+// 菜单结构
+typedef struct Menu_ {
+    wchar_t name[WCHARSIZE], desc[WCHARSIZE];
+    MENU_FUNC func; // 菜单关联的命令函数，如有子菜单则应为空
+    struct Menu_ *preMenu, *brotherMenu, *childMenu;
+    int brotherIndex, childIndex;
+} Menu, *PMenu;
+
+// 菜单初始信息结构
+typedef struct MenuData_ {
+    wchar_t name[WCHARSIZE], desc[WCHARSIZE];
+    MENU_FUNC func;
+} MenuData;
+
+// 演示类型结构
+typedef struct Console_ {
+    HANDLE hIn, hOut;
+    Menu *rootMenu, *curMenu;
+    ChessManual* cm;
+    Thema thema;
+    Area curArea;
+    int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
+} Console, *PConsole;
 
 #endif

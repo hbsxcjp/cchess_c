@@ -1,5 +1,5 @@
 #define PCRE_STATIC
-#include "head/instance.h"
+#include "head/chessManual.h"
 #include "head/board.h"
 #include "head/cJSON.h"
 #include "head/move.h"
@@ -7,7 +7,7 @@
 #include "head/tools.h"
 //#include <regex.h>
 //#include <sys/types.h>
-#include "pcre.h"
+#include "head/pcre.h"
 
 static wchar_t FEN_0[] = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 static const char* EXTNAMES[] = {
@@ -15,10 +15,10 @@ static const char* EXTNAMES[] = {
 };
 static const char FILETAG[] = "learnchess";
 
-Instance* newInstance(void)
+ChessManual* newChessManual(void)
 {
-    Instance* ins = malloc(sizeof(Instance));
-    memset(ins, 0, sizeof(Instance));
+    ChessManual* ins = malloc(sizeof(ChessManual));
+    memset(ins, 0, sizeof(ChessManual));
     ins->board = newBoard();
     ins->rootMove = newMove();
     ins->currentMove = ins->rootMove;
@@ -26,7 +26,7 @@ Instance* newInstance(void)
     return ins;
 }
 
-void delInstance(Instance* ins)
+void delChessManual(ChessManual* ins)
 {
     if (ins == NULL)
         return;
@@ -39,7 +39,7 @@ void delInstance(Instance* ins)
     free(ins);
 }
 
-void addInfoItem(Instance* ins, const wchar_t* name, const wchar_t* value)
+void addInfoItem(ChessManual* ins, const wchar_t* name, const wchar_t* value)
 {
     int count = ins->infoCount, nameLen = wcslen(name);
     if (count == 32 || nameLen == 0)
@@ -63,7 +63,7 @@ static RecFormat __getRecFormat(const char* ext)
     return NOTFMT;
 }
 
-static wchar_t* getFEN_ins(Instance* ins)
+static wchar_t* getFEN_ins(ChessManual* ins)
 {
     wchar_t* FEN = FEN_0;
     bool hasFEN = false;
@@ -78,12 +78,12 @@ static wchar_t* getFEN_ins(Instance* ins)
     return FEN;
 }
 
-inline static void __doMove(Instance* ins, Move* move)
+inline static void __doMove(ChessManual* ins, Move* move)
 {
     move->tpiece = moveTo(ins->board, move->fseat, move->tseat, BLANKPIECE);
 }
 
-inline static void __undoMove(Instance* ins, Move* move)
+inline static void __undoMove(ChessManual* ins, Move* move)
 {
     moveTo(ins->board, move->tseat, move->fseat, move->tpiece);
 }
@@ -152,7 +152,7 @@ static void __readMove_XQF(Move* move, FILE* fin)
         __readMove_XQF(addOther(move), fin);
 }
 
-void setMoveNums(Instance* ins, Move* move)
+void setMoveNums(ChessManual* ins, Move* move)
 {
     ++ins->movCount_;
     if (move->otherNo_ > ins->maxCol_)
@@ -185,7 +185,7 @@ void setMoveNums(Instance* ins, Move* move)
     }
 }
 
-static void readXQF(Instance* ins, FILE* fin)
+static void readXQF(ChessManual* ins, FILE* fin)
 {
     char xqfData[1024] = { 0 };
     fread(xqfData, sizeof(char), 1024, fin);
@@ -345,14 +345,14 @@ static void __readMove_BIN(Move* move, FILE* fin)
         __readMove_BIN(addOther(move), fin);
 }
 
-static void __getFENToSetBoard(Instance* ins)
+static void __getFENToSetBoard(ChessManual* ins)
 {
     wchar_t* FEN = getFEN_ins(ins);
     wchar_t pieChars[SEATNUM + 1] = { 0 };
     setBoard(ins->board, getPieChars_FEN(pieChars, FEN, wcslen(FEN)));
 }
 
-static void readBIN(Instance* ins, FILE* fin)
+static void readBIN(ChessManual* ins, FILE* fin)
 {
     char fileTag[sizeof(FILETAG)];
     fread(&fileTag, sizeof(char), sizeof(FILETAG), fin);
@@ -403,7 +403,7 @@ static void __writeMove_BIN(const Move* move, FILE* fout)
         __writeMove_BIN(move->omove, fout);
 }
 
-static void writeBIN(const Instance* ins, FILE* fout)
+static void writeBIN(const ChessManual* ins, FILE* fout)
 {
     fwrite(&FILETAG, sizeof(char), sizeof(FILETAG), fout);
     char infoCount = ins->infoCount;
@@ -443,7 +443,7 @@ static void __readMove_JSON(const cJSON* moveJSON, Move* move)
         __readMove_JSON(omoveJSON, addOther(move));
 }
 
-static void readJSON(Instance* ins, FILE* fin)
+static void readJSON(ChessManual* ins, FILE* fin)
 {
     fseek(fin, 0L, SEEK_END); // 定位到文件末尾
     long last = ftell(fin);
@@ -493,7 +493,7 @@ static void __writeMove_JSON(cJSON* moveJSON, const Move* move)
     }
 }
 
-static void writeJSON(const Instance* ins, FILE* fout)
+static void writeJSON(const ChessManual* ins, FILE* fout)
 {
     cJSON *insJSON = cJSON_CreateObject(),
           *infoJSON = cJSON_CreateArray(),
@@ -517,7 +517,7 @@ static void writeJSON(const Instance* ins, FILE* fout)
     cJSON_Delete(insJSON);
 }
 
-static void readInfo_PGN(Instance* ins, FILE* fin)
+static void readInfo_PGN(ChessManual* ins, FILE* fin)
 {
     const char* error;
     int erroffset = 0, infoCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
@@ -545,7 +545,7 @@ extern const wchar_t* PieceNames[PIECECOLORNUM];
 extern const wchar_t ICCSCOLCHAR[BOARDCOL + 1];
 extern const wchar_t ICCSROWCHAR[BOARDROW + 1];
 
-static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
+static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
 {
     bool isPGN_ZH = fmt == PGN_ZH;
     wchar_t ICCSZHStr[THOUSAND_SIZE] = { 0 };
@@ -664,7 +664,7 @@ static void readMove_PGN_ICCSZH(Instance* ins, FILE* fin, RecFormat fmt)
     pcre16_free(moveReg);
 }
 
-static void __writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, Move* move,
+static void __writeMove_PGN_ICCSZH(ChessManual* ins, FILE* fout, Move* move,
     bool isPGN_ZH, bool isOther)
 {
     wchar_t boutStr[6] = { 0 }, iccs_zhStr[6] = { 0 };
@@ -698,7 +698,7 @@ static void __writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, Move* move,
         __undoMove(ins, move); // 退回本着
 }
 
-static void writeMove_PGN_ICCSZH(Instance* ins, FILE* fout, RecFormat fmt)
+static void writeMove_PGN_ICCSZH(ChessManual* ins, FILE* fout, RecFormat fmt)
 {
     if (ins->rootMove->remark != NULL)
         fwprintf(fout, L" \n{%s}\n ", ins->rootMove->remark);
@@ -720,7 +720,7 @@ static void __setRemark_PGN_CC(Move* move, int row, int col,
         }
 }
 
-static void __setMove_PGN_CC(Instance* ins, Move* move, pcre16* moveReg,
+static void __setMove_PGN_CC(ChessManual* ins, Move* move, pcre16* moveReg,
     wchar_t* moveLines[], int rowNum, int colNum, int row, int col,
     wchar_t* remLines[], int remCount)
 {
@@ -750,7 +750,7 @@ static void __setMove_PGN_CC(Instance* ins, Move* move, pcre16* moveReg,
     }
 }
 
-static void readMove_PGN_CC(Instance* ins, FILE* fin)
+static void readMove_PGN_CC(ChessManual* ins, FILE* fin)
 {
     const wchar_t movePat[] = L"([^…　]{4}[…　])",
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
@@ -818,7 +818,7 @@ static void readMove_PGN_CC(Instance* ins, FILE* fin)
     pcre16_free(moveReg);
 }
 
-static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, Instance* ins, Move* move)
+static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, ChessManual* ins, Move* move)
 {
     int row = move->nextNo_ * 2, firstCol = move->CC_ColNo_ * 5;
     wcsncpy(&lineStr[row * colNum + firstCol], move->zhStr, 4);
@@ -837,7 +837,7 @@ static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, Instance* ins, Move
     }
 }
 
-void writeMove_PGN_CCtoWstr(Instance* ins, wchar_t** plineStr)
+void writeMove_PGN_CCtoWstr(ChessManual* ins, wchar_t** plineStr)
 {
     int rowNum = (ins->maxRow_ + 1) * 2,
         colNum = (ins->maxCol_ + 1) * 5 + 1;
@@ -880,7 +880,7 @@ static void __writeRemark_PGN_CC(wchar_t* remarkStr, long* premSize, Move* move)
         __writeRemark_PGN_CC(remarkStr, premSize, move->nmove);
 }
 
-void writeRemark_PGN_CCtoWstr(Instance* ins, wchar_t** premarkStr)
+void writeRemark_PGN_CCtoWstr(ChessManual* ins, wchar_t** premarkStr)
 {
     long remSize = HUNDRED_THOUSAND_SIZE;
     wchar_t* remarkStr = calloc(remSize, sizeof(wchar_t));
@@ -888,7 +888,7 @@ void writeRemark_PGN_CCtoWstr(Instance* ins, wchar_t** premarkStr)
     *premarkStr = remarkStr;
 }
 
-static void writeMove_PGN_CC(Instance* ins, FILE* fout)
+static void writeMove_PGN_CC(ChessManual* ins, FILE* fout)
 {
     wchar_t *lineStr = NULL, *remarkStr = NULL;
     writeMove_PGN_CCtoWstr(ins, &lineStr);
@@ -899,7 +899,7 @@ static void writeMove_PGN_CC(Instance* ins, FILE* fout)
     free(lineStr);
 }
 
-Instance* readInstance(Instance* ins, const char* filename)
+ChessManual* readChessManual(ChessManual* ins, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     if (fmt == NOTFMT) {
@@ -956,7 +956,7 @@ Instance* readInstance(Instance* ins, const char* filename)
     return ins;
 }
 
-void writeInstance(Instance* ins, const char* filename)
+void writeChessManual(ChessManual* ins, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     if (fmt == NOTFMT) {
@@ -1003,27 +1003,27 @@ void writeInstance(Instance* ins, const char* filename)
     fclose(fout);
 }
 
-bool isStart(const Instance* ins)
+bool isStart(const ChessManual* ins)
 {
     return ins->currentMove == ins->rootMove;
 }
 
-bool hasNext(const Instance* ins)
+bool hasNext(const ChessManual* ins)
 {
     return ins->currentMove->nmove != NULL;
 }
 
-bool hasPre(const Instance* ins)
+bool hasPre(const ChessManual* ins)
 {
     return ins->currentMove->pmove != NULL;
 }
 
-bool hasOther(const Instance* ins)
+bool hasOther(const ChessManual* ins)
 {
     return ins->currentMove->omove != NULL;
 }
 
-void go(Instance* ins)
+void go(ChessManual* ins)
 {
     if (hasNext(ins)) {
         ins->currentMove = ins->currentMove->nmove;
@@ -1031,7 +1031,7 @@ void go(Instance* ins)
     }
 }
 
-void back(Instance* ins)
+void back(ChessManual* ins)
 {
     if (hasPre(ins)) {
         __undoMove(ins, ins->currentMove);
@@ -1039,13 +1039,13 @@ void back(Instance* ins)
     }
 }
 
-void backTo(Instance* ins, Move* move)
+void backTo(ChessManual* ins, Move* move)
 {
     while (hasPre(ins) && !isSameMove(ins->currentMove, move))
         back(ins);
 }
 
-void goOther(Instance* ins)
+void goOther(ChessManual* ins)
 {
     if (hasOther(ins)) {
         __undoMove(ins, ins->currentMove);
@@ -1054,13 +1054,13 @@ void goOther(Instance* ins)
     }
 }
 
-void goInc(Instance* ins, int inc)
+void goInc(ChessManual* ins, int inc)
 {
     for (int i = abs(inc); i != 0; --i)
         (inc > 0) ? go(ins) : back(ins);
 }
 
-void changeInstance(Instance* ins, ChangeType ct)
+void changeChessManual(ChessManual* ins, ChangeType ct)
 {
     changeBoard(ins->board, ct);
     changeMove(ins->rootMove, ct); // info,remark的描述无法更改
@@ -1108,23 +1108,23 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //*
             if (__getRecFormat(fromExt) != NOTFMT) {
-                Instance* ins = newInstance();
+                ChessManual* ins = newChessManual();
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                if (readInstance(ins, dir_fileName) == NULL) {
-                    delInstance(ins);
+                if (readChessManual(ins, dir_fileName) == NULL) {
+                    delChessManual(ins);
                     return;
                 }
                 strcat(tofilename, EXTNAMES[tofmt]);
 
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
-                writeInstance(ins, tofilename);
+                writeChessManual(ins, tofilename);
 
                 ++*pfcount;
                 *pmovcount += ins->movCount_;
                 *premcount += ins->remCount_;
                 if (*premlenmax < ins->maxRemLen_)
                     *premlenmax = ins->maxRemLen_;
-                delInstance(ins);
+                delChessManual(ins);
             } else {
                 //strcat(tofilename, fromExt);
                 //copyFile(dir_fileName, tofilename);
@@ -1181,36 +1181,36 @@ void testTransDir(int fromDir, int toDir,
 }
 
 // 测试本翻译单元各种对象、函数
-void testInstance(FILE* fout)
+void testChessManual(FILE* fout)
 {
-    Instance* ins = newInstance();
-    readInstance(ins, "01.xqf");
-    writeInstance(ins, "01.bin"); //*
-    delInstance(ins);
+    ChessManual* ins = newChessManual();
+    readChessManual(ins, "01.xqf");
+    writeChessManual(ins, "01.bin"); //*
+    delChessManual(ins);
 
-    ins = newInstance();
-    readInstance(ins, "01.bin");
-    writeInstance(ins, "01.json");
-    delInstance(ins);
+    ins = newChessManual();
+    readChessManual(ins, "01.bin");
+    writeChessManual(ins, "01.json");
+    delChessManual(ins);
 
-    ins = newInstance();
-    readInstance(ins, "01.json");
-    writeInstance(ins, "01.pgn_iccs");
-    delInstance(ins);
+    ins = newChessManual();
+    readChessManual(ins, "01.json");
+    writeChessManual(ins, "01.pgn_iccs");
+    delChessManual(ins);
 
-    ins = newInstance();
-    readInstance(ins, "01.pgn_iccs");
-    writeInstance(ins, "01.pgn_zh");
-    delInstance(ins);
+    ins = newChessManual();
+    readChessManual(ins, "01.pgn_iccs");
+    writeChessManual(ins, "01.pgn_zh");
+    delChessManual(ins);
 
-    ins = newInstance();
-    readInstance(ins, "01.pgn_zh");
-    writeInstance(ins, "01.pgn_cc");
-    delInstance(ins);
+    ins = newChessManual();
+    readChessManual(ins, "01.pgn_zh");
+    writeChessManual(ins, "01.pgn_cc");
+    delChessManual(ins);
 
-    ins = newInstance();
-    readInstance(ins, "01.pgn_cc");
-    writeInstance(ins, "01.pgn_cc");
+    ins = newChessManual();
+    readChessManual(ins, "01.pgn_cc");
+    writeChessManual(ins, "01.pgn_cc");
     //*/
 
     printf("%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
@@ -1218,12 +1218,12 @@ void testInstance(FILE* fout)
 
     //*
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
-        changeInstance(ins, ct);
+        changeChessManual(ins, ct);
         char fname[32] = { 0 };
         sprintf(fname, "01_%d.pgn_cc", ct);
-        writeInstance(ins, fname);
+        writeChessManual(ins, fname);
     }
     //*/
 
-    delInstance(ins);
+    delChessManual(ins);
 }
