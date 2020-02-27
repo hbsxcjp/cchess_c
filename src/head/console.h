@@ -6,8 +6,7 @@
 //#define WINROWS 50
 //#define WINCOLS 150
 
-
-PConsole newConsole(const wchar_t* fileName);
+PConsole newConsole(const char* fileName);
 
 void delConsole(PConsole con);
 
@@ -22,33 +21,40 @@ wchar_t* getWstr(PMenu menu, wchar_t* wstr);
 SHORT getPosL(PMenu menu);
 PMenu getTopIndexMenu(PMenu rootMenu, int index);
 PMenu getTopMenu(PMenu menu);
-PMenu getSameLevelMenu(PMenu menu, bool isLeft);
+PMenu getSameLevelMenu(PMenu rootMenu, PMenu menu, bool isLeft);
 PMenu getBottomMenu(PMenu menu);
 void initMenu(PConsole con);
+// 生成一个菜单
+PMenu newMenu(PMenuData menuData);
+// 增加一个子菜单项
+PMenu addChildMenu(PMenu preMenu, PMenu childMenu);
+// 增加一个兄弟菜单项
+PMenu addBrotherMenu(PMenu preMenu, PMenu brotherMenu);
 void delMenu(PMenu menu);
 
 bool operateBoard(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea);
 bool operateMove(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea);
 bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea);
 
-void writeAreas(PConsole con, );
+void writeAreas(PConsole con);
 
 void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
 void writeMove(PConsole con);
 void writeStatus(PConsole con);
-void writeAreaLineChars(PConsole con, WORD attr, const wchar_t* lineChars, PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine);
+void writeAreaLineChars(PConsole con, WORD attr, const wchar_t* lineChars, const PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine);
+int getLine(wchar_t* lineChar, const wchar_t* lineChars, int cols, bool cutLine);
 
-void initArea(PConsole con, WORD attr, PSMALL_RECT rc, bool drawFrame);
+void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawFrame);
 
 // 底、右阴影色
-void initAreaShadow(PConsole con, PSMALL_RECT rc);
+void initAreaShadow(PConsole con, const PSMALL_RECT rc);
 
 void cleanAreaWIN(PConsole con);
 void cleanSubMenuArea(PConsole con);
 
-void cleanAreaChar(PConsole con, PSMALL_RECT rc);
-void cleanAreaAttr(PConsole con, WORD attr, PSMALL_RECT rc);
+void cleanAreaChar(PConsole con, const PSMALL_RECT rc);
+void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
 
 void writeCharBuf(PConsole con, PCHAR_INFO charBuf, COORD bufSize, COORD bufCoord, PSMALL_RECT writeRect);
 void setCharBuf(PConsole con, PCHAR_INFO charBuf, COORD charCoord, const wchar_t* wchars, WORD attr);

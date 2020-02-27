@@ -4,7 +4,7 @@ CC = gcc
 #CFLAGS = -Wall -std=c11
 CFLAGS = -Wall -std=c11 -fexec-charset=gbk # -g 
 #LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
-#LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16 lib/pdcurses.a
+LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16 lib/pdcurses.a
 SP = src/
 OP = obj/
 OBJS = $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)chessManual.o $(OP)console.o $(OP)main.o

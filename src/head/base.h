@@ -137,7 +137,7 @@ typedef struct Move_ {
     wchar_t zhStr[6]; // 着法名称
     struct Move_ *pmove, *nmove, *omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
-} Move;
+} Move, *PMove;
 
 // 棋局类型
 typedef struct {
@@ -145,7 +145,7 @@ typedef struct {
     Move *rootMove, *currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
-} ChessManual;
+} ChessManual, *PChessManual;
 
 //=================================================================
 //棋局演示相关的类型
@@ -189,15 +189,17 @@ typedef struct Menu_ {
 typedef struct MenuData_ {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
-} MenuData;
+} MenuData, *PMenuData;
 
 // 演示类型结构
 typedef struct Console_ {
     HANDLE hIn, hOut;
-    Menu *rootMenu, *curMenu;
-    ChessManual* cm;
+    PMenu rootMenu, curMenu;
+    PChessManual cm;
     Thema thema;
     Area curArea;
+    SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
+    SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
     int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
 } Console, *PConsole;
 

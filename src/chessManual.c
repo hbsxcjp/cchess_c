@@ -1023,10 +1023,32 @@ bool hasOther(const ChessManual* cm)
     return cm->currentMove->omove != NULL;
 }
 
-COORD getMoveCoord(const ChessManual* cm)
+COORD getMoveCoord(PMove move)
 {
-    COORD mcoord = { cm->currentMove->CC_ColNo_, cm->currentMove->nextNo_ };
+    COORD mcoord = { move->CC_ColNo_, move->nextNo_ };
     return mcoord;
+}
+
+wchar_t* __getSimpleMoveStr(PMove move, wchar_t* wstr)
+{
+    wchar_t iccs[6];
+    if (move)
+        wsprintfW(wstr, L"%2d->%2d %s %s@%c\n\n",
+            move->fseat, move->tseat, getICCS(iccs, move), move->zhStr,
+            (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
+    return wstr;
+}
+
+wchar_t* getMoveStr(PMove move, wchar_t* wstr)
+{
+    wchar_t preWstr[WCHARSIZE], thisWstr[WCHARSIZE], nextWstr[WCHARSIZE], otherWstr[WCHARSIZE];
+    wsprintfW(wstr, L"前着：%s现在：%s下着：%s变着：%s注解：%s\n next:%2d other:%2d CC_Col:%2d\n",
+        __getSimpleMoveStr(move->pmove, preWstr),
+        __getSimpleMoveStr(move, thisWstr),
+        __getSimpleMoveStr(move->nmove, nextWstr),
+        __getSimpleMoveStr(move->omove, otherWstr),
+        move->remark, move->nextNo_, move->otherNo_, move->CC_ColNo_);
+    return wstr;
 }
 
 void go(ChessManual* cm)
@@ -1053,7 +1075,7 @@ void back(ChessManual* cm)
 
 void backFirst(ChessManual* cm)
 {
-    while (cm != cm->rootMove)
+    while (cm->currentMove != cm->rootMove)
         back(cm);
 }
 

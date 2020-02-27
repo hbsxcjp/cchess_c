@@ -16,7 +16,7 @@ void addInfoItem(ChessManual* cm, const wchar_t* name, const wchar_t* value);
 void setMoveNums(ChessManual* cm, Move* move);
 
 // 从文件读取到chessManual
-ChessManual* readChessManual(ChessManual*, const char* filename);
+ChessManual* readChessManual(ChessManual* cm, const char* filename);
 
 // 将PGN_CC格式的moves信息写入字符串
 void writeMove_PGN_CCtoWstr(ChessManual* cm, wchar_t** plineStr);
@@ -39,8 +39,9 @@ bool hasPre(const ChessManual* cm);
 // 当前着法有无变着
 bool hasOther(const ChessManual* cm);
 
-COORD getMoveCoord(const ChessManual* cm);
+COORD getMoveCoord(PMove move);
 
+wchar_t* getMoveStr(PMove move, wchar_t* wstr);
 
 // 前进一步
 void go(ChessManual* cm);
