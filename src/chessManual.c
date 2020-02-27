@@ -17,38 +17,38 @@ static const char FILETAG[] = "learnchess";
 
 ChessManual* newChessManual(void)
 {
-    ChessManual* ins = malloc(sizeof(ChessManual));
-    memset(ins, 0, sizeof(ChessManual));
-    ins->board = newBoard();
-    ins->rootMove = newMove();
-    ins->currentMove = ins->rootMove;
-    ins->infoCount = ins->movCount_ = ins->remCount_ = ins->maxRemLen_ = ins->maxRow_ = ins->maxCol_ = 0;
-    return ins;
+    ChessManual* cm = malloc(sizeof(ChessManual));
+    memset(cm, 0, sizeof(ChessManual));
+    cm->board = newBoard();
+    cm->rootMove = newMove();
+    cm->currentMove = cm->rootMove;
+    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
+    return cm;
 }
 
-void delChessManual(ChessManual* ins)
+void delChessManual(ChessManual* cm)
 {
-    if (ins == NULL)
+    if (cm == NULL)
         return;
-    ins->currentMove = NULL;
-    for (int i = ins->infoCount - 1; i >= 0; --i)
+    cm->currentMove = NULL;
+    for (int i = cm->infoCount - 1; i >= 0; --i)
         for (int j = 0; j < 2; ++j)
-            free(ins->info[i][j]);
-    delMove(ins->rootMove);
-    free(ins->board);
-    free(ins);
+            free(cm->info[i][j]);
+    delMove(cm->rootMove);
+    free(cm->board);
+    free(cm);
 }
 
-void addInfoItem(ChessManual* ins, const wchar_t* name, const wchar_t* value)
+void addInfoItem(ChessManual* cm, const wchar_t* name, const wchar_t* value)
 {
-    int count = ins->infoCount, nameLen = wcslen(name);
+    int count = cm->infoCount, nameLen = wcslen(name);
     if (count == 32 || nameLen == 0)
         return;
-    ins->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
-    wcscpy(ins->info[count][0], name);
-    ins->info[count][1] = (wchar_t*)calloc(wcslen(value) + 1, sizeof(value[0]));
-    wcscpy(ins->info[count][1], value);
-    ++(ins->infoCount);
+    cm->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
+    wcscpy(cm->info[count][0], name);
+    cm->info[count][1] = (wchar_t*)calloc(wcslen(value) + 1, sizeof(value[0]));
+    wcscpy(cm->info[count][1], value);
+    ++(cm->infoCount);
 }
 
 // 根据文件扩展名取得存储记录类型
@@ -63,29 +63,29 @@ static RecFormat __getRecFormat(const char* ext)
     return NOTFMT;
 }
 
-static wchar_t* getFEN_ins(ChessManual* ins)
+static wchar_t* getFEN_ins(ChessManual* cm)
 {
     wchar_t* FEN = FEN_0;
     bool hasFEN = false;
-    for (int i = 0; i < ins->infoCount; ++i)
-        if (wcscmp(ins->info[i][0], L"FEN") == 0) {
-            FEN = ins->info[i][1];
+    for (int i = 0; i < cm->infoCount; ++i)
+        if (wcscmp(cm->info[i][0], L"FEN") == 0) {
+            FEN = cm->info[i][1];
             hasFEN = true;
             break;
         }
     if (!hasFEN)
-        addInfoItem(ins, L"FEN", FEN_0);
+        addInfoItem(cm, L"FEN", FEN_0);
     return FEN;
 }
 
-inline static void __doMove(ChessManual* ins, Move* move)
+inline static void __doMove(ChessManual* cm, Move* move)
 {
-    move->tpiece = moveTo(ins->board, move->fseat, move->tseat, BLANKPIECE);
+    move->tpiece = moveTo(cm->board, move->fseat, move->tseat, BLANKPIECE);
 }
 
-inline static void __undoMove(ChessManual* ins, Move* move)
+inline static void __undoMove(ChessManual* cm, Move* move)
 {
-    moveTo(ins->board, move->tseat, move->fseat, move->tpiece);
+    moveTo(cm->board, move->tseat, move->fseat, move->tpiece);
 }
 
 // 供readXQF使用的有关解密钥匙
@@ -152,40 +152,40 @@ static void __readMove_XQF(Move* move, FILE* fin)
         __readMove_XQF(addOther(move), fin);
 }
 
-void setMoveNums(ChessManual* ins, Move* move)
+void setMoveNums(ChessManual* cm, Move* move)
 {
-    ++ins->movCount_;
-    if (move->otherNo_ > ins->maxCol_)
-        ins->maxCol_ = move->otherNo_;
-    if (move->nextNo_ > ins->maxRow_)
-        ins->maxRow_ = move->nextNo_;
+    ++cm->movCount_;
+    if (move->otherNo_ > cm->maxCol_)
+        cm->maxCol_ = move->otherNo_;
+    if (move->nextNo_ > cm->maxRow_)
+        cm->maxRow_ = move->nextNo_;
 
-    move->CC_ColNo_ = ins->maxCol_; // # 本着在视图中的列数
+    move->CC_ColNo_ = cm->maxCol_; // # 本着在视图中的列数
     if (move->remark != NULL) {
-        ++ins->remCount_;
+        ++cm->remCount_;
         int maxRemLen_ = wcslen(move->remark);
-        if (maxRemLen_ > ins->maxRemLen_)
-            ins->maxRemLen_ = maxRemLen_;
+        if (maxRemLen_ > cm->maxRemLen_)
+            cm->maxRemLen_ = maxRemLen_;
     }
 
     assert(move->fseat >= 0);
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
 
     // 先深度搜索
-    setZhStr(move, ins->board);
-    __doMove(ins, move);
+    setZhStr(move, cm->board);
+    __doMove(cm, move);
     if (move->nmove != NULL)
-        setMoveNums(ins, move->nmove);
-    __undoMove(ins, move);
+        setMoveNums(cm, move->nmove);
+    __undoMove(cm, move);
 
     // 后广度搜索
     if (move->omove != NULL) {
-        ++ins->maxCol_;
-        setMoveNums(ins, move->omove);
+        ++cm->maxCol_;
+        setMoveNums(cm, move->omove);
     }
 }
 
-static void readXQF(ChessManual* ins, FILE* fin)
+static void readXQF(ChessManual* cm, FILE* fin)
 {
     char xqfData[1024] = { 0 };
     fread(xqfData, sizeof(char), 1024, fin);
@@ -282,7 +282,7 @@ static void readXQF(ChessManual* ins, FILE* fin)
             // 棋盘的左下角为原点(0, 0)，需转换成FEN格式：以左上角为原点(0, 0)
             pieChars[(9 - xy % 10) * 9 + xy / 10] = QiziChars[i];
     }
-    //setBoard(ins->board, pieChars);
+    //setBoard(cm->board, pieChars);
 
     wchar_t tempStr[THOUSAND_SIZE] = { 0 };
     char* values[] = {
@@ -295,20 +295,20 @@ static void readXQF(ChessManual* ins, FILE* fin)
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
         mbstowcs(tempStr, values[i], THOUSAND_SIZE - 1);
-        addInfoItem(ins, names[i], tempStr);
+        addInfoItem(cm, names[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    addInfoItem(ins, L"PlayType", PlayType[(int)(headCodeA_H[0])]); // 编码定义存储
+    addInfoItem(cm, L"PlayType", PlayType[(int)(headCodeA_H[0])]); // 编码定义存储
     getFEN(tempStr, pieChars);
-    addInfoItem(ins, L"FEN", wcscat(tempStr, headWhoPlay ? L" -r" : L" -b")); // 转换FEN存储
+    addInfoItem(cm, L"FEN", wcscat(tempStr, headWhoPlay ? L" -r" : L" -b")); // 转换FEN存储
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    addInfoItem(ins, L"Result", Result[(int)headPlayResult]); // 编码定义存储
+    addInfoItem(cm, L"Result", Result[(int)headPlayResult]); // 编码定义存储
     swprintf(tempStr, THOUSAND_SIZE, L"%d", (int)Version);
-    addInfoItem(ins, L"Version", tempStr); // 整数存储
+    addInfoItem(cm, L"Version", tempStr); // 整数存储
     // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 
     fseek(fin, 1024, SEEK_SET);
-    __readMove_XQF(ins->rootMove, fin);
+    __readMove_XQF(cm->rootMove, fin);
 }
 
 static wchar_t* __readWstring_BIN(FILE* fin)
@@ -345,14 +345,14 @@ static void __readMove_BIN(Move* move, FILE* fin)
         __readMove_BIN(addOther(move), fin);
 }
 
-static void __getFENToSetBoard(ChessManual* ins)
+static void __getFENToSetBoard(ChessManual* cm)
 {
-    wchar_t* FEN = getFEN_ins(ins);
+    wchar_t* FEN = getFEN_ins(cm);
     wchar_t pieChars[SEATNUM + 1] = { 0 };
-    setBoard(ins->board, getPieChars_FEN(pieChars, FEN, wcslen(FEN)));
+    setBoard(cm->board, getPieChars_FEN(pieChars, FEN, wcslen(FEN)));
 }
 
-static void readBIN(ChessManual* ins, FILE* fin)
+static void readBIN(ChessManual* cm, FILE* fin)
 {
     char fileTag[sizeof(FILETAG)];
     fread(&fileTag, sizeof(char), sizeof(FILETAG), fin);
@@ -365,18 +365,18 @@ static void readBIN(ChessManual* ins, FILE* fin)
         for (int i = 0; i < infoCount; ++i) {
             wchar_t* name = __readWstring_BIN(fin);
             wchar_t* value = __readWstring_BIN(fin);
-            addInfoItem(ins, name, value);
+            addInfoItem(cm, name, value);
             free(name);
             free(value);
         }
     }
     /*
-    wchar_t* FEN = getFEN_ins(ins);
+    wchar_t* FEN = getFEN_ins(cm);
     wchar_t pieChars[SEATNUM + 1] = { 0 };
-    setBoard(ins->board, getPieChars_F(pieChars, FEN, wcslen(FEN)));
+    setBoard(cm->board, getPieChars_F(pieChars, FEN, wcslen(FEN)));
     //*/
 
-    __readMove_BIN(ins->rootMove, fin);
+    __readMove_BIN(cm->rootMove, fin);
 }
 
 static void __writeWstring_BIN(const wchar_t* wstr, FILE* fout)
@@ -403,23 +403,23 @@ static void __writeMove_BIN(const Move* move, FILE* fout)
         __writeMove_BIN(move->omove, fout);
 }
 
-static void writeBIN(const ChessManual* ins, FILE* fout)
+static void writeBIN(const ChessManual* cm, FILE* fout)
 {
     fwrite(&FILETAG, sizeof(char), sizeof(FILETAG), fout);
-    char infoCount = ins->infoCount;
+    char infoCount = cm->infoCount;
     char tag = ((infoCount > 0 ? 0x10 : 0x00)
-        | (ins->rootMove->remark != NULL ? 0x20 : 0x00)
-        | (ins->rootMove->nmove != NULL ? 0x80 : 0x00));
+        | (cm->rootMove->remark != NULL ? 0x20 : 0x00)
+        | (cm->rootMove->nmove != NULL ? 0x80 : 0x00));
     fwrite(&tag, sizeof(char), 1, fout);
     if (tag & 0x10) {
         fwrite(&infoCount, sizeof(char), 1, fout);
         for (int i = 0; i < infoCount; ++i) {
-            __writeWstring_BIN(ins->info[i][0], fout);
-            __writeWstring_BIN(ins->info[i][1], fout);
+            __writeWstring_BIN(cm->info[i][0], fout);
+            __writeWstring_BIN(cm->info[i][1], fout);
         }
     }
 
-    __writeMove_BIN(ins->rootMove, fout);
+    __writeMove_BIN(cm->rootMove, fout);
 }
 
 static void __readMove_JSON(const cJSON* moveJSON, Move* move)
@@ -443,7 +443,7 @@ static void __readMove_JSON(const cJSON* moveJSON, Move* move)
         __readMove_JSON(omoveJSON, addOther(move));
 }
 
-static void readJSON(ChessManual* ins, FILE* fin)
+static void readJSON(ChessManual* cm, FILE* fin)
 {
     fseek(fin, 0L, SEEK_END); // 定位到文件末尾
     long last = ftell(fin);
@@ -461,12 +461,12 @@ static void readJSON(ChessManual* ins, FILE* fin)
         for (int j = 0; j < 2; ++j)
             mbstowcs(nameValue[j],
                 cJSON_GetStringValue(cJSON_GetArrayItem(keyValueJSON, j)), THOUSAND_SIZE - 1);
-        addInfoItem(ins, nameValue[0], nameValue[1]);
+        addInfoItem(cm, nameValue[0], nameValue[1]);
     }
 
     cJSON* rootMoveJSON = cJSON_GetObjectItem(insJSON, "rootmove");
     if (rootMoveJSON != NULL)
-        __readMove_JSON(rootMoveJSON, ins->rootMove);
+        __readMove_JSON(rootMoveJSON, cm->rootMove);
     cJSON_Delete(insJSON);
 }
 
@@ -493,23 +493,23 @@ static void __writeMove_JSON(cJSON* moveJSON, const Move* move)
     }
 }
 
-static void writeJSON(const ChessManual* ins, FILE* fout)
+static void writeJSON(const ChessManual* cm, FILE* fout)
 {
     cJSON *insJSON = cJSON_CreateObject(),
           *infoJSON = cJSON_CreateArray(),
           *rootmoveJSON = cJSON_CreateObject();
-    for (int i = 0; i < ins->infoCount; ++i) {
-        int nameLen = wcslen(ins->info[i][0]) + 1,
-            valueLen = wcslen(ins->info[i][1]) + 1;
+    for (int i = 0; i < cm->infoCount; ++i) {
+        int nameLen = wcslen(cm->info[i][0]) + 1,
+            valueLen = wcslen(cm->info[i][1]) + 1;
         char name[nameLen], value[valueLen];
-        wcstombs(name, ins->info[i][0], nameLen);
-        wcstombs(value, ins->info[i][1], valueLen);
+        wcstombs(name, cm->info[i][0], nameLen);
+        wcstombs(value, cm->info[i][1], valueLen);
         cJSON_AddItemToArray(infoJSON,
             cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(insJSON, "info", infoJSON);
 
-    __writeMove_JSON(rootmoveJSON, ins->rootMove);
+    __writeMove_JSON(rootmoveJSON, cm->rootMove);
     cJSON_AddItemToObject(insJSON, "rootmove", rootmoveJSON);
 
     char* insJSONString = cJSON_Print(insJSON);
@@ -517,7 +517,7 @@ static void writeJSON(const ChessManual* ins, FILE* fout)
     cJSON_Delete(insJSON);
 }
 
-static void readInfo_PGN(ChessManual* ins, FILE* fin)
+static void readInfo_PGN(ChessManual* cm, FILE* fin)
 {
     const char* error;
     int erroffset = 0, infoCount = 0, OVECCOUNT = 10, ovector[OVECCOUNT];
@@ -533,7 +533,7 @@ static void readInfo_PGN(ChessManual* ins, FILE* fin)
         wchar_t name[THOUSAND_SIZE] = { 0 }, value[THOUSAND_SIZE] = { 0 };
         wcsncpy(name, lineStr + ovector[2], ovector[3] - ovector[2]);
         wcsncpy(value, lineStr + ovector[4], ovector[5] - ovector[4]);
-        addInfoItem(ins, name, value);
+        addInfoItem(cm, name, value);
     }
     pcre16_free(infoReg);
 }
@@ -545,7 +545,7 @@ extern const wchar_t* PieceNames[PIECECOLORNUM];
 extern const wchar_t ICCSCOLCHAR[BOARDCOL + 1];
 extern const wchar_t ICCSROWCHAR[BOARDROW + 1];
 
-static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
+static void readMove_PGN_ICCSZH(ChessManual* cm, FILE* fin, RecFormat fmt)
 {
     bool isPGN_ZH = fmt == PGN_ZH;
     wchar_t ICCSZHStr[THOUSAND_SIZE] = { 0 };
@@ -594,11 +594,11 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
         wchar_t remarkStr[len + 1];
         wcsncpy(remarkStr, moveStr + ovector[2], len);
         remarkStr[len] = L'\x0';
-        setRemark(ins->rootMove, remarkStr);
+        setRemark(cm->rootMove, remarkStr);
     }
 
     Move *move = NULL,
-         *preMove = ins->rootMove,
+         *preMove = cm->rootMove,
          *preOtherMoves[THOUSAND_SIZE] = { NULL };
     int preOthIndex = 0, length = 0;
     wchar_t* pmoveStr = moveStr;
@@ -613,7 +613,7 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
             move = addOther(preMove);
             preOtherMoves[preOthIndex++] = preMove;
             if (isPGN_ZH)
-                __undoMove(ins, preMove);
+                __undoMove(cm, preMove);
         } else
             move = addNext(preMove);
 
@@ -623,7 +623,7 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
         wchar_t iccs_zhStr[6] = { 0 };
         wcsncpy(iccs_zhStr, pmoveStr + ovector[4], num);
         if (isPGN_ZH)
-            setMove_zh(move, ins->board, iccs_zhStr);
+            setMove_zh(move, cm->board, iccs_zhStr);
         else
             setMove_iccs(move, iccs_zhStr);
 
@@ -636,7 +636,7 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
             setRemark(move, remarkStr);
         }
         if (isPGN_ZH)
-            __doMove(ins, move);
+            __doMove(cm, move);
 
         // 第4个子匹配成功，有")+"
         num = ovector[9] - ovector[8];
@@ -645,18 +645,18 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
                 preMove = preOtherMoves[--preOthIndex];
                 if (isPGN_ZH) {
                     do {
-                        __undoMove(ins, move);
+                        __undoMove(cm, move);
                         move = move->pmove;
                     } while (!isSameMove(move, preMove));
-                    __doMove(ins, preMove);
+                    __doMove(cm, preMove);
                 }
             }
         } else
             preMove = move;
     }
     if (isPGN_ZH)
-        while (!isSameMove(move, ins->rootMove)) {
-            __undoMove(ins, move);
+        while (!isSameMove(move, cm->rootMove)) {
+            __undoMove(cm, move);
             move = move->pmove;
         }
     free(moveStr);
@@ -664,7 +664,7 @@ static void readMove_PGN_ICCSZH(ChessManual* ins, FILE* fin, RecFormat fmt)
     pcre16_free(moveReg);
 }
 
-static void __writeMove_PGN_ICCSZH(ChessManual* ins, FILE* fout, Move* move,
+static void __writeMove_PGN_ICCSZH(ChessManual* cm, FILE* fout, Move* move,
     bool isPGN_ZH, bool isOther)
 {
     wchar_t boutStr[6] = { 0 }, iccs_zhStr[6] = { 0 };
@@ -686,24 +686,24 @@ static void __writeMove_PGN_ICCSZH(ChessManual* ins, FILE* fout, Move* move,
         fwprintf(fout, L" \n{%s}\n ", move->remark);
 
     if (move->omove != NULL) {
-        __writeMove_PGN_ICCSZH(ins, fout, move->omove, isPGN_ZH, true);
+        __writeMove_PGN_ICCSZH(cm, fout, move->omove, isPGN_ZH, true);
         fwprintf(fout, L")");
     }
 
     if (isPGN_ZH)
-        __doMove(ins, move); // 执行本着
+        __doMove(cm, move); // 执行本着
     if (move->nmove != NULL)
-        __writeMove_PGN_ICCSZH(ins, fout, move->nmove, isPGN_ZH, false);
+        __writeMove_PGN_ICCSZH(cm, fout, move->nmove, isPGN_ZH, false);
     if (isPGN_ZH)
-        __undoMove(ins, move); // 退回本着
+        __undoMove(cm, move); // 退回本着
 }
 
-static void writeMove_PGN_ICCSZH(ChessManual* ins, FILE* fout, RecFormat fmt)
+static void writeMove_PGN_ICCSZH(ChessManual* cm, FILE* fout, RecFormat fmt)
 {
-    if (ins->rootMove->remark != NULL)
-        fwprintf(fout, L" \n{%s}\n ", ins->rootMove->remark);
-    if (ins->rootMove->nmove != NULL)
-        __writeMove_PGN_ICCSZH(ins, fout, ins->rootMove->nmove, fmt == PGN_ZH, false);
+    if (cm->rootMove->remark != NULL)
+        fwprintf(fout, L" \n{%s}\n ", cm->rootMove->remark);
+    if (cm->rootMove->nmove != NULL)
+        __writeMove_PGN_ICCSZH(cm, fout, cm->rootMove->nmove, fmt == PGN_ZH, false);
     fwprintf(fout, L"\n");
 }
 
@@ -720,7 +720,7 @@ static void __setRemark_PGN_CC(Move* move, int row, int col,
         }
 }
 
-static void __setMove_PGN_CC(ChessManual* ins, Move* move, pcre16* moveReg,
+static void __setMove_PGN_CC(ChessManual* cm, Move* move, pcre16* moveReg,
     wchar_t* moveLines[], int rowNum, int colNum, int row, int col,
     wchar_t* remLines[], int remCount)
 {
@@ -734,23 +734,23 @@ static void __setMove_PGN_CC(ChessManual* ins, Move* move, pcre16* moveReg,
 
     wchar_t lastwc = moveStr[4];
     moveStr[4] = L'\x0';
-    setMove_zh(move, ins->board, moveStr);
+    setMove_zh(move, cm->board, moveStr);
     __setRemark_PGN_CC(move, row, col, remLines, remCount);
 
     if (lastwc == L'…')
-        __setMove_PGN_CC(ins, addOther(move), moveReg,
+        __setMove_PGN_CC(cm, addOther(move), moveReg,
             moveLines, rowNum, colNum, row, col + 1, remLines, remCount);
 
     if (move->nextNo_ < rowNum - 1
         && moveLines[(row + 1) * colNum + col][0] != L'　') {
-        __doMove(ins, move);
-        __setMove_PGN_CC(ins, addNext(move), moveReg,
+        __doMove(cm, move);
+        __setMove_PGN_CC(cm, addNext(move), moveReg,
             moveLines, rowNum, colNum, row + 1, col, remLines, remCount);
-        __undoMove(ins, move);
+        __undoMove(cm, move);
     }
 }
 
-static void readMove_PGN_CC(ChessManual* ins, FILE* fin)
+static void readMove_PGN_CC(ChessManual* cm, FILE* fin)
 {
     const wchar_t movePat[] = L"([^…　]{4}[…　])",
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
@@ -802,9 +802,9 @@ static void readMove_PGN_CC(ChessManual* ins, FILE* fin)
         remStr += ovector[1];
     }
 
-    __setRemark_PGN_CC(ins->rootMove, 0, 0, remLines, remCount);
+    __setRemark_PGN_CC(cm->rootMove, 0, 0, remLines, remCount);
     if (rowNum > 0)
-        __setMove_PGN_CC(ins, addNext(ins->rootMove), moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount);
+        __setMove_PGN_CC(cm, addNext(cm->rootMove), moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount);
 
     if (allremarksStr)
         free(allremarksStr);
@@ -818,7 +818,7 @@ static void readMove_PGN_CC(ChessManual* ins, FILE* fin)
     pcre16_free(moveReg);
 }
 
-static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, ChessManual* ins, Move* move)
+static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, ChessManual* cm, Move* move)
 {
     int row = move->nextNo_ * 2, firstCol = move->CC_ColNo_ * 5;
     wcsncpy(&lineStr[row * colNum + firstCol], move->zhStr, 4);
@@ -826,21 +826,21 @@ static void __writeMove_PGN_CC(wchar_t* lineStr, int colNum, ChessManual* ins, M
     if (move->omove != NULL) {
         int fcol = firstCol + 4, tnum = move->omove->CC_ColNo_ * 5 - fcol;
         wmemset(&lineStr[row * colNum + fcol], L'…', tnum);
-        __writeMove_PGN_CC(lineStr, colNum, ins, move->omove);
+        __writeMove_PGN_CC(lineStr, colNum, cm, move->omove);
     }
 
     if (move->nmove != NULL) {
         lineStr[(row + 1) * colNum + firstCol + 2] = L'↓';
-        __doMove(ins, move);
-        __writeMove_PGN_CC(lineStr, colNum, ins, move->nmove);
-        __undoMove(ins, move);
+        __doMove(cm, move);
+        __writeMove_PGN_CC(lineStr, colNum, cm, move->nmove);
+        __undoMove(cm, move);
     }
 }
 
-void writeMove_PGN_CCtoWstr(ChessManual* ins, wchar_t** plineStr)
+void writeMove_PGN_CCtoWstr(ChessManual* cm, wchar_t** plineStr)
 {
-    int rowNum = (ins->maxRow_ + 1) * 2,
-        colNum = (ins->maxCol_ + 1) * 5 + 1;
+    int rowNum = (cm->maxRow_ + 1) * 2,
+        colNum = (cm->maxCol_ + 1) * 5 + 1;
     wchar_t* lineStr = malloc(rowNum * colNum * sizeof(wchar_t) + 1);
     wmemset(lineStr, L'　', rowNum * colNum);
     for (int row = 0; row < rowNum; ++row)
@@ -849,9 +849,9 @@ void writeMove_PGN_CCtoWstr(ChessManual* ins, wchar_t** plineStr)
     lineStr[2] = L'始';
     lineStr[colNum + 2] = L'↓';
     lineStr[rowNum * colNum] = L'\x0';
-    
-    if (ins->rootMove->nmove != NULL)
-        __writeMove_PGN_CC(lineStr, colNum, ins, ins->rootMove->nmove);
+
+    if (cm->rootMove->nmove != NULL)
+        __writeMove_PGN_CC(lineStr, colNum, cm, cm->rootMove->nmove);
 
     *plineStr = lineStr;
 }
@@ -880,26 +880,26 @@ static void __writeRemark_PGN_CC(wchar_t* remarkStr, long* premSize, Move* move)
         __writeRemark_PGN_CC(remarkStr, premSize, move->nmove);
 }
 
-void writeRemark_PGN_CCtoWstr(ChessManual* ins, wchar_t** premarkStr)
+void writeRemark_PGN_CCtoWstr(ChessManual* cm, wchar_t** premarkStr)
 {
     long remSize = HUNDRED_THOUSAND_SIZE;
     wchar_t* remarkStr = calloc(remSize, sizeof(wchar_t));
-    __writeRemark_PGN_CC(remarkStr, &remSize, ins->rootMove);
+    __writeRemark_PGN_CC(remarkStr, &remSize, cm->rootMove);
     *premarkStr = remarkStr;
 }
 
-static void writeMove_PGN_CC(ChessManual* ins, FILE* fout)
+static void writeMove_PGN_CC(ChessManual* cm, FILE* fout)
 {
     wchar_t *lineStr = NULL, *remarkStr = NULL;
-    writeMove_PGN_CCtoWstr(ins, &lineStr);
-    writeRemark_PGN_CCtoWstr(ins, &remarkStr);
+    writeMove_PGN_CCtoWstr(cm, &lineStr);
+    writeRemark_PGN_CCtoWstr(cm, &remarkStr);
 
     fwprintf(fout, L"%s\n%s", lineStr, remarkStr);
     free(remarkStr);
     free(lineStr);
 }
 
-ChessManual* readChessManual(ChessManual* ins, const char* filename)
+ChessManual* readChessManual(ChessManual* cm, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     if (fmt == NOTFMT) {
@@ -912,35 +912,35 @@ ChessManual* readChessManual(ChessManual* ins, const char* filename)
         return NULL;
     switch (fmt) {
     case XQF:
-        readXQF(ins, fin);
+        readXQF(cm, fin);
         /*
-        if (ins->rootMove->remark != NULL) {
+        if (cm->rootMove->remark != NULL) {
             wchar_t wfname[FILENAME_MAX];
             mbstowcs(wfname, filename, FILENAME_MAX);
             wprintf(L"%3d filename: %s\nrootMove_remark: %s\n",
-                __LINE__, wfname, ins->rootMove->remark);
+                __LINE__, wfname, cm->rootMove->remark);
         }
         //*/
         break;
     case BIN:
-        readBIN(ins, fin);
+        readBIN(cm, fin);
         break;
     case JSON:
-        readJSON(ins, fin);
+        readJSON(cm, fin);
         break;
     default:
-        readInfo_PGN(ins, fin);
+        readInfo_PGN(cm, fin);
         // PGN_ZH, PGN_CC在读取move之前需要先设置board
-        __getFENToSetBoard(ins);
+        __getFENToSetBoard(cm);
         switch (fmt) {
         case PGN_ICCS:
-            readMove_PGN_ICCSZH(ins, fin, PGN_ICCS);
+            readMove_PGN_ICCSZH(cm, fin, PGN_ICCS);
             break;
         case PGN_ZH:
-            readMove_PGN_ICCSZH(ins, fin, PGN_ZH);
+            readMove_PGN_ICCSZH(cm, fin, PGN_ZH);
             break;
         case PGN_CC:
-            readMove_PGN_CC(ins, fin);
+            readMove_PGN_CC(cm, fin);
             break;
         default:
             break;
@@ -948,15 +948,15 @@ ChessManual* readChessManual(ChessManual* ins, const char* filename)
         break;
     }
     if (fmt == XQF || fmt == BIN || fmt == JSON)
-        __getFENToSetBoard(ins);
+        __getFENToSetBoard(cm);
 
-    if (ins->rootMove->nmove != NULL)
-        setMoveNums(ins, ins->rootMove->nmove); // 驱动函数
+    if (cm->rootMove->nmove != NULL)
+        setMoveNums(cm, cm->rootMove->nmove); // 驱动函数
     fclose(fin);
-    return ins;
+    return cm;
 }
 
-void writeChessManual(ChessManual* ins, const char* filename)
+void writeChessManual(ChessManual* cm, const char* filename)
 {
     RecFormat fmt = __getRecFormat(getExt(filename));
     if (fmt == NOTFMT) {
@@ -972,98 +972,116 @@ void writeChessManual(ChessManual* ins, const char* filename)
         wprintf(L"未实现的写入文件扩展名！");
         break;
     case BIN:
-        writeBIN(ins, fout);
+        writeBIN(cm, fout);
         break;
     case JSON:
-        writeJSON(ins, fout);
+        writeJSON(cm, fout);
         break;
     default:
-        for (int i = 0; i < ins->infoCount; ++i)
-            fwprintf(fout, L"[%s \"%s\"]\n", ins->info[i][0], ins->info[i][1]);
+        for (int i = 0; i < cm->infoCount; ++i)
+            fwprintf(fout, L"[%s \"%s\"]\n", cm->info[i][0], cm->info[i][1]);
         fwprintf(fout, L"\n");
         switch (fmt) {
         case PGN_ICCS:
         case PGN_ZH:
-            writeMove_PGN_ICCSZH(ins, fout, fmt);
+            writeMove_PGN_ICCSZH(cm, fout, fmt);
             break;
         case PGN_CC:
-            writeMove_PGN_CC(ins, fout);
+            writeMove_PGN_CC(cm, fout);
             break;
         default:
             break;
         }
         //*
         wchar_t tempStr[HUNDRED_THOUSAND_SIZE] = { 0 };
-        fwprintf(fout, L"\n%s", getBoardString(tempStr, ins->board));
+        fwprintf(fout, L"\n%s", getBoardString(tempStr, cm->board));
         fwprintf(fout, L"MoveInfo: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n\n",
-            ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
+            cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
         //*/
         break;
     }
     fclose(fout);
 }
 
-bool isStart(const ChessManual* ins)
+bool isStart(const ChessManual* cm)
 {
-    return ins->currentMove == ins->rootMove;
+    return cm->currentMove == cm->rootMove;
 }
 
-bool hasNext(const ChessManual* ins)
+bool hasNext(const ChessManual* cm)
 {
-    return ins->currentMove->nmove != NULL;
+    return cm->currentMove->nmove != NULL;
 }
 
-bool hasPre(const ChessManual* ins)
+bool hasPre(const ChessManual* cm)
 {
-    return ins->currentMove->pmove != NULL;
+    return cm->currentMove->pmove != NULL;
 }
 
-bool hasOther(const ChessManual* ins)
+bool hasOther(const ChessManual* cm)
 {
-    return ins->currentMove->omove != NULL;
+    return cm->currentMove->omove != NULL;
 }
 
-void go(ChessManual* ins)
+COORD getMoveCoord(const ChessManual* cm)
 {
-    if (hasNext(ins)) {
-        ins->currentMove = ins->currentMove->nmove;
-        __doMove(ins, ins->currentMove);
+    COORD mcoord = { cm->currentMove->CC_ColNo_, cm->currentMove->nextNo_ };
+    return mcoord;
+}
+
+void go(ChessManual* cm)
+{
+    if (hasNext(cm)) {
+        cm->currentMove = cm->currentMove->nmove;
+        __doMove(cm, cm->currentMove);
     }
 }
 
-void back(ChessManual* ins)
+void goEnd(ChessManual* cm)
 {
-    if (hasPre(ins)) {
-        __undoMove(ins, ins->currentMove);
-        ins->currentMove = ins->currentMove->pmove;
+    while (hasNext(cm))
+        go(cm);
+}
+
+void back(ChessManual* cm)
+{
+    if (hasPre(cm)) {
+        __undoMove(cm, cm->currentMove);
+        cm->currentMove = cm->currentMove->pmove;
     }
 }
 
-void backTo(ChessManual* ins, Move* move)
+void backFirst(ChessManual* cm)
 {
-    while (hasPre(ins) && !isSameMove(ins->currentMove, move))
-        back(ins);
+    while (cm != cm->rootMove)
+        back(cm);
 }
 
-void goOther(ChessManual* ins)
+void backTo(ChessManual* cm, Move* move)
 {
-    if (hasOther(ins)) {
-        __undoMove(ins, ins->currentMove);
-        ins->currentMove = ins->currentMove->omove;
-        __doMove(ins, ins->currentMove);
+    while (hasPre(cm) && !isSameMove(cm->currentMove, move))
+        back(cm);
+}
+
+void goOther(ChessManual* cm)
+{
+    if (hasOther(cm)) {
+        __undoMove(cm, cm->currentMove);
+        cm->currentMove = cm->currentMove->omove;
+        __doMove(cm, cm->currentMove);
     }
 }
 
-void goInc(ChessManual* ins, int inc)
+void goInc(ChessManual* cm, int inc)
 {
     for (int i = abs(inc); i != 0; --i)
-        (inc > 0) ? go(ins) : back(ins);
+        (inc > 0) ? go(cm) : back(cm);
 }
 
-void changeChessManual(ChessManual* ins, ChangeType ct)
+void changeChessManual(ChessManual* cm, ChangeType ct)
 {
-    changeBoard(ins->board, ct);
-    changeMove(ins->rootMove, ct); // info,remark的描述无法更改
+    changeBoard(cm->board, ct);
+    changeMove(cm->rootMove, ct); // info,remark的描述无法更改
 }
 
 static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
@@ -1108,23 +1126,23 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //*
             if (__getRecFormat(fromExt) != NOTFMT) {
-                ChessManual* ins = newChessManual();
+                ChessManual* cm = newChessManual();
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                if (readChessManual(ins, dir_fileName) == NULL) {
-                    delChessManual(ins);
+                if (readChessManual(cm, dir_fileName) == NULL) {
+                    delChessManual(cm);
                     return;
                 }
                 strcat(tofilename, EXTNAMES[tofmt]);
 
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
-                writeChessManual(ins, tofilename);
+                writeChessManual(cm, tofilename);
 
                 ++*pfcount;
-                *pmovcount += ins->movCount_;
-                *premcount += ins->remCount_;
-                if (*premlenmax < ins->maxRemLen_)
-                    *premlenmax = ins->maxRemLen_;
-                delChessManual(ins);
+                *pmovcount += cm->movCount_;
+                *premcount += cm->remCount_;
+                if (*premlenmax < cm->maxRemLen_)
+                    *premlenmax = cm->maxRemLen_;
+                delChessManual(cm);
             } else {
                 //strcat(tofilename, fromExt);
                 //copyFile(dir_fileName, tofilename);
@@ -1183,47 +1201,47 @@ void testTransDir(int fromDir, int toDir,
 // 测试本翻译单元各种对象、函数
 void testChessManual(FILE* fout)
 {
-    ChessManual* ins = newChessManual();
-    readChessManual(ins, "01.xqf");
-    writeChessManual(ins, "01.bin"); //*
-    delChessManual(ins);
+    ChessManual* cm = newChessManual();
+    readChessManual(cm, "01.xqf");
+    writeChessManual(cm, "01.bin"); //*
+    delChessManual(cm);
 
-    ins = newChessManual();
-    readChessManual(ins, "01.bin");
-    writeChessManual(ins, "01.json");
-    delChessManual(ins);
+    cm = newChessManual();
+    readChessManual(cm, "01.bin");
+    writeChessManual(cm, "01.json");
+    delChessManual(cm);
 
-    ins = newChessManual();
-    readChessManual(ins, "01.json");
-    writeChessManual(ins, "01.pgn_iccs");
-    delChessManual(ins);
+    cm = newChessManual();
+    readChessManual(cm, "01.json");
+    writeChessManual(cm, "01.pgn_iccs");
+    delChessManual(cm);
 
-    ins = newChessManual();
-    readChessManual(ins, "01.pgn_iccs");
-    writeChessManual(ins, "01.pgn_zh");
-    delChessManual(ins);
+    cm = newChessManual();
+    readChessManual(cm, "01.pgn_iccs");
+    writeChessManual(cm, "01.pgn_zh");
+    delChessManual(cm);
 
-    ins = newChessManual();
-    readChessManual(ins, "01.pgn_zh");
-    writeChessManual(ins, "01.pgn_cc");
-    delChessManual(ins);
+    cm = newChessManual();
+    readChessManual(cm, "01.pgn_zh");
+    writeChessManual(cm, "01.pgn_cc");
+    delChessManual(cm);
 
-    ins = newChessManual();
-    readChessManual(ins, "01.pgn_cc");
-    writeChessManual(ins, "01.pgn_cc");
+    cm = newChessManual();
+    readChessManual(cm, "01.pgn_cc");
+    writeChessManual(cm, "01.pgn_cc");
     //*/
 
     printf("%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
-        __func__, ins->movCount_, ins->remCount_, ins->maxRemLen_, ins->maxRow_, ins->maxCol_);
+        __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 
     //*
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
-        changeChessManual(ins, ct);
+        changeChessManual(cm, ct);
         char fname[32] = { 0 };
         sprintf(fname, "01_%d.pgn_cc", ct);
-        writeChessManual(ins, fname);
+        writeChessManual(cm, fname);
     }
     //*/
 
-    delChessManual(ins);
+    delChessManual(cm);
 }

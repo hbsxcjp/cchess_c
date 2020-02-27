@@ -3,6 +3,10 @@
 
 #include "base.h"
 
+//#define WINROWS 50
+//#define WINCOLS 150
+
+
 PConsole newConsole(const wchar_t* fileName);
 
 void delConsole(PConsole con);

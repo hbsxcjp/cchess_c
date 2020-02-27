@@ -7,55 +7,60 @@
 ChessManual* newChessManual(void);
 
 // 删除chessManual
-void delChessManual(ChessManual* ins);
+void delChessManual(ChessManual* cm);
 
 // 添加一个info条目
-void addInfoItem(ChessManual* ins, const wchar_t* name, const wchar_t* value);
+void addInfoItem(ChessManual* cm, const wchar_t* name, const wchar_t* value);
 
 // 增删改move后，更新ins、move的行列数值
-void setMoveNums(ChessManual* ins, Move* move);
+void setMoveNums(ChessManual* cm, Move* move);
 
 // 从文件读取到chessManual
 ChessManual* readChessManual(ChessManual*, const char* filename);
 
-// 将PGN_CC格式ins的moves信息写入字符串
-void writeMove_PGN_CCtoWstr(ChessManual* ins, wchar_t** plineStr);
+// 将PGN_CC格式的moves信息写入字符串
+void writeMove_PGN_CCtoWstr(ChessManual* cm, wchar_t** plineStr);
 
-// 将PGN_CC格式ins的remark信息写入字符串
-void writeRemark_PGN_CCtoWstr(ChessManual* ins, wchar_t** premarkStr);
+// 将PGN_CC格式的remark信息写入字符串
+void writeRemark_PGN_CCtoWstr(ChessManual* cm, wchar_t** premarkStr);
 
 // 从chessManual存储到文件
-void writeChessManual(ChessManual* ins, const char* filename);
+void writeChessManual(ChessManual* cm, const char* filename);
 
 // 是否开始
-bool isStart(const ChessManual* ins);
+bool isStart(const ChessManual* cm);
 
 // 当前着法有无后着
-bool hasNext(const ChessManual* ins);
+bool hasNext(const ChessManual* cm);
 
 // 当前着法有无前着
-bool hasPre(const ChessManual* ins);
+bool hasPre(const ChessManual* cm);
 
 // 当前着法有无变着
-bool hasOther(const ChessManual* ins);
+bool hasOther(const ChessManual* cm);
+
+COORD getMoveCoord(const ChessManual* cm);
+
 
 // 前进一步
-void go(ChessManual* ins);
+void go(ChessManual* cm);
+void goEnd(ChessManual* cm);
 
 // 后退一步
-void back(ChessManual* ins);
+void back(ChessManual* cm);
+void backFirst(ChessManual* cm);
 
 // 后退至指定move
-void backTo(ChessManual* ins, Move* move);
+void backTo(ChessManual* cm, Move* move);
 
 // 前进到变着
-void goOther(ChessManual* ins);
+void goOther(ChessManual* cm);
 
 // 前进数步
-void goInc(ChessManual* ins, int inc);
+void goInc(ChessManual* cm, int inc);
 
 // 转变棋局实例
-void changeChessManual(ChessManual* ins, ChangeType ct);
+void changeChessManual(ChessManual* cm, ChangeType ct);
 
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);
