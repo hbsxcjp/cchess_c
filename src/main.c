@@ -1,9 +1,9 @@
 #include "head/board.h"
-#include "head/console.h"
 #include "head/chessManual.h"
-#include "head/move.h"
-#include "head/piece.h"
-#include "head/tools.h"
+#include "head/console.h"
+//#include "head/move.h"
+//#include "head/piece.h"
+//#include "head/tools.h"
 #include <time.h>
 
 int main(int argc, char const* argv[])
@@ -34,7 +34,7 @@ int main(int argc, char const* argv[])
     //testConview();
 
     PConsole pconsole = newConsole("01.xqf");
-    free(pconsole);
+    delConsole(pconsole);
 
     //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
     //wchar_t* dir = L"C:\\棋谱\\象棋杀着大全.xqf";

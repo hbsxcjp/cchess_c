@@ -843,8 +843,11 @@ void writeMove_PGN_CCtoWstr(ChessManual* cm, wchar_t** plineStr)
         colNum = (cm->maxCol_ + 1) * 5 + 1;
     wchar_t* lineStr = malloc(rowNum * colNum * sizeof(wchar_t) + 1);
     wmemset(lineStr, L'　', rowNum * colNum);
-    for (int row = 0; row < rowNum; ++row)
+    for (int row = 0; row < rowNum; ++row) {
         lineStr[(row + 1) * colNum - 1] = L'\n';
+        if (row % 2 == 1)
+            lineStr[row * colNum] = L' '; // 为显示美观, 改为半角空格
+    }
     lineStr[1] = L'开';
     lineStr[2] = L'始';
     lineStr[colNum + 2] = L'↓';
@@ -1029,24 +1032,24 @@ COORD getMoveCoord(PMove move)
     return mcoord;
 }
 
-wchar_t* __getSimpleMoveStr(PMove move, wchar_t* wstr)
+wchar_t* __getSimpleMoveStr(wchar_t* wstr, PMove move)
 {
     wchar_t iccs[6];
     if (move)
-        wsprintfW(wstr, L"%2d->%2d %s %s@%c\n\n",
+        wsprintfW(wstr, L"%2x->%2x %s %s@%c",
             move->fseat, move->tseat, getICCS(iccs, move), move->zhStr,
             (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
     return wstr;
 }
 
-wchar_t* getMoveStr(PMove move, wchar_t* wstr)
+wchar_t* getMoveStr(wchar_t* wstr, PMove move)
 {
-    wchar_t preWstr[WCHARSIZE], thisWstr[WCHARSIZE], nextWstr[WCHARSIZE], otherWstr[WCHARSIZE];
-    wsprintfW(wstr, L"前着：%s现在：%s下着：%s变着：%s注解：%s\n next:%2d other:%2d CC_Col:%2d\n",
-        __getSimpleMoveStr(move->pmove, preWstr),
-        __getSimpleMoveStr(move, thisWstr),
-        __getSimpleMoveStr(move->nmove, nextWstr),
-        __getSimpleMoveStr(move->omove, otherWstr),
+    wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
+    wsprintfW(wstr, L"前着：%s\n\n现在：%s\n\n下着：%s\n\n变着：%s\n\n注解：%s\n next:%2d other:%2d CC_Col:%2d\n",
+        __getSimpleMoveStr(preWstr, move->pmove),
+        __getSimpleMoveStr(thisWstr, move),
+        __getSimpleMoveStr(nextWstr, move->nmove),
+        __getSimpleMoveStr(otherWstr, move->omove),
         move->remark, move->nextNo_, move->otherNo_, move->CC_ColNo_);
     return wstr;
 }

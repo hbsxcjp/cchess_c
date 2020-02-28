@@ -41,7 +41,7 @@ bool hasOther(const ChessManual* cm);
 
 COORD getMoveCoord(PMove move);
 
-wchar_t* getMoveStr(PMove move, wchar_t* wstr);
+wchar_t* getMoveStr(wchar_t* wstr, PMove move);
 
 // 前进一步
 void go(ChessManual* cm);

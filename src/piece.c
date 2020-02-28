@@ -11,9 +11,11 @@ wchar_t getChar(Piece piece)
 
 Piece getPiece_ch(wchar_t ch)
 {
-    PieceColor color = (bool)islower(ch);
+    PieceColor color = getColor_ch(ch);
     return (ch == BLANKCHAR) ? BLANKPIECE : ((color << 4) | (wcschr(PieceChars[color], ch) - PieceChars[color]));
 }
+
+PieceColor getColor_ch(wchar_t ch) { return (bool)islower(ch); }
 
 wchar_t getPieName(Piece piece)
 {

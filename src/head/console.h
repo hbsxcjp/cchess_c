@@ -17,7 +17,7 @@ void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker, Area oldArea);
 
 bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea);
 int getMaxSize(PMenu menu);
-wchar_t* getWstr(PMenu menu, wchar_t* wstr);
+wchar_t* getWstr(wchar_t* wstr, PMenu menu);
 SHORT getPosL(PMenu menu);
 PMenu getTopIndexMenu(PMenu rootMenu, int index);
 PMenu getTopMenu(PMenu menu);
@@ -42,8 +42,8 @@ void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
 void writeMove(PConsole con);
 void writeStatus(PConsole con);
-void writeAreaLineChars(PConsole con, WORD attr, const wchar_t* lineChars, const PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine);
-int getLine(wchar_t* lineChar, const wchar_t* lineChars, int cols, bool cutLine);
+void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine);
+int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine);
 
 void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawFrame);
 

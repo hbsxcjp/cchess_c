@@ -18,6 +18,9 @@ wchar_t getChar(Piece piece);
 //  取得棋子
 Piece getPiece_ch(wchar_t ch);
 
+// 取得代表棋子字符的颜色
+PieceColor getColor_ch(wchar_t ch);
+
 // 取得表示棋子的名称
 wchar_t getPieName(Piece piece);
 
