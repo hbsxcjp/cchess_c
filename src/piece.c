@@ -9,13 +9,13 @@ wchar_t getChar(Piece piece)
     return piece == BLANKPIECE ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)];
 }
 
+PieceColor getColor_ch(wchar_t ch) { return (bool)islower(ch); }
+
 Piece getPiece_ch(wchar_t ch)
 {
     PieceColor color = getColor_ch(ch);
     return (ch == BLANKCHAR) ? BLANKPIECE : ((color << 4) | (wcschr(PieceChars[color], ch) - PieceChars[color]));
 }
-
-PieceColor getColor_ch(wchar_t ch) { return (bool)islower(ch); }
 
 wchar_t getPieName(Piece piece)
 {
@@ -40,12 +40,12 @@ wchar_t* getPieString(wchar_t* pieStr, size_t n, Piece piece)
 
 void testPiece(FILE* fout)
 {
-    wchar_t pieString[THOUSAND_SIZE];
+    wchar_t pieString[WIDEWCHARSIZE];
     fwprintf(fout, L"testPiece：\n");
     for (int k = 0; k < PIECECOLORNUM; ++k) {
         for (int i = 0; i < PIECEKINDNUM; ++i)
             fwprintf(fout, L"%s ",
-                getPieString(pieString, THOUSAND_SIZE, getPiece_ch(PieceChars[k][i])));
+                getPieString(pieString, WIDEWCHARSIZE, getPiece_ch(PieceChars[k][i])));
         fwprintf(fout, L"\n");
     }
 }

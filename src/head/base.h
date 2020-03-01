@@ -17,6 +17,7 @@
 
 #define WCHARSIZE 256
 #define WIDEWCHARSIZE 1024
+#define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
 //=================================================================
 //棋子相关的类型
 //=================================================================
@@ -49,7 +50,7 @@ typedef enum {
 
 // 棋子类型 高四位表示颜色，低四位表示种类，-1表示空子
 typedef enum {
-    BLANKPIECE = -1,
+    BLANKPIECE = 0xFF,
     REDKING = 0x0,
     REDADVISOR,
     REDBISHOP,
@@ -75,13 +76,13 @@ typedef enum {
 // 棋盘列数
 #define BOARDCOL 9
 // 棋盘位置个数
-#define SEATNUM BOARDROW* BOARDCOL
+#define SEATNUM (BOARDROW * BOARDCOL)
 // 棋盘位置类型
 #define Seat int
 // 棋子数组长度
 #define BOARDLEN 0x99
 
-// 棋子移动方向
+// 棋子马的移动方向
 typedef enum {
     SW,
     SE,
@@ -94,11 +95,10 @@ typedef enum {
 } MoveDirection;
 
 // 一副棋盘结构类型
-typedef struct
-{
+typedef struct _Board {
     Piece pieces[BOARDLEN]; // 位置0x00, 高四位表示行，低四位表示列
     PieceColor bottomColor;
-} Board;
+} Board, *PBoard;
 
 // 棋盘变换类型
 typedef enum {
@@ -111,10 +111,6 @@ typedef enum {
 //棋局相关的类型
 //=================================================================
 
-// 字符串长度
-#define THOUSAND_SIZE 1024
-// 字符串长度
-#define HUNDRED_THOUSAND_SIZE THOUSAND_SIZE * 128
 // 棋局信息数量
 #define INFOSIZE 32
 
@@ -130,19 +126,19 @@ typedef enum {
 } RecFormat;
 
 // 着法类型
-typedef struct Move_ {
+typedef struct _Move {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 注解
     wchar_t zhStr[6]; // 着法名称
-    struct Move_ *pmove, *nmove, *omove; // 前着、下着、变着
+    struct _Move *pmove, *nmove, *omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 } Move, *PMove;
 
 // 棋局类型
-typedef struct {
-    Board* board;
-    Move *rootMove, *currentMove; // 根节点、当前节点
+typedef struct _ChessManual {
+    PBoard board;
+    PMove rootMove, currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 } ChessManual, *PChessManual;
@@ -150,13 +146,6 @@ typedef struct {
 //=================================================================
 //棋局演示相关的类型
 //=================================================================
-/*
-typedef enum {
-    FIRST = 0x80,
-    MIDDLE = 0x08,
-    END = 0x01
-} Pos;
-//*/
 
 // 区域主题颜色配置类型
 typedef enum {
@@ -178,29 +167,30 @@ typedef enum {
 typedef void (*MENU_FUNC)(void);
 
 // 菜单结构
-typedef struct Menu_ {
+typedef struct _Menu {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func; // 菜单关联的命令函数，如有子菜单则应为空
-    struct Menu_ *preMenu, *brotherMenu, *childMenu;
+    struct _Menu *preMenu, *brotherMenu, *childMenu;
     int brotherIndex, childIndex;
 } Menu, *PMenu;
 
 // 菜单初始信息结构
-typedef struct MenuData_ {
+typedef struct _MenuData {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
 } MenuData, *PMenuData;
 
 // 演示类型结构
-typedef struct Console_ {
+typedef struct _Console {
     HANDLE hIn, hOut;
-    PMenu rootMenu, curMenu;
     PChessManual cm;
+    wchar_t* wstr_PGN_CC;
     Thema thema;
-    Area curArea;
+    Area curArea, oldArea;
     SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
     SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
-    int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
+    //int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
+    PMenu rootMenu, curMenu;
 } Console, *PConsole;
 
 #endif

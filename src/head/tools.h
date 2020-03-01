@@ -25,6 +25,6 @@ int copyFile(const char* SourceFile, const char* NewFile);
 void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName);
 
 // 测试函数
-void testTools(void);
+void testTools(FILE* fout);
 
 #endif

@@ -49,13 +49,6 @@ const char* getExt(const char* filename)
     return strrchr(filename, '.');
 }
 
-/*
-FILE* fin = _wfopen(findName, L"r");
-wchar_t* wstr = getWString(fin);
-wprintf(L"%s:\n%s\n\n", findName, wstr);
-free(wstr);
-fclose(fin);
-//*/
 wchar_t* getWString(FILE* fin)
 {
     long start = ftell(fin);
@@ -138,7 +131,7 @@ void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wcha
 }
 
 // 测试函数
-void testTools(void)
+void testTools(FILE* fout)
 {
     const wchar_t* paths[] = {
         L"c:\\棋谱\\示例文件.pgn_zh",
@@ -149,14 +142,14 @@ void testTools(void)
     int sum = 0;
     for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
         int count = 0;
-        wchar_t* fileNames[THOUSAND_SIZE];
+        wchar_t* fileNames[1024];
         getFileNames(fileNames, &count, 1000, paths[i]);
         for (int i = 0; i < count; ++i) {
-            wprintf(L"%d: %s\n", __LINE__, fileNames[i]);
+            fwprintf(fout, L"%d: %s\n", __LINE__, fileNames[i]);
             free(fileNames[i]);
         }
         sum += count;
-        wprintf(L"%s 包含: %d个文件。\n\n", paths[i], count);
+        fwprintf(fout, L"%s 包含: %d个文件。\n\n", paths[i], count);
     }
-    wprintf(L"总共包括:%d个文件。\n", sum);
+    fwprintf(fout, L"总共包括:%d个文件。\n", sum);
 }

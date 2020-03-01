@@ -12,41 +12,42 @@ const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
     L"一二三四五六七八九", L"１２３４５６７８９"
 };
 
-Move* newMove(void)
+PMove newMove(void)
 {
-    Move* move = (Move*)malloc(sizeof(Move));
+    PMove move = calloc(sizeof(Move), 1);
     move->fseat = move->tseat = -1;
     move->tpiece = BLANKPIECE;
-    move->remark = NULL;
-    move->pmove = move->nmove = move->omove = NULL;
-    move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
+    //move->remark = NULL;
+    //move->pmove = move->nmove = move->omove = NULL;
+    //move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
 }
 
-bool isSameMove(const Move* amove, const Move* bmove)
+bool isSameMove(const PMove amove, const PMove bmove)
 {
-    return (amove->nextNo_ == bmove->nextNo_) && (amove->otherNo_ == bmove->otherNo_);
+    //return (amove->nextNo_ == bmove->nextNo_) && (amove->otherNo_ == bmove->otherNo_);
+    return amove == bmove;
 }
 
-Move* addNext(Move* move)
+PMove addNext(PMove move)
 {
-    Move* nextMove = newMove();
+    PMove nextMove = newMove();
     nextMove->nextNo_ = move->nextNo_ + 1;
     nextMove->otherNo_ = move->otherNo_;
     nextMove->pmove = move;
     return move->nmove = nextMove;
 }
 
-Move* addOther(Move* move)
+PMove addOther(PMove move)
 {
-    Move* otherMove = newMove();
+    PMove otherMove = newMove();
     otherMove->nextNo_ = move->nextNo_;
     otherMove->otherNo_ = move->otherNo_ + 1;
     otherMove->pmove = move;
     return move->omove = otherMove;
 }
 
-void delMove(Move* move)
+void delMove(PMove move)
 {
     if (move == NULL)
         return;
@@ -56,9 +57,9 @@ void delMove(Move* move)
     free(move);
 }
 
-void cutNextMove(Move* move)
+void cutNextMove(PMove move)
 {
-    Move* cmove = move->nmove;
+    PMove cmove = move->nmove;
     if (cmove != NULL && cmove->omove != NULL) {
         move->nmove = cmove->omove;
         cmove->omove = NULL;
@@ -66,10 +67,10 @@ void cutNextMove(Move* move)
     delMove(cmove);
 }
 
-void cutOhterMove(Move* move)
+void cutOhterMove(PMove move)
 {
 
-    Move* cmove = move->omove;
+    PMove cmove = move->omove;
     if (cmove != NULL && cmove->omove != NULL) {
         move->omove = cmove->omove;
         cmove->omove = NULL;
@@ -77,7 +78,7 @@ void cutOhterMove(Move* move)
     delMove(cmove);
 }
 
-void setMove_iccs(Move* move, const wchar_t* iccsStr)
+void setMove_iccs(PMove move, const wchar_t* iccsStr)
 {
     move->fseat = getSeat_rc(
         wcschr(ICCSROWCHAR, iccsStr[1]) - ICCSROWCHAR,
@@ -87,7 +88,7 @@ void setMove_iccs(Move* move, const wchar_t* iccsStr)
         wcschr(ICCSCOLCHAR, iccsStr[2]) - ICCSCOLCHAR);
 }
 
-wchar_t* getICCS(wchar_t* ICCSStr, const Move* move)
+wchar_t* getICCS(wchar_t* ICCSStr, const PMove move)
 {
     swprintf(ICCSStr, 5, L"%c%d%c%d",
         ICCSCOLCHAR[getCol_s(move->fseat)], getRow_s(move->fseat),
@@ -130,7 +131,30 @@ PieceColor getColor_zh(const wchar_t* zhStr)
     return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED;
 }
 
-void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
+static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const PMove move)
+{
+    wchar_t iccs[6];
+    if (move)
+        wsprintfW(wstr, L"%02x->%02x %s %s@%c",
+            move->fseat, move->tseat, getICCS(iccs, move), move->zhStr,
+            (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
+    return wstr;
+}
+
+wchar_t* getMoveStr(wchar_t* wstr, const PMove move)
+{
+    wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
+    wsprintfW(wstr, L"%s：%s\n\n现在：%s\n\n下着：%s\n\n下变：%s\n\n注解：%s\n导航: 第 %d 行 第 %d 列\n",
+        ((!move->pmove || move->pmove->nmove == move) ? L"前着" : L"前变"),
+        __getSimpleMoveStr(preWstr, move->pmove),
+        __getSimpleMoveStr(thisWstr, move),
+        __getSimpleMoveStr(nextWstr, move->nmove),
+        __getSimpleMoveStr(otherWstr, move->omove),
+        move->remark, move->nextNo_, move->CC_ColNo_ + 1);
+    return wstr;
+}
+
+void setMove_zh(PMove move, const PBoard board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
     // 根据最后一个字符判断该着法属于哪一方
@@ -182,7 +206,7 @@ void setMove_zh(Move* move, const Board* board, const wchar_t* zhStr)
     //*/
 }
 
-void setZhStr(Move* move, const Board* board)
+void setZhStr(PMove move, const PBoard board)
 {
     Piece fpiece = getPiece_s(board, move->fseat);
     assert(fpiece != BLANKPIECE);
@@ -218,13 +242,13 @@ void setZhStr(Move* move, const Board* board)
     move->zhStr[4] = L'\x0';
 
     /*
-    wchar_t iccsStr[12], boardStr[THOUSAND_SIZE];
+    wchar_t iccsStr[12], boardStr[WIDEWCHARSIZE];
     wprintf(L"iccs: %s zh:%s\n%s\n",
         getICCS(iccsStr, move), zhStr, getBoardString(boardStr, board));
     //*/
 
     //*
-    Move* amove = newMove();
+    PMove amove = newMove();
     setMove_zh(amove, board, move->zhStr);
     assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
     delMove(amove);
@@ -232,7 +256,7 @@ void setZhStr(Move* move, const Board* board)
     //return move->zhStr;
 }
 
-void setRemark(Move* move, wchar_t* remark)
+void setRemark(PMove move, const wchar_t* remark)
 {
     //remark = wtrim(remark);
     int len = wcslen(remark) + 1;
@@ -242,7 +266,7 @@ void setRemark(Move* move, wchar_t* remark)
     }
 }
 
-void changeMove(Move* move, ChangeType ct)
+void changeMove(PMove move, ChangeType ct)
 {
     if (ct == ROTATE) {
         Seat fseat = move->fseat, tseat = move->tseat;

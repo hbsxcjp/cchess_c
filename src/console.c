@@ -1,17 +1,17 @@
 #include "head/console.h"
 #include "head/board.h"
 #include "head/chessManual.h"
+#include "head/move.h"
 #include "head/piece.h"
 
 DWORD rwNum; // 公用变量
 wchar_t wstr[WIDEWCHARSIZE];
-const wchar_t PROGRAMNAME[] = L"中国象棋 ";
+const wchar_t ProgramName[] = L"中国象棋 ";
 
-const SHORT WINROWS = 50, WINCOLS = 150;
-//const COORD HOMEPOS = { 0, 0 };
-const SHORT BOARDROWS = 10 + 9, BOARDCOLS = (9 + 8) * 2, BOARDTITLEH = 2;
-const SHORT SHADOWCOLS = 2, SHADOWROWS = 1, BORDERCOLS = 2, BORDERROWS = 1;
-const SHORT STATUSROWS = 2;
+const SHORT WinRows = 50, WinCols = 150;
+const SHORT BoardRows = BOARDROW * 2 - 1, BoardCols = (BOARDCOL * 2 - 1) * 2, BoardTitleRows = 2;
+const SHORT ShadowCols = 2, ShadowRows = 1, BorderCols = 2, BorderRows = 1;
+const SHORT StatusRows = 2;
 
 /*
 颜色属性由两个十六进制数字指定 -- 第一个对应于背景，第二个对应于前景。每个数字可以为以下任何值:
@@ -53,53 +53,55 @@ PConsole newConsole(const char* fileName)
         NULL);
     con->cm = newChessManual();
     readChessManual(con->cm, fileName);
-    con->thema = SHOWY;
-    con->curArea = MOVEA;
+    writeMove_PGN_CCtoWstr(con->cm, &con->wstr_PGN_CC);
 
-    SMALL_RECT WinRect = { 0, 0, (WINCOLS - 1), (WINROWS - 1) };
+    con->thema = SHOWY;
+    con->oldArea = con->curArea = MOVEA;
+
+    SMALL_RECT WinRect = { 0, 0, (WinCols - 1), (WinRows - 1) };
     con->WinRect = WinRect;
 
-    SMALL_RECT MenuRect = { WinRect.Left + SHADOWCOLS, WinRect.Top,
-        WinRect.Right - SHADOWCOLS, SHADOWROWS };
+    SMALL_RECT MenuRect = { WinRect.Left + ShadowCols, WinRect.Top,
+        WinRect.Right - ShadowCols, ShadowRows };
     con->MenuRect = MenuRect;
     SMALL_RECT iMenuRect = { MenuRect.Left, MenuRect.Top,
-        (MenuRect.Right - BORDERCOLS - SHADOWCOLS), (MenuRect.Bottom - 1) };
+        (MenuRect.Right - BorderCols - ShadowCols), (MenuRect.Bottom - 1) };
     con->iMenuRect = iMenuRect;
 
-    SMALL_RECT StatusRect = { WinRect.Left + SHADOWCOLS, (WinRect.Bottom - STATUSROWS - SHADOWROWS + 1),
-        (WinRect.Right - SHADOWCOLS), WinRect.Bottom };
+    SMALL_RECT StatusRect = { WinRect.Left + ShadowCols, (WinRect.Bottom - StatusRows - ShadowRows + 1),
+        (WinRect.Right - ShadowCols), WinRect.Bottom };
     con->StatusRect = StatusRect;
     SMALL_RECT iStatusRect = { StatusRect.Left, StatusRect.Top,
-        (StatusRect.Right - BORDERCOLS - SHADOWCOLS), (StatusRect.Bottom - 1) };
+        (StatusRect.Right - BorderCols - ShadowCols), (StatusRect.Bottom - 1) };
     con->iStatusRect = iStatusRect;
 
-    SMALL_RECT BoardRect = { WinRect.Left + SHADOWCOLS, (MenuRect.Bottom + 1 + SHADOWROWS),
-        (WinRect.Left + 1 + BOARDCOLS + BORDERCOLS * 2 + SHADOWCOLS * 2), (MenuRect.Bottom + BOARDROWS + (SHADOWROWS + BORDERROWS + BOARDTITLEH) * 2) };
+    SMALL_RECT BoardRect = { WinRect.Left + ShadowCols, (MenuRect.Bottom + 1 + ShadowRows),
+        (WinRect.Left + 1 + BoardCols + BorderCols * 2 + ShadowCols * 2), (MenuRect.Bottom + BoardRows + (ShadowRows + BorderRows + BoardTitleRows) * 2) };
     con->BoardRect = BoardRect;
-    SMALL_RECT iBoardRect = { (BoardRect.Left + 1 + BORDERCOLS), (BoardRect.Top + BORDERROWS),
-        (BoardRect.Right - BORDERCOLS - SHADOWCOLS), (BoardRect.Bottom - BORDERROWS - SHADOWROWS) };
+    SMALL_RECT iBoardRect = { (BoardRect.Left + 1 + BorderCols), (BoardRect.Top + BorderRows),
+        (BoardRect.Right - BorderCols - ShadowCols), (BoardRect.Bottom - BorderRows - ShadowRows) };
     con->iBoardRect = iBoardRect;
 
-    SMALL_RECT CurmoveRect = { BoardRect.Left, (BoardRect.Bottom + SHADOWROWS + 1),
-        BoardRect.Right, (StatusRect.Top - 1 - SHADOWROWS) };
+    SMALL_RECT CurmoveRect = { BoardRect.Left, (BoardRect.Bottom + ShadowRows + 1),
+        BoardRect.Right, (StatusRect.Top - 1 - ShadowRows) };
     con->CurmoveRect = CurmoveRect;
-    SMALL_RECT iCurmoveRect = { (CurmoveRect.Left + BORDERCOLS), (CurmoveRect.Top + BORDERROWS),
-        (CurmoveRect.Right - BORDERCOLS - SHADOWCOLS), (CurmoveRect.Bottom - BORDERROWS - SHADOWROWS) };
+    SMALL_RECT iCurmoveRect = { (CurmoveRect.Left + BorderCols), (CurmoveRect.Top + BorderRows),
+        (CurmoveRect.Right - BorderCols - ShadowCols), (CurmoveRect.Bottom - BorderRows - ShadowRows) };
     con->iCurmoveRect = iCurmoveRect;
 
-    SMALL_RECT MoveRect = { (BoardRect.Right + 1 + SHADOWCOLS), BoardRect.Top,
-        (WinRect.Right - SHADOWCOLS), CurmoveRect.Bottom };
+    SMALL_RECT MoveRect = { (BoardRect.Right + 1 + ShadowCols), BoardRect.Top,
+        (WinRect.Right - ShadowCols), CurmoveRect.Bottom };
     con->MoveRect = MoveRect;
-    SMALL_RECT iMoveRect = { (MoveRect.Left + BORDERCOLS), (MoveRect.Top + BORDERROWS),
-        (MoveRect.Right - BORDERCOLS - SHADOWCOLS), iCurmoveRect.Bottom }; // 填充字符区域
+    SMALL_RECT iMoveRect = { (MoveRect.Left + BorderCols), (MoveRect.Top + BorderRows),
+        (MoveRect.Right - BorderCols - ShadowCols), iCurmoveRect.Bottom }; // 填充字符区域
     con->iMoveRect = iMoveRect;
 
     SetConsoleCP(936);
     SetConsoleOutputCP(936);
     SetConsoleMode(con->hIn, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT); //ENABLE_PROCESSED_INPUT |
-    SetConsoleTitleW(PROGRAMNAME); // 设置窗口标题
+    SetConsoleTitleW(ProgramName); // 设置窗口标题
 
-    COORD winCoord = { WINCOLS, WINROWS };
+    COORD winCoord = { WinCols, WinRows };
     SetConsoleScreenBufferSize(con->hOut, winCoord);
     CONSOLE_CURSOR_INFO cInfo = { 5, false };
     SetConsoleCursorInfo(con->hOut, &cInfo);
@@ -108,18 +110,18 @@ PConsole newConsole(const char* fileName)
     //SetConsoleTextAttribute(con->hOut, WINATTR[con->thema]);
     //GetConsoleScreenBufferInfo(con->hOut, &bInfo); // 获取窗口信息
 
-    cleanAreaChar(con, &WinRect);
     cleanAreaAttr(con, WINATTR[con->thema], &WinRect);
-    initArea(con, MENUATTR[con->thema], &MenuRect, false);
-    initArea(con, BOARDATTR[con->thema], &BoardRect, true);
-    initArea(con, CURMOVEATTR[con->thema], &CurmoveRect, true);
-    initArea(con, MOVEATTR[con->thema], &MoveRect, true);
-    initArea(con, STATUSATTR[con->thema], &StatusRect, false);
+    //cleanAreaChar(con, &WinRect);
+    initArea(con, MENUATTR[con->thema], &MenuRect, true, false);
+    initArea(con, BOARDATTR[con->thema], &BoardRect, true, true);
+    initArea(con, CURMOVEATTR[con->thema], &CurmoveRect, true, true);
+    initArea(con, MOVEATTR[con->thema], &MoveRect, true, true);
+    initArea(con, STATUSATTR[con->thema], &StatusRect, true, false);
 
     initMenu(con);
     writeAreas(con);
     operateWin(con);
-    _getch();
+
     return con;
 }
 
@@ -127,11 +129,13 @@ void delConsole(PConsole con)
 {
     CloseHandle(con->hOut);
     delMenu(con->rootMenu);
+    delChessManual(con->cm);
+    free(con->wstr_PGN_CC);
+    free(con);
 }
 
 void operateWin(PConsole con)
 {
-    Area oldArea = con->curArea;
     INPUT_RECORD irInBuf[128];
     PKEY_EVENT_RECORD ker;
     while (true) {
@@ -140,13 +144,32 @@ void operateWin(PConsole con)
             switch (irInBuf[i].EventType) {
             case KEY_EVENT: // keyboard input
                 ker = &irInBuf[i].Event.KeyEvent;
-                if (ker->wVirtualKeyCode == VK_ESCAPE && ker->bKeyDown
-                    && con->curArea != MENUA)
+                if (!ker->bKeyDown)
+                    break;
+                if (((ker->dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED))
+                        && ker->wVirtualKeyCode == VK_F4)
+                    || ((ker->dwControlKeyState & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
+                           && ker->wVirtualKeyCode == 'C'))
                     return;
-                keyEventProc(con, ker, oldArea);
+                else if (ker->wVirtualKeyCode == VK_ESCAPE) {
+                    if (con->curArea != MENUA)
+                        return;
+                    setArea(con, con->oldArea, con->oldArea);
+                } else if (ker->wVirtualKeyCode == VK_TAB) {
+                    Area oldArea = con->curArea;
+                    Area curArea = (4 + oldArea + ((ker->dwControlKeyState & SHIFT_PRESSED) ? -1 : 1)) % 4; // 四个区域循环
+                    setArea(con, curArea, oldArea);
+                } else if ((ker->dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED))
+                    && ker->wVirtualKeyCode == 0x12) {
+                    if (con->curArea != MENUA)
+                        setArea(con, MENUA, con->curArea);
+                    else
+                        setArea(con, con->oldArea, con->oldArea);
+                }
+                keyEventProc(con, ker);
                 break;
             case MOUSE_EVENT: // mouse input
-                mouseEventProc(con, &irInBuf[i].Event.MouseEvent, oldArea);
+                mouseEventProc(con, &irInBuf[i].Event.MouseEvent);
                 break;
             default:
                 break;
@@ -155,57 +178,35 @@ void operateWin(PConsole con)
     }
 }
 
-void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
+void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker)
 {
-    WORD key = ker->wVirtualKeyCode;
-    if (ker->bKeyDown && key == VK_TAB) {
-        if (con->curArea == MENUA)
-            cleanSubMenuArea(con);
-        con->curArea = (con->curArea + ((ker->dwControlKeyState & SHIFT_PRESSED) ? -1 : 1) + 4) % 4; // 四个区域循环
-        writeStatus(con);
-        return;
-    }
-    if (ker->bKeyDown && ker->dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) {
-        /*
-            if (!ker.bKeyDown) {
-                if (con->curArea == MENUA) {
-                    cleanSubMenuArea();
-                    con->curArea = oldArea;
-                    return;
-                }
-            } else
-                //*/
-        con->curArea = MENUA;
-    }
-    if (!ker->bKeyDown)
-        return;
     switch (con->curArea) { // 区分不同区域, 进行操作
     case MOVEA:
-        operateMove(con, ker, oldArea);
-        writeAreas(con);
+        if (operateMove(con, ker))
+            writeAreas(con);
         break;
     case CURMOVEA:
-        operateCurMove(con, ker, oldArea);
+        operateCurMove(con, ker);
         break;
     case BOARDA:
-        operateBoard(con, ker, oldArea);
+        operateBoard(con, ker);
         break;
     case MENUA:
-        if (operateMenu(con, ker, oldArea))
-            con->curArea = oldArea;
+        if (!operateMenu(con, ker))
+            setArea(con, con->oldArea, con->oldArea);
         break;
     default:
         break;
     }
 }
 
-void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker, Area oldArea)
+void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker)
 {
 }
 
-bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
+bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
 {
-    bool isExitMenu = false;
+    bool stayMenu = true;
     switch (ker->wVirtualKeyCode) {
     case 'F':
         con->curMenu = getTopIndexMenu(con->rootMenu, 0)->childMenu;
@@ -220,23 +221,17 @@ bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
         con->curMenu = getTopIndexMenu(con->rootMenu, 3)->childMenu;
         break;
     case VK_DOWN:
-        if (con->curMenu == con->rootMenu)
-            con->curMenu = getTopIndexMenu(con->rootMenu, 0);
-        else if (con->curMenu->childMenu)
-            con->curMenu = con->curMenu->childMenu;
-        else
-            con->curMenu = getTopMenu(con->curMenu);
+        con->curMenu = (con->curMenu->childMenu ? con->curMenu->childMenu : getTopMenu(con->curMenu));
         break;
     case VK_UP:
-        if (con->curMenu->childIndex > 0)
-            con->curMenu = con->curMenu->preMenu;
-        else
-            con->curMenu = getBottomMenu(con->curMenu);
+        con->curMenu = (con->curMenu->childIndex > 0) ? con->curMenu->preMenu : getBottomMenu(con->curMenu);
         break;
     case VK_HOME:
+    case VK_PRIOR:
         con->curMenu = getTopMenu(con->curMenu);
         break;
     case VK_END:
+    case VK_NEXT:
         con->curMenu = getBottomMenu(con->curMenu);
         break;
     case VK_LEFT:
@@ -246,35 +241,33 @@ bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
         con->curMenu = getSameLevelMenu(con->rootMenu, con->curMenu, false);
         break;
     case VK_RETURN:
-    case VK_ESCAPE:
-        isExitMenu = true;
+        stayMenu = false;
         break;
     default:
-        isExitMenu = true;
         break;
     }
 
-    if (con->curMenu || con->curMenu == con->rootMenu)
-        return isExitMenu;
     SHORT level = con->curMenu->childIndex;
-    SHORT posL = getPosL(con->curMenu) + SHADOWCOLS,
+    SHORT posL = getPosL(con->curMenu) + ShadowCols,
           posT = con->iMenuRect.Bottom + (level == 0 ? 0 : 1),
-          posR = posL + (level == 0 ? (wcslen(con->curMenu->name) + 3) : getMaxSize(con->curMenu)) + SHADOWCOLS,
-          posB = posT + (level == 0 ? 0 : getBottomMenu(con->curMenu)->childIndex - 1) + SHADOWROWS;
-
+          posR = posL + (level == 0 ? (wcslen(con->curMenu->name) + 3) : getMaxSize(con->curMenu)) + ShadowCols,
+          posB = posT + (level == 0 ? 0 : getBottomMenu(con->curMenu)->childIndex - 1) + ShadowRows;
     SMALL_RECT rect = { posL, posT, posR, posB };
 
-    cleanSubMenuArea(con);
-    if (!isExitMenu) {
+    cleanSubMenuArea(con, &rect, (stayMenu && level > 0));
+    if (stayMenu) {
         if (level > 0) {
-            initArea(con, ShowMenuAttr[con->thema], &rect, false);
-            writeAreaLineChars(con, getWstr(wstr, con->curMenu), &rect, 0, 0, false);
+            SMALL_RECT irect = { posL, posT, posR - ShadowCols, posB - ShadowRows };
+            // 显示子菜单屏幕区
+            initArea(con, ShowMenuAttr[con->thema], &rect, true, false);
+            writeAreaLineChars(con, getWstr(wstr, con->curMenu), &irect, 0, 0, false);
         }
-        SMALL_RECT irect = { posL, level, (rect.Right - SHADOWCOLS), level };
-        cleanAreaAttr(con, SelMenuAttr[con->thema], &irect);
+        // 选择项目突显
+        COORD pos = { posL, level };
+        FillConsoleOutputAttribute(con->hOut, SelMenuAttr[con->thema], posR - posL - ShadowCols + 1, pos, &rwNum);
         writeStatus(con);
     }
-    return isExitMenu;
+    return stayMenu;
 }
 
 // 菜单最大尺寸
@@ -292,11 +285,9 @@ wchar_t* getWstr(wchar_t* wstr, PMenu menu)
 {
     wstr[0] = L'\x0';
     menu = getTopMenu(menu)->childMenu;
-    while (menu) {
-        wcscat(wstr, menu->name);
-        wcscat(wstr, L"\n");
-        menu = menu->childMenu;
-    }
+    do
+        wcscat(wcscat(wstr, menu->name), L"\n");
+    while ((menu = menu->childMenu));
     return wstr;
 }
 
@@ -344,20 +335,32 @@ PMenu getBottomMenu(PMenu menu)
     return menu;
 }
 
-bool operateBoard(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
+bool operateBoard(PConsole con, PKEY_EVENT_RECORD keroldArea)
 {
     return false;
 }
 
-bool operateMove(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
+bool operateMove(PConsole con, PKEY_EVENT_RECORD ker)
 {
+    PMove oldCurMove = con->cm->currentMove;
     switch (ker->wVirtualKeyCode) {
     case VK_DOWN:
         go(con->cm);
         break;
     case VK_UP:
+        backNext(con->cm);
+        break;
     case VK_LEFT:
-        back(con->cm);
+        backOther(con->cm);
+        break;
+    case VK_RIGHT:
+        goOther(con->cm);
+        break;
+    case VK_PRIOR:
+        goInc(con->cm, -10);
+        break;
+    case VK_NEXT:
+        goInc(con->cm, 10);
         break;
     case VK_HOME:
         backFirst(con->cm);
@@ -365,20 +368,17 @@ bool operateMove(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
     case VK_END:
         goEnd(con->cm);
         break;
-    case VK_RIGHT:
-        goOther(con->cm);
-        break;
     case VK_RETURN:
-        con->curArea = CURMOVEA;
+        setArea(con, CURMOVEA, con->curArea);
         break;
     default:
         printf("key:%x/", ker->wVirtualKeyCode);
         break;
     }
-    return false;
+    return oldCurMove != con->cm->currentMove; // 根据当前着法变化判断是否需要刷新屏幕
 }
 
-bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker, Area oldArea)
+bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker)
 {
     return false;
 }
@@ -394,17 +394,9 @@ void writeAreas(PConsole con)
 void writeBoard(PConsole con)
 {
     SMALL_RECT iBoardRect = con->iBoardRect;
-    writeAreaLineChars(con, getBoardString(wstr, con->cm->board), &iBoardRect, 0, 0, false);
-    bool bottomIsRed = isBottomSide(con->cm->board, RED);
-    WORD bottomAttr = bottomIsRed ? RedSideAttr[con->thema] : BlackSideAttr[con->thema],
-         topAttr = bottomIsRed ? BlackSideAttr[con->thema] : RedSideAttr[con->thema];
-    cleanAreaAttr(con, BOARDATTR[con->thema], &iBoardRect);
-    // 顶、底两行上颜色
-    for (int row = 0; row < BOARDTITLEH; ++row) {
-        COORD tpos = { iBoardRect.Left, (iBoardRect.Top + row) }, bpos = { iBoardRect.Left, (iBoardRect.Bottom - row) };
-        FillConsoleOutputAttribute(con->hOut, topAttr, BOARDCOLS, tpos, &rwNum);
-        FillConsoleOutputAttribute(con->hOut, bottomAttr, BOARDCOLS, bpos, &rwNum);
-    }
+    // 清除背景颜色，重绘棋盘字符串
+    SMALL_RECT iPieBoardRect = { iBoardRect.Left, iBoardRect.Top + BoardTitleRows, iBoardRect.Right, iBoardRect.Bottom - BoardTitleRows };
+    cleanAreaAttr(con, BOARDATTR[con->thema], &iPieBoardRect);
     // 棋子文字上颜色
     wchar_t ch;
     getPieChars_board(wstr, con->cm->board); // 行:从上到下
@@ -412,8 +404,28 @@ void writeBoard(PConsole con)
         if ((ch = wstr[i]) == BLANKCHAR)
             continue;
         // 字符属性函数不识别全角字符，均按半角字符计数
-        COORD ciBoardRect = { (iBoardRect.Left + (i % BOARDCOL) * 4), (iBoardRect.Top + BOARDTITLEH + (i / BOARDCOL) * 2) };
+        COORD ciBoardRect = { (iBoardRect.Left + (i % BOARDCOL) * 4), (iBoardRect.Top + BoardTitleRows + (i / BOARDCOL) * 2) };
         FillConsoleOutputAttribute(con->hOut, (getColor_ch(ch) == RED ? RedAttr[con->thema] : BlackAttr[con->thema]), 2, ciBoardRect, &rwNum);
+    }
+    writeAreaLineChars(con, getBoardString(wstr, con->cm->board), &iPieBoardRect, 0, 0, true);
+
+    static bool isStart = true;
+    if (isStart) {
+        SMALL_RECT iPreBoardRect = { iBoardRect.Left, iBoardRect.Top, iBoardRect.Right, iBoardRect.Top + BoardTitleRows - 1 },
+                   iSufBoardRect = { iBoardRect.Left, iBoardRect.Bottom - BoardTitleRows + 1, iBoardRect.Right, iBoardRect.Bottom };
+        writeAreaLineChars(con, getBoardPreString(wstr, con->cm->board), &iPreBoardRect, 0, 0, true);
+        writeAreaLineChars(con, getBoardSufString(wstr, con->cm->board), &iSufBoardRect, 0, 0, true);
+
+        bool bottomIsRed = isBottomSide(con->cm->board, RED);
+        WORD bottomAttr = bottomIsRed ? RedSideAttr[con->thema] : BlackSideAttr[con->thema],
+             topAttr = bottomIsRed ? BlackSideAttr[con->thema] : RedSideAttr[con->thema];
+        // 顶、底两行上颜色
+        for (int row = 0; row < BoardTitleRows; ++row) {
+            COORD tpos = { iBoardRect.Left, (iBoardRect.Top + row) }, bpos = { iBoardRect.Left, (iBoardRect.Bottom - row) };
+            FillConsoleOutputAttribute(con->hOut, topAttr, BoardCols, tpos, &rwNum);
+            FillConsoleOutputAttribute(con->hOut, bottomAttr, BoardCols, bpos, &rwNum);
+        }
+        isStart = false;
     }
 }
 
@@ -421,9 +433,11 @@ void writeCurmove(PConsole con)
 {
     SMALL_RECT iCurmoveRect = con->iCurmoveRect;
     writeAreaLineChars(con, getMoveStr(wstr, con->cm->currentMove), &iCurmoveRect, 0, 0, false);
+
+    // 设置当前着法、注解的突显颜色
     int cols = iCurmoveRect.Right - iCurmoveRect.Left + 1;
-    int rows[] = { 2, 8, 9 };
-    for (int i = sizeof(rows) / sizeof(rows[0]); i > 0; --i) {
+    int rows[] = { 2, 8, 9, 10, 11, 12 };
+    for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
         COORD pos = { iCurmoveRect.Left, (iCurmoveRect.Top + rows[i]) };
         FillConsoleOutputAttribute(con->hOut, CurmoveAttr[con->thema], cols, pos, &rwNum);
     }
@@ -431,15 +445,31 @@ void writeCurmove(PConsole con)
 
 void writeMove(PConsole con)
 {
+    static bool isStart = true;
+    static int firstRow = 0, firstCol = 0; //静态变量，只初始化一次
     SMALL_RECT iMoveRect = con->iMoveRect;
-    wchar_t* lineStr = NULL;
-    writeMove_PGN_CCtoWstr(con->cm, &lineStr);
-    writeAreaLineChars(con, lineStr, &iMoveRect, 0, 0, true);
-    free(lineStr);
+    COORD showCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
+        (iMoveRect.Top + con->cm->currentMove->nextNo_ * 2) };
+    SMALL_RECT showRect = { iMoveRect.Left + firstCol, iMoveRect.Top + firstRow,
+        iMoveRect.Right + firstCol, iMoveRect.Bottom + firstRow };
+    int offsetCol = ((showCoord.X < showRect.Left) ? showCoord.X - showRect.Left
+                                                   : ((showCoord.X > showRect.Right) ? showCoord.X - showRect.Right
+                                                                                     : 0)),
+        offsetRow = ((showCoord.Y < showRect.Top) ? showCoord.Y - showRect.Top
+                                                  : ((showCoord.Y > showRect.Bottom) ? showCoord.Y - showRect.Bottom
+                                                                                     : 0));
+    // 写入字符串
+    if (offsetCol != 0 || offsetRow != 0 || isStart) {
+        firstRow += offsetRow;
+        firstCol += offsetCol;
+        writeAreaLineChars(con, con->wstr_PGN_CC, &iMoveRect, firstRow, firstCol, true);
+        isStart = false;
+    }
 
+    // 清除背景，设置选定Move背景
     cleanAreaAttr(con, MOVEATTR[con->thema], &iMoveRect);
-    COORD curCoord = getMoveCoord(con->cm->currentMove);
-    COORD showCoord = { (iMoveRect.Left + curCoord.X * 5 * 2), (iMoveRect.Top + curCoord.Y * 2) };
+    showCoord.X -= firstCol;
+    showCoord.Y -= firstRow;
     FillConsoleOutputAttribute(con->hOut, SelMoveAttr[con->thema], 4 * 2, showCoord, &rwNum);
 }
 
@@ -447,26 +477,34 @@ void writeStatus(PConsole con)
 {
     switch (con->curArea) {
     case MOVEA:
-        wcscpy(wstr, L"【着法】");
+        wcscpy(wstr, L"【导航区】  <↓>下着    <→>变着    <↑>前着    <←>前变   <PageDown>前进10着   <PageUp>回退10着   <Home>开始   <End>结束    <Enter>转入注解区");
         break;
     case CURMOVEA:
-        wcscpy(wstr, L"【详解】颜色属性由两个十六进制数字指定 -- 第一个对应于背景，第二个对应于前景。每个数字可以为以下任何值: 0 = 黑色 8 = 灰色 1 = 蓝色 9 = 淡蓝色 2 = 绿色 A = 淡绿色 3 = 浅绿色 B = 淡浅绿色 4 = 红色 C = 淡红色 5 = 紫色 D = 淡紫色 6 = 黄色 E = 淡黄色 7 = 白色 F = 亮白色 ");
+        wcscpy(wstr, L"【注解区】  <↓>下行    <→>右列    <↑>上行    <←>左列    注解文字编辑: 插入模式");
         break;
     case BOARDA:
-        wcscpy(wstr, L"【棋盘】");
+        wcscpy(wstr, L"【盘面区】  <↓>下行    <→>右列    <↑>上行    <←>左列    <PageDown><End>底行    <PageUp><Home>顶行");
         break;
     case MENUA:
-        wcscpy(wstr, L"【菜单】");
-        if (con->curMenu != con->rootMenu) {
-            wcscat(wstr, con->curMenu->name);
-            wcscat(wstr, L": ");
-            wcscat(wstr, con->curMenu->desc);
-        }
+        wcscpy(wstr, L"【菜单区】  <↓>下  <→>右  <↑>上  <←>左  <PageDown><End>底  <PageUp><Home>顶  <");
+        wcscat(wstr, con->curMenu->name);
+        wcscat(wstr, L" > ");
+        wcscat(wstr, con->curMenu->desc);
         break;
     default:
+        wcscpy(wstr, L"???");
         break;
     }
-    writeAreaLineChars(con, wstr, &con->iStatusRect, 0, 0, true);
+    SMALL_RECT arect = { con->iStatusRect.Left, con->iStatusRect.Top, con->iStatusRect.Right, con->iStatusRect.Top };
+    writeAreaLineChars(con, wstr, &arect, 0, 0, false);
+
+    static bool isStart = true;
+    if (isStart) {
+        wcscpy(wstr, L" <Tab><Shift+Tab>区间转换(导航>>注解>>盘面>>菜单)          <Alt>进入/退出(菜单)          <Esc>退出(菜单/程序)         <Ctrl+C><Alt+F4>退出程序");
+        SMALL_RECT brect = { con->iStatusRect.Left, con->iStatusRect.Bottom, con->iStatusRect.Right, con->iStatusRect.Bottom };
+        writeAreaLineChars(con, wstr, &brect, 0, 0, false);
+        isStart = false;
+    }
 }
 
 void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine)
@@ -474,21 +512,21 @@ void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, 
     int cols = rc->Right - rc->Left + 1;
     wchar_t lineChar[WIDEWCHARSIZE];
 
+    cleanAreaChar(con, rc);
     while (firstRow-- > 0) // 去掉开始数行
         getLine(lineChar, &lineChars, cols, cutLine);
-    int showSize;
-    cleanAreaChar(con, rc);
+    int lineSize;
     for (SHORT row = rc->Top; row <= rc->Bottom; ++row)
-        if ((showSize = getLine(lineChar, &lineChars, cols, cutLine) - firstCol) > 0) {
+        if ((lineSize = getLine(lineChar, &lineChars, cols, cutLine) - firstCol) > 0) {
             COORD pos = { rc->Left, row };
-            WriteConsoleOutputCharacterW(con->hOut, lineChar, showSize, pos, &rwNum);
+            WriteConsoleOutputCharacterW(con->hOut, lineChar, lineSize, pos, &rwNum);
         }
 }
 
-int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine)
+int getLine(wchar_t* lineChar, wchar_t** plineChars, int cols, bool cutLine)
 {
     int srcIndex = 0, desIndex = 0, showCols = 0;
-    wchar_t wch = (*lineChars)[0];
+    wchar_t wch = (*plineChars)[0];
     while (wch != L'\x0' && wch != L'\n') {
         lineChar[desIndex++] = wch;
         ++showCols;
@@ -497,16 +535,18 @@ int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine)
             if (wch <= 0x2573) // 制表字符后加一空格 wch >= 0x2500 &&
                 lineChar[desIndex++] = L' ';
         }
-        wch = (*lineChars)[++srcIndex];
-        // 已至行尾最后一个 或 行尾前一个且下一个为全角
-        if (cutLine && (showCols == cols || (showCols == cols - 1 && wch > 0x2573)))
+        wch = (*plineChars)[++srcIndex];
+        // 行尾前一个且下一个为全角 已至行尾最后一个
+        if ((showCols == cols - 1 && wch > 0x2573) || showCols == cols) {
+            if (cutLine)
+                while (wch != L'\x0' || wch != L'\n')
+                    wch = (*plineChars)[++srcIndex];
             break;
+        }
     }
     if (wch == L'\n')
         ++srcIndex; // 消除换行符
-    (*lineChars) += srcIndex;
-    //if ((cols - showCols) % 2 == 1)
-    //    tempLineChar[desIndex++] = L'.'; // 对齐中文
+    (*plineChars) += srcIndex;
     lineChar[desIndex] = L'\x0';
     return desIndex;
 }
@@ -514,24 +554,24 @@ int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine)
 void initMenu(PConsole con)
 {
     MenuData menuDatas[4][10] = {
-        { { L" 文件(F)", L"新建、打开、保存文件，退出 (Alt+F)", NULL },
+        { { L" 文件(F)", L"新建、打开、保存文件，退出", NULL },
             { L" 新建", L"新建一个棋局", NULL },
             { L" 打开...", L"打开已有的一个棋局", NULL },
             { L" 另存为...", L"将显示的棋局另存为一个棋局", NULL },
             { L" 保存", L"保存正在显示的棋局", NULL },
             { L" 退出", L"退出程序", NULL },
             { L"", L"", NULL } },
-        { { L" 棋局(B)", L"对棋盘局面进行操作 (Alt+B)", NULL },
+        { { L" 棋局(B)", L"对棋盘局面进行操作", NULL },
             { L" 对换棋局", L"红黑棋子互换", NULL },
             { L" 对换位置", L"红黑位置互换", NULL },
             { L" 棋子左右换位", L"棋子的位置左右对称换位", NULL },
             { L"", L"", NULL } },
-        { { L" 设置(S)", L"设置显示主题，主要是棋盘、棋子的颜色配置 (Alt+S)", NULL },
+        { { L" 设置(S)", L"设置显示主题，主要是棋盘、棋子的颜色配置", NULL },
             { L" 静雅朴素", L"比较朴素的颜色配置", NULL },
             { L" 鲜艳亮丽", L"比较鲜艳的颜色配置", NULL },
             { L" 高对比度", L"高对比度的颜色配置", NULL },
             { L"", L"", NULL } },
-        { { L" 关于(A)", L"帮助、程序信息 (Alt+A)", NULL },
+        { { L" 关于(A)", L"帮助、程序信息", NULL },
             { L" 帮助", L"显示帮助信息", NULL },
             { L" 版本信息", L"程序有关的信息", NULL },
             { L"", L"", NULL } }
@@ -549,21 +589,22 @@ void initMenu(PConsole con)
             childMenu = addChildMenu(childMenu, newMenu(&menuDatas[oneIndex][twoIndex]));
     }
 
-    // 绘制菜单区域
+    //*// 绘制菜单区域
     brotherMenu = con->rootMenu;
-    int pos = SHADOWCOLS;
+    int pos = ShadowCols;
     while ((brotherMenu = brotherMenu->brotherMenu)) {
         int namelen = wcslen(brotherMenu->name);
         COORD posCoord = { pos, con->MenuRect.Top };
         WriteConsoleOutputCharacterW(con->hOut, brotherMenu->name, namelen, posCoord, &rwNum);
         pos += namelen + 3;
     }
-    con->curMenu = con->rootMenu;
+    //*/
+    con->curMenu = con->rootMenu->brotherMenu;
 }
 
 PMenu newMenu(PMenuData menuData)
 {
-    PMenu menu = malloc(sizeof(Menu));
+    PMenu menu = (PMenu)calloc(sizeof(Menu), 1);
     wcscpy(menu->name, menuData->name);
     wcscpy(menu->desc, menuData->desc);
     menu->func = menuData->func;
@@ -595,85 +636,119 @@ void delMenu(PMenu menu)
     free(menu);
 }
 
-void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawFrame)
+void setArea(PConsole con, Area curArea, Area oldArea)
 {
-    SMALL_RECT irc = { rc->Left, rc->Top, (rc->Right - SHADOWCOLS), (rc->Bottom - SHADOWROWS) };
-    cleanAreaChar(con, &irc);
-    cleanAreaAttr(con, attr, &irc);
-    initAreaShadow(con, rc);
-
-    if (drawFrame) {
-        SHORT left = irc.Left + 1, right = irc.Right - 1;
-        const wchar_t* const tabChar = TabChars[con->thema];
-        int rows[] = { irc.Top, irc.Bottom };
-        for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
-            COORD pos = { left, rows[i] };
-            FillConsoleOutputCharacterW(con->hOut, tabChar[0], irc.Right - irc.Left - 2, pos, &rwNum);
-        }
-        for (SHORT row = irc.Top + 1; row < irc.Bottom; ++row) {
-            int cols[] = { irc.Left, right };
-            for (int i = sizeof(cols) / sizeof(cols[0]) - 1; i >= 0; --i) {
-                COORD pos = { cols[i], row };
-                FillConsoleOutputCharacterW(con->hOut, tabChar[1], 1, pos, &rwNum);
-            }
-        }
-        COORD posLT = { irc.Left, irc.Top };
-        COORD posRT = { right, irc.Top };
-        COORD posLB = { irc.Left, irc.Bottom };
-        COORD posRB = { right, irc.Bottom };
-        FillConsoleOutputCharacterW(con->hOut, tabChar[2], 1, posLT, &rwNum);
-        FillConsoleOutputCharacterW(con->hOut, tabChar[3], 1, posRT, &rwNum);
-        FillConsoleOutputCharacterW(con->hOut, tabChar[4], 1, posLB, &rwNum);
-        FillConsoleOutputCharacterW(con->hOut, tabChar[5], 1, posRB, &rwNum);
+    bool changed = con->curArea != curArea;
+    if (con->curArea == MENUA && changed) {
+        SMALL_RECT rect = { 0, 0, 0, 0 };
+        cleanSubMenuArea(con, &rect, false);
     }
+    con->curArea = curArea;
+    con->oldArea = oldArea;
+    if (changed)
+        writeStatus(con);
+}
+
+void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawShadow, bool drawFrame)
+{
+    if (drawShadow)
+        initAreaShadow(con, rc);
+    SMALL_RECT irc = { rc->Left, rc->Top, rc->Right - ShadowCols, rc->Bottom - ShadowRows };
+    cleanAreaAttr(con, attr, &irc);
+    cleanAreaChar(con, &irc);
+    if (drawFrame)
+        initAreaFrame(con, &irc);
 }
 
 void initAreaShadow(PConsole con, const PSMALL_RECT rc)
 {
-    //FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], SHADOWCOLS, { rc->Left, rc->Bottom }, &rwNum);
-    COORD pos = { (rc->Left + SHADOWCOLS), rc->Bottom };
-    FillConsoleOutputAttribute(con->hOut, SHADOWATTR[con->thema], rc->Right - rc->Left + 1 - SHADOWCOLS, pos, &rwNum);
-    SHORT right = rc->Right - SHADOWCOLS + 1;
+    //FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], ShadowCols, { rc->Left, rc->Bottom }, &rwNum);
+    COORD pos = { (rc->Left + ShadowCols), rc->Bottom };
+    FillConsoleOutputAttribute(con->hOut, SHADOWATTR[con->thema], rc->Right - rc->Left + 1 - ShadowCols, pos, &rwNum);
+    SHORT right = rc->Right - ShadowCols + 1;
     //if (rc->Bottom > rc->Top + 1)
-    //    FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], SHADOWCOLS, { right, rc->Top }, &rwNum);
+    //    FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], ShadowCols, { right, rc->Top }, &rwNum);
     for (SHORT row = rc->Top + (rc->Bottom > rc->Top + 1 ? 1 : 0); row <= rc->Bottom; ++row) {
         COORD pos = { right, row };
         FillConsoleOutputAttribute(con->hOut, SHADOWATTR[con->thema], 2, pos, &rwNum);
     }
 }
 
+void initAreaFrame(PConsole con, const PSMALL_RECT rc)
+{
+    SHORT left = rc->Left + 1, right = rc->Right - 1;
+    const wchar_t* const tabChar = TabChars[con->thema];
+    int rows[] = { rc->Top, rc->Bottom };
+    for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
+        COORD pos = { left, rows[i] };
+        FillConsoleOutputCharacterW(con->hOut, tabChar[0], rc->Right - rc->Left - 2, pos, &rwNum);
+    }
+    for (SHORT row = rc->Top + 1; row < rc->Bottom; ++row) {
+        int cols[] = { rc->Left, right };
+        for (int i = sizeof(cols) / sizeof(cols[0]) - 1; i >= 0; --i) {
+            COORD pos = { cols[i], row };
+            FillConsoleOutputCharacterW(con->hOut, tabChar[1], 1, pos, &rwNum);
+        }
+    }
+    COORD posLT = { rc->Left, rc->Top };
+    COORD posRT = { right, rc->Top };
+    COORD posLB = { rc->Left, rc->Bottom };
+    COORD posRB = { right, rc->Bottom };
+    FillConsoleOutputCharacterW(con->hOut, tabChar[2], 1, posLT, &rwNum);
+    FillConsoleOutputCharacterW(con->hOut, tabChar[3], 1, posRT, &rwNum);
+    FillConsoleOutputCharacterW(con->hOut, tabChar[4], 1, posLB, &rwNum);
+    FillConsoleOutputCharacterW(con->hOut, tabChar[5], 1, posRB, &rwNum);
+}
+
 void cleanAreaWIN(PConsole con)
 {
-    int colWidth = 2;
     SMALL_RECT rc = { con->WinRect.Left, con->MenuRect.Bottom + 1, con->WinRect.Right, con->StatusRect.Top - 1 };
-    int rows[] = { rc.Top, rc.Bottom };
-    for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
+    int rows[] = { rc.Top }; //, rc.Bottom };
+    for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) { // 顶、底行
         int width = rc.Right - rc.Left + 1;
         COORD pos = { rc.Left, rows[i] };
         FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], width, pos, &rwNum);
         FillConsoleOutputCharacterW(con->hOut, L' ', width, pos, &rwNum);
     }
+    /*
     for (SHORT row = rc.Top; row < rc.Bottom; ++row) { // 左、右列
-        int cols[] = { rc.Left, (rc.Right - colWidth + 1) };
+        int cols[] = { rc.Left, (rc.Right - ShadowCols + 1) };
         for (int i = sizeof(cols) / sizeof(cols[0]) - 1; i >= 0; --i) {
             COORD pos = { cols[i], row };
-            FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], colWidth, pos, &rwNum);
-            FillConsoleOutputCharacterW(con->hOut, L' ', colWidth, pos, &rwNum);
+            FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], ShadowCols, pos, &rwNum);
+            FillConsoleOutputCharacterW(con->hOut, L' ', ShadowCols, pos, &rwNum);
         }
     }
+    //*/
 }
 
-void cleanSubMenuArea(PConsole con)
+void cleanSubMenuArea(PConsole con, const PSMALL_RECT rc, bool storgeMenu)
 {
-    cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect);
+    cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
     COORD pos = { con->MenuRect.Left, con->MenuRect.Bottom };
-    FillConsoleOutputCharacterW(con->hOut, L' ', WINCOLS, pos, &rwNum);
-    FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], SHADOWCOLS, pos, &rwNum);
-    initAreaShadow(con, &con->MenuRect);
+    FillConsoleOutputCharacterW(con->hOut, L' ', WinCols, pos, &rwNum); // 清除菜单阴影行文字
+    FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], ShadowCols, pos, &rwNum); // 清除阴影最左侧背景块
+    initAreaShadow(con, &con->MenuRect); // 清除菜单阴影区背景
+    cleanAreaWIN(con); // 清楚窗口背景区
 
-    cleanAreaWIN(con);
-    initArea(con, BOARDATTR[con->thema], &con->BoardRect, true);
-    writeBoard(con);
+    // 静态变量，第一次初始化
+    static CHAR_INFO boardCharBuf[10 * 40];
+    static bool hasStorgeMenu = false;
+    static COORD chBufSize = { 0, 0 }, chBufCoord = { 0, 0 };
+    static SMALL_RECT chBufRect = { 0, 0, 0, 0 };
+    // 恢复已存储的Board区屏幕块信息
+    if (hasStorgeMenu)
+        WriteConsoleOutputW(con->hOut, boardCharBuf, chBufSize, chBufCoord, &chBufRect);
+
+    // 存储将被覆盖的Board区屏幕块信息
+    chBufRect.Left = rc->Left;
+    chBufRect.Top = con->BoardRect.Top;
+    chBufRect.Right = rc->Right;
+    chBufRect.Bottom = rc->Bottom;
+    chBufSize.X = chBufRect.Right - chBufRect.Left + 1;
+    chBufSize.Y = chBufRect.Bottom - chBufRect.Top + 1;
+    if ((hasStorgeMenu = storgeMenu))
+        ReadConsoleOutputW(con->hOut, boardCharBuf, chBufSize, chBufCoord, &chBufRect);
 }
 
 void cleanAreaChar(PConsole con, PSMALL_RECT rc)
@@ -691,33 +766,6 @@ void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc)
     for (SHORT row = rc->Top; row <= rc->Bottom; ++row) {
         COORD pos = { rc->Left, row };
         FillConsoleOutputAttribute(con->hOut, attr, cols, pos, &rwNum);
-    }
-}
-
-void writeCharBuf(PConsole con, CHAR_INFO* charBuf, COORD bufSize, COORD bufCoord, PSMALL_RECT writeRect)
-{
-    //for (auto& chInfo : statusCharBuf)
-    //  chInfo = { L' ', STATUSATTR };
-    //WriteConsoleOutputW(con->hOut, statusCharBuf, statusBufSize, statusBufCoord, &iStatusRect);
-    //SetConsoleTextAttribute();
-}
-
-void setCharBuf(PConsole con, CHAR_INFO* charBuf, COORD charCoord, const wchar_t* wchars, WORD attr)
-{
-    int bufIndex = 0, wchIndex = 0;
-    for (int row = 0; row < charCoord.Y; ++row) {
-        for (int col = 0; col < charCoord.X; ++col) {
-            wchar_t wch = wchars[wchIndex++];
-            CHAR_INFO ci = { { wch }, attr };
-            charBuf[bufIndex++] = ci;
-            if (wch > 255) {
-                ++col;
-                ++bufIndex;
-                //charBuf[bufIndex++] = CHAR_INFO{ L' ', attr };
-            }
-        }
-        while (wchars[wchIndex++] != L'\n')
-            ; // 递进到下一行
     }
 }
 

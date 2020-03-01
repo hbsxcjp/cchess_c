@@ -7,29 +7,30 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-// 从某棋盘内某行、某列位置取得一个棋子
-inline static Piece getPiece_rc(const Board* board,
-    int row, int col)
+Piece getPiece_rc(const PBoard board, int row, int col)
 {
     return getPiece_s(board, getSeat_rc(row, col));
 }
 
-// 置入某棋盘内某行、某列位置一个棋子
-inline static void setPiece_rc(Board* board, int row, int col, Piece piece)
+inline static void setPiece_s(PBoard board, Seat seat, Piece piece) { board->pieces[seat] = piece; }
+
+void setPiece_rc(PBoard board, int row, int col, Piece piece)
 {
     setPiece_s(board, getSeat_rc(row, col), piece);
 }
 
-Board* newBoard(void)
+Piece getPiece_s(const PBoard board, Seat seat) { return board->pieces[seat]; }
+
+PBoard newBoard(void)
 {
-    Board* board = malloc(sizeof(Board));
+    PBoard board = malloc(sizeof(Board));
     for (int i = 0; i < BOARDLEN; ++i)
         board->pieces[i] = BLANKPIECE;
     board->bottomColor = RED;
     return board;
 }
 
-wchar_t* getPieChars_FEN(wchar_t* pieChars, wchar_t* FEN, size_t n)
+wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN, size_t n)
 {
     for (int i = 0, index = 0; i < n && index < SEATNUM; ++i) {
         wchar_t ch = FEN[i];
@@ -43,9 +44,10 @@ wchar_t* getPieChars_FEN(wchar_t* pieChars, wchar_t* FEN, size_t n)
     return pieChars;
 }
 
-wchar_t* getPieChars_board(wchar_t* pieChars, const Board* board)
+wchar_t* getPieChars_board(wchar_t* pieChars, const PBoard board)
 {
-    for (int index = 0, row = RowUpIndex_; row >= RowLowIndex_; --row)
+    int index = 0;
+    for (int row = RowUpIndex_; row >= RowLowIndex_; --row)
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col)
             pieChars[index++] = getChar(getPiece_rc(board, row, col));
     pieChars[SEATNUM] = L'\x0';
@@ -64,7 +66,7 @@ wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
                     FEN[index_F++] = L'0' + blankNum;
                 FEN[index_F++] = pieChars[index_p];
                 blankNum = 0;
-            } else if (pieChars[index_p] == BLANKCHAR) // 肯定为真, index_p+1
+            } else //if (pieChars[index_p] == BLANKCHAR) // 肯定为真
                 blankNum++;
         }
         if (blankNum > 0)
@@ -75,7 +77,7 @@ wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
     return FEN;
 }
 
-void setBoard(Board* board, const wchar_t* pieChars)
+void setBoard(PBoard board, const wchar_t* pieChars)
 {
     int seatNum = wcslen(pieChars);
     assert(seatNum == SEATNUM);
@@ -85,24 +87,35 @@ void setBoard(Board* board, const wchar_t* pieChars)
     setBottomColor(board);
 }
 
-void setBottomColor(Board* board)
+void setBottomColor(PBoard board)
 {
+    Seat seats[SEATNUM] = {};
+    int count = putSeats(seats, true, KING);
+    for (int i = 0; i < count; ++i) {
+        Piece piece = getPiece_s(board, seats[i]);
+        if (piece != BLANKPIECE && getKind(piece) == KING) {
+            board->bottomColor = getColor(piece);
+            return;
+        }
+    }
+    /*
     for (int row = RowLowIndex_; row <= RowLowMidIndex_; ++row)
         for (int col = ColMidLowIndex_; col <= ColMidUpIndex_; ++col) {
             Piece piece = getPiece_rc(board, row, col);
-            if (piece != BLANKPIECE && getKind(piece) == KING) {
+            if (getKind(piece) == KING) { //piece != BLANKPIECE &&
                 board->bottomColor = getColor(piece);
                 return;
             }
         }
+        //*/
 }
 
-bool isBottomSide(const Board* board, PieceColor color)
+bool isBottomSide(const PBoard board, PieceColor color)
 {
     return board->bottomColor == color;
 }
 
-Seat getKingSeat(const Board* board, PieceColor color)
+Seat getKingSeat(const PBoard board, PieceColor color)
 {
     Seat seats[SEATNUM] = {};
     int count = putSeats(seats, isBottomSide(board, color), KING);
@@ -115,23 +128,24 @@ Seat getKingSeat(const Board* board, PieceColor color)
     return -1;
 }
 
-int getLiveSeats(Seat* pseats, size_t n, const Board* board, PieceColor color,
-    const wchar_t name, const int findCol, bool getStronge)
+int getLiveSeats(Seat* pseats, size_t n, const PBoard board, PieceColor color,
+    wchar_t name, int findCol, bool getStronge)
 {
     int count = 0;
     for (int row = RowLowIndex_; row <= RowUpIndex_; ++row)
         for (int col = ColLowIndex_; col <= ColUpIndex_; ++col) {
-            Piece piece = getPiece_rc(board, row, col);
+            Seat seat = getSeat_rc(row, col);
+            Piece piece = getPiece_s(board, seat);
             if ((piece != BLANKPIECE && getColor(piece) == color)
                 && (name == L'\x0' || name == getPieName(piece))
                 && (findCol == -1 || col == findCol)
                 && (!getStronge || getKind(piece) >= KNIGHT))
-                pseats[count++] = getSeat_rc(row, col);
+                pseats[count++] = seat;
         }
     return count;
 }
 
-int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wchar_t name)
+int getSortPawnLiveSeats(Seat* pseats, const PBoard board, PieceColor color, wchar_t name)
 {
     Seat seats[PIECENUM] = { 0 };
     int liveCount = getLiveSeats(seats, PIECENUM, board, color, name, -1, false),
@@ -153,7 +167,7 @@ int getSortPawnLiveSeats(Seat* pseats, const Board* board, PieceColor color, wch
     return count;
 }
 
-bool isKilled(Board* board, PieceColor color)
+bool isKilled(const PBoard board, PieceColor color)
 {
     PieceColor othColor = (color == RED ? BLACK : RED);
     Seat kingSeat = getKingSeat(board, color),
@@ -188,7 +202,7 @@ bool isKilled(Board* board, PieceColor color)
     return false;
 }
 
-bool isDied(Board* board, PieceColor color)
+bool isDied(PBoard board, PieceColor color)
 {
     Seat fseats[PIECENUM], mseats[BOARDROW + BOARDCOL];
     int count = getLiveSeats(fseats, PIECENUM, board,
@@ -260,7 +274,7 @@ int putSeats(Seat* pseats, bool isBottom, PieceKind kind)
 // 以后如追求速度，可做预先计算保存为数组，运行时直接提取
 // Seat kingMoveSeats[fseat][91] [0]:count
 // (象、马、车、炮、卒与board有关,可另起函数筛选)
-int moveSeats(Seat* pseats, Board* board, Seat fseat)
+int moveSeats(Seat* pseats, const PBoard board, Seat fseat)
 {
     int count = 0, frow = getRow_s(fseat), fcol = getCol_s(fseat);
     Piece fpiece = getPiece_rc(board, frow, fcol);
@@ -496,28 +510,31 @@ int moveSeats(Seat* pseats, Board* board, Seat fseat)
     return count;
 }
 
-int getMoveSeats(Seat* pseats, int count, Board* board, Seat fseat)
+int getMoveSeats(Seat* pseats, int count, PBoard board, Seat fseat)
 {
     int index = 0;
     PieceColor color = getColor(getPiece_s(board, fseat));
     while (index < count) {
         // 筛除移动后被将军位置
-        Seat* ptseat = &(pseats[index]);
-        Piece eatPiece = moveTo(board, fseat, *ptseat, BLANKPIECE);
+        //Seat* ptseat = &(pseats[index]);
+        //Piece eatPiece = movePiece(board, fseat, *ptseat, BLANKPIECE);
+        Piece eatPiece = movePiece(board, fseat, pseats[index], BLANKPIECE);
         // isKilled函数需要调用moveSeats函数，因此getMoveSeats与moveSeats必须分离
         bool isKill = isKilled(board, color);
-        moveTo(board, *ptseat, fseat, eatPiece);
+        //movePiece(board, *ptseat, fseat, eatPiece);
+        movePiece(board, pseats[index], fseat, eatPiece);
         if (isKill) {
             --count; // 减少count
             if (index < count) // 检查index后是否还有seat？
-                *ptseat = pseats[count]; // 将最后一个seat代替index处seat
+                //*ptseat = pseats[count]; // 将最后一个seat代替index处seat
+                pseats[index] = pseats[count]; // 将最后一个seat代替index处seat
         } else
             ++index; // 不会将军后，index前进一个
     }
     return count;
 }
 
-Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece)
+Piece movePiece(PBoard board, Seat fseat, Seat tseat, Piece eatPiece)
 {
     Piece piece = getPiece_s(board, tseat);
     setPiece_s(board, tseat, getPiece_s(board, fseat));
@@ -525,7 +542,7 @@ Piece moveTo(Board* board, Seat fseat, Seat tseat, Piece eatPiece)
     return piece;
 }
 
-void changeBoard(Board* board, ChangeType ct)
+void changeBoard(PBoard board, ChangeType ct)
 {
     if (ct == EXCHANGE)
         for (int row = 0; row < BOARDROW; ++row)
@@ -551,36 +568,27 @@ void changeBoard(Board* board, ChangeType ct)
         board->bottomColor = !(board->bottomColor);
 }
 
-wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
-{
-    const wchar_t* PRESTR[] = {
-        L"　　　　　　　黑　方　　　　　　　\n１　２　３　４　５　６　７　８　９\n",
-        L"　　　　　　　红　方　　　　　　　\n一　二　三　四　五　六　七　八　九\n"
-    };
-    const wchar_t* SUFSTR[] = {
-        L"九　八　七　六　五　四　三　二　一\n　　　　　　　红　方　　　　　　　\n",
-        L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
-    };
-    //*
-    wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
-                           "┃　│　│　│╲│╱│　│　│　┃\n"
-                           "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                           "┃　│　│　│╱│╲│　│　│　┃\n"
-                           "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                           "┃　│　│　│　│　│　│　│　┃\n"
-                           "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                           "┃　│　│　│　│　│　│　│　┃\n"
-                           "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
-                           "┃　　　　　　　　　　　　　　　┃\n"
-                           "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
-                           "┃　│　│　│　│　│　│　│　┃\n"
-                           "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                           "┃　│　│　│　│　│　│　│　┃\n"
-                           "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                           "┃　│　│　│╲│╱│　│　│　┃\n"
-                           "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                           "┃　│　│　│╱│╲│　│　│　┃\n"
-                           "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
+wchar_t* getBoardString(wchar_t* boardStr, const PBoard board)
+{ //*
+    static const wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
+                                        "┃　│　│　│╲│╱│　│　│　┃\n"
+                                        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                        "┃　│　│　│╱│╲│　│　│　┃\n"
+                                        "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+                                        "┃　　　　　　　　　　　　　　　┃\n"
+                                        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                        "┃　│　│　│╲│╱│　│　│　┃\n"
+                                        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                        "┃　│　│　│╱│╲│　│　│　┃\n"
+                                        "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
     //*/
     /*/
     wchar_t boardStr_t[] = L"　　＋－－－－－－－－－－－－－－－＋\n"
@@ -603,17 +611,34 @@ wchar_t* getBoardString(wchar_t* boardStr, const Board* board)
                            "　　︱　︱　︱　︱／︱＼︱　︱　︱　︱\n"
                            "　　＋－－－－－－－－－－－－－－－＋\n"; //全角字符，输出控制台屏幕使用
     //*/
+    wcscpy(boardStr, boardStr_t);
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             Piece piece = getPiece_rc(board, row, col);
             if (piece != BLANKPIECE)
-                boardStr_t[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
+                boardStr[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
         }
-    //boardStr[0] = L'\x0';
-    wcscpy(boardStr, PRESTR[board->bottomColor]);
-    wcscat(boardStr, boardStr_t);
-    wcscat(boardStr, SUFSTR[board->bottomColor]);
     return boardStr;
+}
+
+// 棋盘上边标识字符串
+wchar_t* getBoardPreString(wchar_t* preStr, const PBoard board)
+{
+    static const wchar_t* PRESTR[] = {
+        L"　　　　　　　黑　方　　　　　　　\n１　２　３　４　５　６　７　８　９\n",
+        L"　　　　　　　红　方　　　　　　　\n一　二　三　四　五　六　七　八　九\n"
+    };
+    return wcscpy(preStr, PRESTR[board->bottomColor]);
+}
+
+// 棋盘下边标识字符串
+wchar_t* getBoardSufString(wchar_t* sufStr, const PBoard board)
+{
+    static const wchar_t* SUFSTR[] = {
+        L"九　八　七　六　五　四　三　二　一\n　　　　　　　红　方　　　　　　　\n",
+        L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
+    };
+    return wcscpy(sufStr, SUFSTR[board->bottomColor]);
 }
 
 // 测试本翻译单元各种对象、函数
@@ -637,7 +662,7 @@ void testBoard(FILE* fout)
         //*/
 
         //* 设置棋局，生成PieChars，转换成FEN
-        Board* board = newBoard();
+        PBoard board = newBoard();
         setBoard(board, pieChars);
 
         getPieChars_board(pieChars, board);
@@ -648,7 +673,7 @@ void testBoard(FILE* fout)
         //*/
 
         // 取得将帅位置，打印棋局
-        wchar_t boardStr[HUNDRED_THOUSAND_SIZE];
+        wchar_t boardStr[SUPERWIDEWCHARSIZE];
         Seat rkseat = getKingSeat(board, RED),
              bkseat = getKingSeat(board, BLACK);
         //*// 一条语句内不要包含多个可改变局部变量值且返回局部变量指针的函数(因为可能返回同一个指针地址？)
@@ -711,7 +736,7 @@ void testBoard(FILE* fout)
         }
         //*/
 
-        /* 取得各棋子的可放置位置
+        //* 取得各棋子的可放置位置
         for (int color = 0; color < 2; ++color) {
             for (int index = 0; index < PIECEKINDNUM; ++index) {
                 Piece piece = (color << 4) | index;
