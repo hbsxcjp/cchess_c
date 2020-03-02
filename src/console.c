@@ -31,11 +31,14 @@ const WORD ShowMenuAttr[] = { 0x80, 0x4F };
 const WORD SelMenuAttr[] = { 0x10, 0x2F };
 const WORD SelMoveAttr[] = { 0x07, 0xF1 };
 
-const WORD RedSideAttr[] = { 0x0C | (BOARDATTR[0] & 0xF0), 0x0C | (BOARDATTR[1] & 0xF0) };
-const WORD BlackSideAttr[] = { 0x00 | (BOARDATTR[0] & 0xF0), 0x00 | (BOARDATTR[1] & 0xF0) };
-const WORD CurmoveAttr[] = { 0x0C | (CURMOVEATTR[0] & 0xF0), 0x0C | (CURMOVEATTR[1] & 0xF0) };
 const WORD RedAttr[] = { 0xCF, 0xCF };
 const WORD BlackAttr[] = { 0x0F, 0x0F };
+const WORD RedSideAttr[] = { 0x0C | (BOARDATTR[0] & 0xF0), 0x0C | (BOARDATTR[1] & 0xF0) };
+const WORD BlackSideAttr[] = { 0x00 | (BOARDATTR[0] & 0xF0), 0x00 | (BOARDATTR[1] & 0xF0) };
+const WORD RedMoveAttr[] = { 0xFC, 0x5F }; // 移动红子突显颜色
+const WORD BlackMoveAttr[] = { 0xF0, 0x9F }; // 移动黑子突显颜色
+const WORD CurmoveAttr[] = { 0x7C, 0xBC };
+const WORD CurmoveRemarkAttr[] = { 0xFC, 0xF0 };
 //const WORD SelRedAttr[] = { 0xFC, 0xC0 };
 //const WORD SelBlackAttr[] = { 0xF0, 0xE0 };
 
@@ -380,6 +383,8 @@ bool operateMove(PConsole con, PKEY_EVENT_RECORD ker)
 
 bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker)
 {
+    COORD pos = { con->iCurmoveRect.Left, con->iCurmoveRect.Bottom - 3 };
+    SetConsoleCursorPosition(con->hOut, pos);
     return false;
 }
 
@@ -391,6 +396,13 @@ void writeAreas(PConsole con)
     writeStatus(con);
 }
 
+COORD getSeatCoord(PConsole con, Seat seat)
+{
+    int row = getRow_s(seat), col = getCol_s(seat);
+    COORD coord = { con->iBoardRect.Left + col * 4, con->iBoardRect.Bottom - BoardTitleRows - row * 2 };
+    return coord;
+}
+
 void writeBoard(PConsole con)
 {
     SMALL_RECT iBoardRect = con->iBoardRect;
@@ -400,12 +412,11 @@ void writeBoard(PConsole con)
     // 棋子文字上颜色
     wchar_t ch;
     getPieChars_board(wstr, con->cm->board); // 行:从上到下
-    for (int i = SEATNUM - 1; i >= 0; --i) {
-        if ((ch = wstr[i]) == BLANKCHAR)
-            continue;
-        // 字符属性函数不识别全角字符，均按半角字符计数
-        COORD ciBoardRect = { (iBoardRect.Left + (i % BOARDCOL) * 4), (iBoardRect.Top + BoardTitleRows + (i / BOARDCOL) * 2) };
-        FillConsoleOutputAttribute(con->hOut, (getColor_ch(ch) == RED ? RedAttr[con->thema] : BlackAttr[con->thema]), 2, ciBoardRect, &rwNum);
+    for (int i = 0; i < SEATNUM; ++i) {
+        if ((ch = wstr[i]) != BLANKCHAR)
+            //字符属性函数不识别全角字符，均按半角字符计数
+            FillConsoleOutputAttribute(con->hOut, (getColor_ch(ch) == RED ? RedAttr[con->thema] : BlackAttr[con->thema]), 2,
+                getSeatCoord(con, getSeat_rc(BOARDROW - 1 - i / BOARDCOL, i % BOARDCOL)), &rwNum);
     }
     writeAreaLineChars(con, getBoardString(wstr, con->cm->board), &iPieBoardRect, 0, 0, true);
 
@@ -434,12 +445,18 @@ void writeCurmove(PConsole con)
     SMALL_RECT iCurmoveRect = con->iCurmoveRect;
     writeAreaLineChars(con, getMoveStr(wstr, con->cm->currentMove), &iCurmoveRect, 0, 0, false);
 
-    // 设置当前着法、注解的突显颜色
-    int cols = iCurmoveRect.Right - iCurmoveRect.Left + 1;
-    int rows[] = { 2, 8, 9, 10, 11, 12 };
-    for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
-        COORD pos = { iCurmoveRect.Left, (iCurmoveRect.Top + rows[i]) };
-        FillConsoleOutputAttribute(con->hOut, CurmoveAttr[con->thema], cols, pos, &rwNum);
+    static bool isStart = true;
+    if (isStart) {
+        // 设置当前着法、注解的突显颜色
+        int cols = iCurmoveRect.Right - iCurmoveRect.Left + 1;
+        int rows[] = { 2, 8, 9, 10, 11, 12 };
+        for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
+            COORD pos = { iCurmoveRect.Left, (iCurmoveRect.Top + rows[i]) };
+            WORD attr = (rows[i] < 9 ? CurmoveAttr[con->thema] : CurmoveRemarkAttr[con->thema]);
+            FillConsoleOutputAttribute(con->hOut, attr, cols, pos, &rwNum);
+        }
+        SetConsoleTextAttribute(con->hOut, CurmoveRemarkAttr[con->thema]);
+        isStart = false;
     }
 }
 
@@ -471,6 +488,15 @@ void writeMove(PConsole con)
     showCoord.X -= firstCol;
     showCoord.Y -= firstRow;
     FillConsoleOutputAttribute(con->hOut, SelMoveAttr[con->thema], 4 * 2, showCoord, &rwNum);
+    // 设置棋盘移动棋子突显
+    PMove curMove = con->cm->currentMove;
+    if (curMove == con->cm->rootMove)
+        return;
+    Seat fseat = curMove->fseat, tseat = curMove->tseat;
+    COORD fcoord = getSeatCoord(con, fseat), tcoord = getSeatCoord(con, tseat);
+    WORD attr = (getColor(getPiece_s(con->cm->board, tseat)) == RED ? RedMoveAttr[con->thema] : BlackMoveAttr[con->thema]);
+    FillConsoleOutputAttribute(con->hOut, attr, 2, fcoord, &rwNum);
+    FillConsoleOutputAttribute(con->hOut, attr, 2, tcoord, &rwNum);
 }
 
 void writeStatus(PConsole con)

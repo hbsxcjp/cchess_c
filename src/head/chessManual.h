@@ -49,9 +49,9 @@ void goEnd(PChessManual cm);
 // 前进到变着
 
 // 后退一步
+void back(PChessManual cm);
 void backNext(PChessManual cm);
 void backOther(PChessManual cm);
-void backNextAndOther(PChessManual cm);
 void backFirst(PChessManual cm);
 
 // 后退至指定move

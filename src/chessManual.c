@@ -1056,44 +1056,44 @@ void goEnd(PChessManual cm)
         go(cm);
 }
 
-void backNext(PChessManual cm)
+static void __doBack(PChessManual cm)
 {
-    if (hasPre(cm) && cm->currentMove == cm->currentMove->pmove->nmove) {
-        __undoMove(cm, cm->currentMove);
-        cm->currentMove = cm->currentMove->pmove;
-    }
+    __undoMove(cm, cm->currentMove);
+    cm->currentMove = cm->currentMove->pmove;
 }
 
-void backNextAndOther(PChessManual cm)
+void back(PChessManual cm)
 {
-    if (hasPre(cm)) {
-        int count = hasPreOther(cm) ? 2 : 1; // 2:变着回退 1:下着回退
-        while (count-- > 0) {
-            __undoMove(cm, cm->currentMove);
-            cm->currentMove = cm->currentMove->pmove;
-        }
-    }
+    if (hasPreOther(cm))
+        backOther(cm);
+    else if (hasPre(cm))
+        __doBack(cm);
+}
+
+void backNext(PChessManual cm)
+{
+    if (hasPre(cm) && !hasPreOther(cm))
+        __doBack(cm);
 }
 
 void backOther(PChessManual cm)
 {
     if (hasPreOther(cm)) {
-        __undoMove(cm, cm->currentMove); // 变着回退
-        cm->currentMove = cm->currentMove->pmove;
+        __doBack(cm); // 变着回退
         __doMove(cm, cm->currentMove); // 前变执行
     }
 }
 
 void backFirst(PChessManual cm)
 {
-    while (cm->currentMove != cm->rootMove)
-        backNextAndOther(cm);
+    while (hasPre(cm))
+        back(cm);
 }
 
 void backTo(PChessManual cm, PMove move)
 {
     while (hasPre(cm) && !isSameMove(cm->currentMove, move))
-        backNextAndOther(cm);
+        back(cm);
 }
 
 void goInc(PChessManual cm, int inc)
@@ -1104,7 +1104,7 @@ void goInc(PChessManual cm, int inc)
             go(cm);
     else
         while (count-- > 0)
-            backNextAndOther(cm);
+            back(cm);
 }
 
 void changeChessManual(PChessManual cm, ChangeType ct)

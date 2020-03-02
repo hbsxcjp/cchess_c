@@ -144,13 +144,13 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const PMove move)
 wchar_t* getMoveStr(wchar_t* wstr, const PMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
-    wsprintfW(wstr, L"%s：%s\n\n现在：%s\n\n下着：%s\n\n下变：%s\n\n注解：%s\n导航: 第 %d 行 第 %d 列\n",
+    wsprintfW(wstr, L"%s：%s\n\n现在：%s\n\n下着：%s\n\n下变：%s\n\n注解：                导航区%2d行%2d列\n%s\n",
         ((!move->pmove || move->pmove->nmove == move) ? L"前着" : L"前变"),
         __getSimpleMoveStr(preWstr, move->pmove),
         __getSimpleMoveStr(thisWstr, move),
         __getSimpleMoveStr(nextWstr, move->nmove),
         __getSimpleMoveStr(otherWstr, move->omove),
-        move->remark, move->nextNo_, move->CC_ColNo_ + 1);
+        move->nextNo_, move->CC_ColNo_ + 1, move->remark);
     return wstr;
 }
 

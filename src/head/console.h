@@ -42,6 +42,7 @@ bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker);
 
 void writeAreas(PConsole con);
 
+COORD getSeatCoord(PConsole con, Seat seat);
 void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
 void writeMove(PConsole con);
