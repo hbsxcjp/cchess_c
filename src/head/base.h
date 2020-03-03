@@ -151,7 +151,7 @@ typedef struct _ChessManual {
 typedef enum {
     SIMPLE,
     SHOWY,
-    HIGHLIGHT
+    //HIGHLIGHT
 } Thema;
 
 // 控制台焦点区域类型
@@ -163,8 +163,22 @@ typedef enum {
     STATUSA
 } Area;
 
+struct _Menu;
+// 演示类型结构
+typedef struct _Console {
+    HANDLE hIn, hOut;
+    PChessManual cm;
+    wchar_t* wstr_PGN_CC;
+    Thema thema;
+    Area curArea, oldArea;
+    SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
+    SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
+    //int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
+    struct _Menu *rootMenu, *curMenu;
+} Console, *PConsole;
+
 // 菜单命令
-typedef void (*MENU_FUNC)(void);
+typedef void (*MENU_FUNC)(PConsole);
 
 // 菜单结构
 typedef struct _Menu {
@@ -179,18 +193,5 @@ typedef struct _MenuData {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
 } MenuData, *PMenuData;
-
-// 演示类型结构
-typedef struct _Console {
-    HANDLE hIn, hOut;
-    PChessManual cm;
-    wchar_t* wstr_PGN_CC;
-    Thema thema;
-    Area curArea, oldArea;
-    SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
-    SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
-    //int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
-    PMenu rootMenu, curMenu;
-} Console, *PConsole;
 
 #endif

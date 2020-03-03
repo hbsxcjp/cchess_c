@@ -7,6 +7,19 @@ PConsole newConsole(const char* fileName);
 
 void delConsole(PConsole con);
 
+void openFile(PConsole con);
+void saveAsFile(PConsole con);
+void exitPrograme(PConsole con);
+
+void exchangeBoard(PConsole con);
+void rotateBoard(PConsole con);
+void symmetryBoard(PConsole con);
+
+void setSimpleThema(PConsole con);
+void setShowyThema(PConsole con);
+
+void about(PConsole con);
+
 void operateWin(PConsole con);
 
 void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker);
@@ -51,6 +64,8 @@ void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, 
 int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine);
 
 void setArea(PConsole con, Area curArea, Area oldArea);
+
+void initAreas(PConsole con);
 void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawShadow, bool drawFrame);
 // 底、右阴影色
 void initAreaShadow(PConsole con, const PSMALL_RECT rc);
@@ -62,5 +77,6 @@ void cleanSubMenuArea(PConsole con, const PSMALL_RECT rc, bool storgeMenu);
 void cleanAreaChar(PConsole con, const PSMALL_RECT rc);
 void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
 
+WORD reverseAttr(WORD attr);
 
 #endif
