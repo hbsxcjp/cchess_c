@@ -4,8 +4,10 @@
 #include "head/move.h"
 #include "head/piece.h"
 
-DWORD rwNum; // 公用变量
-wchar_t wstr[WIDEWCHARSIZE];
+static DWORD rwNum; // 公用变量
+static wchar_t wstr[WIDEWCHARSIZE];
+static CHAR_INFO chBuf[50 * 150];
+static COORD homePos = { 0, 0 };
 const wchar_t ProgramName[] = L"中国象棋 ";
 
 const SHORT WinRows = 50, WinCols = 150;
@@ -786,33 +788,53 @@ void cleanAreaWIN(PConsole con)
 void cleanSubMenuArea(PConsole con, const PSMALL_RECT rc, bool storgeMenu)
 {
     cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
+    /*
     COORD pos = { con->MenuRect.Left, con->MenuRect.Bottom };
     FillConsoleOutputCharacterW(con->hOut, L' ', WinCols, pos, &rwNum); // 清除菜单阴影行文字
     FillConsoleOutputAttribute(con->hOut, WINATTR[con->thema], ShadowCols, pos, &rwNum); // 清除阴影最左侧背景块
     initAreaShadow(con, &con->MenuRect); // 清除菜单阴影区背景
     cleanAreaWIN(con); // 清楚窗口背景区
 
+
+    //*/
     // 静态变量，第一次初始化
     static bool hasStorgeMenu = false;
     static Thema curThema;
-    static CHAR_INFO boardCharBuf[10 * 40];
-    static COORD chBufSize = { 0, 0 }, chBufCoord = { 0, 0 };
+    //static CHAR_INFO boardCharBuf[10 * 40];
+    static COORD chBufSize = { 0, 0 }; //, chBufCoord = { 0, 0 };
     static SMALL_RECT chBufRect = { 0, 0, 0, 0 };
     // 恢复已存储的Board区屏幕块信息
     if (hasStorgeMenu && curThema == con->thema)
-        WriteConsoleOutputW(con->hOut, boardCharBuf, chBufSize, chBufCoord, &chBufRect);
+        WriteConsoleOutputW(con->hOut, chBuf, chBufSize, homePos, &chBufRect);
 
     // 存储将被覆盖的Board区屏幕块信息
     chBufRect.Left = rc->Left;
-    chBufRect.Top = con->BoardRect.Top;
+    chBufRect.Top = rc->Top;
+    //con->BoardRect.Top;
     chBufRect.Right = rc->Right;
     chBufRect.Bottom = rc->Bottom;
     chBufSize.X = chBufRect.Right - chBufRect.Left + 1;
     chBufSize.Y = chBufRect.Bottom - chBufRect.Top + 1;
     if ((hasStorgeMenu = storgeMenu)) {
-        ReadConsoleOutputW(con->hOut, boardCharBuf, chBufSize, chBufCoord, &chBufRect);
+        ReadConsoleOutputW(con->hOut, chBuf, chBufSize, homePos, &chBufRect);
         curThema = con->thema;
     }
+    /*
+    static Thema curThema;
+    static bool hasStorgeMenu = false;
+    static SMALL_RECT chBufRect = { 0, 0, 0, 0 };
+    if (hasStorgeMenu && curThema == con->thema)
+        WriteConsoleOutputW(con->hOut, chBuf, getCoordSize(&chBufRect), homePos, rc);
+    //chBufRect = *rc;
+    chBufRect.Left = rc->Left;
+    chBufRect.Top = rc->Top;
+    chBufRect.Right = rc->Right;
+    chBufRect.Bottom = rc->Bottom;
+    if ((hasStorgeMenu = storgeMenu)) {
+        ReadConsoleOutputW(con->hOut, chBuf, getCoordSize(&chBufRect), homePos, rc);
+        curThema = con->thema;
+    }
+    //*/
 }
 
 void cleanAreaChar(PConsole con, PSMALL_RECT rc)
@@ -831,6 +853,12 @@ void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc)
         COORD pos = { rc->Left, row };
         FillConsoleOutputAttribute(con->hOut, attr, cols, pos, &rwNum);
     }
+}
+
+COORD getCoordSize(const PSMALL_RECT rc)
+{
+    COORD rcSize = { rc->Right - rc->Left + 1, rc->Bottom - rc->Top + 1 };
+    return rcSize;
 }
 
 WORD reverseAttr(WORD attr)

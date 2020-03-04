@@ -77,6 +77,7 @@ void cleanSubMenuArea(PConsole con, const PSMALL_RECT rc, bool storgeMenu);
 void cleanAreaChar(PConsole con, const PSMALL_RECT rc);
 void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
 
+COORD getCoordSize(const PSMALL_RECT rc);
 WORD reverseAttr(WORD attr);
 
 #endif
