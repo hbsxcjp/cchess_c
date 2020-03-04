@@ -160,7 +160,8 @@ typedef enum {
     CURMOVEA,
     BOARDA,
     MENUA,
-    STATUSA
+    OPENFILEA,
+    ABOUTA,
 } Area;
 
 struct _Menu;
@@ -173,8 +174,9 @@ typedef struct _Console {
     Area curArea, oldArea;
     SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
     SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
-    //int cmFirstRow, cmFirstCol, mFirstRow, mFirstCol;
     struct _Menu *rootMenu, *curMenu;
+    CHAR_INFO chBuf[40 * 120];
+    SMALL_RECT chBufRect;
 } Console, *PConsole;
 
 // 菜单命令
