@@ -846,8 +846,8 @@ void writeMove_PGN_CCtoWstr(const PChessManual cm, wchar_t** plineStr)
     wmemset(lineStr, L'　', rowNum * colNum);
     for (int row = 0; row < rowNum; ++row) {
         lineStr[(row + 1) * colNum - 1] = L'\n';
-        if (row % 2 == 1)
-            lineStr[row * colNum] = L' '; // 为显示美观, 奇数行改为半角空格
+        //if (row % 2 == 1)
+          //  lineStr[row * colNum] = L' '; // 为显示美观, 奇数行改为半角空格
     }
     lineStr[1] = L'开';
     lineStr[2] = L'始';

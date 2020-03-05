@@ -15,13 +15,15 @@ void symmetryBoard(PConsole con);
 void setSimpleThema(PConsole con);
 void setShowyThema(PConsole con);
 void about(PConsole con);
+void showAbout(PConsole con);
 
 void operateWin(PConsole con);
 void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker);
 void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker);
 
-// 返回是否还停留在菜单区
-bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker);
+void operateMenu(PConsole con, PKEY_EVENT_RECORD ker);
+// 处理子菜单的清除和显示
+void processSubMenu(PConsole con, bool showSubMenu);
 int getMaxSize(PMenu menu);
 wchar_t* getWstr(wchar_t* wstr, PMenu menu);
 SHORT getPosL(PMenu menu);
@@ -53,11 +55,11 @@ void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, 
 int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine);
 
 COORD getSeatCoord(PConsole con, Seat seat);
-void setArea(PConsole con, Area curArea, Area oldArea);
+void setArea(PConsole con, Area curArea);
 
 // 存储/恢复将被覆盖的区域屏幕块信息
-void storageArea(PConsole con, const PSMALL_RECT rc);
-void restoreArea(PConsole con);
+bool storageArea(PConsole con, const PSMALL_RECT rc);
+bool restoreArea(PConsole con);
 
 void initAreas(PConsole con);
 void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawShadow, bool drawFrame);

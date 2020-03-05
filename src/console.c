@@ -33,17 +33,17 @@ const WORD SelMenuAttr[] = { 0x07, 0x2F };
 const WORD SelMoveAttr[] = { 0x07, 0xF1 };
 const WORD ABOUTATTR[] = { 0x70, 0x2F };
 
-const WORD RedAttr[] = { 0xCF, 0xCF };
+const WORD RedAttr[] = { 0x4F, 0x4F };
 const WORD BlackAttr[] = { 0x0F, 0x0F };
-const WORD RedSideAttr[] = { 0x7C, 0xEC };
+const WORD RedSideAttr[] = { 0x74, 0xEC };
 const WORD BlackSideAttr[] = { 0x70, 0xE0 };
-const WORD RedMoveAttr[] = { 0xC0, 0x5F }; // 移动红子突显颜色
-const WORD BlackMoveAttr[] = { 0x8F, 0x9F }; // 移动黑子突显颜色
+const WORD RedMoveAttr[] = { 0xCF, 0xCF }; // 移动红子突显颜色
+const WORD BlackMoveAttr[] = { 0x1F, 0x9F }; // 移动黑子突显颜色
 //const WORD SelRedAttr[] = { 0xFC, 0xC0 };
 //const WORD SelBlackAttr[] = { 0xF0, 0xE0 };
-const WORD CurmoveAttr[] = { 0x7C, 0xBC };
+const WORD CurmoveAttr[] = { 0x74, 0xBC };
 
-const wchar_t* const TabChars[] = { L"═║╔╗╚╝", L"═║╔╗╚╝" }; //L"─│┌┐└┘"
+const wchar_t* const TabChars[] = { L"─│┌┐└┘", L"═║╔╗╚╝" }; //L"─│┌┐└┘"
 
 PConsole newConsole(const char* fileName)
 {
@@ -174,15 +174,22 @@ void setShowyThema(PConsole con) { __setThema(con, SHOWY); }
 
 void about(PConsole con)
 {
-    restoreArea(con);
-    int width = 50, height = 10;
-    COORD pos = { (WinCols - width) / 2, (WinRows - height) / 2 };
-    SMALL_RECT rect = { pos.X, pos.Y, pos.X + width - 1, pos.Y + height - 1 };
-    storageArea(con, &rect);
+    setArea(con, ABOUTA);
+}
 
-    initArea(con, ABOUTATTR[con->thema], &rect, true, true);
-    con->curArea = ABOUTA;
-    writeStatus(con);
+void showAbout(PConsole con)
+{
+    static bool hasStorageArea = false;
+    if (hasStorageArea)
+        hasStorageArea = restoreArea(con);
+    else {
+        int width = 50, height = 10;
+        COORD pos = { (WinCols - width) / 2, (WinRows - height) / 2 };
+        SMALL_RECT rect = { pos.X, pos.Y, pos.X + width - 1, pos.Y + height - 1 };
+        hasStorageArea = storageArea(con, &rect); // 存储本显示区
+
+        initArea(con, ABOUTATTR[con->thema], &rect, true, true);
+    }
 }
 
 void operateWin(PConsole con)
@@ -205,17 +212,19 @@ void operateWin(PConsole con)
                 else if (ker->wVirtualKeyCode == VK_ESCAPE) {
                     if (con->curArea != MENUA)
                         return;
-                    setArea(con, con->oldArea, con->oldArea);
+                    setArea(con, con->oldArea);
+                    break;
                 } else if (ker->wVirtualKeyCode == VK_TAB) {
-                    Area oldArea = con->curArea;
-                    Area curArea = (4 + oldArea + ((ker->dwControlKeyState & SHIFT_PRESSED) ? -1 : 1)) % 4; // 四个区域循环
-                    setArea(con, curArea, oldArea);
+                    Area curArea = (4 + con->curArea + ((ker->dwControlKeyState & SHIFT_PRESSED) ? -1 : 1)) % 4; // 四个区域循环
+                    setArea(con, curArea);
+                    break;
                 } else if ((ker->dwControlKeyState & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED))
                     && ker->wVirtualKeyCode == 0x12) {
                     if (con->curArea != MENUA)
-                        setArea(con, MENUA, con->curArea);
+                        setArea(con, MENUA);
                     else
-                        setArea(con, con->oldArea, con->oldArea);
+                        setArea(con, con->oldArea);
+                    break;
                 }
                 keyEventProc(con, ker);
                 break;
@@ -244,11 +253,9 @@ void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker)
         break;
     case MENUA:
         operateMenu(con, ker);
-        //if (!operateMenu(con, ker))
-        //setArea(con, con->oldArea, con->oldArea);
         break;
     case ABOUTA:
-        setArea(con, con->oldArea, con->oldArea);
+        setArea(con, con->oldArea);
         break;
     default:
         break;
@@ -259,9 +266,8 @@ void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker)
 {
 }
 
-bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
+void operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
 {
-    bool stayMenu = true;
     switch (ker->wVirtualKeyCode) {
     case 'F':
         con->curMenu = getTopIndexMenu(con->rootMenu, 0)->childMenu;
@@ -296,37 +302,48 @@ bool operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
         con->curMenu = getSameLevelMenu(con->rootMenu, con->curMenu, false);
         break;
     case VK_RETURN:
+        //setArea(con, con->oldArea);
         if (con->curMenu->func)
             con->curMenu->func(con); // 执行当前菜单对应的命令
-        return false;
+        return;
     default:
-        break;
+        return;
     }
 
-    cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
-    restoreArea(con);
-    if (stayMenu) {
-        SHORT level = con->curMenu->childIndex;
-        SHORT posL = getPosL(con->curMenu) + ShadowCols,
-              posT = con->iMenuRect.Bottom + (level == 0 ? 0 : 1),
-              posR = posL + (level == 0 ? (wcslen(con->curMenu->name) + 3) : getMaxSize(con->curMenu)) + ShadowCols,
-              posB = posT + (level == 0 ? 0 : getBottomMenu(con->curMenu)->childIndex - 1) + ShadowRows;
-        SMALL_RECT rect = { posL, posT, posR, posB };
+    processSubMenu(con, true);
+}
 
-        if (level > 0) {
-            storageArea(con, &rect);
-            initArea(con, ShowMenuAttr[con->thema], &rect, true, false);
-
-            // 显示子菜单屏幕区
-            SMALL_RECT irect = { posL, posT, posR - ShadowCols, posB - ShadowRows };
-            writeAreaLineChars(con, getWstr(wstr, con->curMenu), &irect, 0, 0, false);
-        }
-        // 选择项目突显
-        COORD pos = { posL, level };
-        FillConsoleOutputAttribute(con->hOut, SelMenuAttr[con->thema], posR - posL - ShadowCols + 1, pos, &rwNum);
-        writeStatus(con);
+void processSubMenu(PConsole con, bool showSubMenu)
+{
+    static bool hasTopSelMenu = false, hasStorageArea = false;
+    if (hasTopSelMenu) {
+        cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
+        hasTopSelMenu = false;
     }
-    return stayMenu;
+    if (hasStorageArea)
+        hasStorageArea = restoreArea(con);
+    if (!showSubMenu) // 不需要显示子菜单
+        return;
+
+    SHORT level = con->curMenu->childIndex;
+    SHORT posL = getPosL(con->curMenu) + ShadowCols,
+          posT = con->iMenuRect.Bottom + (level == 0 ? 0 : 1),
+          posR = posL + (level == 0 ? (wcslen(con->curMenu->name) + 3) : getMaxSize(con->curMenu)) + ShadowCols,
+          posB = posT + (level == 0 ? 0 : getBottomMenu(con->curMenu)->childIndex - 1) + ShadowRows;
+    SMALL_RECT rect = { posL, posT, posR, posB };
+
+    if (level > 0) {
+        hasStorageArea = storageArea(con, &rect);
+        // 显示子菜单屏幕区
+        initArea(con, ShowMenuAttr[con->thema], &rect, true, false);
+        SMALL_RECT irect = { posL, posT, posR - ShadowCols, posB - ShadowRows };
+        writeAreaLineChars(con, getWstr(wstr, con->curMenu), &irect, 0, 0, false);
+    }
+    hasTopSelMenu = level == 0; // 保存是否有顶层菜单被选
+    // 选择项目突显
+    COORD pos = { posL, level };
+    FillConsoleOutputAttribute(con->hOut, SelMenuAttr[con->thema], posR - posL - ShadowCols + 1, pos, &rwNum);
+    writeStatus(con);
 }
 
 // 菜单最大尺寸
@@ -428,7 +445,7 @@ bool operateMove(PConsole con, PKEY_EVENT_RECORD ker)
         goEnd(con->cm);
         break;
     case VK_RETURN:
-        setArea(con, CURMOVEA, con->curArea);
+        setArea(con, CURMOVEA);
         break;
     default:
         printf("key:%x/", ker->wVirtualKeyCode);
@@ -679,31 +696,50 @@ void delMenu(PMenu menu)
     free(menu);
 }
 
-void setArea(PConsole con, Area curArea, Area oldArea)
+void setArea(PConsole con, Area curArea)
 {
-    bool changed = con->curArea != curArea;
-    if (con->curArea == ABOUTA || ((con->curArea == MENUA) && changed)) {
-        if (con->curArea == MENUA)
-            cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
-        restoreArea(con);
+    Area thisArea = con->curArea;
+    if (thisArea != curArea) {
+        switch (thisArea) { // 退出区域
+        case MENUA:
+            processSubMenu(con, false);
+            break;
+        case ABOUTA:
+            showAbout(con);
+            break;
+        default:
+            break;
+        }
     }
-    con->curArea = curArea;
-    con->oldArea = oldArea;
-    if (changed)
-        writeStatus(con);
+
+    if (thisArea == MOVEA || thisArea == CURMOVEA || thisArea == BOARDA)
+        con->oldArea = thisArea;
+    switch ((con->curArea = curArea)) { // 进入区域
+    case MENUA:
+        processSubMenu(con, true);
+        break;
+    case ABOUTA:
+        showAbout(con);
+        break;
+    default:
+        break;
+    }
+    writeStatus(con);
 }
 
-void storageArea(PConsole con, const PSMALL_RECT rc)
+bool storageArea(PConsole con, const PSMALL_RECT rc)
 {
     con->chBufRect = *rc;
     COORD chBufSize = { rc->Right - rc->Left + 1, rc->Bottom - rc->Top + 1 };
     ReadConsoleOutputW(con->hOut, con->chBuf, chBufSize, homePos, rc);
+    return true;
 }
 
-void restoreArea(PConsole con)
+bool restoreArea(PConsole con)
 {
     COORD chBufSize = { con->chBufRect.Right - con->chBufRect.Left + 1, con->chBufRect.Bottom - con->chBufRect.Top + 1 };
     WriteConsoleOutputW(con->hOut, con->chBuf, chBufSize, homePos, &con->chBufRect);
+    return false;
 }
 
 void initAreas(PConsole con)
@@ -787,11 +823,13 @@ void initAreaFrame(PConsole con, const PSMALL_RECT rc)
 {
     SHORT left = rc->Left + 1, right = rc->Right - 1;
     const wchar_t* const tabChar = TabChars[con->thema];
+    // 顶、底行
     int rows[] = { rc->Top, rc->Bottom };
     for (int i = sizeof(rows) / sizeof(rows[0]) - 1; i >= 0; --i) {
         COORD pos = { left, rows[i] };
         FillConsoleOutputCharacterW(con->hOut, tabChar[0], rc->Right - rc->Left - 2, pos, &rwNum);
     }
+    // 左、右列
     for (SHORT row = rc->Top + 1; row < rc->Bottom; ++row) {
         int cols[] = { rc->Left, right };
         for (int i = sizeof(cols) / sizeof(cols[0]) - 1; i >= 0; --i) {
@@ -799,6 +837,7 @@ void initAreaFrame(PConsole con, const PSMALL_RECT rc)
             FillConsoleOutputCharacterW(con->hOut, tabChar[1], 1, pos, &rwNum);
         }
     }
+    // 四个角
     COORD posLT = { rc->Left, rc->Top };
     COORD posRT = { right, rc->Top };
     COORD posLB = { rc->Left, rc->Bottom };
