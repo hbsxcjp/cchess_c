@@ -21,8 +21,8 @@ wchar_t* getWString(FILE* fin);
 // 复制文件
 int copyFile(const char* SourceFile, const char* NewFile);
 
-// 提取目录下的文件名列表
-void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName);
+// 提取目录下的文件信息
+void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName);
 
 // 测试函数
 void testTools(FILE* fout);

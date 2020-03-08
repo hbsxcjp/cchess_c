@@ -7,19 +7,23 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-Piece getPiece_rc(const PBoard board, int row, int col)
-{
-    return getPiece_s(board, getSeat_rc(row, col));
-}
+inline Seat getSeat_rc(int row, int col) { return (row << 4) | col; }
+
+inline int getRow_s(Seat seat) { return seat >> 4; }
+
+inline int getCol_s(Seat seat) { return seat & 0x0F; }
+
+inline int getOtherRow_s(Seat seat) { return BOARDROW - 1 - getRow_s(seat); }
+
+inline int getOtherCol_s(Seat seat) { return BOARDCOL - 1 - getCol_s(seat); }
+
+inline Piece getPiece_rc(const PBoard board, int row, int col) { return getPiece_s(board, getSeat_rc(row, col)); }
 
 inline static void setPiece_s(PBoard board, Seat seat, Piece piece) { board->pieces[seat] = piece; }
 
-void setPiece_rc(PBoard board, int row, int col, Piece piece)
-{
-    setPiece_s(board, getSeat_rc(row, col), piece);
-}
+inline void setPiece_rc(PBoard board, int row, int col, Piece piece) { setPiece_s(board, getSeat_rc(row, col), piece); }
 
-Piece getPiece_s(const PBoard board, Seat seat) { return board->pieces[seat]; }
+inline Piece getPiece_s(const PBoard board, Seat seat) { return board->pieces[seat]; }
 
 PBoard newBoard(void)
 {
@@ -89,7 +93,7 @@ void setBoard(PBoard board, const wchar_t* pieChars)
 
 void setBottomColor(PBoard board)
 {
-    Seat seats[SEATNUM] = {};
+    Seat seats[9];
     int count = putSeats(seats, true, KING);
     for (int i = 0; i < count; ++i) {
         Piece piece = getPiece_s(board, seats[i]);
@@ -98,26 +102,13 @@ void setBottomColor(PBoard board)
             return;
         }
     }
-    /*
-    for (int row = RowLowIndex_; row <= RowLowMidIndex_; ++row)
-        for (int col = ColMidLowIndex_; col <= ColMidUpIndex_; ++col) {
-            Piece piece = getPiece_rc(board, row, col);
-            if (getKind(piece) == KING) { //piece != BLANKPIECE &&
-                board->bottomColor = getColor(piece);
-                return;
-            }
-        }
-        //*/
 }
 
-bool isBottomSide(const PBoard board, PieceColor color)
-{
-    return board->bottomColor == color;
-}
+inline bool isBottomSide(const PBoard board, PieceColor color) { return board->bottomColor == color; }
 
 Seat getKingSeat(const PBoard board, PieceColor color)
 {
-    Seat seats[SEATNUM] = {};
+    Seat seats[9];
     int count = putSeats(seats, isBottomSide(board, color), KING);
     for (int i = 0; i < count; ++i) {
         Piece piece = getPiece_s(board, seats[i]);
@@ -547,10 +538,9 @@ void changeBoard(PBoard board, ChangeType ct)
     if (ct == EXCHANGE)
         for (int row = 0; row < BOARDROW; ++row)
             for (int col = 0; col < BOARDCOL; ++col) {
-                Seat seat = getSeat_rc(row, col);
-                Piece piece = board->pieces[seat];
+                Piece piece = getPiece_rc(board, row, col);
                 if (piece != BLANKPIECE)
-                    setPiece_s(board, seat, getOtherPiece(piece));
+                    setPiece_rc(board, row, col, getOtherPiece(piece));
             }
     else {
         Piece oldPieces[BOARDLEN];

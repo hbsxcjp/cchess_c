@@ -4,12 +4,17 @@ static const wchar_t* PieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
 
 const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
 
-wchar_t getChar(Piece piece)
-{
-    return piece == BLANKPIECE ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)];
-}
+inline PieceColor getColor(Piece piece) { return (piece & 0x10) >> 4; }
 
-PieceColor getColor_ch(wchar_t ch) { return (bool)islower(ch); }
+inline PieceColor getOtherColor(Piece piece) { return getColor(piece) == RED ? BLACK : RED; }
+
+inline PieceKind getKind(Piece piece) { return piece & 0x0F; }
+
+inline PieceKind getOtherPiece(Piece piece) { return (getOtherColor(piece) << 4) | getKind(piece); }
+
+inline wchar_t getChar(Piece piece) { return piece == BLANKPIECE ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)]; }
+
+inline PieceColor getColor_ch(wchar_t ch) { return (bool)islower(ch); }
 
 Piece getPiece_ch(wchar_t ch)
 {
@@ -17,10 +22,7 @@ Piece getPiece_ch(wchar_t ch)
     return (ch == BLANKCHAR) ? BLANKPIECE : ((color << 4) | (wcschr(PieceChars[color], ch) - PieceChars[color]));
 }
 
-wchar_t getPieName(Piece piece)
-{
-    return PieceNames[getColor(piece)][getKind(piece)];
-}
+inline wchar_t getPieName(Piece piece) { return PieceNames[getColor(piece)][getKind(piece)]; }
 
 wchar_t getPieName_T(Piece piece)
 {

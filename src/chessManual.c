@@ -152,7 +152,7 @@ static void __readMove_XQF(PMove move, FILE* fin)
         __readMove_XQF(addOther(move), fin);
 }
 
-void setMoveNums(PChessManual cm, PMove move)
+void setMoveZhstrNum(PChessManual cm, PMove move)
 {
     ++cm->movCount_;
     if (move->otherNo_ > cm->maxCol_)
@@ -175,13 +175,13 @@ void setMoveNums(PChessManual cm, PMove move)
     setZhStr(move, cm->board);
     __doMove(cm, move);
     if (move->nmove != NULL)
-        setMoveNums(cm, move->nmove);
+        setMoveZhstrNum(cm, move->nmove);
     __undoMove(cm, move);
 
     // 后广度搜索
     if (move->omove != NULL) {
         ++cm->maxCol_;
-        setMoveNums(cm, move->omove);
+        setMoveZhstrNum(cm, move->omove);
     }
 }
 
@@ -847,7 +847,7 @@ void writeMove_PGN_CCtoWstr(const PChessManual cm, wchar_t** plineStr)
     for (int row = 0; row < rowNum; ++row) {
         lineStr[(row + 1) * colNum - 1] = L'\n';
         //if (row % 2 == 1)
-          //  lineStr[row * colNum] = L' '; // 为显示美观, 奇数行改为半角空格
+        //  lineStr[row * colNum] = L' '; // 为显示美观, 奇数行改为半角空格
     }
     lineStr[1] = L'开';
     lineStr[2] = L'始';
@@ -906,7 +906,10 @@ static void writeMove_PGN_CC(const PChessManual cm, FILE* fout)
 
 PChessManual readChessManual(PChessManual cm, const char* filename)
 {
-    RecFormat fmt = __getRecFormat(getExt(filename));
+    const char* ext = getExt(filename);
+    if (!ext)
+        return NULL;
+    RecFormat fmt = __getRecFormat(ext);
     if (fmt == NOTFMT) {
         wprintf(L"未实现的打开文件扩展名！");
         return NULL;
@@ -956,7 +959,7 @@ PChessManual readChessManual(PChessManual cm, const char* filename)
         __getFENToSetBoard(cm);
 
     if (cm->rootMove->nmove != NULL)
-        setMoveNums(cm, cm->rootMove->nmove); // 驱动函数
+        setMoveZhstrNum(cm, cm->rootMove->nmove); // 驱动函数
     fclose(fin);
     return cm;
 }
@@ -1056,6 +1059,21 @@ void goEnd(PChessManual cm)
         go(cm);
 }
 
+void goTo(PChessManual cm, PMove move)
+{
+    cm->currentMove = move;
+    int index = 0;
+    PMove preMoves[100];
+    while (move != cm->rootMove) {
+        preMoves[index++] = move;
+        if (move->pmove->omove == move) // 本着为变着
+            move = move->pmove;
+        move = move->pmove;
+    }
+    while (--index >= 0)
+        __doMove(cm, preMoves[index]);
+}
+
 static void __doBack(PChessManual cm)
 {
     __undoMove(cm, cm->currentMove);
@@ -1109,8 +1127,21 @@ void goInc(PChessManual cm, int inc)
 
 void changeChessManual(PChessManual cm, ChangeType ct)
 {
+    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
+    PMove curMove = cm->currentMove;
+    backFirst(cm);
+
+    // info未更改
     changeBoard(cm->board, ct);
-    changeMove(cm->rootMove, ct); // info,remark的描述无法更改
+    PMove firstMove = cm->rootMove->nmove;
+    if (firstMove != NULL) {
+        if (ct == ROTATE || ct == SYMMETRY)
+            changeMove(firstMove, ct);
+        if (ct == EXCHANGE || ct == SYMMETRY)
+            setMoveZhstrNum(cm, firstMove);
+    }
+
+    goTo(cm, curMove);
 }
 
 static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,

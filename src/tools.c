@@ -93,61 +93,60 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-static void __getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
+static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName)
 {
-    if (*fileCount == maxCount) {
+    if (*fileCount > maxCount) {
         wprintf(L"文件数量已达到最大值。\n");
         return;
     }
 
+    //wprintf(L"%d: %s\n", __LINE__, dirName);
     long hFile = 0; //文件句柄
     struct _wfinddata_t fileinfo; //文件信息
-    wchar_t findDirName[FILENAME_MAX] = { 0 };
-    wcscpy(findDirName, dirName);
-    //wprintf(L"%d: %s\n", __LINE__, findDirName);
-    if ((hFile = _wfindfirst(wcscat(findDirName, L"\\*"), &fileinfo)) == -1)
+    wchar_t findDirName[FILENAME_MAX];
+    wcscat(wcscpy(findDirName, dirName), L"\\*");
+    if ((hFile = _wfindfirst(findDirName, &fileinfo)) == -1)
         return;
+
     do {
-        if (wcscmp(fileinfo.name, L".") == 0 || wcscmp(fileinfo.name, L"..") == 0)
+        if (wcscmp(fileinfo.name, L".") == 0) // 本级目录
             continue;
-        wchar_t* findName = malloc(FILENAME_MAX);
-        wcscat(wcscat(wcscpy(findName, dirName), L"\\"), fileinfo.name);
-        //wprintf(L"%d: %s\n", __LINE__, findName);
+        struct _wfinddata_t* afileInfo = &fileInfos[(*fileCount)++];
+        afileInfo->attrib = fileinfo.attrib;
+        afileInfo->size = fileinfo.size;
+        wcscpy(afileInfo->name, fileinfo.name);
+        if (wcscmp(fileinfo.name, L"..") == 0) // 上一级目录
+            continue;
         if (fileinfo.attrib & _A_SUBDIR) {
-            __getFileNames(fileNames, fileCount, maxCount, findName);
-            free(findName);
-        } else
-            fileNames[(*fileCount)++] = findName;
+            wcscat(wcscat(wcscpy(findDirName, dirName), L"\\"), fileinfo.name);
+            __getFileInfos(fileInfos, fileCount, maxCount, findDirName);
+        }
     } while (_wfindnext(hFile, &fileinfo) == 0);
+
     _findclose(hFile);
 }
 
-void getFileNames(wchar_t* fileNames[], int* fileCount, int maxCount, const wchar_t* dirName)
+void getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName)
 {
-    wchar_t* objDirName = malloc(FILENAME_MAX);
-    wcscpy(objDirName, dirName);
-    fileNames[(*fileCount)++] = objDirName;
-    __getFileNames(fileNames, fileCount, maxCount, dirName);
+    __getFileInfos(fileInfos, fileCount, maxCount, dirName);
 }
 
 // 测试函数
 void testTools(FILE* fout)
 {
-    const wchar_t* paths[] = {
+    wchar_t* paths[] = {
         L"c:\\棋谱\\示例文件.pgn_zh",
         L"c:\\棋谱\\象棋杀着大全.pgn_zh",
         L"c:\\棋谱\\疑难文件.pgn_iccs",
-        //L"c:\\棋谱\\中国象棋棋谱大全"
+        L"c:\\棋谱\\中国象棋棋谱大全"
     };
     int sum = 0;
     for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
         int count = 0;
-        wchar_t* fileNames[1024];
-        getFileNames(fileNames, &count, 1000, paths[i]);
-        for (int i = 0; i < count; ++i) {
-            fwprintf(fout, L"%d: %s\n", __LINE__, fileNames[i]);
-            free(fileNames[i]);
-        }
+        struct _wfinddata_t fileInfos[THOUSAND];
+        getFileInfos(fileInfos, &count, THOUSAND, paths[i]);
+        for (int i = 0; i < count; ++i)
+            fwprintf(fout, L"attr:%2x size:%9d %s\n", fileInfos[i].attrib, fileInfos[i].size, fileInfos[i].name);
         sum += count;
         fwprintf(fout, L"%s 包含: %d个文件。\n\n", paths[i], count);
     }

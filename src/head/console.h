@@ -6,8 +6,9 @@
 PConsole newConsole(const char* fileName);
 void delConsole(PConsole con);
 
-void openFile(PConsole con);
-void saveAsFile(PConsole con);
+// 菜单命令
+void openFileArea(PConsole con);
+void saveAsFileArea(PConsole con);
 void exitPrograme(PConsole con);
 void exchangeBoard(PConsole con);
 void rotateBoard(PConsole con);
@@ -15,62 +16,34 @@ void symmetryBoard(PConsole con);
 void setSimpleThema(PConsole con);
 void setShowyThema(PConsole con);
 void about(PConsole con);
-void showAbout(PConsole con);
 
+// 输入控制函数
 void operateWin(PConsole con);
 void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker);
 void mouseEventProc(PConsole con, PMOUSE_EVENT_RECORD ker);
 
+// 操纵区域
+void operateBoard(PConsole con, PKEY_EVENT_RECORD ker);
+void operateMove(PConsole con, PKEY_EVENT_RECORD ker);
+void operateCurMove(PConsole con, PKEY_EVENT_RECORD ker);
 void operateMenu(PConsole con, PKEY_EVENT_RECORD ker);
-// 处理子菜单的清除和显示
-void processSubMenu(PConsole con, bool showSubMenu);
-int getMaxSize(PMenu menu);
-wchar_t* getWstr(wchar_t* wstr, PMenu menu);
-SHORT getPosL(PMenu menu);
-PMenu getTopIndexMenu(PMenu rootMenu, int index);
-PMenu getTopMenu(PMenu menu);
-PMenu getSameLevelMenu(PMenu rootMenu, PMenu menu, bool isLeft);
-PMenu getBottomMenu(PMenu menu);
-void initMenu(PConsole con);
-PMenu newMenu(PMenuData menuData);
-PMenu addChildMenu(PMenu preMenu, PMenu childMenu);
-PMenu addBrotherMenu(PMenu preMenu, PMenu brotherMenu);
-void delMenu(PMenu menu);
+bool operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker); 
+void operateSaveFile(PConsole con, PKEY_EVENT_RECORD ker);
 
-bool operateBoard(PConsole con, PKEY_EVENT_RECORD ker);
+// 显示/清除 弹出区域
+void showSubMenu(PConsole con, bool show);
+void showOpenFile(PConsole con, bool show, int selIndex, bool openIndex);
+void showSaveFile(PConsole con, bool show);
+void showAbout(PConsole con);
 
-// 返回当前着法是否变化
-bool operateMove(PConsole con, PKEY_EVENT_RECORD ker);
-
-// 返回当前注解是否变化
-bool operateCurMove(PConsole con, PKEY_EVENT_RECORD ker);
-
-void writeAreas(PConsole con);
-
+// 重新写入内容
+void writeFixedAreas(PConsole con, bool refresh);
 void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
-void writeMove(PConsole con);
+void writeMove(PConsole con, bool refresh);
 void writeStatus(PConsole con);
-void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RECT rc, int firstRow, int firstCol, bool cutLine);
-int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine);
 
-COORD getSeatCoord(PConsole con, Seat seat);
+// 设置当前区域，并显示/清除 弹出区域
 void setArea(PConsole con, Area curArea);
-
-// 存储/恢复将被覆盖的区域屏幕块信息
-bool storageArea(PConsole con, const PSMALL_RECT rc);
-bool restoreArea(PConsole con);
-
-void initAreas(PConsole con);
-void initArea(PConsole con, WORD attr, const PSMALL_RECT rc, bool drawShadow, bool drawFrame);
-// 底、右阴影色
-void initAreaShadow(PConsole con, const PSMALL_RECT rc);
-void initAreaFrame(PConsole con, const PSMALL_RECT rc);
-
-void cleanAreaChar(PConsole con, const PSMALL_RECT rc);
-void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
-
-COORD getCoordSize(const PSMALL_RECT rc);
-WORD reverseAttr(WORD attr);
 
 #endif

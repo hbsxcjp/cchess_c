@@ -13,7 +13,7 @@ void delChessManual(PChessManual cm);
 void addInfoItem(PChessManual cm, const wchar_t* name, const wchar_t* value);
 
 // 增删改move后，更新ins、move的行列数值
-void setMoveNums(PChessManual cm, PMove  move);
+void setMoveZhstrNum(PChessManual cm, PMove  move);
 
 // 从文件读取到chessManual
 PChessManual readChessManual(PChessManual cm, const char* filename);
@@ -44,16 +44,17 @@ bool hasPreOther(const PChessManual cm);
 
 // 前进一步
 void go(PChessManual cm);
+// 前进到变着
 void goOther(PChessManual cm);
 void goEnd(PChessManual cm);
-// 前进到变着
+// 前进至指定move
+void goTo(PChessManual cm, PMove move);
 
 // 后退一步
 void back(PChessManual cm);
 void backNext(PChessManual cm);
 void backOther(PChessManual cm);
 void backFirst(PChessManual cm);
-
 // 后退至指定move
 void backTo(PChessManual cm, PMove  move);
 

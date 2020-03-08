@@ -134,7 +134,7 @@ PieceColor getColor_zh(const wchar_t* zhStr)
 static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const PMove move)
 {
     wchar_t iccs[6];
-    if (move)
+    if (move && move->fseat >= 0)
         wsprintfW(wstr, L"%02x->%02x %s %s@%c",
             move->fseat, move->tseat, getICCS(iccs, move), move->zhStr,
             (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
@@ -144,7 +144,7 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const PMove move)
 wchar_t* getMoveStr(wchar_t* wstr, const PMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
-    wsprintfW(wstr, L"%s：%s\n\n现在：%s\n\n下着：%s\n\n下变：%s\n\n注解：               导航区%3d行%2d列\n%s\n",
+    wsprintfW(wstr, L"%s：%s\n现在：%s\n下着：%s\n下变：%s\n注解：               导航区%3d行%2d列\n%s",
         ((!move->pmove || move->pmove->nmove == move) ? L"前着" : L"前变"),
         __getSimpleMoveStr(preWstr, move->pmove),
         __getSimpleMoveStr(thisWstr, move),
@@ -268,12 +268,11 @@ void setRemark(PMove move, const wchar_t* remark)
 
 void changeMove(PMove move, ChangeType ct)
 {
+    Seat fseat = move->fseat, tseat = move->tseat;
     if (ct == ROTATE) {
-        Seat fseat = move->fseat, tseat = move->tseat;
         move->fseat = getSeat_rc(getOtherRow_s(fseat), getOtherCol_s(fseat));
         move->tseat = getSeat_rc(getOtherRow_s(tseat), getOtherCol_s(tseat));
     } else if (ct == SYMMETRY) {
-        Seat fseat = move->fseat, tseat = move->tseat;
         move->fseat = getSeat_rc(getRow_s(fseat), getOtherCol_s(fseat));
         move->tseat = getSeat_rc(getRow_s(tseat), getOtherCol_s(tseat));
     }

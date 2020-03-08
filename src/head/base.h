@@ -15,8 +15,9 @@
 #include <wctype.h>
 #include <windows.h>
 
+#define THOUSAND 1024
 #define WCHARSIZE 256
-#define WIDEWCHARSIZE 1024
+#define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
 //=================================================================
 //棋子相关的类型
@@ -161,6 +162,7 @@ typedef enum {
     BOARDA,
     MENUA,
     OPENFILEA,
+    SAVEFILEA,
     ABOUTA,
 } Area;
 
@@ -169,11 +171,15 @@ struct _Menu;
 typedef struct _Console {
     HANDLE hIn, hOut;
     PChessManual cm;
+    wchar_t fileName[FILENAME_MAX];
+    wchar_t dirName[FILENAME_MAX];
+    struct _wfinddata_t fileInfos[THOUSAND];
+    int fileCount;
     wchar_t* wstr_PGN_CC;
     Thema thema;
     Area curArea, oldArea;
-    SMALL_RECT WinRect, MenuRect, iMenuRect, StatusRect, iStatusRect;
-    SMALL_RECT BoardRect, iBoardRect, CurmoveRect, iCurmoveRect, MoveRect, iMoveRect;
+    SMALL_RECT WinRect, MenuRect, BoardRect, CurmoveRect, MoveRect, StatusRect, OpenFileRect;
+    SMALL_RECT iMenuRect, iBoardRect, iCurmoveRect, iMoveRect, iStatusRect, iOpenFileRect;
     struct _Menu *rootMenu, *curMenu;
     CHAR_INFO chBuf[40 * 120];
     SMALL_RECT chBufRect;

@@ -20,8 +20,8 @@ int main(int argc, char const* argv[])
     //fwprintf(fout, L"输出中文成功了！\n");
     //testPiece(fout);
     //testBoard(fout);
-    //testTools(fout);
     //testChessManual(fout);
+    //testTools(fout);
     if (argc == 7) {
         testTransDir(atoi(argv[1]), atoi(argv[2]),
             atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
@@ -34,7 +34,8 @@ int main(int argc, char const* argv[])
     //doView();
     //testConview();
 
-    PConsole pconsole = newConsole("01.xqf");
+    //PConsole pconsole = newConsole(L"01.xqf");
+    PConsole pconsole = newConsole("");
     delConsole(pconsole);
 
     //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";

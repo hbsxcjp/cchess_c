@@ -4,16 +4,16 @@
 #include "base.h"
 
 // 取得表示棋子的颜色(判断棋子值的高四位)
-#define getColor(piece) ((bool)((piece)&0xF0))
+PieceColor getColor(Piece piece);
 
 // 取得对方棋子的颜色
-#define getOtherColor(piece) (!getColor(piece))
+PieceColor getOtherColor(Piece piece);
 
 //  取得表示棋子的种类(取棋子值的低四位)
-#define getKind(piece) ((piece)&0x0F)
+PieceKind getKind(Piece piece);
 
 //  取得表示相同种类的对方棋子
-#define getOtherPiece(piece) ((getOtherColor(piece) << 4) | getKind(piece))
+PieceKind getOtherPiece(Piece piece);
 
 //  取得表示棋子的字符
 wchar_t getChar(Piece piece);

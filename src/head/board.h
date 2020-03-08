@@ -4,33 +4,28 @@
 #include "base.h"
 
 // 根据行、列值获取seat
-#define getSeat_rc(row, col) ((row) << 4 | (col))
+Seat getSeat_rc(int row,int col);
 
 // 获取行值
-#define getRow_s(seat) ((seat) >> 4)
+int getRow_s(Seat seat);
 
 // 获取列值
-#define getCol_s(seat) ((seat)&0x0F)
+int getCol_s(Seat seat);
 
 // 获取对称行值
-#define getOtherRow_s(seat) (BOARDROW - 1 - getRow_s(seat))
+int getOtherRow_s(Seat seat);
 
 // 获取对称列值
-#define getOtherCol_s(seat) (BOARDCOL - 1 - getCol_s(seat))
+int getOtherCol_s(Seat seat);
 
 // 根据seat获取棋子
 Piece getPiece_s(const PBoard board, Seat seat);
-//#define getPiece_s(board, seat) ((board)->pieces[seat])
 
 // 获取某棋盘内某行、某列位置的一个棋子
 Piece getPiece_rc(const PBoard board, int row, int col);
 
 // 置入某棋盘内某行、某列位置一个棋子
 void setPiece_rc(PBoard board, int row, int col, Piece piece);
-
-// 在seat位置设置棋子
-//void setPiece_s(PBoard board, Seat seat, Piece piece);
-//#define setPiece_s(board, seat, piece) ((board)->pieces[seat] = (piece))
 
 // 新建一个board
 PBoard newBoard(void);
