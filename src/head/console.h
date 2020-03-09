@@ -27,12 +27,12 @@ void operateBoard(PConsole con, PKEY_EVENT_RECORD ker);
 void operateMove(PConsole con, PKEY_EVENT_RECORD ker);
 void operateCurMove(PConsole con, PKEY_EVENT_RECORD ker);
 void operateMenu(PConsole con, PKEY_EVENT_RECORD ker);
-bool operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker); 
+void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker);
 void operateSaveFile(PConsole con, PKEY_EVENT_RECORD ker);
 
 // 显示/清除 弹出区域
 void showSubMenu(PConsole con, bool show);
-void showOpenFile(PConsole con, bool show, int selIndex, bool openIndex);
+void showOpenFile(PConsole con, bool show, int index, bool openDir);
 void showSaveFile(PConsole con, bool show);
 void showAbout(PConsole con);
 

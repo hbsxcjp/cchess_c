@@ -93,7 +93,7 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName)
+static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
 {
     if (*fileCount > maxCount) {
         wprintf(L"文件数量已达到最大值。\n");
@@ -117,18 +117,18 @@ static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int 
         wcscpy(afileInfo->name, fileinfo.name);
         if (wcscmp(fileinfo.name, L"..") == 0) // 上一级目录
             continue;
-        if (fileinfo.attrib & _A_SUBDIR) {
+        if (isRecursive && fileinfo.attrib & _A_SUBDIR) {
             wcscat(wcscat(wcscpy(findDirName, dirName), L"\\"), fileinfo.name);
-            __getFileInfos(fileInfos, fileCount, maxCount, findDirName);
+            __getFileInfos(fileInfos, fileCount, maxCount, findDirName, isRecursive);
         }
     } while (_wfindnext(hFile, &fileinfo) == 0);
 
     _findclose(hFile);
 }
 
-void getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName)
+void getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
 {
-    __getFileInfos(fileInfos, fileCount, maxCount, dirName);
+    __getFileInfos(fileInfos, fileCount, maxCount, dirName, isRecursive);
 }
 
 // 测试函数
@@ -144,7 +144,7 @@ void testTools(FILE* fout)
     for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
         int count = 0;
         struct _wfinddata_t fileInfos[THOUSAND];
-        getFileInfos(fileInfos, &count, THOUSAND, paths[i]);
+        getFileInfos(fileInfos, &count, THOUSAND, paths[i], true);
         for (int i = 0; i < count; ++i)
             fwprintf(fout, L"attr:%2x size:%9d %s\n", fileInfos[i].attrib, fileInfos[i].size, fileInfos[i].name);
         sum += count;

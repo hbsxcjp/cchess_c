@@ -22,7 +22,7 @@ wchar_t* getWString(FILE* fin);
 int copyFile(const char* SourceFile, const char* NewFile);
 
 // 提取目录下的文件信息
-void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName);
+void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive);
 
 // 测试函数
 void testTools(FILE* fout);

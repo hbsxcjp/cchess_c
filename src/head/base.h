@@ -171,11 +171,11 @@ struct _Menu;
 typedef struct _Console {
     HANDLE hIn, hOut;
     PChessManual cm;
-    wchar_t fileName[FILENAME_MAX];
-    wchar_t dirName[FILENAME_MAX];
-    struct _wfinddata_t fileInfos[THOUSAND];
-    int fileCount;
-    wchar_t* wstr_PGN_CC;
+    char fileName[FILENAME_MAX];
+    //wchar_t dirName[FILENAME_MAX];
+    //struct _wfinddata_t fileInfos[THOUSAND];
+    //int fileCount;
+    //wchar_t* wstr_PGN_CC;
     Thema thema;
     Area curArea, oldArea;
     SMALL_RECT WinRect, MenuRect, BoardRect, CurmoveRect, MoveRect, StatusRect, OpenFileRect;
