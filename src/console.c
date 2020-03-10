@@ -393,9 +393,9 @@ void operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
     case VK_RETURN:
         if (con->curMenu->func)
             con->curMenu->func(con); // 执行当前菜单对应的命令
-        break;
+        return;
     default:
-        break;
+        return;
     }
 
     if (curMenu != con->curMenu)
@@ -436,7 +436,7 @@ void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
             openDir = true;
         break;
     default:
-        break;
+        return;
     }
 
     showOpenFile(con, true, index, openDir);
@@ -483,14 +483,16 @@ void showSubMenu(PConsole con, bool show)
 void showOpenFile(PConsole con, bool show, int index, bool openDir)
 {
     static bool hasStorageArea = false;
-    if (!show) { // 恢复显示区域
+    // 恢复显示区域
+    if (!show) {
         if (hasStorageArea)
             hasStorageArea = restoreArea(con);
         return;
     }
 
-    static wchar_t dirName[FILENAME_MAX];
-    if (!hasStorageArea) { // 初始化显示区域
+    static wchar_t dirName[FILENAME_MAX] = { 0 };
+    // 初始化显示区域
+    if (!hasStorageArea) {
         hasStorageArea = storageArea(con, &con->OpenFileRect);
         clearArea(con, OpenFileAttr[con->thema], &con->OpenFileRect, true, true);
         COORD pos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 1 };
@@ -499,24 +501,35 @@ void showOpenFile(PConsole con, bool show, int index, bool openDir)
         wcscpy(dirName, L".");
     }
 
-    int fileCount = 0;
-    struct _wfinddata_t fileInfos[THOUSAND];
-    //*
+    static bool hasFileInfos = false;
+    static int fileCount = 0;
+    static struct _wfinddata_t fileInfos[THOUSAND] = { 0 };
+    // 打开指定目录
     if (openDir && fileInfos[index].attrib == _A_SUBDIR) {
         wchar_t* pwch = NULL;
         if (wcscmp(fileInfos[index].name, L"..") == 0 && (pwch = wcsrchr(dirName, L'\\')) != NULL)
             pwch[0] = L'\x0';
         else
             wcscpy(dirName, fileInfos[index].name);
+        hasFileInfos = false;
+        strcpy(con->fileName, "");
+        index = 0;
     }
-    getFileInfos(fileInfos, &fileCount, THOUSAND, dirName, false);
+    // 提取目录下文件清单
+    if (!hasFileInfos) {
+        getFileInfos(fileInfos, &fileCount, THOUSAND, dirName, false);
+        hasFileInfos = true;
+    }
+    if (fileCount == 0)
+        return;
 
     int cols = OpenFileCols - BorderCols * 2 - ShadowCols;
+    // 写入标题行
     COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
-    WriteConsoleOutputCharacterW(con->hOut, L" ", cols, dpos, &rwNum);
+    //WriteConsoleOutputCharacterW(con->hOut, L" ", cols, dpos, &rwNum);
     WriteConsoleOutputCharacterW(con->hOut, dirName, wcslen(dirName), dpos, &rwNum);
 
-    //wstr[0] = L'\x0';
+    // 文件清单转换为字符串
     wcscpy(wstr, L"");
     wchar_t tempStr[FILENAME_MAX];
     for (int i = 0; i < fileCount; ++i) {
@@ -527,13 +540,18 @@ void showOpenFile(PConsole con, bool show, int index, bool openDir)
 
     if (index >= fileCount)
         index = fileCount - 1;
-    if (index < 0)
+    else if (index < 0)
         index = 0;
     SMALL_RECT irect = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 2, con->iOpenFileRect.Right, con->iOpenFileRect.Bottom };
     int pageRows = irect.Bottom - irect.Top + 1,
         firstRow = index / pageRows * pageRows,
         selIndex = index % pageRows;
-    wcstombs(con->fileName, fileInfos[index].name, FILENAME_MAX); // 存储选定的文件名
+    // 存储选定的文件名
+    if (fileInfos[index].attrib != _A_SUBDIR) {
+        swprintf(tempStr, FILENAME_MAX, L"%s\\%s", dirName, fileInfos[index].name);
+        wcstombs(con->fileName, tempStr, FILENAME_MAX);
+    }
+    // 写入文件清单字符串
     writeAreaLineChars(con, wstr, &irect, firstRow, 0, true);
 
     // 选择项目突显
