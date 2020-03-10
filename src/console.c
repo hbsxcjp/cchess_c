@@ -40,7 +40,7 @@ static const WORD SHADOWATTR[] = { 0x8F, 0x82 }; // 阴影
 
 static const WORD ShowMenuAttr[] = { 0x70, 0x4F }; // 弹出菜单
 static const WORD SelMenuAttr[] = { 0x07, 0x2F }; // 选中菜单项
-static const WORD SelMoveAttr[] = { 0x07, 0xF1 }; // 选中着法项
+//static const WORD SelMoveAttr[] = { 0x07, 0xF1 }; // 选中着法项
 static const WORD OpenFileAttr[] = { 0x70, 0x2F }; // 打开文件区域
 static const WORD SelFileAttr[] = { 0x07, 0xF1 }; // 选中文件项
 //static const WORD SaveFileAttr[] = { 0x70, 0x2F }; // 保存区域
@@ -54,6 +54,9 @@ static const WORD RedMoveAttr[] = { 0xCF, 0xCF }; // 移动红子
 static const WORD BlackMoveAttr[] = { 0x1F, 0x9F }; // 移动黑子
 //static const WORD SelRedAttr[] = { 0xFC, 0xC0 }; // 选中红子
 //static const WORD SelBlackAttr[] = { 0xF0, 0xE0 }; // 选中黑子
+
+static const WORD RedMoveLineAttr[] = { 0x74, 0x1C }; // 红方着法行
+//static const WORD BlackMoveLineAttr[] = { 0x70, 0x1F }; // 黑方着法行
 static const WORD CurmoveAttr[] = { 0x74, 0xBC }; // 当前着法
 static const wchar_t* const TabChars[] = { L"─│┌┐└┘", L"═║╔╗╚╝" }; //L"─│┌┐└┘" 区域边框格式字符
 
@@ -405,32 +408,33 @@ void operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
 void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
 {
     bool openDir = false;
-    static int index = 0;
     int pageRows = con->iOpenFileRect.Bottom - con->iOpenFileRect.Top + 1 - 2; // -2:标题占2行
     switch (ker->wVirtualKeyCode) {
     case VK_DOWN:
-        ++index;
+        ++con->fileIndex;
         break;
     case VK_UP:
-        --index;
+        --con->fileIndex;
         break;
     case VK_NEXT:
-        index += pageRows;
+        con->fileIndex += pageRows;
         break;
     case VK_PRIOR:
-        index -= pageRows;
+        con->fileIndex -= pageRows;
         break;
     case VK_END:
-        index = THOUSAND;
+        con->fileIndex = THOUSAND;
         break;
     case VK_HOME:
-        index = 0;
+        con->fileIndex = 0;
         break;
     case VK_RETURN:
         if (strlen(con->fileName) > 0) { // 在showOpenFile函数里设置fileName
-            setArea(con, con->oldArea);
-            readChessManual(con->cm, con->fileName);
-            writeFixedAreas(con, true);
+            if (getRecFormat(getExt(con->fileName)) != NOTFMT) {
+                setArea(con, con->oldArea);
+                readChessManual(con->cm, con->fileName);
+                writeFixedAreas(con, true);
+            }
             return;
         } else
             openDir = true;
@@ -439,7 +443,7 @@ void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
         return;
     }
 
-    showOpenFile(con, true, index, openDir);
+    showOpenFile(con, true, openDir);
 }
 
 void operateSaveFile(PConsole con, PKEY_EVENT_RECORD ker)
@@ -480,7 +484,12 @@ void showSubMenu(PConsole con, bool show)
     writeStatus(con);
 }
 
-void showOpenFile(PConsole con, bool show, int index, bool openDir)
+static int __getFileIndex(int index, int fileCount)
+{
+    return (index >= fileCount) ? fileCount - 1 : (index < 0 ? 0 : index);
+}
+
+void showOpenFile(PConsole con, bool show, bool openDir)
 {
     static bool hasStorageArea = false;
     // 恢复显示区域
@@ -489,8 +498,6 @@ void showOpenFile(PConsole con, bool show, int index, bool openDir)
             hasStorageArea = restoreArea(con);
         return;
     }
-
-    static wchar_t dirName[FILENAME_MAX] = { 0 };
     // 初始化显示区域
     if (!hasStorageArea) {
         hasStorageArea = storageArea(con, &con->OpenFileRect);
@@ -498,38 +505,54 @@ void showOpenFile(PConsole con, bool show, int index, bool openDir)
         COORD pos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 1 };
         wcscpy(wstr, L"序号  属性  大小(B)  文件名称");
         WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), pos, &rwNum);
-        wcscpy(dirName, L".");
     }
 
-    static bool hasFileInfos = false;
-    static int fileCount = 0;
-    static struct _wfinddata_t fileInfos[THOUSAND] = { 0 };
     // 打开指定目录
-    if (openDir && fileInfos[index].attrib == _A_SUBDIR) {
-        wchar_t* pwch = NULL;
-        if (wcscmp(fileInfos[index].name, L"..") == 0 && (pwch = wcsrchr(dirName, L'\\')) != NULL)
-            pwch[0] = L'\x0';
-        else
-            wcscpy(dirName, fileInfos[index].name);
-        hasFileInfos = false;
-        strcpy(con->fileName, "");
-        index = 0;
+    static bool hasFileInfos = false;
+    static wchar_t dirName[FILENAME_MAX] = L"c:\\棋谱";
+    static struct _wfinddata_t fileInfos[THOUSAND] = { 0 };
+    static int fileCount = 0;
+    if (openDir && hasFileInfos) {
+        con->fileIndex = __getFileIndex(con->fileIndex, fileCount);
+        if (fileInfos[con->fileIndex].attrib == _A_SUBDIR) {
+            wchar_t* pwch = NULL;
+            if (wcscmp(fileInfos[con->fileIndex].name, L"..") == 0 && (pwch = wcsrchr(dirName, L'\\')) != NULL)
+                pwch[0] = L'\x0';
+            else
+                wcscat(wcscat(dirName, L"\\"), fileInfos[con->fileIndex].name);
+            hasFileInfos = false;
+            con->fileIndex = 0;
+        }
     }
     // 提取目录下文件清单
+    int cols = OpenFileCols - BorderCols * 2 - ShadowCols;
     if (!hasFileInfos) {
+        fileCount = 0;
         getFileInfos(fileInfos, &fileCount, THOUSAND, dirName, false);
-        hasFileInfos = true;
+        // 写入标题行
+        COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
+        wcscat(wcscpy(wstr, L"当前目录："), dirName);
+        FillConsoleOutputCharacter(con->hOut, L' ', cols, dpos, &rwNum);
+        WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), dpos, &rwNum);
     }
-    if (fileCount == 0)
+    if (fileCount > 0)
+        hasFileInfos = true;
+    else
         return;
 
-    int cols = OpenFileCols - BorderCols * 2 - ShadowCols;
-    // 写入标题行
-    COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
-    //WriteConsoleOutputCharacterW(con->hOut, L" ", cols, dpos, &rwNum);
-    WriteConsoleOutputCharacterW(con->hOut, dirName, wcslen(dirName), dpos, &rwNum);
+    // 存储选定的文件名
+    con->fileIndex = __getFileIndex(con->fileIndex, fileCount);
+    if (fileInfos[con->fileIndex].attrib != _A_SUBDIR) {
+        swprintf(wstr, FILENAME_MAX, L"%s\\%s", dirName, fileInfos[con->fileIndex].name);
+        wcstombs(con->fileName, wstr, FILENAME_MAX);
+    } else
+        strcpy(con->fileName, "");
 
-    // 文件清单转换为字符串
+    // 文件清单转换为字符串, 再写入区域
+    SMALL_RECT irect = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 2, con->iOpenFileRect.Right, con->iOpenFileRect.Bottom };
+    int pageRows = irect.Bottom - irect.Top + 1,
+        firstRow = con->fileIndex / pageRows * pageRows,
+        selIndex = con->fileIndex % pageRows;
     wcscpy(wstr, L"");
     wchar_t tempStr[FILENAME_MAX];
     for (int i = 0; i < fileCount; ++i) {
@@ -537,21 +560,6 @@ void showOpenFile(PConsole con, bool show, int index, bool openDir)
             i, fileInfos[i].attrib == 0x10 ? L"目录" : L"文件", fileInfos[i].size, fileInfos[i].name);
         wcscat(wstr, tempStr);
     }
-
-    if (index >= fileCount)
-        index = fileCount - 1;
-    else if (index < 0)
-        index = 0;
-    SMALL_RECT irect = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 2, con->iOpenFileRect.Right, con->iOpenFileRect.Bottom };
-    int pageRows = irect.Bottom - irect.Top + 1,
-        firstRow = index / pageRows * pageRows,
-        selIndex = index % pageRows;
-    // 存储选定的文件名
-    if (fileInfos[index].attrib != _A_SUBDIR) {
-        swprintf(tempStr, FILENAME_MAX, L"%s\\%s", dirName, fileInfos[index].name);
-        wcstombs(con->fileName, tempStr, FILENAME_MAX);
-    }
-    // 写入文件清单字符串
     writeAreaLineChars(con, wstr, &irect, firstRow, 0, true);
 
     // 选择项目突显
@@ -640,8 +648,8 @@ void writeCurmove(PConsole con)
 
 void writeMove(PConsole con, bool refresh)
 {
-    static int firstRow = 0, firstCol = 0; //静态变量，只初始化一次
-    SMALL_RECT iMoveRect = con->iMoveRect;
+    static int firstRow = 0, firstCol = 0, noWidth = 4; //静态变量，只初始化一次
+    SMALL_RECT iMoveRect = { con->iMoveRect.Left + noWidth, con->iMoveRect.Top, con->iMoveRect.Right, con->iMoveRect.Bottom };
     COORD showCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
         (iMoveRect.Top + con->cm->currentMove->nextNo_ * 2) };
     SMALL_RECT showRect = { iMoveRect.Left + firstCol, iMoveRect.Top + firstRow,
@@ -652,6 +660,7 @@ void writeMove(PConsole con, bool refresh)
         offsetRow = ((showCoord.Y < showRect.Top) ? showCoord.Y - showRect.Top
                                                   : ((showCoord.Y > showRect.Bottom) ? showCoord.Y - showRect.Bottom
                                                                                      : 0));
+
     // 当行、列超出显示范围，或主题更改时，写入字符串
     if (refresh || offsetCol != 0 || offsetRow != 0) {
         firstRow += offsetRow;
@@ -661,20 +670,45 @@ void writeMove(PConsole con, bool refresh)
         writeAreaLineChars(con, wstr_PGN_CC, &iMoveRect, firstRow, firstCol, true);
         if (wstr_PGN_CC)
             free(wstr_PGN_CC);
+
+        SMALL_RECT iLineRect = { con->iMoveRect.Left, con->iMoveRect.Top, con->iMoveRect.Left + noWidth - 1, con->iMoveRect.Bottom };
+        wcscpy(wstr, L"");
+        wchar_t tempStr[8];
+        int maxRow = min(iLineRect.Bottom + firstRow, con->cm->maxRow_ * 2);
+        for (int row = firstRow; row <= maxRow; ++row) {
+            if (row % 2 == 0) {
+                swprintf(tempStr, 6, L"%3d", row / 2);
+                wcscat(wstr, tempStr);
+            }
+            wcscat(wstr, L"\n");
+        }
+        writeAreaLineChars(con, wstr, &iLineRect, 0, 0, true);
     }
 
-    // 清除背景，设置选定Move背景
+    // 清除背景
     cleanAreaAttr(con, MOVEATTR[con->thema], &iMoveRect);
-    showCoord.X -= firstCol;
-    showCoord.Y -= firstRow;
-    FillConsoleOutputAttribute(con->hOut, SelMoveAttr[con->thema], 4 * 2, showCoord, &rwNum);
+    //bool firstColorIsRed = getFirstColor(con->cm) == RED;
+    /*// 设置着法间隔行颜色
+    int cols = iMoveRect.Right - iMoveRect.Left + 1;
+    for (int row = iMoveRect.Top + (firstColorIsRed == (firstRow % 4 == 0) ? 2 : 0); row <= iMoveRect.Bottom; row += 4) {
+        COORD pos = { iMoveRect.Left - noWidth, row };
+        FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
+    }//*/
 
-    // 设置棋盘区移动棋子突显
     PMove curMove = con->cm->currentMove;
-    if (curMove == con->cm->rootMove)
+    if (curMove == con->cm->rootMove) {
+        // 设置rootMove背景
+        COORD pos = { iMoveRect.Left, iMoveRect.Top };
+        FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
         return;
+    }
     Piece tpiece = getPiece_s(con->cm->board, curMove->tseat);
     WORD attr = (getColor(tpiece) == RED ? RedMoveAttr[con->thema] : BlackMoveAttr[con->thema]);
+    // 设置选定Move背景
+    showCoord.X -= firstCol;
+    showCoord.Y -= firstRow;
+    FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, showCoord, &rwNum);
+    // 设置棋盘区移动棋子突显
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->fseat), &rwNum);
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->tseat), &rwNum);
 
@@ -719,7 +753,7 @@ void writeStatus(PConsole con)
         break;
     }
     COORD pos = { con->iStatusRect.Left, con->iStatusRect.Top };
-    WriteConsoleOutputCharacterW(con->hOut, L" ", con->iStatusRect.Right - con->iStatusRect.Left + 1, pos, &rwNum);
+    FillConsoleOutputCharacter(con->hOut, L' ', con->iStatusRect.Right - con->iStatusRect.Left + 1, pos, &rwNum);
     WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), pos, &rwNum);
 }
 
@@ -857,7 +891,7 @@ void setArea(PConsole con, Area curArea)
             showSubMenu(con, false);
             break;
         case OPENFILEA:
-            showOpenFile(con, false, 0, false);
+            showOpenFile(con, false, false);
             break;
         case SAVEFILEA:
             showSaveFile(con, false);
@@ -877,7 +911,7 @@ void setArea(PConsole con, Area curArea)
         showSubMenu(con, true);
         break;
     case OPENFILEA:
-        showOpenFile(con, true, 0, false);
+        showOpenFile(con, true, false);
         break;
     case SAVEFILEA:
         showSaveFile(con, true);

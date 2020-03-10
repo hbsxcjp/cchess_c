@@ -27,6 +27,9 @@ void writeRemark_PGN_CCtoWstr(const PChessManual cm, wchar_t** premarkStr);
 // 从chessManual存储到文件
 void writeChessManual(const PChessManual cm, const char* filename);
 
+// 取得先手方颜色
+PieceColor getFirstColor(const PChessManual cm);
+
 // 是否开始
 bool isStart(const PChessManual cm);
 
@@ -63,7 +66,7 @@ void goInc(PChessManual cm, int inc);
 
 // 转变棋局实例
 void changeChessManual(PChessManual cm, ChangeType ct);
-
+RecFormat getRecFormat(const char* ext);
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);
 

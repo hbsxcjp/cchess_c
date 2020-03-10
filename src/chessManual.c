@@ -17,12 +17,10 @@ static const char FILETAG[] = "learnchess";
 
 PChessManual newChessManual(void)
 {
-    PChessManual cm = malloc(sizeof(ChessManual));
-    memset(cm, 0, sizeof(ChessManual));
+    PChessManual cm = calloc(sizeof(ChessManual), 1);
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->currentMove = cm->rootMove;
-    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     return cm;
 }
 
@@ -52,7 +50,7 @@ void addInfoItem(PChessManual cm, const wchar_t* name, const wchar_t* value)
 }
 
 // 根据文件扩展名取得存储记录类型
-static RecFormat __getRecFormat(const char* ext)
+RecFormat getRecFormat(const char* ext)
 {
     char lowExt[16] = { 0 };
     for (int i = 0; i < strlen(ext); ++i)
@@ -909,7 +907,7 @@ PChessManual readChessManual(PChessManual cm, const char* filename)
     const char* ext = getExt(filename);
     if (!ext)
         return NULL;
-    RecFormat fmt = __getRecFormat(ext);
+    RecFormat fmt = getRecFormat(ext);
     if (fmt == NOTFMT) {
         wprintf(L"未实现的打开文件扩展名！");
         return NULL;
@@ -958,6 +956,7 @@ PChessManual readChessManual(PChessManual cm, const char* filename)
     if (fmt == XQF || fmt == BIN || fmt == JSON)
         __getFENToSetBoard(cm);
 
+    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     if (cm->rootMove->nmove != NULL)
         setMoveZhstrNum(cm, cm->rootMove->nmove); // 驱动函数
     fclose(fin);
@@ -966,7 +965,7 @@ PChessManual readChessManual(PChessManual cm, const char* filename)
 
 void writeChessManual(PChessManual cm, const char* filename)
 {
-    RecFormat fmt = __getRecFormat(getExt(filename));
+    RecFormat fmt = getRecFormat(getExt(filename));
     if (fmt == NOTFMT) {
         wprintf(L"未实现的写入文件扩展名！");
         return;
@@ -1011,30 +1010,20 @@ void writeChessManual(PChessManual cm, const char* filename)
     fclose(fout);
 }
 
-bool isStart(const PChessManual cm)
+PieceColor getFirstColor(const PChessManual cm)
 {
-    return cm->currentMove == cm->rootMove;
+    return (cm->rootMove->nmove == NULL) ? RED : getColor(getPiece_s(cm->board, cm->rootMove->nmove->fseat));
 }
 
-bool hasNext(const PChessManual cm)
-{
-    return cm->currentMove->nmove != NULL;
-}
+inline bool isStart(const PChessManual cm) { return cm->currentMove == cm->rootMove; }
 
-bool hasPre(const PChessManual cm)
-{
-    return cm->currentMove->pmove != NULL;
-}
+inline bool hasNext(const PChessManual cm) { return cm->currentMove->nmove != NULL; }
 
-bool hasOther(const PChessManual cm)
-{
-    return cm->currentMove->omove != NULL;
-}
+inline bool hasPre(const PChessManual cm) { return cm->currentMove->pmove != NULL; }
 
-bool hasPreOther(const PChessManual cm)
-{
-    return cm->currentMove->pmove != NULL && cm->currentMove == cm->currentMove->pmove->omove;
-}
+inline bool hasOther(const PChessManual cm) { return cm->currentMove->omove != NULL; }
+
+inline bool hasPreOther(const PChessManual cm) { return cm->currentMove->pmove != NULL && cm->currentMove == cm->currentMove->pmove->omove; }
 
 void go(PChessManual cm)
 {
@@ -1183,9 +1172,9 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             strcpy(tofilename, dirto);
             strcat(strcat(tofilename, "\\"), getFileName_cut(name));
             //printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
-            //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
+            //    __LINE__, dirto, fromExt, getRecFormat(fromExt));
             //*
-            if (__getRecFormat(fromExt) != NOTFMT) {
+            if (getRecFormat(fromExt) != NOTFMT) {
                 PChessManual cm = newChessManual();
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 if (readChessManual(cm, dir_fileName) == NULL) {

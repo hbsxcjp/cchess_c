@@ -32,7 +32,7 @@ void operateSaveFile(PConsole con, PKEY_EVENT_RECORD ker);
 
 // 显示/清除 弹出区域
 void showSubMenu(PConsole con, bool show);
-void showOpenFile(PConsole con, bool show, int index, bool openDir);
+void showOpenFile(PConsole con, bool show, bool openDir);
 void showSaveFile(PConsole con, bool show);
 void showAbout(PConsole con);
 
