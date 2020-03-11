@@ -31,13 +31,13 @@ void setPiece_rc(PBoard board, int row, int col, Piece piece);
 PBoard newBoard(void);
 
 // FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
-wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN, size_t n);
+wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN, size_t n);
 
 // 取得棋盘局面的字符串表示, pieChars包含90个字符
 wchar_t* getPieChars_board(wchar_t* pieChars, const PBoard board);
 
 // pieChars表示的棋盘局面转换成FEN字符串，返回FEN, pieChars包含90个字符
-wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars);
+wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars);
 
 // 使用一个字符串设置棋盘局面, pieChars包含90个字符
 void setBoard(PBoard board, const wchar_t* pieChars);

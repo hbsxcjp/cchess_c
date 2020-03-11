@@ -11,7 +11,7 @@ static wchar_t wstr[SUPERWIDEWCHARSIZE];
 static COORD homePos = { 0, 0 };
 
 // 界面初始化数据
-static const wchar_t ProgramName[] = L"中国象棋 "; // 程序标题
+static const char ProgramName[] = "中国象棋"; // 程序标题
 static const SHORT WinRows = 45, WinCols = 130; // 窗口行列数
 static const SHORT BoardRows = BOARDROW * 2 - 1, BoardCols = (BOARDCOL * 2 - 1) * 2, BoardTitleRows = 2; //棋盘行列数，标题行数
 static const SHORT ShadowCols = 2, ShadowRows = 1, BorderCols = 2, BorderRows = 1; //阴影行列数，边框行列数
@@ -96,6 +96,13 @@ static void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
 static COORD getCoordSize(const PSMALL_RECT rc);
 static WORD reverseAttr(WORD attr);
 
+static void setTitle(const char* fileName)
+{
+    char str[FILENAME_MAX];
+    sprintf(str, "%s - %s", ProgramName, fileName);
+    SetConsoleTitleA(str); // 设置窗口标题
+}
+
 PConsole newConsole(const char* fileName)
 {
     PConsole con = calloc(sizeof(Console), 1);
@@ -106,9 +113,7 @@ PConsole newConsole(const char* fileName)
         NULL, // default security attributes
         CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
         NULL);
-    con->cm = newChessManual();
-    if (fileName != NULL)
-        readChessManual(con->cm, fileName);
+    con->cm = newChessManual(fileName);
 
     con->thema = SHOWY;
     con->oldArea = con->curArea = MOVEA;
@@ -161,7 +166,6 @@ PConsole newConsole(const char* fileName)
     SetConsoleCP(936);
     SetConsoleOutputCP(936);
     SetConsoleMode(con->hIn, ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT); //ENABLE_PROCESSED_INPUT |
-    SetConsoleTitleW(ProgramName); // 设置窗口标题
 
     COORD winCoord = { WinCols, WinRows };
     SetConsoleScreenBufferSize(con->hOut, winCoord);
@@ -172,6 +176,7 @@ PConsole newConsole(const char* fileName)
     //SetConsoleTextAttribute(con->hOut, WINATTR[con->thema]);
     //GetConsoleScreenBufferInfo(con->hOut, &bInfo); // 获取窗口信息
 
+    setTitle(fileName);
     initMenu(con);
 
     initAreas(con);
@@ -432,7 +437,8 @@ void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
         if (strlen(con->fileName) > 0) { // 在showOpenFile函数里设置fileName
             if (getRecFormat(getExt(con->fileName)) != NOTFMT) {
                 setArea(con, con->oldArea);
-                readChessManual(con->cm, con->fileName);
+                resetChessManual(&con->cm, con->fileName);
+                setTitle(con->fileName);
                 writeFixedAreas(con, true);
             }
             return;
@@ -509,7 +515,7 @@ void showOpenFile(PConsole con, bool show, bool openDir)
 
     // 打开指定目录
     static bool hasFileInfos = false;
-    static wchar_t dirName[FILENAME_MAX] = L"c:\\棋谱";
+    static wchar_t dirName[FILENAME_MAX] = L"."; //c:\\棋谱
     static struct _wfinddata_t fileInfos[THOUSAND] = { 0 };
     static int fileCount = 0;
     if (openDir && hasFileInfos) {
@@ -529,11 +535,6 @@ void showOpenFile(PConsole con, bool show, bool openDir)
     if (!hasFileInfos) {
         fileCount = 0;
         getFileInfos(fileInfos, &fileCount, THOUSAND, dirName, false);
-        // 写入标题行
-        COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
-        wcscat(wcscpy(wstr, L"当前目录："), dirName);
-        FillConsoleOutputCharacter(con->hOut, L' ', cols, dpos, &rwNum);
-        WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), dpos, &rwNum);
     }
     if (fileCount > 0)
         hasFileInfos = true;
@@ -561,6 +562,12 @@ void showOpenFile(PConsole con, bool show, bool openDir)
         wcscat(wstr, tempStr);
     }
     writeAreaLineChars(con, wstr, &irect, firstRow, 0, true);
+
+    // 写入标题行
+    COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
+    wcscat(wcscpy(wstr, L"当前目录："), dirName);
+    FillConsoleOutputCharacter(con->hOut, L' ', cols, dpos, &rwNum);
+    WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), dpos, &rwNum);
 
     // 选择项目突显
     cleanAreaAttr(con, OpenFileAttr[con->thema], &irect);
@@ -650,17 +657,14 @@ void writeMove(PConsole con, bool refresh)
 {
     static int firstRow = 0, firstCol = 0, noWidth = 4; //静态变量，只初始化一次
     SMALL_RECT iMoveRect = { con->iMoveRect.Left + noWidth, con->iMoveRect.Top, con->iMoveRect.Right, con->iMoveRect.Bottom };
-    COORD showCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
-        (iMoveRect.Top + con->cm->currentMove->nextNo_ * 2) };
-    SMALL_RECT showRect = { iMoveRect.Left + firstCol, iMoveRect.Top + firstRow,
-        iMoveRect.Right + firstCol, iMoveRect.Bottom + firstRow };
-    int offsetCol = ((showCoord.X < showRect.Left) ? showCoord.X - showRect.Left
-                                                   : ((showCoord.X > showRect.Right) ? showCoord.X - showRect.Right
-                                                                                     : 0)),
-        offsetRow = ((showCoord.Y < showRect.Top) ? showCoord.Y - showRect.Top
-                                                  : ((showCoord.Y > showRect.Bottom) ? showCoord.Y - showRect.Bottom
-                                                                                     : 0));
-
+    int moveLeft = iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2,
+        moveTop = iMoveRect.Top + con->cm->currentMove->nextNo_ * 2,
+        showLeft = iMoveRect.Left + firstCol,
+        showTop = iMoveRect.Top + firstRow,
+        showRight = iMoveRect.Right + firstCol,
+        showBottom = iMoveRect.Bottom + firstRow,
+        offsetCol = moveLeft < showLeft ? moveLeft - showLeft : (moveLeft > showRight ? moveLeft - showRight : 0),
+        offsetRow = moveTop < showTop ? moveTop - showTop : (moveTop > showBottom ? moveTop - showBottom : 0);
     // 当行、列超出显示范围，或主题更改时，写入字符串
     if (refresh || offsetCol != 0 || offsetRow != 0) {
         firstRow += offsetRow;
@@ -671,9 +675,9 @@ void writeMove(PConsole con, bool refresh)
         if (wstr_PGN_CC)
             free(wstr_PGN_CC);
 
-        SMALL_RECT iLineRect = { con->iMoveRect.Left, con->iMoveRect.Top, con->iMoveRect.Left + noWidth - 1, con->iMoveRect.Bottom };
         wcscpy(wstr, L"");
         wchar_t tempStr[8];
+        SMALL_RECT iLineRect = { iMoveRect.Left - noWidth, iMoveRect.Top, iMoveRect.Left - 1, iMoveRect.Bottom };
         int maxRow = min(iLineRect.Bottom + firstRow, con->cm->maxRow_ * 2);
         for (int row = firstRow; row <= maxRow; ++row) {
             if (row % 2 == 0) {
@@ -686,32 +690,31 @@ void writeMove(PConsole con, bool refresh)
     }
 
     // 清除背景
-    cleanAreaAttr(con, MOVEATTR[con->thema], &iMoveRect);
-    //bool firstColorIsRed = getFirstColor(con->cm) == RED;
-    /*// 设置着法间隔行颜色
-    int cols = iMoveRect.Right - iMoveRect.Left + 1;
-    for (int row = iMoveRect.Top + (firstColorIsRed == (firstRow % 4 == 0) ? 2 : 0); row <= iMoveRect.Bottom; row += 4) {
-        COORD pos = { iMoveRect.Left - noWidth, row };
-        FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
-    }//*/
+    cleanAreaAttr(con, MOVEATTR[con->thema], &con->iMoveRect);
 
+    /*// 设置着法间隔行颜色
+    int cols = con->iMoveRect.Right - con->iMoveRect.Left + 1;
+    for (int row = iMoveRect.Top + ((firstRow % 4 == 0) ? 2 : 0);
+         row <= iMoveRect.Bottom; row += 4) {
+        COORD pos = { con->iMoveRect.Left, row }; //
+        FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
+    } //*/
+
+    // 设置rootMove背景
     PMove curMove = con->cm->currentMove;
+    COORD moveCoord = { moveLeft - firstCol, moveTop - firstRow };
     if (curMove == con->cm->rootMove) {
-        // 设置rootMove背景
-        COORD pos = { iMoveRect.Left, iMoveRect.Top };
-        FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
+        FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, moveCoord, &rwNum);
         return;
     }
+    // 设置选定Move背景
     Piece tpiece = getPiece_s(con->cm->board, curMove->tseat);
     WORD attr = (getColor(tpiece) == RED ? RedMoveAttr[con->thema] : BlackMoveAttr[con->thema]);
-    // 设置选定Move背景
-    showCoord.X -= firstCol;
-    showCoord.Y -= firstRow;
-    FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, showCoord, &rwNum);
+    FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, moveCoord, &rwNum);
+
     // 设置棋盘区移动棋子突显
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->fseat), &rwNum);
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->tseat), &rwNum);
-
     // 如对方被将毙，棋盘区将帅棋子突显
     PieceColor otherColor = getOtherColor(tpiece);
     if (isDied(con->cm->board, otherColor)) {

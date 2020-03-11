@@ -4,7 +4,7 @@ static const wchar_t* PieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
 
 const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
 
-inline PieceColor getColor(Piece piece) { return (piece & 0x10) >> 4; }
+inline PieceColor getColor(Piece piece) { return (bool)(piece & 0x10); }
 
 inline PieceColor getOtherColor(Piece piece) { return getColor(piece) == RED ? BLACK : RED; }
 

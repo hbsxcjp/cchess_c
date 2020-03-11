@@ -34,7 +34,7 @@ PBoard newBoard(void)
     return board;
 }
 
-wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN, size_t n)
+wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN, size_t n)
 {
     for (int i = 0, index = 0; i < n && index < SEATNUM; ++i) {
         wchar_t ch = FEN[i];
@@ -58,7 +58,7 @@ wchar_t* getPieChars_board(wchar_t* pieChars, const PBoard board)
     return pieChars;
 }
 
-wchar_t* getFEN(wchar_t* FEN, const wchar_t* pieChars)
+wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
 {
     int index_F = 0;
     for (int rowIndex = RowLowIndex_; rowIndex <= RowUpIndex_; ++rowIndex) {
@@ -646,7 +646,7 @@ void testBoard(FILE* fout)
 
         //* FEN转换成PieChars
         wchar_t pieChars[SEATNUM + 1];
-        getPieChars_FEN(pieChars, FENs[i], wcslen(FENs[i]));
+        setPieCharsFromFEN(pieChars, FENs[i], wcslen(FENs[i]));
         fwprintf(fout, L"     FEN:%s size:%d\nPieChars:%s size:%d\n",
             FENs[i], wcslen(FENs[i]), pieChars, wcslen(pieChars));
         //*/
@@ -657,7 +657,7 @@ void testBoard(FILE* fout)
 
         getPieChars_board(pieChars, board);
         wchar_t FEN[SEATNUM + 1];
-        getFEN(FEN, pieChars);
+        setFENFromPieChars(FEN, pieChars);
         fwprintf(fout, L"PieChars:%s size:%d\n     FEN:%s size:%d\n",
             pieChars, wcslen(pieChars), FEN, wcslen(FEN));
         //*/

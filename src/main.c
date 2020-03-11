@@ -20,7 +20,7 @@ int main(int argc, char const* argv[])
     //fwprintf(fout, L"输出中文成功了！\n");
     //testPiece(fout);
     //testBoard(fout);
-    //testChessManual(fout);
+    testChessManual(fout);
     //testTools(fout);
     if (argc == 7) {
         testTransDir(atoi(argv[1]), atoi(argv[2]),

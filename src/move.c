@@ -17,15 +17,11 @@ PMove newMove(void)
     PMove move = calloc(sizeof(Move), 1);
     move->fseat = move->tseat = -1;
     move->tpiece = BLANKPIECE;
-    //move->remark = NULL;
-    //move->pmove = move->nmove = move->omove = NULL;
-    //move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
 }
 
 bool isSameMove(const PMove amove, const PMove bmove)
 {
-    //return (amove->nextNo_ == bmove->nextNo_) && (amove->otherNo_ == bmove->otherNo_);
     return amove == bmove;
 }
 
@@ -275,7 +271,7 @@ void changeMove(PMove move, ChangeType ct)
     } else if (ct == SYMMETRY) {
         move->fseat = getSeat_rc(getRow_s(fseat), getOtherCol_s(fseat));
         move->tseat = getSeat_rc(getRow_s(tseat), getOtherCol_s(tseat));
-    }
+    } //如交换棋子，位置不需要更改
 
     if (move->nmove != NULL)
         changeMove(move->nmove, ct);

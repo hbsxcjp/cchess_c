@@ -4,19 +4,16 @@
 #include "base.h"
 
 // 新建chessManual
-PChessManual newChessManual(void);
+PChessManual newChessManual(const char* filename);
+
+// 从文件读取重置chessManual
+PChessManual resetChessManual(PChessManual* cm, const char* filename);
 
 // 删除chessManual
 void delChessManual(PChessManual cm);
 
 // 添加一个info条目
 void addInfoItem(PChessManual cm, const wchar_t* name, const wchar_t* value);
-
-// 增删改move后，更新ins、move的行列数值
-void setMoveZhstrNum(PChessManual cm, PMove  move);
-
-// 从文件读取到chessManual
-PChessManual readChessManual(PChessManual cm, const char* filename);
 
 // 将PGN_CC格式的moves信息写入字符串
 void writeMove_PGN_CCtoWstr(const PChessManual cm, wchar_t** plineStr);
