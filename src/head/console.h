@@ -40,10 +40,10 @@ void showAbout(PConsole con);
 void writeFixedAreas(PConsole con, bool refresh);
 void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
+void writeStatus(PConsole con, Area area);
 void writeMove(PConsole con, bool refresh);
-void writeStatus(PConsole con);
 
 // 设置当前区域，并显示/清除 弹出区域
-void setArea(PConsole con, Area curArea);
+void setArea(PConsole con, Area area, int inc);
 
 #endif

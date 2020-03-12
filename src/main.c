@@ -34,8 +34,7 @@ int main(int argc, char const* argv[])
     //doView();
     //testConview();
 
-    //PConsole pconsole = newConsole(L"01.xqf");
-    PConsole pconsole = newConsole("");
+    PConsole pconsole = newConsole("01.xqf");
     delConsole(pconsole);
 
     //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";

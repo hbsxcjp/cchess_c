@@ -114,9 +114,8 @@ PConsole newConsole(const char* fileName)
         CONSOLE_TEXTMODE_BUFFER, // must be TEXTMODE
         NULL);
     con->cm = newChessManual(fileName);
-
     con->thema = SHOWY;
-    con->oldArea = con->curArea = MOVEA;
+    con->curArea = MOVEA;
 
     SMALL_RECT WinRect = { 0, 0, (WinCols - 1), (WinRows - 1) };
     con->WinRect = WinRect;
@@ -194,15 +193,15 @@ void delConsole(PConsole con)
     free(con);
 }
 
-void openFileArea(PConsole con) { setArea(con, OPENFILEA); }
+void openFileArea(PConsole con) { setArea(con, OPENFILEA, 0); }
 
-void saveAsFileArea(PConsole con) { setArea(con, SAVEFILEA); }
+void saveAsFileArea(PConsole con) { setArea(con, SAVEFILEA, 0); }
 
 void exitPrograme(PConsole con) { exit(0); }
 
 void __changeBoard(PConsole con, ChangeType ct)
 {
-    setArea(con, con->oldArea);
+    setArea(con, OLDAREA, 0);
     changeChessManual(con->cm, ct);
     writeFixedAreas(con, true);
 }
@@ -216,7 +215,7 @@ void symmetryBoard(PConsole con) { __changeBoard(con, SYMMETRY); }
 void __setThema(PConsole con, Thema thema)
 {
     if (thema != con->thema) {
-        setArea(con, con->oldArea);
+        setArea(con, OLDAREA, 0);
         con->thema = thema;
         initAreas(con);
         writeFixedAreas(con, true);
@@ -229,7 +228,7 @@ void setShowyThema(PConsole con) { __setThema(con, SHOWY); }
 
 void about(PConsole con)
 {
-    setArea(con, ABOUTA);
+    setArea(con, ABOUTA, 0);
 }
 
 void operateWin(PConsole con)
@@ -253,21 +252,15 @@ void operateWin(PConsole con)
                            && key == 'C'))
                     return;
                 else if (key == VK_ESCAPE) {
-                    if (con->curArea == BOARDA || con->curArea == MOVEA || con->curArea == CURMOVEA)
-                        return;
-                    setArea(con, con->oldArea);
+                    setArea(con, OLDAREA, 0);
                     break;
                 } else if (key == VK_TAB) {
-                    Area curArea = (4 + con->curArea + ((keys & SHIFT_PRESSED) ? -1 : 1)) % 4; // 四个区域循环
-                    setArea(con, curArea);
+                    setArea(con, OLDAREA, (keys & SHIFT_PRESSED) ? -1 : 1);
                     break;
                 } else if (keys & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED)) {
-                    if (key == 0x12 && con->curArea == MENUA) { // Alt键
-                        setArea(con, con->oldArea);
-                        break;
-                    } else
-                        setArea(con, MENUA);
+                    setArea(con, MENUA, 0);
                 }
+                printf("k:%x ", key);
                 keyEventProc(con, ker);
                 break;
             case MOUSE_EVENT: // mouse input
@@ -302,7 +295,7 @@ void keyEventProc(PConsole con, PKEY_EVENT_RECORD ker)
         operateSaveFile(con, ker);
         break;
     case ABOUTA:
-        setArea(con, con->oldArea);
+        setArea(con, OLDAREA, 0);
         break;
     default:
         break;
@@ -346,7 +339,7 @@ void operateMove(PConsole con, PKEY_EVENT_RECORD ker)
         goEnd(con->cm);
         break;
     case VK_RETURN:
-        setArea(con, CURMOVEA);
+        setArea(con, CURMOVEA, 0);
         break;
     default:
         printf("key:%x/", ker->wVirtualKeyCode);
@@ -407,7 +400,7 @@ void operateMenu(PConsole con, PKEY_EVENT_RECORD ker)
     }
 
     if (curMenu != con->curMenu)
-        showSubMenu(con, true);
+        setArea(con, MENUA, 0); //showSubMenu(con, true);
 }
 
 void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
@@ -436,7 +429,7 @@ void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
     case VK_RETURN:
         if (strlen(con->fileName) > 0) { // 在showOpenFile函数里设置fileName
             if (getRecFormat(getExt(con->fileName)) != NOTFMT) {
-                setArea(con, con->oldArea);
+                setArea(con, OLDAREA, 0);
                 resetChessManual(&con->cm, con->fileName);
                 setTitle(con->fileName);
                 writeFixedAreas(con, true);
@@ -487,7 +480,6 @@ void showSubMenu(PConsole con, bool show)
     // 选择项目突显
     COORD pos = { posL, level };
     FillConsoleOutputAttribute(con->hOut, SelMenuAttr[con->thema], posR - posL - ShadowCols + 1, pos, &rwNum);
-    writeStatus(con);
 }
 
 static int __getFileIndex(int index, int fileCount)
@@ -606,7 +598,7 @@ void writeFixedAreas(PConsole con, bool refresh)
     writeBoard(con);
     writeCurmove(con);
     writeMove(con, refresh);
-    writeStatus(con);
+    //setArea(con, OLDAREA, 0);
 }
 
 void writeBoard(PConsole con)
@@ -657,14 +649,16 @@ void writeMove(PConsole con, bool refresh)
 {
     static int firstRow = 0, firstCol = 0, noWidth = 4; //静态变量，只初始化一次
     SMALL_RECT iMoveRect = { con->iMoveRect.Left + noWidth, con->iMoveRect.Top, con->iMoveRect.Right, con->iMoveRect.Bottom };
-    int moveLeft = iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2,
-        moveTop = iMoveRect.Top + con->cm->currentMove->nextNo_ * 2,
-        showLeft = iMoveRect.Left + firstCol,
-        showTop = iMoveRect.Top + firstRow,
-        showRight = iMoveRect.Right + firstCol,
-        showBottom = iMoveRect.Bottom + firstRow,
-        offsetCol = moveLeft < showLeft ? moveLeft - showLeft : (moveLeft > showRight ? moveLeft - showRight : 0),
-        offsetRow = moveTop < showTop ? moveTop - showTop : (moveTop > showBottom ? moveTop - showBottom : 0);
+    COORD showCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
+        (iMoveRect.Top + con->cm->currentMove->nextNo_ * 2) };
+    SMALL_RECT showRect = { iMoveRect.Left + firstCol, iMoveRect.Top + firstRow,
+        iMoveRect.Right + firstCol, iMoveRect.Bottom + firstRow };
+    int offsetCol = ((showCoord.X < showRect.Left) ? showCoord.X - showRect.Left
+                                                   : ((showCoord.X > showRect.Right) ? showCoord.X - showRect.Right
+                                                                                     : 0)),
+        offsetRow = ((showCoord.Y < showRect.Top) ? showCoord.Y - showRect.Top
+                                                  : ((showCoord.Y > showRect.Bottom) ? showCoord.Y - showRect.Bottom
+                                                                                     : 0));
     // 当行、列超出显示范围，或主题更改时，写入字符串
     if (refresh || offsetCol != 0 || offsetRow != 0) {
         firstRow += offsetRow;
@@ -672,8 +666,7 @@ void writeMove(PConsole con, bool refresh)
         wchar_t* wstr_PGN_CC = NULL;
         writeMove_PGN_CCtoWstr(con->cm, &wstr_PGN_CC);
         writeAreaLineChars(con, wstr_PGN_CC, &iMoveRect, firstRow, firstCol, true);
-        if (wstr_PGN_CC)
-            free(wstr_PGN_CC);
+        free(wstr_PGN_CC);
 
         wcscpy(wstr, L"");
         wchar_t tempStr[8];
@@ -692,25 +685,27 @@ void writeMove(PConsole con, bool refresh)
     // 清除背景
     cleanAreaAttr(con, MOVEATTR[con->thema], &con->iMoveRect);
 
-    /*// 设置着法间隔行颜色
+    //*// 设置着法间隔行颜色
     int cols = con->iMoveRect.Right - con->iMoveRect.Left + 1;
     for (int row = iMoveRect.Top + ((firstRow % 4 == 0) ? 2 : 0);
          row <= iMoveRect.Bottom; row += 4) {
         COORD pos = { con->iMoveRect.Left, row }; //
-        FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
+        //FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
     } //*/
 
     // 设置rootMove背景
     PMove curMove = con->cm->currentMove;
-    COORD moveCoord = { moveLeft - firstCol, moveTop - firstRow };
     if (curMove == con->cm->rootMove) {
-        FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, moveCoord, &rwNum);
+        COORD pos = { iMoveRect.Left, iMoveRect.Top };
+        //FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
         return;
     }
     // 设置选定Move背景
     Piece tpiece = getPiece_s(con->cm->board, curMove->tseat);
     WORD attr = (getColor(tpiece) == RED ? RedMoveAttr[con->thema] : BlackMoveAttr[con->thema]);
-    FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, moveCoord, &rwNum);
+    showCoord.X -= firstCol;
+    showCoord.Y -= firstRow;
+    //FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, showCoord, &rwNum);
 
     // 设置棋盘区移动棋子突显
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->fseat), &rwNum);
@@ -724,9 +719,9 @@ void writeMove(PConsole con, bool refresh)
     }
 }
 
-void writeStatus(PConsole con)
+void writeStatus(PConsole con, Area area)
 {
-    switch (con->curArea) {
+    switch (area) {
     case MOVEA:
         wcscpy(wstr, L"【导航】 <↑>前  <↓>下  <←>前变  <→>下变  <PageDown>进10着   <PageUp>退10着   <Home>开始   <End>结束    <Enter>转注解区");
         break;
@@ -885,31 +880,34 @@ void delMenu(PMenu menu)
     free(menu);
 }
 
-void setArea(PConsole con, Area curArea)
+void setArea(PConsole con, Area area, int inc)
 {
-    Area thisArea = con->curArea;
-    if (thisArea != curArea) {
-        switch (thisArea) { // 退出区域
-        case MENUA:
-            showSubMenu(con, false);
-            break;
-        case OPENFILEA:
-            showOpenFile(con, false, false);
-            break;
-        case SAVEFILEA:
-            showSaveFile(con, false);
-            break;
-        case ABOUTA:
-            showAbout(con);
-            break;
-        default:
-            break;
-        }
+    static Area oldArea = MOVEA;
+    if (inc != 0)
+        area = (con->curArea + inc + 3) % 3; // 可存入oldArea的三个常显区域循环
+    else if (area == OLDAREA)
+        area = oldArea;
+
+    switch (con->curArea) { // 退出弹出区域
+    case MENUA:
+        showSubMenu(con, false);
+        break;
+    case OPENFILEA:
+        showOpenFile(con, false, false);
+        break;
+    case SAVEFILEA:
+        showSaveFile(con, false);
+        break;
+    case ABOUTA:
+        showAbout(con);
+        break;
+    default:
+        break;
     }
 
-    if (thisArea == MOVEA || thisArea == CURMOVEA || thisArea == BOARDA)
-        con->oldArea = thisArea;
-    switch ((con->curArea = curArea)) { // 进入区域
+    if (con->curArea == MOVEA || con->curArea == CURMOVEA || con->curArea == BOARDA)
+        oldArea = con->curArea;
+    switch ((con->curArea = area)) { // 进入弹出区域
     case MENUA:
         showSubMenu(con, true);
         break;
@@ -925,7 +923,7 @@ void setArea(PConsole con, Area curArea)
     default:
         break;
     }
-    writeStatus(con);
+    writeStatus(con, area);
 }
 
 bool storageArea(PConsole con, const PSMALL_RECT rc)

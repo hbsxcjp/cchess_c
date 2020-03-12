@@ -15,7 +15,7 @@ const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
 PMove newMove(void)
 {
     PMove move = calloc(sizeof(Move), 1);
-    move->fseat = move->tseat = -1;
+    //move->fseat = move->tseat = -1;
     move->tpiece = BLANKPIECE;
     return move;
 }
