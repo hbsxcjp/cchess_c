@@ -175,12 +175,12 @@ typedef struct _Console {
     int fileIndex;
     char fileName[FILENAME_MAX];
     Thema thema;
-    Area curArea; //, oldArea;
+    Area curArea; 
     SMALL_RECT WinRect, MenuRect, BoardRect, CurmoveRect, MoveRect, StatusRect, OpenFileRect;
     SMALL_RECT iMenuRect, iBoardRect, iCurmoveRect, iMoveRect, iStatusRect, iOpenFileRect;
     struct _Menu *rootMenu, *curMenu;
-    CHAR_INFO chBuf[40 * 120];
-    SMALL_RECT chBufRect;
+    //CHAR_INFO chBuf[40 * 120];
+    //SMALL_RECT chBufRect;
 } Console, *PConsole;
 
 // 菜单命令

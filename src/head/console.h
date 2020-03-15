@@ -37,11 +37,11 @@ void showSaveFile(PConsole con, bool show);
 void showAbout(PConsole con);
 
 // 重新写入内容
-void writeFixedAreas(PConsole con, bool refresh);
+void writeFixedAreas(PConsole con);
 void writeBoard(PConsole con);
 void writeCurmove(PConsole con);
+void writeMove(PConsole con);
 void writeStatus(PConsole con, Area area);
-void writeMove(PConsole con, bool refresh);
 
 // 设置当前区域，并显示/清除 弹出区域
 void setArea(PConsole con, Area area, int inc);

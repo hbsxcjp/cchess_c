@@ -81,8 +81,7 @@ static void writeAreaLineChars(PConsole con, wchar_t* lineChars, const PSMALL_RE
 static int getLine(wchar_t* lineChar, wchar_t** lineChars, int cols, bool cutLine);
 
 // 存储/恢复 弹出区域屏幕块信息
-static bool storageArea(PConsole con, const PSMALL_RECT rc);
-static bool restoreArea(PConsole con);
+static PSMALL_RECT readWriteArea(HANDLE hOut, PSMALL_RECT rc);
 
 // 初始化区域相关
 static void initAreas(PConsole con);
@@ -93,7 +92,6 @@ static void cleanAreaChar(PConsole con, const PSMALL_RECT rc);
 static void cleanAreaAttr(PConsole con, WORD attr, const PSMALL_RECT rc);
 
 // 便利函数
-static COORD getCoordSize(const PSMALL_RECT rc);
 static WORD reverseAttr(WORD attr);
 
 static void setTitle(const char* fileName)
@@ -179,7 +177,7 @@ PConsole newConsole(const char* fileName)
     initMenu(con);
 
     initAreas(con);
-    writeFixedAreas(con, true);
+    writeFixedAreas(con);
     operateWin(con);
 
     return con;
@@ -203,7 +201,7 @@ void __changeBoard(PConsole con, ChangeType ct)
 {
     setArea(con, OLDAREA, 0);
     changeChessManual(con->cm, ct);
-    writeFixedAreas(con, true);
+    writeFixedAreas(con);
 }
 
 void exchangeBoard(PConsole con) { __changeBoard(con, EXCHANGE); }
@@ -218,7 +216,7 @@ void __setThema(PConsole con, Thema thema)
         setArea(con, OLDAREA, 0);
         con->thema = thema;
         initAreas(con);
-        writeFixedAreas(con, true);
+        writeFixedAreas(con);
     }
 }
 
@@ -346,7 +344,7 @@ void operateMove(PConsole con, PKEY_EVENT_RECORD ker)
         break;
     }
     if (oldCurMove != con->cm->currentMove)
-        writeFixedAreas(con, false); // 根据当前着法变化判断是否需要刷新屏幕
+        writeFixedAreas(con); // 根据当前着法变化判断是否需要刷新屏幕
 }
 
 void operateCurMove(PConsole con, PKEY_EVENT_RECORD ker)
@@ -432,7 +430,7 @@ void operateOpenFile(PConsole con, PKEY_EVENT_RECORD ker)
                 setArea(con, OLDAREA, 0);
                 resetChessManual(&con->cm, con->fileName);
                 setTitle(con->fileName);
-                writeFixedAreas(con, true);
+                writeFixedAreas(con);
             }
             return;
         } else
@@ -451,14 +449,18 @@ void operateSaveFile(PConsole con, PKEY_EVENT_RECORD ker)
 
 void showSubMenu(PConsole con, bool show)
 {
-    static bool hasTopSelMenu = false, hasStorageArea = false;
+    static bool hasTopSelMenu = false;
+    static PSMALL_RECT storageRect = NULL;
+    // 清除菜单顶行背景
     if (hasTopSelMenu) {
-        cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect); // 清除菜单顶行背景
+        cleanAreaAttr(con, MENUATTR[con->thema], &con->iMenuRect);
         hasTopSelMenu = false;
     }
-    if (hasStorageArea)
-        hasStorageArea = restoreArea(con);
-    if (!show) // 不需要显示
+    // 恢复被覆盖的区域
+    if (storageRect)
+        storageRect = readWriteArea(con->hOut, NULL);
+    // 不需要显示
+    if (!show)
         return;
 
     SHORT level = con->curMenu->childIndex;
@@ -469,14 +471,16 @@ void showSubMenu(PConsole con, bool show)
     SMALL_RECT rect = { posL, posT, posR, posB };
 
     if (level > 0) {
-        hasStorageArea = storageArea(con, &rect);
+        // 存储将被覆盖的区域
+        storageRect = readWriteArea(con->hOut, &rect);
 
         // 显示子菜单屏幕区
         clearArea(con, ShowMenuAttr[con->thema], &rect, true, false);
         SMALL_RECT irect = { posL, posT, posR - ShadowCols, posB - ShadowRows };
         writeAreaLineChars(con, getWstr(wstr, con->curMenu), &irect, 0, 0, false);
     }
-    hasTopSelMenu = level == 0; // 保存是否有顶层菜单被选
+    // 保存是否有顶层菜单被选
+    hasTopSelMenu = level == 0;
     // 选择项目突显
     COORD pos = { posL, level };
     FillConsoleOutputAttribute(con->hOut, SelMenuAttr[con->thema], posR - posL - ShadowCols + 1, pos, &rwNum);
@@ -489,28 +493,24 @@ static int __getFileIndex(int index, int fileCount)
 
 void showOpenFile(PConsole con, bool show, bool openDir)
 {
-    static bool hasStorageArea = false;
-    // 恢复显示区域
+    static PSMALL_RECT storageRect = NULL;
     if (!show) {
-        if (hasStorageArea)
-            hasStorageArea = restoreArea(con);
+        // 恢复显示区域
+        if (storageRect)
+            storageRect = readWriteArea(con->hOut, NULL);
         return;
     }
     // 初始化显示区域
-    if (!hasStorageArea) {
-        hasStorageArea = storageArea(con, &con->OpenFileRect);
+    if (!storageRect) {
+        storageRect = readWriteArea(con->hOut, &con->OpenFileRect);
         clearArea(con, OpenFileAttr[con->thema], &con->OpenFileRect, true, true);
-        COORD pos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 1 };
-        wcscpy(wstr, L"序号  属性  大小(B)  文件名称");
-        WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), pos, &rwNum);
     }
 
     // 打开指定目录
-    static bool hasFileInfos = false;
     static wchar_t dirName[FILENAME_MAX] = L"."; //c:\\棋谱
     static struct _wfinddata_t fileInfos[THOUSAND] = { 0 };
     static int fileCount = 0;
-    if (openDir && hasFileInfos) {
+    if (openDir && fileCount > 0) {
         con->fileIndex = __getFileIndex(con->fileIndex, fileCount);
         if (fileInfos[con->fileIndex].attrib == _A_SUBDIR) {
             wchar_t* pwch = NULL;
@@ -518,19 +518,13 @@ void showOpenFile(PConsole con, bool show, bool openDir)
                 pwch[0] = L'\x0';
             else
                 wcscat(wcscat(dirName, L"\\"), fileInfos[con->fileIndex].name);
-            hasFileInfos = false;
-            con->fileIndex = 0;
+            fileCount = 0;
         }
     }
     // 提取目录下文件清单
-    int cols = OpenFileCols - BorderCols * 2 - ShadowCols;
-    if (!hasFileInfos) {
-        fileCount = 0;
+    if (fileCount == 0)
         getFileInfos(fileInfos, &fileCount, THOUSAND, dirName, false);
-    }
-    if (fileCount > 0)
-        hasFileInfos = true;
-    else
+    if (fileCount == 0)
         return;
 
     // 存储选定的文件名
@@ -542,29 +536,22 @@ void showOpenFile(PConsole con, bool show, bool openDir)
         strcpy(con->fileName, "");
 
     // 文件清单转换为字符串, 再写入区域
-    SMALL_RECT irect = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 2, con->iOpenFileRect.Right, con->iOpenFileRect.Bottom };
-    int pageRows = irect.Bottom - irect.Top + 1,
-        firstRow = con->fileIndex / pageRows * pageRows,
-        selIndex = con->fileIndex % pageRows;
-    wcscpy(wstr, L"");
+    int pageRows = con->iOpenFileRect.Bottom - con->iOpenFileRect.Top + 1 - 2, // 减去标题2行
+        firstRow = con->fileIndex / pageRows * pageRows;
+    swprintf(wstr, THOUSAND, L"当前目录：%s\n序号  属性  大小(B)  文件名称\n", dirName);
     wchar_t tempStr[FILENAME_MAX];
-    for (int i = 0; i < fileCount; ++i) {
+    for (int i = firstRow; i < fileCount && i < firstRow + pageRows; ++i) {
         swprintf(tempStr, FILENAME_MAX, L"%3d   %s%9d  %s\n",
-            i, fileInfos[i].attrib == 0x10 ? L"目录" : L"文件", fileInfos[i].size, fileInfos[i].name);
+            i, fileInfos[i].attrib == _A_SUBDIR ? L"目录" : L"文件", fileInfos[i].size, fileInfos[i].name);
         wcscat(wstr, tempStr);
     }
-    writeAreaLineChars(con, wstr, &irect, firstRow, 0, true);
-
-    // 写入标题行
-    COORD dpos = { con->iOpenFileRect.Left, con->iOpenFileRect.Top };
-    wcscat(wcscpy(wstr, L"当前目录："), dirName);
-    FillConsoleOutputCharacter(con->hOut, L' ', cols, dpos, &rwNum);
-    WriteConsoleOutputCharacterW(con->hOut, wstr, wcslen(wstr), dpos, &rwNum);
+    writeAreaLineChars(con, wstr, &con->iOpenFileRect, 0, 0, true);
 
     // 选择项目突显
+    SMALL_RECT irect = { con->iOpenFileRect.Left, con->iOpenFileRect.Top + 2, con->iOpenFileRect.Right, con->iOpenFileRect.Bottom };
     cleanAreaAttr(con, OpenFileAttr[con->thema], &irect);
-    COORD pos = { irect.Left, irect.Top + selIndex % pageRows };
-    FillConsoleOutputAttribute(con->hOut, SelFileAttr[con->thema], cols, pos, &rwNum);
+    COORD pos = { irect.Left, irect.Top + con->fileIndex % pageRows };
+    FillConsoleOutputAttribute(con->hOut, SelFileAttr[con->thema], irect.Right - irect.Left + 1, pos, &rwNum);
 }
 
 void showSaveFile(PConsole con, bool show)
@@ -573,14 +560,16 @@ void showSaveFile(PConsole con, bool show)
 
 void showAbout(PConsole con)
 {
-    static bool hasStorageArea = false;
-    if (hasStorageArea)
-        hasStorageArea = restoreArea(con);
+    static PSMALL_RECT storageRect = NULL;
+    if (storageRect)
+        // 恢复显示区域
+        storageRect = readWriteArea(con->hOut, NULL);
     else {
+        // 存储显示区域
         int width = 36, height = 9;
         COORD pos = { (WinCols - width) / 2, (WinRows - height) / 2 };
         SMALL_RECT rect = { pos.X, pos.Y, pos.X + width - 1, pos.Y + height - 1 };
-        hasStorageArea = storageArea(con, &rect); // 存储本显示区
+        storageRect = readWriteArea(con->hOut, &rect);
 
         clearArea(con, AboutAttr[con->thema], &rect, true, true);
         wcscpy(wstr, L"       中国象棋打谱软件\n\n"
@@ -593,11 +582,11 @@ void showAbout(PConsole con)
     }
 }
 
-void writeFixedAreas(PConsole con, bool refresh)
+void writeFixedAreas(PConsole con)
 {
     writeBoard(con);
     writeCurmove(con);
-    writeMove(con, refresh);
+    writeMove(con);
     //setArea(con, OLDAREA, 0);
 }
 
@@ -645,42 +634,42 @@ void writeCurmove(PConsole con)
     writeAreaLineChars(con, getMoveStr(wstr, con->cm->currentMove), &iCurmoveRect, 0, 0, false);
 }
 
-void writeMove(PConsole con, bool refresh)
+void writeMove(PConsole con)
 {
     static int firstRow = 0, firstCol = 0, noWidth = 4; //静态变量，只初始化一次
     SMALL_RECT iMoveRect = { con->iMoveRect.Left + noWidth, con->iMoveRect.Top, con->iMoveRect.Right, con->iMoveRect.Bottom };
-    COORD showCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
+    // 当前着法坐标
+    COORD curmoveCoord = { (iMoveRect.Left + con->cm->currentMove->CC_ColNo_ * 5 * 2),
         (iMoveRect.Top + con->cm->currentMove->nextNo_ * 2) };
+    // 显示字符串的区域矩形框
     SMALL_RECT showRect = { iMoveRect.Left + firstCol, iMoveRect.Top + firstRow,
         iMoveRect.Right + firstCol, iMoveRect.Bottom + firstRow };
-    int offsetCol = ((showCoord.X < showRect.Left) ? showCoord.X - showRect.Left
-                                                   : ((showCoord.X > showRect.Right) ? showCoord.X - showRect.Right
-                                                                                     : 0)),
-        offsetRow = ((showCoord.Y < showRect.Top) ? showCoord.Y - showRect.Top
-                                                  : ((showCoord.Y > showRect.Bottom) ? showCoord.Y - showRect.Bottom
-                                                                                     : 0));
-    // 当行、列超出显示范围，或主题更改时，写入字符串
-    if (refresh || offsetCol != 0 || offsetRow != 0) {
-        firstRow += offsetRow;
-        firstCol += offsetCol;
-        wchar_t* wstr_PGN_CC = NULL;
-        writeMove_PGN_CCtoWstr(con->cm, &wstr_PGN_CC);
-        writeAreaLineChars(con, wstr_PGN_CC, &iMoveRect, firstRow, firstCol, true);
-        free(wstr_PGN_CC);
+    // 修正数：当前着法对比显示字符串区域的坐标偏移量
+    firstCol += ((curmoveCoord.X < showRect.Left) ? curmoveCoord.X - showRect.Left
+                                                  : ((curmoveCoord.X > showRect.Right) ? curmoveCoord.X - showRect.Right
+                                                                                       : 0));
+    firstRow += ((curmoveCoord.Y < showRect.Top) ? curmoveCoord.Y - showRect.Top
+                                                 : ((curmoveCoord.Y > showRect.Bottom) ? curmoveCoord.Y - showRect.Bottom
+                                                                                       : 0));
+    // 写入着法字符串
+    wchar_t* wstr_PGN_CC = NULL;
+    writeMove_PGN_CCtoWstr(con->cm, &wstr_PGN_CC);
+    writeAreaLineChars(con, wstr_PGN_CC, &iMoveRect, firstRow, firstCol, true);
+    free(wstr_PGN_CC);
 
-        wcscpy(wstr, L"");
-        wchar_t tempStr[8];
-        SMALL_RECT iLineRect = { iMoveRect.Left - noWidth, iMoveRect.Top, iMoveRect.Left - 1, iMoveRect.Bottom };
-        int maxRow = min(iLineRect.Bottom + firstRow, con->cm->maxRow_ * 2);
-        for (int row = firstRow; row <= maxRow; ++row) {
-            if (row % 2 == 0) {
-                swprintf(tempStr, 6, L"%3d", row / 2);
-                wcscat(wstr, tempStr);
-            }
-            wcscat(wstr, L"\n");
+    // 写入行号
+    wcscpy(wstr, L"");
+    wchar_t tempStr[8];
+    SMALL_RECT iLineRect = { iMoveRect.Left - noWidth, iMoveRect.Top, iMoveRect.Left - 1, iMoveRect.Bottom };
+    int maxRow = min(iLineRect.Bottom + firstRow, con->cm->maxRow_ * 2);
+    for (int row = firstRow; row <= maxRow; ++row) {
+        if (row % 2 == 0) {
+            swprintf(tempStr, 6, L"%3d", row / 2);
+            wcscat(wstr, tempStr);
         }
-        writeAreaLineChars(con, wstr, &iLineRect, 0, 0, true);
+        wcscat(wstr, L"\n");
     }
+    writeAreaLineChars(con, wstr, &iLineRect, 0, 0, true);
 
     // 清除背景
     cleanAreaAttr(con, MOVEATTR[con->thema], &con->iMoveRect);
@@ -690,22 +679,22 @@ void writeMove(PConsole con, bool refresh)
     for (int row = iMoveRect.Top + ((firstRow % 4 == 0) ? 2 : 0);
          row <= iMoveRect.Bottom; row += 4) {
         COORD pos = { con->iMoveRect.Left, row }; //
-        //FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
+        FillConsoleOutputAttribute(con->hOut, RedMoveLineAttr[con->thema], cols, pos, &rwNum);
     } //*/
 
     // 设置rootMove背景
     PMove curMove = con->cm->currentMove;
     if (curMove == con->cm->rootMove) {
         COORD pos = { iMoveRect.Left, iMoveRect.Top };
-        //FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
+        FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
         return;
     }
     // 设置选定Move背景
     Piece tpiece = getPiece_s(con->cm->board, curMove->tseat);
     WORD attr = (getColor(tpiece) == RED ? RedMoveAttr[con->thema] : BlackMoveAttr[con->thema]);
-    showCoord.X -= firstCol;
-    showCoord.Y -= firstRow;
-    //FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, showCoord, &rwNum);
+    curmoveCoord.X -= firstCol;
+    curmoveCoord.Y -= firstRow;
+    FillConsoleOutputAttribute(con->hOut, attr, 4 * 2, curmoveCoord, &rwNum);
 
     // 设置棋盘区移动棋子突显
     FillConsoleOutputAttribute(con->hOut, attr, 2, getBoardSeatCoord(con, curMove->fseat), &rwNum);
@@ -888,22 +877,23 @@ void setArea(PConsole con, Area area, int inc)
     else if (area == OLDAREA)
         area = oldArea;
 
-    switch (con->curArea) { // 退出弹出区域
-    case MENUA:
-        showSubMenu(con, false);
-        break;
-    case OPENFILEA:
-        showOpenFile(con, false, false);
-        break;
-    case SAVEFILEA:
-        showSaveFile(con, false);
-        break;
-    case ABOUTA:
-        showAbout(con);
-        break;
-    default:
-        break;
-    }
+    if (area != con->curArea)
+        switch (con->curArea) { // 退出弹出区域
+        case MENUA:
+            showSubMenu(con, false);
+            break;
+        case OPENFILEA:
+            showOpenFile(con, false, false);
+            break;
+        case SAVEFILEA:
+            showSaveFile(con, false);
+            break;
+        case ABOUTA:
+            showAbout(con);
+            break;
+        default:
+            break;
+        }
 
     if (con->curArea == MOVEA || con->curArea == CURMOVEA || con->curArea == BOARDA)
         oldArea = con->curArea;
@@ -926,17 +916,18 @@ void setArea(PConsole con, Area area, int inc)
     writeStatus(con, area);
 }
 
-bool storageArea(PConsole con, const PSMALL_RECT rc)
+static PSMALL_RECT readWriteArea(HANDLE hOut, PSMALL_RECT rc)
 {
-    con->chBufRect = *rc;
-    ReadConsoleOutputW(con->hOut, con->chBuf, getCoordSize(rc), homePos, rc);
-    return true;
-}
-
-bool restoreArea(PConsole con)
-{
-    WriteConsoleOutputW(con->hOut, con->chBuf, getCoordSize(&con->chBufRect), homePos, &con->chBufRect);
-    return false;
+    static SMALL_RECT bufRect;
+    static CHAR_INFO chBuf[45 * 130];
+    if (rc)
+        bufRect = *rc;
+    COORD rcSize = { bufRect.Right - bufRect.Left + 1, bufRect.Bottom - bufRect.Top + 1 };
+    if (rc)
+        ReadConsoleOutputW(hOut, chBuf, rcSize, homePos, &bufRect);
+    else
+        WriteConsoleOutputW(hOut, chBuf, rcSize, homePos, &bufRect);
+    return rc;
 }
 
 void initAreas(PConsole con)
@@ -1112,12 +1103,6 @@ PMenu getBottomMenu(PMenu menu)
     while (menu->childMenu)
         menu = menu->childMenu;
     return menu;
-}
-
-COORD getCoordSize(const PSMALL_RECT rc)
-{
-    COORD rcSize = { rc->Right - rc->Left + 1, rc->Bottom - rc->Top + 1 };
-    return rcSize;
 }
 
 WORD reverseAttr(WORD attr)
