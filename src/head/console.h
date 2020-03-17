@@ -44,6 +44,6 @@ void writeMove(PConsole con);
 void writeStatus(PConsole con, Area area);
 
 // 设置当前区域，并显示/清除 弹出区域
-void setArea(PConsole con, Area area, int inc);
+void setArea(PConsole con, Area area);
 
 #endif

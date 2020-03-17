@@ -160,10 +160,12 @@ typedef enum {
     MOVEA,
     CURMOVEA,
     BOARDA,
-    MENUA,
     OPENFILEA,
     SAVEFILEA,
     ABOUTA,
+    MENUA,
+    DECAREA, // 代表递减
+    INCAREA, // 代表递增
     OLDAREA // 代表旧区域
 } Area;
 
@@ -172,10 +174,10 @@ struct _Menu;
 typedef struct _Console {
     HANDLE hIn, hOut;
     PChessManual cm;
+    Thema thema;
+    Area curArea;
     int fileIndex;
     char fileName[FILENAME_MAX];
-    Thema thema;
-    Area curArea; 
     SMALL_RECT WinRect, MenuRect, BoardRect, CurmoveRect, MoveRect, StatusRect, OpenFileRect;
     SMALL_RECT iMenuRect, iBoardRect, iCurmoveRect, iMoveRect, iStatusRect, iOpenFileRect;
     struct _Menu *rootMenu, *curMenu;
