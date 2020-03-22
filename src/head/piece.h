@@ -17,7 +17,8 @@
 // 棋子颜色类型
 typedef enum {
     RED,
-    BLACK
+    BLACK,
+    NOTCOLOR
 } PieceColor;
 
 // 棋子种类类型
@@ -28,14 +29,21 @@ typedef enum {
     KNIGHT,
     ROOK,
     CANNON,
-    PAWN
+    PAWN,
+    NOTKIND
 } PieceKind;
 
 // 棋子指针类型（不透明）
-typedef struct Piece* Piece; // 与结构同名
-typedef struct Pieces* Pieces; // 与结构同名
+typedef struct Piece* Piece;
+typedef struct Pieces* Pieces; // 与结构同名, 释放需要非const类型
+typedef const struct Pieces* const CPieces; // 固定不变一副棋子
 
-// 设置一副棋子
+// 空子的字符表示
+extern const wchar_t BLANKCHAR;
+// 空棋子
+extern Piece BLANKPIECE;
+
+// 生成一副棋子
 Pieces getPieces(void);
 
 // 释放一副棋子
@@ -59,20 +67,18 @@ wchar_t getPieName(Piece piece);
 // 取得表示棋子文本的名称
 wchar_t getPieName_T(Piece piece);
 
-// 取得空棋子字符
-wchar_t getBlankChar(void);
-
-// 取得空棋子
-Piece getBlankPiece(Pieces pieces);
-
 //  取得棋子
-Piece getPiece_ch(Pieces pieces, wchar_t ch);
+Piece getPiece_i(CPieces pieces, int index);
+Piece getPiece_ch(CPieces pieces, wchar_t ch);
 
 //  取得表示相同种类的对方棋子
-Piece getOtherPiece(Pieces pieces, Piece piece);
+Piece getOtherPiece(CPieces pieces, Piece piece);
+
+// 设置为已放置在棋盘上
+Piece setOnBoard(Piece piece, bool onBoard);
 
 // 取得表示棋子表示字符串的名称
-wchar_t* getPieString(wchar_t* pieStr, size_t n, Piece piece);
+wchar_t* getPieString(wchar_t* pieStr, Piece piece);
 
 // 测试本翻译单元各种对象、函数
 void testPiece(FILE* fout);

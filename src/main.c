@@ -1,7 +1,7 @@
 //#define NDEBUG
 
 #include "head/base.h"
-//#include "head/board.h"
+#include "head/board.h"
 //#include "head/chessManual.h"
 //#include "head/console.h"
 //#include "head/move.h"
@@ -16,15 +16,15 @@ int main(int argc, char const* argv[])
 
     time_t time0;
     time(&time0);
-    
-    FILE* fout = stdout;
-    //FILE* fout = fopen("s", "w");
+
+    //FILE* fout = stdout;
+    FILE* fout = fopen("s", "w");
     if (!fout)
         return -1;
     //fwprintf(fout, L"输出中文成功了！\n");
 
     testPiece(fout);
-    //testBoard(fout);
+    testBoard(fout);
     //testChessManual(fout);
     //testTools(fout);
     /*
