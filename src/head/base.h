@@ -19,94 +19,8 @@
 #define WCHARSIZE 256
 #define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
-//=================================================================
-//棋子相关的类型
-//=================================================================
 
-// 两方
-#define PIECECOLORNUM 2
-// 棋子种类数量
-#define PIECEKINDNUM 7
-// 一方棋子个数
-#define PIECENUM 32
-// 空子的字符表示
-#define BLANKCHAR L'_'
-
-// 棋子颜色类型
-typedef enum {
-    RED,
-    BLACK
-} PieceColor;
-
-// 棋子种类类型
-typedef enum {
-    KING,
-    ADVISOR,
-    BISHOP,
-    KNIGHT,
-    ROOK,
-    CANNON,
-    PAWN
-} PieceKind;
-
-// 棋子类型 高四位表示颜色，低四位表示种类，-1表示空子
-typedef enum {
-    BLANKPIECE = 0xFF,
-    REDKING = 0x0,
-    REDADVISOR,
-    REDBISHOP,
-    REDKNIGHT,
-    REDROOK,
-    REDCANNON,
-    REDPAWN,
-    BLACKKING = 0x10,
-    BLACKADVISOR,
-    BLACKBISHOP,
-    BLACKKNIGHT,
-    BLACKROOK,
-    BLACKCANNON,
-    BLACKPAWN
-} Piece;
-
-//=================================================================
-//棋盘相关的类型
-//=================================================================
-
-// 棋盘行数
-#define BOARDROW 10
-// 棋盘列数
-#define BOARDCOL 9
-// 棋盘位置个数
-#define SEATNUM (BOARDROW * BOARDCOL)
-// 棋盘位置类型
-#define Seat int
-// 棋子数组长度
-#define BOARDLEN 0x99
-
-// 棋子马的移动方向
-typedef enum {
-    SW,
-    SE,
-    NW,
-    NE,
-    WS,
-    ES,
-    WN,
-    EN
-} MoveDirection;
-
-// 一副棋盘结构类型
-typedef struct _Board {
-    Piece pieces[BOARDLEN]; // 位置0x00, 高四位表示行，低四位表示列
-    PieceColor bottomColor;
-} Board, *PBoard;
-
-// 棋盘变换类型
-typedef enum {
-    EXCHANGE,
-    ROTATE,
-    SYMMETRY
-} ChangeType;
+/*
 
 //=================================================================
 //棋局相关的类型
@@ -201,5 +115,6 @@ typedef struct _MenuData {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
 } MenuData, *PMenuData;
+//*/
 
 #endif

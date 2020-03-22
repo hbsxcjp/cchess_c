@@ -7,11 +7,14 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = 9,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = 8;
 
-inline Seat getSeat_rc(int row, int col) { return (row << 4) | col; }
+//inline Seat getSeat_rc(int row, int col) { return (row << 4) | col; }
+inline Seat getSeat_rc(int row, int col) { return row * BOARDCOL + col; }
 
-inline int getRow_s(Seat seat) { return seat >> 4; }
+//inline int getRow_s(Seat seat) { return seat >> 4; }
+inline int getRow_s(Seat seat) { return seat / BOARDCOL; }
 
-inline int getCol_s(Seat seat) { return seat & 0x0F; }
+//inline int getCol_s(Seat seat) { return seat & 0x0F; }
+inline int getCol_s(Seat seat) { return seat % BOARDCOL; }
 
 inline int getOtherRow_s(Seat seat) { return BOARDROW - 1 - getRow_s(seat); }
 
@@ -28,8 +31,9 @@ inline Piece getPiece_s(const PBoard board, Seat seat) { return board->pieces[se
 PBoard newBoard(void)
 {
     PBoard board = malloc(sizeof(Board));
-    for (int i = 0; i < BOARDLEN; ++i)
-        board->pieces[i] = BLANKPIECE;
+    //for (int i = 0; i < BOARDLEN; ++i)
+    for (int i = 0; i < SEATNUM; ++i)
+        board->pieces[i] = getBlankPiece();
     board->bottomColor = RED;
     return board;
 }
@@ -40,7 +44,7 @@ wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN, size_t n)
         wchar_t ch = FEN[i];
         if (iswdigit(ch))
             for (int j = ch - L'0'; j > 0; --j)
-                pieChars[index++] = BLANKCHAR;
+                pieChars[index++] = getBlankChar();
         else if (iswalpha(ch))
             pieChars[index++] = ch;
     }

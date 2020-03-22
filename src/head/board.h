@@ -2,9 +2,52 @@
 #define BOARD_H
 
 #include "base.h"
+#include "piece.h"
+
+// 棋盘行数
+#define BOARDROW 10
+// 棋盘列数
+#define BOARDCOL 9
+// 棋盘位置个数
+#define SEATNUM (BOARDROW * BOARDCOL)
+// 棋子数组长度
+//#define BOARDLEN 0x99
+
+//=================================================================
+//棋盘相关的类型
+//=================================================================
+
+// 棋子马的移动方向
+typedef enum {
+    SW,
+    SE,
+    NW,
+    NE,
+    WS,
+    ES,
+    WN,
+    EN
+} MoveDirection;
+
+// 棋盘位置类型
+typedef int Seat;
+
+// 一副棋盘结构类型
+typedef struct _Board {
+    //Piece pieces[BOARDLEN]; // 位置0x00, 高四位表示行，低四位表示列
+    Piece pieces[SEATNUM];
+    PieceColor bottomColor;
+} Board, *PBoard;
+
+// 棋盘变换类型
+typedef enum {
+    EXCHANGE,
+    ROTATE,
+    SYMMETRY
+} ChangeType;
 
 // 根据行、列值获取seat
-Seat getSeat_rc(int row,int col);
+Seat getSeat_rc(int row, int col);
 
 // 获取行值
 int getRow_s(Seat seat);
