@@ -2,7 +2,7 @@
 
 CC = gcc
 #CFLAGS = -Wall -std=c11
-CFLAGS = -Wall -std=c11 -fexec-charset=gbk # -g 
+CFLAGS = -Wall -std=c11 -fexec-charset=gbk -g 
 #LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
 LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16 #lib/pdcurses.a
 SP = src/

@@ -33,37 +33,34 @@ Board newBoard(void);
 // 释放board
 void freeBoard(Board board);
 
-// 获取行值
+// 获取行列值
 int getRow_s(Seat seat);
-
-// 获取列值
 int getCol_s(Seat seat);
+
+// 获取对称行列值
+int getOtherRow_r(int row);
+int getOtherCol_c(int col);
+
+// 获取对称行列值
+int getOtherRow_s(Seat seat);
+int getOtherCol_s(Seat seat);
 
 // 获取行列整数值
 int getRowCol_s(Seat seat);
 int getRow_rc(int rowcol);
 int getCol_rc(int rowcol);
 
-// 获取对称行值
-int getOtherRow_s(Seat seat);
-
-// 获取对称列值
-int getOtherCol_s(Seat seat);
-
 // 根据行、列值获取seat
 Seat getSeat_rc(const Board board, int row, int col);
-
 // 获取某棋盘内某行、某列位置的一个棋子
 Piece getPiece_rc(const Board board, int row, int col);
-
 // 根据seat获取棋子
 Piece getPiece_s(const Board board, Seat seat);
 
-// 置入某棋盘内某行、某列位置一个棋子
-void setPiece_rc(Board board, int row, int col, Piece piece);
-
 // 置入某棋盘内某位置一个棋子
 void setPiece_s(Board board, Seat seat, Piece piece);
+// 置入某棋盘内某行、某列位置一个棋子
+void setPiece_rc(Board board, int row, int col, Piece piece);
 
 // FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
 wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN);

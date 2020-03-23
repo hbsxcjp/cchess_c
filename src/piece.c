@@ -26,14 +26,12 @@ Pieces getPieces(void)
     Pieces pieces = malloc(sizeof(struct Pieces));
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
     int index = 0;
-    PieceColor colors[] = { RED, BLACK };
-    PieceKind kinds[] = { KING, ADVISOR, BISHOP, KNIGHT, ROOK, CANNON, PAWN };
-    for (int c = 0; c < sizeof(colors) / sizeof(colors[0]); ++c) {
-        for (int k = 0; k < sizeof(kinds) / sizeof(kinds[0]); ++k)
+    for (int c = RED; c <= BLACK; ++c) {
+        for (int k = KING; k <= PAWN; ++k)
             for (int i = 0; i < count[k]; ++i) {
                 Piece piece = malloc(sizeof(struct Piece));
-                piece->color = colors[c];
-                piece->kind = kinds[k];
+                piece->color = c;
+                piece->kind = k;
                 piece->onBoard = false;
                 pieces->piece[index++] = piece;
             }
@@ -85,12 +83,12 @@ Piece getPiece_ch(CPieces pieces, wchar_t ch)
 
 Piece getOtherPiece(CPieces pieces, Piece piece)
 {
-    if (piece == BLANKPIECE)
-        return BLANKPIECE;
-    for (int i = 0; i < PIECENUM; ++i)
-        if (piece == pieces->piece[i])
-            return pieces->piece[(i + PIECENUM / 2) % PIECENUM];
-    assert(!L"没有找到对方棋子。");
+    if (piece != BLANKPIECE) {
+        for (int i = 0; i < PIECENUM; ++i)
+            if (piece == pieces->piece[i])
+                return pieces->piece[(i + PIECENUM / 2) % PIECENUM];
+        //assert(!L"没有找到对方棋子。");
+    }
     return BLANKPIECE;
 }
 
