@@ -26,12 +26,14 @@ Pieces getPieces(void)
     Pieces pieces = malloc(sizeof(struct Pieces));
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
     int index = 0;
-    for (int c = 0; c < PIECECOLORNUM; ++c) {
-        for (int k = 0; k < PIECEKINDNUM; ++k)
+    PieceColor colors[] = { RED, BLACK };
+    PieceKind kinds[] = { KING, ADVISOR, BISHOP, KNIGHT, ROOK, CANNON, PAWN };
+    for (int c = 0; c < sizeof(colors) / sizeof(colors[0]); ++c) {
+        for (int k = 0; k < sizeof(kinds) / sizeof(kinds[0]); ++k)
             for (int i = 0; i < count[k]; ++i) {
                 Piece piece = malloc(sizeof(struct Piece));
-                piece->color = c;
-                piece->kind = k;
+                piece->color = colors[c];
+                piece->kind = kinds[k];
                 piece->onBoard = false;
                 pieces->piece[index++] = piece;
             }
@@ -71,11 +73,9 @@ Piece getPiece_i(CPieces pieces, int index)
 Piece getPiece_ch(CPieces pieces, wchar_t ch)
 {
     if (ch != BLANKCHAR) {
-        PieceColor color = (bool)islower(ch);
-        PieceKind kind = wcschr(PieceChars[color], ch) - PieceChars[color];
         for (int i = 0; i < PIECENUM; ++i) {
             Piece piece = pieces->piece[i];
-            if (piece->onBoard == false && getColor(piece) == color && getKind(piece) == kind)
+            if (piece->onBoard == false && getChar(piece) == ch)
                 return piece;
         }
         assert(!"没有找到合适的棋子。");

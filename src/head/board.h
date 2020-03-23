@@ -120,6 +120,9 @@ Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece);
 // 按某种变换类型变换棋盘局面
 void changeBoard(Board board, ChangeType ct);
 
+// 取得表示位置字符串的名称
+wchar_t* getSeatString(wchar_t* seatStr, const Board board, Seat seat);
+
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, const Board board);
 // 棋盘上边标识字符串

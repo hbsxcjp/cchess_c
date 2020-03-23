@@ -39,6 +39,8 @@ static bool __moveKilled(Board board, Seat fseat, Seat tseat, bool reverse);
 static int __filterMoveSeats(Seat* pseats, int count, Board board, Seat fseat, bool reverse,
     bool (*__filterFunc)(Board, Seat, Seat, bool));
 
+static Seat __getKingSeat(const Board board, bool isBottom);
+
 Board newBoard(void)
 {
     Board board = malloc(sizeof(struct Board));
@@ -58,9 +60,9 @@ Board newBoard(void)
 
 void freeBoard(Board board)
 {
+    freePieces(board->pieces);
     for (int i = 0; i < SEATNUM; ++i)
         free(board->seats[i]);
-    freePieces(board->pieces);
     free(board);
 }
 
@@ -80,7 +82,7 @@ inline Seat getSeat_rc(const Board board, int row, int col) { return board->seat
 
 inline Piece getPiece_rc(const Board board, int row, int col) { return getSeat_rc(board, row, col)->piece; }
 
-inline Piece getPiece_s(const Board board, Seat seat) { return getPiece_rc(board, seat->row, seat->col); }
+inline Piece getPiece_s(const Board board, Seat seat) { return getPiece_rc(board, getRow_s(seat), getCol_s(seat)); }
 
 void setPiece_rc(Board board, int row, int col, Piece piece)
 {
@@ -89,7 +91,7 @@ void setPiece_rc(Board board, int row, int col, Piece piece)
     seat->piece = setOnBoard(piece, true);
 }
 
-inline void setPiece_s(Board board, Seat seat, Piece piece) { setPiece_rc(board, seat->row, seat->col, piece); }
+inline void setPiece_s(Board board, Seat seat, Piece piece) { setPiece_rc(board, getRow_s(seat), getCol_s(seat), piece); }
 
 wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN)
 {
@@ -119,10 +121,12 @@ wchar_t* getPieChars_board(wchar_t* pieChars, const Board board)
 wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
 {
     int index_F = 0;
-    for (int rowIndex = RowLowIndex_; rowIndex <= RowUpIndex_; ++rowIndex) {
+    for (int row = 0; row < BOARDROW; ++row) {
+        //for (int rowIndex = RowLowIndex_; rowIndex <= RowUpIndex_; ++rowIndex) {
         int blankNum = 0;
-        for (int colIndex = ColLowIndex_; colIndex <= ColUpIndex_; ++colIndex) {
-            int index_p = rowIndex * BOARDCOL + colIndex;
+        for (int col = 0; col < BOARDCOL; ++col) {
+            //for (int colIndex = ColLowIndex_; colIndex <= ColUpIndex_; ++colIndex) {
+            int index_p = row * BOARDCOL + col;
             if (iswalpha(pieChars[index_p])) {
                 if (blankNum > 0)
                     FEN[index_F++] = L'0' + blankNum;
@@ -151,7 +155,7 @@ void setBoard(Board board, const wchar_t* pieChars)
     assert(wcslen(pieChars) == SEATNUM);
     resetBoard(board);
     int index = 0;
-    for (int row = 0; row < BOARDROW; ++row)
+    for (int row = BOARDROW - 1; row >= 0; --row)
         for (int col = 0; col < BOARDCOL; ++col)
             setPiece_rc(board, row, col, getPiece_ch(board->pieces, pieChars[index++]));
     setBottomColor(board);
@@ -163,14 +167,25 @@ static Seat __getKingSeat(const Board board, bool isBottom)
 {
     Seat seats[9] = { NULL };
     int count = putSeats(seats, board, isBottom, KING);
-    for (int i = 0; i < count; ++i)
-        if (getKind(getPiece_s(board, seats[i])) == KING)
+    for (int i = 0; i < count; ++i) {
+        Piece piece = getPiece_s(board, seats[i]);
+        if (getKind(piece) == KING) {
+            wchar_t pieStr[WCHARSIZE];
+            wprintf(L"%s k:%d c:%d\n", getPieString(pieStr, piece), getKind(piece), getColor(piece));
             return seats[i];
-    assert(!"Not find the King!");
+        }
+    }
+    assert(!L"没有找到将帅棋子。");
     return getSeat_rc(board, 0, 4);
 }
 
-void setBottomColor(Board board) { board->bottomColor = getColor(__getKingSeat(board, true)->piece); }
+void setBottomColor(Board board)
+{
+    wchar_t str[WCHARSIZE];
+    wprintf(L"%s ", getSeatString(str, board, __getKingSeat(board, true)));
+    board->bottomColor = getColor(getPiece_s(board, __getKingSeat(board, true)));
+    wprintf(L"%d\n", board->bottomColor);
+}
 
 //Seat getKingSeat(const Board board, PieceColor color) { return __getKingSeat(board, isBottomSide(board, color)); }
 
@@ -611,6 +626,13 @@ void changeBoard(Board board, ChangeType ct)
         board->bottomColor = !(board->bottomColor);
 }
 
+wchar_t* getSeatString(wchar_t* seatStr, const Board board, Seat seat)
+{
+    wchar_t str[WCHARSIZE];
+    swprintf(seatStr, WCHARSIZE, L"%02x%s", getRowCol_s(seat), getPieString(str, getPiece_s(board, seat)));
+    return seatStr;
+}
+
 wchar_t* getBoardString(wchar_t* boardStr, const Board board)
 { //*
     const wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
@@ -715,24 +737,30 @@ void testBoard(FILE* fout)
             pieChars, wcslen(pieChars), FEN, wcslen(FEN));
         //*/
 
-        //*// 取得将帅位置，打印棋局
-        wchar_t boardStr[SUPERWIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE];
-        fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d\n",
+        wchar_t boardStr[SUPERWIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
+        fwprintf(fout, L"%s%s%s bottomColor:%d %s\n",
             getBoardPreString(preStr, board),
             getBoardString(boardStr, board),
             getBoardSufString(sufStr, board),
-            *board, board->bottomColor);
+            //*board,
+            board->bottomColor,
+            getSeatString(seatStr, board, __getKingSeat(board, true)));
+        fwprintf(fout, L"bottomColor:%d %s\n",board->bottomColor, getSeatString(seatStr, board, __getKingSeat(board, true)));
+        /*// 打印棋局
         for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
             changeBoard(board, ct);
-            fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d ct:%d\n",
+            fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s ct:%d\n",
                 getBoardPreString(preStr, board),
                 getBoardString(boardStr, board),
                 getBoardSufString(sufStr, board),
-                *board, board->bottomColor, ct);
+                *board,
+                board->bottomColor,
+                getSeatString(seatStr, board, __getKingSeat(board, true)),
+                ct);
         }
         //*/
 
-        //*
+        /* 取得将帅位置
         Seat rkseat = __getKingSeat(board, true),
              bkseat = __getKingSeat(board, false);
         wchar_t pieString[WCHARSIZE];
