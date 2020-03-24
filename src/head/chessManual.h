@@ -1,68 +1,105 @@
 #ifndef CHESSMANUAL_H
 #define CHESSMANUAL_H
 
-#include "base.h"
+#include "board.h"
+
+//=================================================================
+//棋局相关的类型
+//=================================================================
+
+// 棋局存储类型
+typedef enum {
+    XQF,
+    BIN,
+    JSON,
+    PGN_ICCS,
+    PGN_ZH,
+    PGN_CC,
+    NOTFMT
+} RecFormat;
+
+// 棋盘位置类型
+typedef struct Move* Move;
+// 棋局类型
+typedef struct ChessManual* ChessManual;
+
+// 加入下着
+Move addNext_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark);
+Move addNext_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark);
+Move addNext_iccs(Move preMove, const Board board, wchar_t* iccsStr, wchar_t* remark);
+Move addNext_zh(Move preMove, const Board board, wchar_t* zhStr, wchar_t* remark);
+
+// 加入变着
+Move addOther_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark);
+Move addOther_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark);
+Move addOther_iccs(Move preMove, const Board board, wchar_t* iccsStr, wchar_t* remark);
+Move addOther_zh(Move preMove, const Board board, wchar_t* zhStr, wchar_t* remark);
+
+// 删除move的所有下着move、变着move及自身
+void freeMove(Move move);
+
+void setRemark(Move move, const wchar_t* remark);
 
 // 新建chessManual
-PChessManual newChessManual(const char* filename);
+ChessManual newChessManual(const char* filename);
 
 // 从文件读取重置chessManual
-PChessManual resetChessManual(PChessManual* cm, const char* filename);
+ChessManual resetChessManual(ChessManual* cm, const char* filename);
 
 // 删除chessManual
-void delChessManual(PChessManual cm);
+void delChessManual(ChessManual cm);
 
 // 添加一个info条目
-void addInfoItem(PChessManual cm, const wchar_t* name, const wchar_t* value);
+void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 
 // 将PGN_CC格式的moves信息写入字符串
-void writeMove_PGN_CCtoWstr(const PChessManual cm, wchar_t** plineStr);
+void writeMove_PGN_CCtoWstr(const ChessManual cm, wchar_t** plineStr);
 
 // 将PGN_CC格式的remark信息写入字符串
-void writeRemark_PGN_CCtoWstr(const PChessManual cm, wchar_t** premarkStr);
+void writeRemark_PGN_CCtoWstr(const ChessManual cm, wchar_t** premarkStr);
 
 // 从chessManual存储到文件
-void writeChessManual(const PChessManual cm, const char* filename);
+void writeChessManual(const ChessManual cm, const char* filename);
 
 // 取得先手方颜色
-PieceColor getFirstColor(const PChessManual cm);
+PieceColor getFirstColor(const ChessManual cm);
 
 // 是否开始
-bool isStart(const PChessManual cm);
+bool isStart(const ChessManual cm);
 
 // 当前着法有无后着
-bool hasNext(const PChessManual cm);
+bool hasNext(const ChessManual cm);
 
 // 当前着法有无前着
-bool hasPre(const PChessManual cm);
+bool hasPre(const ChessManual cm);
 
 // 当前着法有无变着
-bool hasOther(const PChessManual cm);
+bool hasOther(const ChessManual cm);
 
 // 当前着法有无前变
-bool hasPreOther(const PChessManual cm);
+bool hasPreOther(const ChessManual cm);
 
 // 前进一步
-void go(PChessManual cm);
+void go(ChessManual cm);
 // 前进到变着
-void goOther(PChessManual cm);
-void goEnd(PChessManual cm);
+void goOther(ChessManual cm);
+void goEnd(ChessManual cm);
 // 前进至指定move
-void goTo(PChessManual cm, PMove move);
+void goTo(ChessManual cm, Move move);
 
 // 后退一步
-void back(PChessManual cm);
-void backNext(PChessManual cm);
-void backOther(PChessManual cm);
-void backFirst(PChessManual cm);
+void back(ChessManual cm);
+void backNext(ChessManual cm);
+void backOther(ChessManual cm);
+void backFirst(ChessManual cm);
 // 后退至指定move
-void backTo(PChessManual cm, PMove  move);
+void backTo(ChessManual cm, Move move);
 
 // 前进数步
-void goInc(PChessManual cm, int inc);
+void goInc(ChessManual cm, int inc);
 
 // 转变棋局实例
-void changeChessManual(PChessManual cm, ChangeType ct);
+void changeChessManual(ChessManual cm, ChangeType ct);
 RecFormat getRecFormat(const char* ext);
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);

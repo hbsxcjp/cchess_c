@@ -44,7 +44,7 @@ extern const wchar_t BLANKCHAR;
 extern Piece BLANKPIECE;
 
 // 生成一副棋子
-Pieces getPieces(void);
+Pieces newPieces(void);
 
 // 释放一副棋子
 void freePieces(Pieces pieces);

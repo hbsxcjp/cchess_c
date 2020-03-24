@@ -1,6 +1,4 @@
 #include "head/board.h"
-//#include "head/move.h"
-//#include "head/piece.h"
 
 // 棋子马的移动方向
 typedef enum {
@@ -44,7 +42,7 @@ static Seat __getKingSeat(const Board board, bool isBottom);
 Board newBoard(void)
 {
     Board board = malloc(sizeof(struct Board));
-    board->pieces = getPieces();
+    board->pieces = newPieces();
     int index = 0;
     for (int r = 0; r < BOARDROW; ++r)
         for (int c = 0; c < BOARDCOL; ++c) {
@@ -76,16 +74,19 @@ inline int getOtherRow_s(Seat seat) { return getOtherRow_r(getRow_s(seat)); }
 inline int getOtherCol_s(Seat seat) { return getOtherCol_c(getCol_s(seat)); }
 
 inline int getRowCol_s(Seat seat) { return (getRow_s(seat) << 4) | getCol_s(seat); }
-inline int getRow_rc(int rowcol) { return (rowcol & 0xF0) >> 4; }
-inline int getCol_rc(int rowcol) { return rowcol & 0x0F; }
+inline int getRow_rowcol(int rowcol) { return (rowcol & 0xF0) >> 4; }
+inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
 
-Seat getSeat_rc(const Board board, int row, int col)
+inline Seat getSeat_rc(const Board board, int row, int col)
 {
     assert(row >= 0 && row < BOARDROW && col >= 0 && col < BOARDCOL);
     return board->seats[row * BOARDCOL + col];
 }
-inline Piece getPiece_rc(const Board board, int row, int col) { return getSeat_rc(board, row, col)->piece; }
-inline Piece getPiece_s(const Board board, Seat seat) { return getPiece_rc(board, getRow_s(seat), getCol_s(seat)); }
+inline Seat getSeat_rowcol(const Board board, int rowcol) { return getSeat_rc(board, getRow_rowcol(rowcol), getCol_rowcol(rowcol)); }
+
+inline Piece getPiece_s(const Board board, Seat seat) { return seat->piece; }
+inline Piece getPiece_rc(const Board board, int row, int col) { return getPiece_s(board, getSeat_rc(board, row, col)); }
+inline Piece getPiece_rowcol(const Board board, int rowcol) { return getPiece_s(board, getSeat_rowcol(board, rowcol)); }
 
 void setPiece_s(Board board, Seat seat, Piece piece)
 {
@@ -183,7 +184,7 @@ static Seat __getKingSeat(const Board board, bool isBottom)
 
 void setBottomColor(Board board) { board->bottomColor = getColor(getPiece_s(board, __getKingSeat(board, true))); }
 
-//Seat getKingSeat(const Board board, PieceColor color) { return __getKingSeat(board, isBottomSide(board, color)); }
+Seat getKingSeat(const Board board, PieceColor color) { return __getKingSeat(board, isBottomSide(board, color)); }
 
 int getLiveSeats(Seat* pseats, const Board board, PieceColor color,
     wchar_t name, int findCol, bool getStronge)
@@ -569,8 +570,9 @@ static bool __moveSameColor(Board board, Seat fseat, Seat tseat, bool reverse)
 
 static bool __moveKilled(Board board, Seat fseat, Seat tseat, bool reverse)
 {
+    PieceColor fcolor = getColor(getPiece_s(board, fseat));
     Piece eatPiece = movePiece(board, fseat, tseat, BLANKPIECE);
-    bool isKill = isKilled(board, getColor(getPiece_s(board, fseat)));
+    bool isKill = isKilled(board, fcolor);
     movePiece(board, tseat, fseat, eatPiece);
     return reverse ? !isKill : isKill;
 }
@@ -762,7 +764,7 @@ void testBoard(FILE* fout)
             board,
             board->bottomColor,
             getSeatString(seatStr, board, __getKingSeat(board, true)));
-        /*// 打印棋局
+        //*// 打印棋局
         for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
             changeBoard(board, ct);
             fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s ct:%d\n",
@@ -788,7 +790,7 @@ void testBoard(FILE* fout)
             Piece piece = getPiece_i(board->pieces, index);
             Seat seats[BOARDROW * BOARDCOL] = { 0 };
             int count = putSeats(seats, board, true, getKind(piece));
-            fwprintf(fout, L"%s ==【", getPieString(preStr, piece));
+            fwprintf(fout, L"%s =【", getPieString(preStr, piece));
             for (int i = 0; i < count; ++i)
                 fwprintf(fout, L" %s ", getSeatString(preStr, board, seats[i]));
             fwprintf(fout, L"】%d\n", count);
@@ -818,19 +820,18 @@ void testBoard(FILE* fout)
 
                 Seat mseats[BOARDROW + BOARDCOL] = { NULL };
                 int mcount = moveSeats(mseats, board, fseat);
-                //int mcount = 0;
                 for (int i = 0; i < mcount; ++i)
                     fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
                 fwprintf(fout, L"】%d", mcount);
 
                 fwprintf(fout, L" =【");
-               int cmcount = canMoveSeats(mseats, mcount, board, fseat);
+                int cmcount = canMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < cmcount; ++i)
                     fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
                 fwprintf(fout, L"】%d", cmcount);
 
                 fwprintf(fout, L" +【");
-               int kmcount = killedMoveSeats(mseats, mcount, board, fseat);
+                int kmcount = killedMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < kmcount; ++i)
                     fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
                 fwprintf(fout, L"】%d\n", kmcount);

@@ -2,7 +2,7 @@
 
 #include "head/base.h"
 #include "head/board.h"
-//#include "head/chessManual.h"
+#include "head/chessManual.h"
 //#include "head/console.h"
 //#include "head/move.h"
 #include "head/piece.h"
@@ -25,7 +25,7 @@ int main(int argc, char const* argv[])
 
     testPiece(fout);
     testBoard(fout);
-    //testChessManual(fout);
+    testChessManual(fout);
     //testTools(fout);
     /*
     if (argc == 7) {

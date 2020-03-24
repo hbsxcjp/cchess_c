@@ -23,42 +23,6 @@
 /*
 
 //=================================================================
-//棋局相关的类型
-//=================================================================
-
-// 棋局信息数量
-#define INFOSIZE 32
-
-// 棋局存储类型
-typedef enum {
-    XQF,
-    BIN,
-    JSON,
-    PGN_ICCS,
-    PGN_ZH,
-    PGN_CC,
-    NOTFMT
-} RecFormat;
-
-// 着法类型
-typedef struct _Move {
-    Seat fseat, tseat; // 起止位置0x00
-    Piece tpiece; // 目标位置棋子
-    wchar_t* remark; // 注解
-    wchar_t zhStr[6]; // 着法名称
-    struct _Move *pmove, *nmove, *omove; // 前着、下着、变着
-    int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
-} Move, *PMove;
-
-// 棋局类型
-typedef struct _ChessManual {
-    PBoard board;
-    PMove rootMove, currentMove; // 根节点、当前节点
-    wchar_t* info[INFOSIZE][2];
-    int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
-} ChessManual, *PChessManual;
-
-//=================================================================
 //棋局演示相关的类型
 //=================================================================
 

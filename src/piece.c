@@ -21,7 +21,7 @@ const wchar_t BLANKCHAR = L'_';
 static struct Piece _BLANKPIECE = { NOTCOLOR, NOTKIND, false };
 Piece BLANKPIECE = &_BLANKPIECE;
 
-Pieces getPieces(void)
+Pieces newPieces(void)
 {
     Pieces pieces = malloc(sizeof(struct Pieces));
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
@@ -112,7 +112,7 @@ wchar_t* getPieString(wchar_t* pieStr, Piece piece)
 void testPiece(FILE* fout)
 {
     fwprintf(fout, L"testPiece：\n");
-    Pieces pieces = getPieces();
+    Pieces pieces = newPieces();
     wchar_t pstr[WCHARSIZE], opstr[WCHARSIZE];
     for (int c = 0; c < PIECECOLORNUM; ++c) {
         int sideNum = PIECENUM / PIECECOLORNUM;

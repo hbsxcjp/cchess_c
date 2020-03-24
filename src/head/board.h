@@ -1,7 +1,6 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "base.h"
 #include "piece.h"
 
 // 棋盘行数
@@ -47,15 +46,16 @@ int getOtherCol_s(Seat seat);
 
 // 获取行列整数值
 int getRowCol_s(Seat seat);
-int getRow_rc(int rowcol);
-int getCol_rc(int rowcol);
+int getRow_rowcol(int rowcol);
+int getCol_rowcol(int rowcol);
 
 // 根据行、列值获取seat
 Seat getSeat_rc(const Board board, int row, int col);
+Seat getSeat_rowcol(const Board board, int rowcol);
 // 获取某棋盘内某行、某列位置的一个棋子
-Piece getPiece_rc(const Board board, int row, int col);
-// 根据seat获取棋子
 Piece getPiece_s(const Board board, Seat seat);
+Piece getPiece_rc(const Board board, int row, int col);
+Piece getPiece_rowcol(const Board board, int rowcol);
 
 // 置入某棋盘内某位置一个棋子
 void setPiece_s(Board board, Seat seat, Piece piece);
@@ -84,7 +84,7 @@ bool isBottomSide(const Board board, PieceColor color);
 void setBottomColor(Board board);
 
 // 取得某方将帅的位置seat
-//Seat getKingSeat(const Board board, PieceColor color);
+Seat getKingSeat(const Board board, PieceColor color);
 
 // 按给定参数查找活的棋子
 int getLiveSeats(Seat* pseats, const Board board, PieceColor color,
