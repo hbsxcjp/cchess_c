@@ -14,7 +14,7 @@ struct Pieces {
 
 static const wchar_t* PieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
 
-static const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
+const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
 
 const wchar_t BLANKCHAR = L'_';
 
@@ -67,6 +67,8 @@ inline bool isPieceName(wchar_t name) { return wcschr(PieceNames[RED], name) != 
 inline bool isLinePiece(wchar_t name) { return wcschr(L"将帅车炮兵卒", name) != NULL; }
 
 inline bool isPawnPieceName(wchar_t name) { return PieceNames[RED][PAWN] == name || PieceNames[BLACK][PAWN] == name; }
+
+inline bool isKnightPieceName(wchar_t name) { return PieceNames[RED][KNIGHT] == name; }
 
 Piece getPiece_i(CPieces pieces, int index)
 {

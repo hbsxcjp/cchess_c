@@ -3,6 +3,8 @@
 
 #include "base.h"
 
+extern const wchar_t* PieceNames[PIECECOLORNUM];
+
 // 生成一副棋子
 Pieces newPieces(void);
 
@@ -35,6 +37,9 @@ bool isLinePiece(wchar_t name);
 
 // 判断是否兵棋子名
 bool isPawnPieceName(wchar_t name);
+
+// 判断是否马棋子名
+bool isKnightPieceName(wchar_t name);
 
 //  取得棋子
 Piece getPiece_i(CPieces pieces, int index);
