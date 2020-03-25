@@ -1,7 +1,9 @@
 #define PCRE_STATIC
 #include "head/chessManual.h"
+#include "head/board.h"
 #include "head/cJSON.h"
 #include "head/pcre.h"
+#include "head/piece.h"
 #include "head/tools.h"
 //#include <regex.h>
 //#include <sys/types.h>
@@ -39,78 +41,9 @@ static const char* EXTNAMES[] = {
 };
 static const char FILETAG[] = "learnchess";
 
-// 切除move
-void cutMove(Move move);
-
-// 根据iccs着法设置内部着法
-void setMove_iccs(Move move, const Board board, const wchar_t* iccsStr);
-
-// 取得ICCS字符串
-wchar_t* getICCS(wchar_t* ICCSStr, const Move move);
-
-// 辅助函数：根据中文着法取得走棋方颜色
-PieceColor getColor_zh(const wchar_t* zhStr);
-
-wchar_t* getMoveStr(wchar_t* wstr, const Move move);
-
-// 根据中文着法设置内部着法
-void setMove_zh(Move move, const Board board, const wchar_t* zhStr);
-
-// 根据内部着法表示设置中文字符串
-static void __setMoveZhStr(Move move, const Board board);
-
-// 设置remark
-void setRemark(Move move, const wchar_t* remark);
-
-// 按某种变换类型变换着法记录
-void changeMove(Move move, ChangeType ct);
-
-static void __setMoveSeat_rc(Move move, const Board board, int frow, int fcol, int trow, int tcol)
-{
-    move->fseat = getSeat_rc(board, frow, fcol);
-    move->tseat = getSeat_rc(board, trow, tcol);
-    move->tpiece = getPiece_s(board, move->tseat);
-}
-
-static void __setMoveSeat_iccs(Move move, const Board board, const wchar_t* iccsStr)
-{
-    __setMoveSeat_rc(move, board,
-        wcschr(ICCSROWCHAR, iccsStr[1]) - ICCSROWCHAR,
-        wcschr(ICCSCOLCHAR, iccsStr[0]) - ICCSCOLCHAR,
-        wcschr(ICCSROWCHAR, iccsStr[3]) - ICCSROWCHAR,
-        wcschr(ICCSCOLCHAR, iccsStr[2]) - ICCSCOLCHAR);
-}
-
-static void __setMoveSeat_zh(Move move, const Board board, const wchar_t* zhStr)
-{
-    //void __setMoveZhStr(Move move, const Board board);
-}
-
-static Move __newMove(wchar_t* remark)
-{
-    Move move = malloc(sizeof(struct Move));
-    move->remark = NULL;
-    setRemark(move, remark);
-    move->pmove = move->nmove = move->omove = NULL;
-    move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
-    return move;
-}
-
-static Move __setMoveNext(Move preMove, Move newMove)
-{
-    newMove->nextNo_ = preMove->nextNo_ + 1;
-    newMove->otherNo_ = preMove->otherNo_;
-    newMove->pmove = preMove;
-    return preMove->nmove = newMove;
-}
-
-static Move __setMoveOther(Move preMove, Move newMove)
-{
-    newMove->nextNo_ = preMove->nextNo_;
-    newMove->otherNo_ = preMove->otherNo_ + 1;
-    newMove->pmove = preMove;
-    return preMove->omove = newMove;
-}
+//=================================================================
+//着法相关的函数
+//=================================================================
 
 static wchar_t* __getPreCHars(wchar_t* preChars, int count)
 {
@@ -135,9 +68,76 @@ inline static int __getCol(bool isBottom, int num)
     return isBottom ? BOARDCOL - num : num - 1;
 }
 
-inline static bool __isLinePiece(wchar_t name)
+inline static PieceColor __getColor_zh(const wchar_t* zhStr)
 {
-    return wcschr(L"将帅车炮兵卒", name) != NULL;
+    return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED;
+}
+
+static void __setMoveSeat_rc(Move move, const Board board, int frow, int fcol, int trow, int tcol)
+{
+    move->fseat = getSeat_rc(board, frow, fcol);
+    move->tseat = getSeat_rc(board, trow, tcol);
+    move->tpiece = getPiece_s(board, move->tseat);
+}
+
+static void __setMoveSeat_iccs(Move move, const Board board, const wchar_t* iccsStr)
+{
+    __setMoveSeat_rc(move, board,
+        wcschr(ICCSROWCHAR, iccsStr[1]) - ICCSROWCHAR,
+        wcschr(ICCSCOLCHAR, iccsStr[0]) - ICCSCOLCHAR,
+        wcschr(ICCSROWCHAR, iccsStr[3]) - ICCSROWCHAR,
+        wcschr(ICCSCOLCHAR, iccsStr[2]) - ICCSCOLCHAR);
+}
+
+static void __setMoveSeat_zh(Move move, const Board board, const wchar_t* zhStr)
+{
+    assert(wcslen(zhStr) == 4);
+    // 根据最后一个字符判断该着法属于哪一方
+    PieceColor color = __getColor_zh(zhStr);
+    bool isBottom = isBottomSide(board, color);
+    int index = 0, count = 0,
+        movDir = (wcschr(MOVCHAR, zhStr[2]) - MOVCHAR - 1) * (isBottom ? 1 : -1);
+    wchar_t name = zhStr[0];
+    Seat seats[PIECENUM / 2] = { NULL };
+
+    if (isPieceName(name)) { // 棋子名
+        count = getLiveSeats(seats,
+            board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])), false);
+        assert(count > 0);
+        // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为退时，修正index
+        index = (count == 2 && movDir == -1) ? 1 : 0; // 如为士象且退时
+    } else { // 非棋子名
+        name = zhStr[1];
+        if (isPawnPieceName(name))
+            count = getSortPawnLiveSeats(seats, board, color, name);
+        else
+            count = getLiveSeats(seats, board, color, name, -1, false);
+        wchar_t preChars[6] = { 0 };
+        __getPreCHars(preChars, count);
+        assert(wcschr(preChars, zhStr[0]) != NULL);
+        index = wcschr(preChars, zhStr[0]) - preChars;
+        if (isBottom)
+            index = count - 1 - index;
+    }
+
+    //wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
+    assert(index < count);
+    move->fseat = seats[index];
+    int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
+        frow = getRow_s(move->fseat);
+    if (isLinePiece(name)) {
+        move->tseat = (movDir == 0
+                ? getSeat_rc(board, frow, toCol)
+                : getSeat_rc(board, frow + movDir * num, getCol_s(move->fseat)));
+    } else { // 斜线走子：仕、相、马
+        int colAway = abs(toCol - getCol_s(move->fseat)), //  相距1或2列
+            trow = frow + movDir * (name != L'马' ? colAway : (colAway == 1 ? 2 : 1));
+        move->tseat = getSeat_rc(board, trow, toCol);
+    }
+
+    //__setMoveZhStr(move, board);
+    //assert(wcscmp(zhStr, move->zhStr) == 0);
+    //
 }
 
 static void __setMoveZhStr(Move move, const Board board)
@@ -168,7 +168,7 @@ static void __setMoveZhStr(Move move, const Board board)
         move->zhStr[1] = NUMCHAR[color][isBottom ? BOARDCOL - 1 - fcol : fcol];
     }
     move->zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
-    move->zhStr[3] = NUMCHAR[color][(__isLinePiece(name) && frow != trow)
+    move->zhStr[3] = NUMCHAR[color][(isLinePiece(name) && frow != trow)
             ? abs(trow - frow) - 1
             : (isBottom ? BOARDCOL - 1 - tcol : tcol)];
     move->zhStr[4] = L'\x0';
@@ -180,71 +180,34 @@ static void __setMoveZhStr(Move move, const Board board)
     //
 
     //
-    //Move amove = __newMove();
-    //setMove_zh(amove, board, move->zhStr);
+    //Move amove = newMove();
+    //__setMoveSeat_zh(amove, board, move->zhStr);
     //assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
     //freeMove(amove);
     //
     //return move->zhStr;
 }
 
-Move addNext_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark)
+static Move __setMoveNext(Move preMove, Move move)
 {
-    Move newMove = __newMove(remark);
-    __setMoveSeat_rc(newMove, board, frow, fcol, trow, tcol);
-    __setMoveZhStr(newMove, board);
-    return __setMoveNext(preMove, newMove);
+    move->nextNo_ = preMove->nextNo_ + 1;
+    move->otherNo_ = preMove->otherNo_;
+    move->pmove = preMove;
+    return preMove->nmove = move;
 }
 
-Move addNext_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark)
+static Move __setMoveOther(Move preMove, Move move)
 {
-    return addNext_rc(preMove, board,
-        getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol), remark);
+    move->nextNo_ = preMove->nextNo_;
+    move->otherNo_ = preMove->otherNo_ + 1;
+    move->pmove = preMove;
+    return preMove->omove = move;
 }
 
-Move addNext_iccs(Move preMove, const Board board, wchar_t* iccsStr, wchar_t* remark)
+Move newMove()
 {
-    Move newMove = __newMove(remark);
-    __setMoveSeat_iccs(newMove, board, iccsStr);
-    __setMoveZhStr(newMove, board);
-    return __setMoveNext(preMove, newMove);
-}
-Move addNext_zh(Move preMove, const Board board, wchar_t* zhStr, wchar_t* remark)
-{
-    Move newMove = __newMove(remark);
-    __setMoveSeat_zh(newMove, board, zhStr);
-    wcscpy(newMove->zhStr, zhStr);
-    return __setMoveNext(preMove, newMove);
-}
-
-Move addOther_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark)
-{
-    Move newMove = __newMove(remark);
-    __setMoveSeat_rc(newMove, board, frow, fcol, trow, tcol);
-    __setMoveZhStr(newMove, board);
-    return __setMoveOther(preMove, newMove);
-}
-
-Move addOther_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark)
-{
-    return addOther_rc(preMove, board,
-        getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol), remark);
-}
-
-Move addOther_iccs(Move preMove, const Board board, wchar_t* iccsStr, wchar_t* remark)
-{
-    Move newMove = __newMove(remark);
-    __setMoveSeat_iccs(newMove, board, iccsStr);
-    __setMoveZhStr(newMove, board);
-    return __setMoveOther(preMove, newMove);
-}
-
-Move addOther_zh(Move preMove, const Board board, wchar_t* zhStr, wchar_t* remark)
-{
-    Move newMove = __newMove(remark);
-    __setMoveSeat_zh(newMove, board, zhStr);
-    wcscpy(newMove->zhStr, zhStr);
-    return __setMoveOther(preMove, newMove);
+    Move move = calloc(sizeof(struct Move), 1);
+    return move;
 }
 
 void freeMove(Move move)
@@ -255,6 +218,48 @@ void freeMove(Move move)
     free(move);
     freeMove(omove);
     freeMove(nmove);
+}
+
+Move addMove_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark, bool isOther)
+{
+    Move move = newMove();
+    __setMoveSeat_rc(move, board, frow, fcol, trow, tcol);
+    __setMoveZhStr(move, board);
+    setRemark(move, remark);
+    if (isOther)
+        return __setMoveOther(preMove, move);
+    else
+        return __setMoveNext(preMove, move);
+}
+
+Move addMove_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark, bool isOther)
+{
+    return addMove_rc(preMove, board,
+        getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol), remark, isOther);
+}
+
+Move addMove_iccs(Move preMove, const Board board, wchar_t* iccsStr, wchar_t* remark, bool isOther)
+{
+    Move move = newMove();
+    __setMoveSeat_iccs(move, board, iccsStr);
+    __setMoveZhStr(move, board);
+    setRemark(move, remark);
+    if (isOther)
+        return __setMoveOther(preMove, move);
+    else
+        return __setMoveNext(preMove, move);
+}
+
+Move addMove_zh(Move preMove, const Board board, wchar_t* zhStr, wchar_t* remark, bool isOther)
+{
+    Move move = newMove();
+    __setMoveSeat_zh(move, board, zhStr);
+    wcscpy(move->zhStr, zhStr);
+    setRemark(move, remark);
+    if (isOther)
+        return __setMoveOther(preMove, move);
+    else
+        return __setMoveNext(preMove, move);
 }
 
 void setRemark(Move move, const wchar_t* remark)
@@ -275,10 +280,6 @@ wchar_t* getICCS(wchar_t* ICCSStr, const Move move)
 
 extern const wchar_t* PieceNames[PIECECOLORNUM];
 
-PieceColor getColor_zh(const wchar_t* zhStr)
-{
-    return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED;
-}
 
 static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
 {
@@ -302,59 +303,6 @@ wchar_t* getMoveStr(wchar_t* wstr, const Move move)
         move->nextNo_, move->CC_ColNo_ + 1, move->remark);
     return wstr;
 }
-
-void setMove_zh(Move move, const Board board, const wchar_t* zhStr)
-{
-    assert(wcslen(zhStr) == 4);
-    // 根据最后一个字符判断该着法属于哪一方
-    PieceColor color = getColor_zh(zhStr);
-    bool isBottom = isBottomSide(board, color);
-    int index = 0, count = 0,
-        movDir = (wcschr(MOVCHAR, zhStr[2]) - MOVCHAR - 1) * (isBottom ? 1 : -1);
-    wchar_t name = zhStr[0];
-    Seat seats[PIECENUM] = {};
-
-    if (wcschr(PieceNames[RED], name) != NULL || wcschr(PieceNames[BLACK], name) != NULL) {
-        count = getLiveSeats(seats, PIECENUM,
-            board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])), false);
-        assert(count > 0);
-        // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为退时，修正index
-        index = (count == 2 && movDir == -1) ? 1 : 0; // 如为士象且退时
-    } else {
-        name = zhStr[1];
-        if (name == PieceNames[RED][PAWN] || name == PieceNames[BLACK][PAWN])
-            count = getSortPawnLiveSeats(seats, board, color, name);
-        else
-            count = getLiveSeats(seats, PIECENUM, board, color, name, -1, false);
-        wchar_t preChars[6] = { 0 };
-        __getPreCHars(preChars, count);
-        assert(wcschr(preChars, zhStr[0]) != NULL);
-        index = wcschr(preChars, zhStr[0]) - preChars;
-        if (isBottom)
-            index = count - 1 - index;
-    }
-
-    //wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
-    assert(index < count);
-    move->fseat = seats[index];
-    int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
-        frow = getRow_s(move->fseat);
-    if (__isLinePiece(name)) {
-        move->tseat = (movDir == 0
-                ? getSeat_rc(frow, toCol)
-                : getSeat_rc(frow + movDir * num, getCol_s(move->fseat)));
-    } else { // 斜线走子：仕、相、马
-        int colAway = abs(toCol - getCol_s(move->fseat)), //  相距1或2列
-            trow = frow + movDir * (name != L'马' ? colAway : (colAway == 1 ? 2 : 1));
-        move->tseat = getSeat_rc(trow, toCol);
-    }
-
-    
-    //__setMoveZhStr(move, board);
-    //assert(wcscmp(zhStr, move->zhStr) == 0);
-    //
-}
-
 
 void changeMove(Move move, ChangeType ct)
 {
@@ -383,7 +331,7 @@ ChessManual newChessManual(const char* filename)
 {
     ChessManual cm = calloc(sizeof(ChessManual), 1);
     cm->board = newBoard();
-    cm->rootMove = __newMove();
+    cm->rootMove = newMove();
     cm->currentMove = cm->rootMove;
     __readChessManual(cm, filename);
     return cm;
@@ -988,7 +936,7 @@ static void readMove_PGN_ICCSZH(ChessManual cm, FILE* fin, RecFormat fmt)
         wchar_t iccs_zhStr[6] = { 0 };
         wcsncpy(iccs_zhStr, pmoveStr + ovector[4], num);
         if (isPGN_ZH)
-            setMove_zh(move, cm->board, iccs_zhStr);
+            __setMoveSeat_zh(move, cm->board, iccs_zhStr);
         else
             setMove_iccs(move, iccs_zhStr);
 
@@ -1100,7 +1048,7 @@ static void __setMove_PGN_CC(ChessManual cm, Move move, pcre16* moveReg,
 
     wchar_t lastwc = moveStr[4];
     moveStr[4] = L'\x0';
-    setMove_zh(move, cm->board, moveStr);
+    __setMoveSeat_zh(move, cm->board, moveStr);
     __setRemark_PGN_CC(move, row, col, remLines, remCount);
 
     if (lastwc == L'…')
@@ -1503,6 +1451,7 @@ void changeChessManual(ChessManual cm, ChangeType ct)
 }
 //*/
 
+/*
 static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
     int* pfcount, int* pdcount, int* pmovcount, int* premcount, int* premlenmax)
 {
@@ -1543,7 +1492,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             strcat(strcat(tofilename, "\\"), getFileName_cut(name));
             //printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
             //    __LINE__, dirto, fromExt, getRecFormat(fromExt));
-            //*
+            //
             if (getRecFormat(fromExt) != NOTFMT) {
                 ChessManual cm = newChessManual(dir_fileName);
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
@@ -1567,7 +1516,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 //copyFile(dir_fileName, tofilename);
                 //printf("%d: %s\n", __LINE__, tofilename);
             }
-            //*/
+            //
         }
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
@@ -1621,7 +1570,7 @@ void testTransDir(int fromDir, int toDir,
 void testChessManual(FILE* fout)
 {
     ChessManual cm = newChessManual("01.xqf");
-    writeChessManual(cm, "01.bin"); //*
+    writeChessManual(cm, "01.bin"); //
 
     resetChessManual(&cm, "01.bin");
     writeChessManual(cm, "01.json");
@@ -1637,12 +1586,12 @@ void testChessManual(FILE* fout)
 
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
-    //*/
+    //
 
     fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 
-    //*
+    //
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32] = { 0 };
@@ -1650,7 +1599,9 @@ void testChessManual(FILE* fout)
         //resetChessManual(&cm, fname); //未成功？
         writeChessManual(cm, fname);
     }
-    //*/
+    //
 
     delChessManual(cm);
 }
+//*/
+void testChessManual(FILE* fout) {}

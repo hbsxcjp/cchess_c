@@ -1,30 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "piece.h"
-
-// 棋盘行数
-#define BOARDROW 10
-// 棋盘列数
-#define BOARDCOL 9
-// 棋盘位置个数
-#define SEATNUM (BOARDROW * BOARDCOL)
-
-//=================================================================
-//棋盘相关的类型
-//=================================================================
-
-// 棋盘变换类型
-typedef enum {
-    EXCHANGE,
-    ROTATE,
-    SYMMETRY
-} ChangeType;
-
-// 棋盘位置类型
-typedef struct Seat* Seat;
-// 一副棋盘结构类型
-typedef struct Board* Board;
+#include "base.h"
 
 // 新建一个board
 Board newBoard(void);

@@ -1,4 +1,5 @@
 #include "head/board.h"
+#include "head/piece.h"
 
 // 棋子马的移动方向
 typedef enum {

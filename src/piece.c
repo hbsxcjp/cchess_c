@@ -1,11 +1,11 @@
 #include "head/piece.h"
 
 // 棋子内部实现类型
-typedef struct Piece {
+struct Piece {
     PieceColor color;
     PieceKind kind;
     bool onBoard;
-} * Piece;
+};
 
 // 一副棋子
 struct Pieces {
@@ -61,6 +61,12 @@ wchar_t getPieName_T(Piece piece)
     static const wchar_t PieceNames_t[] = L"将士象馬車砲卒";
     return getColor(piece) == RED ? getPieName(piece) : PieceNames_t[getKind(piece)];
 }
+
+inline bool isPieceName(wchar_t name) { return wcschr(PieceNames[RED], name) != NULL || wcschr(PieceNames[BLACK], name) != NULL; }
+
+inline bool isLinePiece(wchar_t name) { return wcschr(L"将帅车炮兵卒", name) != NULL; }
+
+inline bool isPawnPieceName(wchar_t name) { return PieceNames[RED][PAWN] == name || PieceNames[BLACK][PAWN] == name; }
 
 Piece getPiece_i(CPieces pieces, int index)
 {

@@ -20,7 +20,87 @@
 #define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
 
-/*
+//=================================================================
+//棋子相关的类型
+//=================================================================
+// 两方
+#define PIECECOLORNUM 2
+// 棋子种类数量
+#define PIECEKINDNUM 7
+// 一方棋子个数
+#define PIECENUM 32
+
+// 棋子颜色类型
+typedef enum {
+    RED,
+    BLACK,
+    NOTCOLOR
+} PieceColor;
+
+// 棋子种类类型
+typedef enum {
+    KING,
+    ADVISOR,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    CANNON,
+    PAWN,
+    NOTKIND
+} PieceKind;
+
+// 棋子指针类型（不透明）
+typedef struct Piece* Piece;
+typedef struct Pieces* Pieces; // 与结构同名, 释放需要非const类型
+typedef const struct Pieces* const CPieces; // 固定不变一副棋子
+
+// 空子的字符表示
+extern const wchar_t BLANKCHAR;
+// 空棋子
+extern Piece BLANKPIECE;
+
+//=================================================================
+//棋盘相关的类型
+//=================================================================
+// 棋盘行数
+#define BOARDROW 10
+// 棋盘列数
+#define BOARDCOL 9
+// 棋盘位置个数
+#define SEATNUM (BOARDROW * BOARDCOL)
+
+// 棋盘变换类型
+typedef enum {
+    EXCHANGE,
+    ROTATE,
+    SYMMETRY
+} ChangeType;
+
+// 棋盘位置类型
+typedef struct Seat* Seat;
+// 一副棋盘结构类型
+typedef struct Board* Board;
+
+//=================================================================
+//棋局相关的类型
+//=================================================================
+
+// 棋局存储类型
+typedef enum {
+    XQF,
+    BIN,
+    JSON,
+    PGN_ICCS,
+    PGN_ZH,
+    PGN_CC,
+    NOTFMT
+} RecFormat;
+
+// 着法类型
+typedef struct Move* Move;
+// 棋局类型
+typedef struct ChessManual* ChessManual;
+
 
 //=================================================================
 //棋局演示相关的类型
@@ -51,7 +131,7 @@ struct _Menu;
 // 演示类型结构
 typedef struct _Console {
     HANDLE hIn, hOut;
-    PChessManual cm;
+    ChessManual cm;
     Thema thema;
     Area curArea;
     int fileIndex;
@@ -79,6 +159,6 @@ typedef struct _MenuData {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
 } MenuData, *PMenuData;
-//*/
+
 
 #endif

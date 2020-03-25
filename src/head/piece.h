@@ -3,46 +3,6 @@
 
 #include "base.h"
 
-// 两方
-#define PIECECOLORNUM 2
-// 棋子种类数量
-#define PIECEKINDNUM 7
-// 一方棋子个数
-#define PIECENUM 32
-
-//=================================================================
-//棋子相关的类型
-//=================================================================
-
-// 棋子颜色类型
-typedef enum {
-    RED,
-    BLACK,
-    NOTCOLOR
-} PieceColor;
-
-// 棋子种类类型
-typedef enum {
-    KING,
-    ADVISOR,
-    BISHOP,
-    KNIGHT,
-    ROOK,
-    CANNON,
-    PAWN,
-    NOTKIND
-} PieceKind;
-
-// 棋子指针类型（不透明）
-typedef struct Piece* Piece;
-typedef struct Pieces* Pieces; // 与结构同名, 释放需要非const类型
-typedef const struct Pieces* const CPieces; // 固定不变一副棋子
-
-// 空子的字符表示
-extern const wchar_t BLANKCHAR;
-// 空棋子
-extern Piece BLANKPIECE;
-
 // 生成一副棋子
 Pieces newPieces(void);
 
@@ -66,6 +26,15 @@ wchar_t getPieName(Piece piece);
 
 // 取得表示棋子文本的名称
 wchar_t getPieName_T(Piece piece);
+
+// 判断是否棋子名
+bool isPieceName(wchar_t name);
+
+// 判断是否直行棋子名
+bool isLinePiece(wchar_t name);
+
+// 判断是否兵棋子名
+bool isPawnPieceName(wchar_t name);
 
 //  取得棋子
 Piece getPiece_i(CPieces pieces, int index);
