@@ -1,6 +1,9 @@
 #ifndef BASE_H
 #define BASE_H
 
+#include "head/cJSON.h"
+#include "head/pcre.h"
+#include "head/tools.h"
 #include <assert.h>
 #include <conio.h>
 #include <ctype.h>

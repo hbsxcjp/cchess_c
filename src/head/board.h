@@ -30,7 +30,7 @@ int getCol_rowcol(int rowcol);
 Seat getSeat_rc(const Board board, int row, int col);
 Seat getSeat_rowcol(const Board board, int rowcol);
 // 获取某棋盘内某行、某列位置的一个棋子
-Piece getPiece_s(const Board board, Seat seat);
+Piece getPiece_s(Seat seat);
 Piece getPiece_rc(const Board board, int row, int col);
 Piece getPiece_rowcol(const Board board, int rowcol);
 

@@ -3,29 +3,6 @@
 
 #include "base.h"
 
-// 新建一个着法
-//Move newMove();
-
-// 删除move的所有下着move、变着move及自身
-//void freeMove(Move move);
-
-// 添加着法
-Move addMove_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark, bool isOther);
-Move addMove_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark, bool isOther);
-Move addMove_iccs(Move preMove, const Board board, const wchar_t* iccsStr, wchar_t* remark, bool isOther);
-Move addMove_zh(Move preMove, const Board board, const wchar_t* zhStr, wchar_t* remark, bool isOther);
-
-// 设置remark
-void setRemark(Move move, wchar_t* remark);
-
-// 切除move
-//void cutMove(Move move);
-
-wchar_t* getMoveStr(wchar_t* wstr, const Move move);
-
-// 按某种变换类型变换着法记录
-//void changeMove(Move move, const Board board, ChangeType ct);
-
 // 新建chessManual
 ChessManual newChessManual(const char* filename);
 
@@ -39,31 +16,13 @@ void delChessManual(ChessManual cm);
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 
 // 将PGN_CC格式的moves信息写入字符串
-void writeMove_PGN_CCtoWstr(const ChessManual cm, wchar_t** plineStr);
+void writeMove_PGN_CCtoWstr(ChessManual cm, wchar_t** plineStr);
 
 // 将PGN_CC格式的remark信息写入字符串
-void writeRemark_PGN_CCtoWstr(const ChessManual cm, wchar_t** premarkStr);
+void writeRemark_PGN_CCtoWstr(ChessManual cm, wchar_t** premarkStr);
 
 // 从chessManual存储到文件
-void writeChessManual(const ChessManual cm, const char* filename);
-
-// 取得先手方颜色
-PieceColor getFirstColor(const ChessManual cm);
-
-// 是否开始
-bool isStart(const ChessManual cm);
-
-// 当前着法有无后着
-bool hasNext(const ChessManual cm);
-
-// 当前着法有无前着
-bool hasPre(const ChessManual cm);
-
-// 当前着法有无变着
-bool hasOther(const ChessManual cm);
-
-// 当前着法有无前变
-bool hasPreOther(const ChessManual cm);
+void writeChessManual(ChessManual cm, const char* filename);
 
 // 前进一步
 void go(ChessManual cm);

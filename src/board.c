@@ -85,9 +85,9 @@ inline Seat getSeat_rc(const Board board, int row, int col)
 }
 inline Seat getSeat_rowcol(const Board board, int rowcol) { return getSeat_rc(board, getRow_rowcol(rowcol), getCol_rowcol(rowcol)); }
 
-inline Piece getPiece_s(const Board board, Seat seat) { return seat->piece; }
-inline Piece getPiece_rc(const Board board, int row, int col) { return getPiece_s(board, getSeat_rc(board, row, col)); }
-inline Piece getPiece_rowcol(const Board board, int rowcol) { return getPiece_s(board, getSeat_rowcol(board, rowcol)); }
+inline Piece getPiece_s(Seat seat) { return seat->piece; }
+inline Piece getPiece_rc(const Board board, int row, int col) { return getPiece_s(getSeat_rc(board, row, col)); }
+inline Piece getPiece_rowcol(const Board board, int rowcol) { return getPiece_s(getSeat_rowcol(board, rowcol)); }
 
 void setPiece_s(Board board, Seat seat, Piece piece)
 {
@@ -172,7 +172,7 @@ static Seat __getKingSeat(const Board board, bool isBottom)
     Seat seats[9] = { NULL };
     int count = putSeats(seats, board, isBottom, KING);
     for (int i = 0; i < count; ++i) {
-        Piece piece = getPiece_s(board, seats[i]);
+        Piece piece = getPiece_s(seats[i]);
         if (getKind(piece) == KING) {
             //wchar_t pieStr[WCHARSIZE];
             //wprintf(L"%s k:%d c:%d\n", getPieString(pieStr, piece), getKind(piece), getColor(piece));
@@ -183,7 +183,7 @@ static Seat __getKingSeat(const Board board, bool isBottom)
     return getSeat_rc(board, 0, 4);
 }
 
-void setBottomColor(Board board) { board->bottomColor = getColor(getPiece_s(board, __getKingSeat(board, true))); }
+void setBottomColor(Board board) { board->bottomColor = getColor(getPiece_s(__getKingSeat(board, true))); }
 
 Seat getKingSeat(const Board board, PieceColor color) { return __getKingSeat(board, isBottomSide(board, color)); }
 
@@ -565,13 +565,13 @@ int moveSeats(Seat* pseats, const Board board, Seat fseat)
 
 static bool __moveSameColor(Board board, Seat fseat, Seat tseat, bool reverse)
 {
-    bool isSame = getColor(getPiece_s(board, fseat)) == getColor(getPiece_s(board, tseat));
+    bool isSame = getColor(getPiece_s(fseat)) == getColor(getPiece_s(tseat));
     return reverse ? !isSame : isSame;
 }
 
 static bool __moveKilled(Board board, Seat fseat, Seat tseat, bool reverse)
 {
-    PieceColor fcolor = getColor(getPiece_s(board, fseat));
+    PieceColor fcolor = getColor(getPiece_s(fseat));
     Piece eatPiece = movePiece(board, fseat, tseat, BLANKPIECE);
     bool isKill = isKilled(board, fcolor);
     movePiece(board, tseat, fseat, eatPiece);
@@ -605,8 +605,8 @@ int killedMoveSeats(Seat* pseats, int count, Board board, Seat fseat)
 
 Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece)
 {
-    Piece piece = getPiece_s(board, tseat);
-    setPiece_s(board, tseat, getPiece_s(board, fseat));
+    Piece piece = getPiece_s(tseat);
+    setPiece_s(board, tseat, getPiece_s(fseat));
     setPiece_s(board, fseat, eatPiece);
     return piece;
 }
@@ -649,7 +649,7 @@ void changeBoard(Board board, ChangeType ct)
 wchar_t* getSeatString(wchar_t* seatStr, const Board board, Seat seat)
 {
     wchar_t str[WCHARSIZE];
-    swprintf(seatStr, WCHARSIZE, L"%02x%s", getRowCol_s(seat), getPieString(str, getPiece_s(board, seat)));
+    swprintf(seatStr, WCHARSIZE, L"%02x%s", getRowCol_s(seat), getPieString(str, getPiece_s(seat)));
     return seatStr;
 }
 
