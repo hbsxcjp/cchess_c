@@ -10,7 +10,7 @@
 //void freeMove(Move move);
 
 // 添加着法
-Move addMove_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, const wchar_t* remark, bool isOther);
+Move addMove_rc(Move preMove, const Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark, bool isOther);
 Move addMove_rowcol(Move preMove, const Board board, int frowcol, int trowcol, wchar_t* remark, bool isOther);
 Move addMove_iccs(Move preMove, const Board board, const wchar_t* iccsStr, wchar_t* remark, bool isOther);
 Move addMove_zh(Move preMove, const Board board, const wchar_t* zhStr, wchar_t* remark, bool isOther);
