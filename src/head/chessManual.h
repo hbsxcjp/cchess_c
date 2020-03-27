@@ -15,11 +15,9 @@ void delChessManual(ChessManual cm);
 // 添加一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 
-// 将PGN_CC格式的moves信息写入字符串
-void writeMove_PGN_CCtoWstr(ChessManual cm, wchar_t** plineStr);
-
-// 将PGN_CC格式的remark信息写入字符串
-void writeRemark_PGN_CCtoWstr(ChessManual cm, wchar_t** premarkStr);
+// 将PGN_CC格式的move、remark信息写入字符串
+void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
+void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
 
 // 从chessManual存储到文件
 void writeChessManual(ChessManual cm, const char* filename);

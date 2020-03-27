@@ -17,8 +17,16 @@ Move addMove_zh(Move preMove, Board board, const wchar_t* zhStr, wchar_t* remark
 
 int getRowCol_m(Move move, bool isFirst);
 
-wchar_t* getRemark(Move move);
+Move getPre(Move move);
+Move getNext(Move move);
+Move getOther(Move move);
 
+int getNextNo(Move move);
+int getOtherNo(Move move);
+int getCC_ColNo(Move move);
+
+const wchar_t* getRemark(Move move);
+const wchar_t* getZhStr(Move move);
 wchar_t* getICCS(wchar_t* ICCSStr, Move move);
 
 PieceColor getFirstColor(Move move);
@@ -32,6 +40,10 @@ bool hasPre(Move move);
 bool hasOther(Move move);
 
 bool hasPreOther(Move move);
+
+void setNextNo(Move move, int nextNo);
+void setOtherNo(Move move, int otherNo);
+void setCC_ColNo(Move move, int CC_ColNo);
 
 // 设置着法的中文字符串
 void setMoveZhStr(Move move, Board board);
@@ -53,14 +65,26 @@ void undoMove(Board board, Move move);
 
 wchar_t* getMoveStr(wchar_t* wstr, const Move move);
 
+// XQF格式
 void readMove_XQF(Move* rootMove, Board board, FILE* fin, bool isOther);
 
+// bin格式
 wchar_t* readWstring_BIN(FILE* fin);
 void readMove_BIN(Move rootMove, Board board, FILE* fin, bool isOther);
-void writeWstring_BIN(const wchar_t* wstr, FILE* fout);
-void writeMove_BIN(Move rootMove, FILE* fout);
+void writeWstring_BIN(FILE* fout, const wchar_t* wstr);
+void writeMove_BIN(FILE* fout, Move rootMove);
 
+// json格式
 void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON, bool isOther);
 void writeMove_JSON(cJSON* rootmoveJSON, Move rootMove);
+
+// pgn_iccs/pgn_zh格式
+void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board);
+void writeMove_PGN_ICCSZH(FILE* fout, Move rootMove, RecFormat fmt);
+
+// pgn_cc格式
+void readMove_PGN_CC(Move rootMove, FILE* fin, Board board);
+void writeMove_PGN_CC(wchar_t* moveStr, int colNum, Move rootMove);
+void writeRemark_PGN_CC(wchar_t* remarkStr, int* premSize, Move rootMove);
 
 #endif
