@@ -27,9 +27,9 @@ struct Board {
 // 棋盘行列相关的静态全局变量
 static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = BOARDROW - 1,
-                 ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = BOARDCOL - 1,
-                 ALLCOL = -1;
+                 ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = BOARDCOL - 1;
 static const wchar_t ALLPIENAME = L'\x0';
+const int ALLCOL = -1;
 
 static bool __moveSameColor(Board board, Seat fseat, Seat tseat, bool reverse);
 
@@ -191,6 +191,7 @@ int getLiveSeats(Seat* pseats, const Board board, PieceColor color,
     wchar_t name, int findCol, bool getStronge)
 {
     int count = 0;
+    /*
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             Piece piece = getPiece_rc(board, row, col);
@@ -200,6 +201,16 @@ int getLiveSeats(Seat* pseats, const Board board, PieceColor color,
                 && (!getStronge || getKind(piece) >= KNIGHT))
                 pseats[count++] = getSeat_rc(board, row, col);
         }
+        //*/
+    for (int i = 0; i < SEATNUM; ++i) {
+        Seat seat = board->seats[i];
+        Piece piece = seat->piece;
+        if ((getColor(piece) == color) // 同时筛除空棋子
+            && (name == ALLPIENAME || name == getPieName(piece))
+            && (findCol == ALLCOL || getCol_s(seat) == findCol)
+            && (!getStronge || getKind(piece) >= KNIGHT))
+            pseats[count++] = seat;
+    }
     return count;
 }
 

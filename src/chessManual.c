@@ -57,12 +57,12 @@ void delChessManual(ChessManual cm)
 
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
 {
-    int count = cm->infoCount, nameLen = wcsnlen_s(name, WCHARSIZE);
+    int count = cm->infoCount, nameLen = wcsnlen_s(name, WCHARSIZE) + 1;
     if (count == 32 || nameLen == 0)
         return;
-    cm->info[count][0] = (wchar_t*)calloc(nameLen + 1, sizeof(name[0]));
+    cm->info[count][0] = (wchar_t*)malloc(nameLen * sizeof(name[0]));
     wcscpy(cm->info[count][0], name);
-    cm->info[count][1] = (wchar_t*)calloc(wcsnlen_s(value, WCHARSIZE) + 1, sizeof(value[0]));
+    cm->info[count][1] = (wchar_t*)malloc((wcsnlen_s(value, WCHARSIZE) + 1) * sizeof(value[0]));
     wcscpy(cm->info[count][1], value);
     ++(cm->infoCount);
 }
@@ -130,7 +130,7 @@ extern int Version, KeyRMKSize;
 extern char KeyXYf, KeyXYt, F32Keys[PIECENUM];
 extern unsigned char __calkey(unsigned char bKey, unsigned char cKey);
 
-static void readXQF(ChessManual cm, FILE* fin)
+static void __readXQF(ChessManual cm, FILE* fin)
 {
     char xqfData[1024] = { 0 };
     fread(xqfData, sizeof(char), 1024, fin);
@@ -263,7 +263,7 @@ static void __getFENToSetBoard(ChessManual cm)
     setBoard(cm->board, setPieCharsFromFEN(pieChars, FEN));
 }
 
-static void readBIN(ChessManual cm, FILE* fin)
+static void __readBin(ChessManual cm, FILE* fin)
 {
     char fileTag[sizeof(FILETAG)];
     fread(&fileTag, sizeof(char), sizeof(FILETAG), fin);
@@ -315,7 +315,7 @@ static void writeBIN(ChessManual cm, FILE* fout)
         writeMove_BIN(fout, cm->rootMove);
 }
 
-static void readJSON(ChessManual cm, FILE* fin)
+static void __readJSON(ChessManual cm, FILE* fin)
 {
     fseek(fin, 0L, SEEK_END); // 定位到文件末尾
     long last = ftell(fin);
@@ -390,10 +390,7 @@ static void __readPGN(ChessManual cm, FILE* fin, RecFormat fmt)
     __readInfo_PGN(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     __getFENToSetBoard(cm);
-    if (fmt == PGN_CC)
-        readMove_PGN_CC(cm->rootMove, fin, cm->board);
-    else
-        readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
+    (fmt == PGN_CC) ? readMove_PGN_CC(cm->rootMove, fin, cm->board) : readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
 }
 
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
@@ -419,8 +416,8 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
 {
     int size = SUPERWIDEWCHARSIZE;
-    wchar_t* remarkStr = calloc(size, sizeof(wchar_t));
-    writeRemark_PGN_CC(remarkStr, &size, cm->rootMove);
+    wchar_t* remarkStr = malloc(size * sizeof(wchar_t));
+    writeRemark_PGN_CC(&remarkStr, &size, cm->rootMove);
     *premStr = remarkStr;
 }
 
@@ -459,13 +456,13 @@ void __readChessManual(ChessManual cm, const char* filename)
         return;
     switch (fmt) {
     case XQF:
-        readXQF(cm, fin);
+        __readXQF(cm, fin);
         break;
     case BIN:
-        readBIN(cm, fin);
+        __readBin(cm, fin);
         break;
     case JSON:
-        readJSON(cm, fin);
+        __readJSON(cm, fin);
         break;
     default:
         __readPGN(cm, fin, fmt);
@@ -749,15 +746,15 @@ void testChessManual(FILE* fout)
     writeChessManual(cm, "01.pgn_zh");
 
     resetChessManual(&cm, "01.pgn_zh");
+    writeChessManual(cm, "01.pgn_cc");
+
+    resetChessManual(&cm, "01.pgn_cc");
+    writeChessManual(cm, "01.pgn_cc");
 
     fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 
-    /*
-    writeChessManual(cm, "01.pgn_cc");
-    
-    resetChessManual(&cm, "01.pgn_cc");
-    writeChessManual(cm, "01.pgn_cc");
+    //*
     //
 
 

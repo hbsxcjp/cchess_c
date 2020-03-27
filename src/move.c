@@ -21,6 +21,8 @@ const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
     L"一二三四五六七八九", L"１２３４５６７８９"
 };
 
+extern const int ALLCOL;
+
 static wchar_t* __getPreCHars(wchar_t* preChars, int count)
 {
     if (count == 2) {
@@ -106,6 +108,8 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     Seat seats[PIECENUM / 2] = { NULL };
 
     if (isPieceName(name)) { // 棋子名
+        //wchar_t wstr[WIDEWCHARSIZE];
+        //wprintf(L"%d:%s\n%s\n", __LINE__, zhStr, getBoardString(wstr, board));
         count = getLiveSeats(seats,
             board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])), false);
         assert(count > 0);
@@ -114,7 +118,7 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     } else { // 非棋子名
         name = zhStr[1];
         count = isPawnPieceName(name) ? getSortPawnLiveSeats(seats, board, color, name)
-                                      : getLiveSeats(seats, board, color, name, -1, false);
+                                      : getLiveSeats(seats, board, color, name, ALLCOL, false);
         wchar_t preChars[6] = { 0 };
         __getPreCHars(preChars, count);
         assert(wcschr(preChars, zhStr[0]) != NULL);
@@ -131,11 +135,10 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     move->tseat = isLinePiece(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
                                                    : getSeat_rc(board, frow + movDir * num, fcol))
                                     // 斜线走子：仕、相、马
-                                    : getSeat_rc(board,
-                                          frow + movDir * (isKnightPieceName(name) ? colAway : (colAway == 1 ? 2 : 1)), toCol);
+                                    : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
 
-    //__setMoveZhStr(move, board);
-    //assert(wcscmp(zhStr, move->zhStr) == 0);
+    setMoveZhStr(move, board);
+    assert(wcscmp(zhStr, move->zhStr) == 0);
     //
 }
 
@@ -489,8 +492,9 @@ static void __readMove_JSON(Move preMove, Board board, const cJSON* moveJSON, bo
 void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON, bool isOther)
 {
     setRemark(rootMove, __readMoveRemark_JSON(rootMoveJSON));
-    if (cJSON_GetObjectItem(rootMoveJSON, "f") != NULL)
-        __readMove_JSON(rootMove, board, rootMoveJSON, false);
+    cJSON* nmoveJSON = cJSON_GetObjectItem(rootMoveJSON, "n");
+    if (nmoveJSON != NULL)
+        __readMove_JSON(rootMove, board, nmoveJSON, false);
 }
 
 static void __writeMoveRemark_JSON(cJSON* moveJSON, Move move)
@@ -508,33 +512,36 @@ static void __writeMove_JSON(cJSON* moveJSON, Move move)
     cJSON_AddNumberToObject(moveJSON, "t", getRowCol_m(move, false));
     __writeMoveRemark_JSON(moveJSON, move);
 
+    if (hasOther(move)) {
+        cJSON* omoveJSON = cJSON_CreateObject();
+        __writeMove_JSON(omoveJSON, getOther(move));
+        cJSON_AddItemToObject(moveJSON, "o", omoveJSON);
+    }
     if (hasNext(move)) {
         cJSON* nmoveJSON = cJSON_CreateObject();
-        __writeMove_JSON(nmoveJSON, move->nmove);
+        __writeMove_JSON(nmoveJSON, getNext(move));
         cJSON_AddItemToObject(moveJSON, "n", nmoveJSON);
-    }
-    if (move->omove != NULL) {
-        cJSON* omoveJSON = cJSON_CreateObject();
-        __writeMove_JSON(omoveJSON, move->omove);
-        cJSON_AddItemToObject(moveJSON, "o", omoveJSON);
     }
 }
 
 void writeMove_JSON(cJSON* rootmoveJSON, Move rootMove)
 {
     __writeMoveRemark_JSON(rootmoveJSON, rootMove);
-    if (hasNext(rootMove))
-        __writeMove_JSON(rootmoveJSON, rootMove->nmove);
+    if (hasNext(rootMove)) {
+        cJSON* nmoveJSON = cJSON_CreateObject();
+        __writeMove_JSON(nmoveJSON, getNext(rootMove));
+        cJSON_AddItemToObject(rootmoveJSON, "n", nmoveJSON);
+    }
 }
 
 void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
 {
     bool isPGN_ZH = fmt == PGN_ZH;
-    wchar_t ICCSZHStr[WIDEWCHARSIZE] = { 0 };
-    wcscat(ICCSZHStr, L"([");
+    wchar_t ICCSZHStr[WCHARSIZE];
+    wcscpy(ICCSZHStr, L"([");
     if (isPGN_ZH) {
-        wchar_t ZhChars[WCHARSIZE] = { 0 };
-        wcscat(ZhChars, PRECHAR);
+        wchar_t ZhChars[WCHARSIZE];
+        wcscpy(ZhChars, PRECHAR);
         wcscat(ZhChars, PieceNames[RED]);
         wcscat(ZhChars, PieceNames[BLACK]);
         wcscat(ZhChars, MOVCHAR);
@@ -542,21 +549,21 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
         wcscat(ZhChars, NUMCHAR[BLACK]);
         wcscat(ICCSZHStr, ZhChars);
     } else {
-        wchar_t ICCSChars[WCHARSIZE] = { 0 };
-        wcscat(ICCSChars, ICCSCOLCHAR);
+        wchar_t ICCSChars[WCHARSIZE];
+        wcscpy(ICCSChars, ICCSCOLCHAR);
         wcscat(ICCSChars, ICCSROWCHAR);
         wcscat(ICCSZHStr, ICCSChars);
     }
     wcscat(ICCSZHStr, L"]{4})");
 
     const wchar_t remStr[] = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
-    wchar_t movePat[WCHARSIZE] = { 0 };
-    wcscat(movePat, L"(\\()?(?:[\\d\\.\\s]+)");
+    wchar_t movePat[WCHARSIZE];
+    wcscpy(movePat, L"(\\()?(?:[\\d\\.\\s]+)");
     wcscat(movePat, ICCSZHStr);
     wcscat(movePat, remStr);
     wcscat(movePat, L"(?:[\\s\\n]*(\\)+))?"); // 可能存在多个右括号
-    wchar_t remPat[WCHARSIZE] = { 0 };
-    wcscat(remPat, remStr);
+    wchar_t remPat[WCHARSIZE];
+    wcscpy(remPat, remStr);
     wcscat(remPat, L"1\\.");
 
     const char* error;
@@ -566,13 +573,12 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
     assert(remReg);
 
-    wchar_t* moveStr = getWString(fin);
+    wchar_t* moveStr = getWString(fin); // 读取文件内容到字符串
     int ovector[WCHARSIZE],
-        regCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr),
-            0, 0, ovector, WCHARSIZE);
+        regCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
     if (regCount <= 0)
         return; // 没有move
-    if (regCount == 2) {
+    if (regCount == 2) { // rootMove有remark
         int len = ovector[3] - ovector[2] + 1;
         wchar_t* remark = malloc(len * sizeof(wchar_t));
         wcsncpy(remark, moveStr + ovector[2], len);
@@ -586,48 +592,22 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     int preOthIndex = 0, length = 0;
     wchar_t* pmoveStr = moveStr;
     while ((pmoveStr += ovector[1]) && (length = wcslen(pmoveStr)) > 0) {
-        regCount = pcre16_exec(moveReg, NULL, pmoveStr,
-            length, 0, 0, ovector, WCHARSIZE);
+        regCount = pcre16_exec(moveReg, NULL, pmoveStr, length, 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
             break;
-
-        // 第1个子匹配成功，有"("
-        /*
-        if (ovector[3] > ovector[2]) {
-            move = addOther(preMove);
+        // 是否有"("
+        bool isOther = ovector[3] > ovector[2];
+        if (isOther) {
             preOtherMoves[preOthIndex++] = preMove;
             if (isPGN_ZH)
-                undoMove(board, preMove);
-        } else
-            move = addNext(preMove);
-
-        // 提取第2个匹配zhStr，设置move
-        int num = ovector[5] - ovector[4];
-        assert(num > 0);
-        wchar_t iccs_zhStr[6] = { 0 };
-        wcsncpy(iccs_zhStr, pmoveStr + ovector[4], num);
-
-        if (isPGN_ZH)
-            __setMoveSeat_zh(move, board, iccs_zhStr);
-        else
-            __setMoveSeat_iccs(move, board, iccs_zhStr);
-
-        // 提取第3个匹配remark，设置move
-        num = ovector[7] - ovector[6];
-        if (num > 0) {
-            wchar_t* remark = malloc((num + 1) * sizeof(wchar_t));
-            wcsncpy(remark, pmoveStr + ovector[6], num);
-            remark[num] = L'\x0';
-            setRemark(move, remark);
+                undoMove(board, preMove); // 回退前变着，以准备执行本变着
         }
-            //*/
-
-        bool isOther = ovector[3] > ovector[2];
+        // 提取着法字符串
         int iccs_zhSize = ovector[5] - ovector[4];
         assert(iccs_zhSize > 0);
         wchar_t iccs_zhStr[6] = { 0 };
         wcsncpy(iccs_zhStr, pmoveStr + ovector[4], iccs_zhSize);
-
+        // 提取注解
         int remarkSize = ovector[7] - ovector[6];
         wchar_t* remark = NULL;
         if (remarkSize > 0) {
@@ -635,28 +615,23 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
             wcsncpy(remark, pmoveStr + ovector[6], remarkSize);
             remark[remarkSize] = L'\x0';
         }
+        // 添加生成着法
         move = isPGN_ZH ? addMove_zh(preMove, board, iccs_zhStr, remark, isOther)
                         : addMove_iccs(preMove, board, iccs_zhStr, remark, isOther);
-        if (isOther) {
-            preOtherMoves[preOthIndex++] = preMove;
-            if (isPGN_ZH)
-                undoMove(board, preMove);
-        }
-
         if (isPGN_ZH)
-            doMove(board, move);
+            doMove(board, move); // 执行本着或本变着
 
-        // 第4个子匹配成功，有")+"
+        // 是否有一个以上的")"
         int num = ovector[9] - ovector[8];
         if (num > 0) {
             for (int i = 0; i < num; ++i) {
                 preMove = preOtherMoves[--preOthIndex];
                 if (isPGN_ZH) {
                     do {
-                        undoMove(board, move);
+                        undoMove(board, move); // 一直回退至前变着
                         move = getPre(move);
                     } while (move != preMove);
-                    doMove(board, preMove);
+                    doMove(board, preMove); // 执行前变着，为后续执行做好准备
                 }
             }
         } else
@@ -741,13 +716,13 @@ static void __addMove_PGN_CC(Move preMove, Board board, pcre16* moveReg,
         __getRemark_PGN_CC(remLines, remCount, row, col), isOther);
 
     if (lastwc == L'…')
-        __addMove_PGN_CC(move,board, moveReg,
+        __addMove_PGN_CC(move, board, moveReg,
             moveLines, rowNum, colNum, row, col + 1, remLines, remCount, true);
 
     if (getNextNo(move) < rowNum - 1
         && moveLines[(row + 1) * colNum + col][0] != L'　') {
         doMove(board, move);
-        __addMove_PGN_CC(move,board, moveReg,
+        __addMove_PGN_CC(move, board, moveReg,
             moveLines, rowNum, colNum, row + 1, col, remLines, remCount, false);
         undoMove(board, move);
     }
@@ -846,29 +821,28 @@ void writeMove_PGN_CC(wchar_t* moveStr, int colNum, Move rootMove)
         __writeMove_PGN_CC(moveStr, colNum, getNext(rootMove));
 }
 
-static void __writeRemark_PGN_CC(wchar_t* remarkStr, int* premSize, Move move)
+static void __writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move move)
 {
     if (getRemark(move) != NULL) {
         int len = wcslen(getRemark(move)) + 16;
-        wchar_t* remStr = malloc(len);
+        wchar_t* remStr = malloc(len * sizeof(wchar_t));
         swprintf(remStr, len, L"(%d,%d): {%s}\n", getNextNo(move), getCC_ColNo(move), getRemark(move));
         // 如字符串分配的长度不够，则增加长度
-        if (wcslen(remarkStr) + len > *premSize - 1) {
+        if (wcslen(*premarkStr) + len > *premSize - 1) {
             *premSize += WIDEWCHARSIZE;
-            remarkStr = realloc(remarkStr, *premSize);
+            *premarkStr = realloc(*premarkStr, *premSize);
         }
-        wcscat(remarkStr, remStr);
+        wcscat(*premarkStr, remStr);
         free(remStr);
     }
 
     if (hasOther(move))
-        __writeRemark_PGN_CC(remarkStr, premSize, getOther(move));
+        __writeRemark_PGN_CC(premarkStr, premSize, getOther(move));
     if (hasNext(move))
-        __writeRemark_PGN_CC(remarkStr, premSize, getNext(move));
+        __writeRemark_PGN_CC(premarkStr, premSize, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t* remarkStr, int* premSize, Move rootMove)
+void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move rootMove)
 {
-    if (hasNext(rootMove))
-        __writeRemark_PGN_CC(remarkStr, premSize, getNext(rootMove));
+    __writeRemark_PGN_CC(premarkStr, premSize, rootMove);
 }

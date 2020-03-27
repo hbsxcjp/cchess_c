@@ -85,6 +85,6 @@ void writeMove_PGN_ICCSZH(FILE* fout, Move rootMove, RecFormat fmt);
 // pgn_cc格式
 void readMove_PGN_CC(Move rootMove, FILE* fin, Board board);
 void writeMove_PGN_CC(wchar_t* moveStr, int colNum, Move rootMove);
-void writeRemark_PGN_CC(wchar_t* remarkStr, int* premSize, Move rootMove);
+void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move rootMove);
 
 #endif
