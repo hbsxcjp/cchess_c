@@ -30,7 +30,8 @@
 // 棋子种类数量
 #define PIECEKINDNUM 7
 // 一方棋子个数
-#define PIECENUM 32
+#define SIDEPIECENUM 16
+#define PIECENUM (PIECECOLORNUM * SIDEPIECENUM)
 
 // 棋子颜色类型
 typedef enum {
@@ -53,8 +54,7 @@ typedef enum {
 
 // 棋子指针类型（不透明）
 typedef struct Piece* Piece;
-typedef struct Pieces* Pieces; // 与结构同名, 释放需要非const类型
-typedef const struct Pieces* const CPieces; // 固定不变一副棋子
+typedef struct Pieces* Pieces; 
 
 // 空子的字符表示
 extern const wchar_t BLANKCHAR;
@@ -102,7 +102,6 @@ typedef enum {
 typedef struct Move* Move;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
-
 
 //=================================================================
 //棋局演示相关的类型
@@ -161,6 +160,5 @@ typedef struct _MenuData {
     wchar_t name[WCHARSIZE], desc[WCHARSIZE];
     MENU_FUNC func;
 } MenuData, *PMenuData;
-
 
 #endif

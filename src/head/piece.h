@@ -13,6 +13,7 @@ void freePieces(Pieces pieces);
 
 // 取得表示棋子的颜色(判断棋子值的高四位)
 PieceColor getColor(Piece piece);
+PieceColor getColor_ch(wchar_t ch);
 
 // 取得对方棋子的颜色
 PieceColor getOtherColor(Piece piece);
@@ -42,14 +43,17 @@ bool isPawnPieceName(wchar_t name);
 bool isKnightPieceName(wchar_t name);
 
 //  取得棋子
-Piece getPiece_i(CPieces pieces, int index);
-Piece getPiece_ch(CPieces pieces, wchar_t ch);
+Piece getPiece_ch(Pieces pieces, wchar_t ch);
 
 //  取得表示相同种类的对方棋子
-Piece getOtherPiece(CPieces pieces, Piece piece);
+Piece getOtherPiece(Pieces pieces, Piece piece);
 
 // 设置为已放置在棋盘上
-Piece setOnBoard(Piece piece, bool onBoard);
+Piece setOnBoard(Piece piece, Seat seat);
+
+// 按给定参数查找活的棋子
+int getLiveSeats_p(Seat* pseats, const Pieces pieces, PieceColor color,
+    wchar_t name, int findCol, bool getStronge);
 
 // 取得表示棋子表示字符串的名称
 wchar_t* getPieString(wchar_t* pieStr, Piece piece);

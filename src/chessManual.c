@@ -7,7 +7,6 @@
 //#include <regex.h>
 //#include <sys/types.h>
 
-// 棋局信息数量
 #define INFOSIZE 32
 
 struct ChessManual {
@@ -30,9 +29,13 @@ static void __setMoveNumZhStr(ChessManual cm, Move move);
 
 ChessManual newChessManual(const char* filename)
 {
-    ChessManual cm = calloc(sizeof(struct ChessManual), 1);
+    ChessManual cm = malloc(sizeof(struct ChessManual));
     cm->board = newBoard();
     cm->currentMove = cm->rootMove = newMove();
+    for (int i = 0; i < INFOSIZE; ++i)
+        for (int j = 0; j < 2; ++j)
+            cm->info[i][j] = NULL;
+    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     __readChessManual(cm, filename);
     return cm;
 }
@@ -58,13 +61,27 @@ void delChessManual(ChessManual cm)
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
 {
     int count = cm->infoCount, nameLen = wcsnlen_s(name, WCHARSIZE) + 1;
-    if (count == 32 || nameLen == 0)
+    if (count == INFOSIZE || nameLen == 0)
         return;
-    cm->info[count][0] = (wchar_t*)malloc(nameLen * sizeof(name[0]));
+    cm->info[count][0] = malloc(nameLen * sizeof(name[0]));
     wcscpy(cm->info[count][0], name);
-    cm->info[count][1] = (wchar_t*)malloc((wcsnlen_s(value, WCHARSIZE) + 1) * sizeof(value[0]));
+    cm->info[count][1] = malloc((wcsnlen_s(value, WCHARSIZE) + 1) * sizeof(value[0]));
     wcscpy(cm->info[count][1], value);
     ++(cm->infoCount);
+}
+
+void delInfoItem(ChessManual cm, const wchar_t* name)
+{
+    for (int i = 0; i < cm->infoCount; ++i)
+        if (wcscmp(cm->info[i][0], name) == 0) {
+            for (int j = 0; j < 2; ++j)
+                free(cm->info[i][j]);
+            for (int k = i + 1; k < cm->infoCount; ++k)
+                for (int j = 0; j < 2; ++j)
+                    cm->info[k - 1][j] = cm->info[k][j];
+            --(cm->infoCount);
+            break;
+        }
 }
 
 // 根据文件扩展名取得存储记录类型
@@ -293,7 +310,7 @@ static void __readBin(ChessManual cm, FILE* fin)
         readMove_BIN(cm->rootMove, cm->board, fin, false);
 }
 
-static void writeBIN(ChessManual cm, FILE* fout)
+static void __writeBIN(ChessManual cm, FILE* fout)
 {
     fwrite(FILETAG, sizeof(char), sizeof(FILETAG), fout);
     char infoCount = cm->infoCount;
@@ -342,7 +359,7 @@ static void __readJSON(ChessManual cm, FILE* fin)
     cJSON_Delete(manualJSON);
 }
 
-static void writeJSON(ChessManual cm, FILE* fout)
+static void __writeJSON(ChessManual cm, FILE* fout)
 {
     cJSON *manualJSON = cJSON_CreateObject(),
           *infoJSON = cJSON_CreateArray(),
@@ -415,8 +432,8 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
 {
-    int size = SUPERWIDEWCHARSIZE;
-    wchar_t* remarkStr = malloc(size * sizeof(wchar_t));
+    int size = WIDEWCHARSIZE;
+    wchar_t* remarkStr = calloc(size, sizeof(wchar_t));
     writeRemark_PGN_CC(&remarkStr, &size, cm->rootMove);
     *premStr = remarkStr;
 }
@@ -470,9 +487,11 @@ void __readChessManual(ChessManual cm, const char* filename)
     }
     if (fmt == XQF || fmt == BIN || fmt == JSON)
         __getFENToSetBoard(cm);
+    //*
 
     if (hasNext(cm->rootMove))
         __setMoveNumZhStr(cm, getNext(cm->rootMove)); // 驱动函数
+        //*/
     fclose(fin);
 }
 
@@ -492,10 +511,10 @@ void writeChessManual(ChessManual cm, const char* filename)
         wprintf(L"未实现的写入文件扩展名！");
         break;
     case BIN:
-        writeBIN(cm, fout);
+        __writeBIN(cm, fout);
         break;
     case JSON:
-        writeJSON(cm, fout);
+        __writeJSON(cm, fout);
         break;
     default:
         __writePGN(cm, fout, fmt);
@@ -655,8 +674,8 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //
             if (__getRecFormat(fromExt) != NOTFMT) {
+                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 ChessManual cm = newChessManual(dir_fileName);
-                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 //if (__readChessManual(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
                 //  return;
@@ -731,6 +750,7 @@ void testTransDir(int fromDir, int toDir,
 void testChessManual(FILE* fout)
 {
     ChessManual cm = newChessManual("01.xqf");
+    //*
     writeChessManual(cm, "01.bin");
 
     resetChessManual(&cm, "01.bin");
@@ -751,14 +771,9 @@ void testChessManual(FILE* fout)
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
 
-    fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
-        __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
+    //fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
+    //    __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 
-    //*
-    //
-
-
-    //
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32] = { 0 };

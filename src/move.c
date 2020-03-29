@@ -105,7 +105,7 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     int index = 0, count = 0,
         movDir = __getMovDir(isBottom, zhStr[2]);
     wchar_t name = zhStr[0];
-    Seat seats[PIECENUM / 2] = { NULL };
+    Seat seats[SIDEPIECENUM] = { NULL };
 
     if (isPieceName(name)) { // 棋子名
         //wchar_t wstr[WIDEWCHARSIZE];
@@ -151,7 +151,7 @@ void setMoveZhStr(Move move, Board board)
     int frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat),
         trow = getRow_s(move->tseat), tcol = getCol_s(move->tseat);
     bool isBottom = isBottomSide(board, color);
-    Seat seats[PIECENUM] = { 0 };
+    Seat seats[SIDEPIECENUM] = { 0 };
     int count = getLiveSeats(seats, board, color, name, fcol, false);
 
     if (count > 1 && getKind(fpiece) > KNIGHT) { // 马车炮兵
@@ -211,7 +211,17 @@ static Move __SetRemark_addMove(Move preMove, Move move, wchar_t* remark, bool i
     return isOther ? __setMoveOther(preMove, move) : __setMoveNext(preMove, move);
 }
 
-Move newMove() { return calloc(sizeof(struct Move), 1); }
+Move newMove()
+{
+    Move move = malloc(sizeof(struct Move));
+    move->fseat = move->tseat = NULL;
+    move->tpiece = NULL;
+    move->remark = NULL;
+    move->zhStr[0] = L'\x0';
+    move->pmove = move->nmove = move->omove = NULL;
+    move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
+    return move;
+}
 
 void freeMove(Move move)
 {
@@ -691,8 +701,9 @@ static wchar_t* __getRemark_PGN_CC(wchar_t* remLines[], int remCount, int row, i
     swprintf(name, 12, L"(%d,%d)", row, col);
     for (int index = 0; index < remCount; ++index)
         if (wcscmp(name, remLines[index * 2]) == 0) {
-            remark = malloc((wcslen(remLines[index * 2 + 1]) + 1) * sizeof(wchar_t));
-            wcscpy(remark, remLines[index * 2 + 1]);
+            wchar_t* thisRemark = remLines[index * 2 + 1];
+            remark = malloc((wcslen(thisRemark) + 1) * sizeof(wchar_t));
+            wcscpy(remark, thisRemark);
             //wprintf(L"%d: %s: %s\n", __LINE__, name, remLines[index * 2 + 1]);
             break;
         }
@@ -712,8 +723,7 @@ static void __addMove_PGN_CC(Move preMove, Board board, pcre16* moveReg,
 
     wchar_t lastwc = zhStr[4];
     zhStr[4] = L'\x0';
-    Move move = addMove_zh(preMove, board, zhStr,
-        __getRemark_PGN_CC(remLines, remCount, row, col), isOther);
+    Move move = addMove_zh(preMove, board, zhStr, __getRemark_PGN_CC(remLines, remCount, row, col), isOther);
 
     if (lastwc == L'…')
         __addMove_PGN_CC(move, board, moveReg,
@@ -769,12 +779,10 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         if (regCount <= 0)
             break;
         int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
-        wchar_t *rowcolName = malloc((rclen + 1) * sizeof(wchar_t)),
-                *reamrkStr = malloc((remlen + 1) * sizeof(wchar_t));
+        wchar_t *rowcolName = calloc(rclen + 1, sizeof(wchar_t)),
+                *reamrkStr = calloc(remlen + 1, sizeof(wchar_t));
         wcsncpy(rowcolName, remStr + ovector[2], rclen);
         wcsncpy(reamrkStr, remStr + ovector[4], remlen);
-        rowcolName[rclen] = L'\x0';
-        reamrkStr[remlen] = L'\x0';
         remLines[remCount * 2] = rowcolName;
         remLines[remCount * 2 + 1] = reamrkStr;
         //wprintf(L"%d: %s: %s\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
@@ -829,7 +837,7 @@ static void __writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move move)
         swprintf(remStr, len, L"(%d,%d): {%s}\n", getNextNo(move), getCC_ColNo(move), getRemark(move));
         // 如字符串分配的长度不够，则增加长度
         if (wcslen(*premarkStr) + len > *premSize - 1) {
-            *premSize += WIDEWCHARSIZE;
+            *premSize += WIDEWCHARSIZE + len;
             *premarkStr = realloc(*premarkStr, *premSize);
         }
         wcscat(*premarkStr, remStr);

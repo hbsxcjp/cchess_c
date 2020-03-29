@@ -12,8 +12,9 @@ ChessManual resetChessManual(ChessManual* cm, const char* filename);
 // 删除chessManual
 void delChessManual(ChessManual cm);
 
-// 添加一个info条目
+// 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
+void delInfoItem(ChessManual cm, const wchar_t* name);
 
 // 将PGN_CC格式的move、remark信息写入字符串
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
