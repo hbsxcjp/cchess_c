@@ -132,7 +132,7 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     move->fseat = seats[index];
     int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
         frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat), colAway = abs(toCol - fcol); //  相距1或2列
-    move->tseat = isLinePiece(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
+    move->tseat = isLinePieceName(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
                                                    : getSeat_rc(board, frow + movDir * num, fcol))
                                     // 斜线走子：仕、相、马
                                     : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
@@ -170,7 +170,7 @@ void setMoveZhStr(Move move, Board board)
         move->zhStr[1] = NUMCHAR[color][isBottom ? getOtherCol_c(fcol) : fcol];
     }
     move->zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
-    move->zhStr[3] = NUMCHAR[color][(isLinePiece(name) && frow != trow) ? abs(trow - frow) - 1
+    move->zhStr[3] = NUMCHAR[color][(isLinePieceName(name) && frow != trow) ? abs(trow - frow) - 1
                                                                         : (isBottom ? getOtherCol_c(tcol) : tcol)];
     move->zhStr[4] = L'\x0';
 
