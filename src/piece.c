@@ -21,9 +21,6 @@ const wchar_t BLANKCHAR = L'_';
 static struct Piece BLANKPIECE_ = { NOTCOLOR, NOTKIND, NULL };
 Piece BLANKPIECE = &BLANKPIECE_;
 
-const wchar_t ALLPIENAME = L'\x0';
-const int ALLCOL = -1;
-
 Pieces newPieces(void)
 {
     Pieces pieces = malloc(sizeof(struct Pieces));
@@ -91,7 +88,7 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch)
 
 void setSeat(Piece  piece, Seat seat)
 {
-    //if (piece != BLANKPIECE)
+    if (piece != BLANKPIECE)
         piece->seat = seat;
 }
 
@@ -99,7 +96,7 @@ extern int getRowCol_s(CSeat seat);
 wchar_t* getPieString(wchar_t* pieStr, Piece piece)
 {
     if (piece != BLANKPIECE)
-        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02x", // %c
+        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X", // %c
             getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece), piece->seat != NULL ? getRowCol_s(piece->seat) : 0xFF); // getPieName(piece),
     else
         pieStr = L"空";

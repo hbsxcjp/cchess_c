@@ -338,7 +338,7 @@ static void __readBytes(char* bytes, int size, FILE* fin)
             bytes[i] = __sub(bytes[i], F32Keys[(pos + i) % 32]);
 }
 
-static void __readMove_XQF(Move preMove, Board board, FILE* fin, bool isOther)
+static void __readTagRowcolRemark(char* tag, int* fcolrow, int* tcolrow, wchar_t** remark, FILE* fin)
 {
     char data[4] = { 0 };
     __readBytes(data, 4, fin);
@@ -358,33 +358,42 @@ static void __readMove_XQF(Move preMove, Board board, FILE* fin, bool isOther)
         }
     }
 
+    *tag = data[2];
     //# 一步棋的起点和终点有简单的加密计算，读入时需要还原
-    int fcolrow = __sub(data[0], 0X18 + KeyXYf),
-        tcolrow = __sub(data[1], 0X20 + KeyXYt);
-    //wprintf(L"%3d=> %d->%d\n", __LINE__, fcolrow, tcolrow);
-    // assert(fcolrow <= 89 && tcolrow <= 89); 根节点不能断言！
-    wchar_t* remark = NULL;
+    *fcolrow = __sub(data[0], 0X18 + KeyXYf);
+    *tcolrow = __sub(data[1], 0X20 + KeyXYt);
     if (rem != NULL) {
         int length = strlen(rem) + 1;
-        remark = malloc(length * sizeof(wchar_t));
-        mbstowcs(remark, rem, length);
+        *remark = malloc(length * sizeof(wchar_t));
+        mbstowcs(*remark, rem, length);
         free(rem);
     }
+}
+
+static void __readMove_XQF(Move preMove, Board board, FILE* fin, bool isOther)
+{
+    char tag = 0;
+    int fcolrow = 0, tcolrow = 0;
+    wchar_t* remark = NULL;
+    __readTagRowcolRemark(&tag, &fcolrow, &tcolrow, &remark, fin);
     Move move = addMove_rc(preMove, board, fcolrow % 10, fcolrow / 10, tcolrow % 10, tcolrow / 10, remark, isOther);
 
-    if (data[2] & 0x80) //# 有左子树
+    if (tag & 0x80) //# 有左子树
         __readMove_XQF(move, board, fin, false);
-    if (data[2] & 0x40) // # 有右子树
+    if (tag & 0x40) // # 有右子树
         __readMove_XQF(move, board, fin, true);
 }
 
 void readMove_XQF(Move* rootMove, Board board, FILE* fin, bool isOther)
 {
-    Move tempPreMove = newMove();
-    __readMove_XQF(tempPreMove, board, fin, false);
-    *rootMove = tempPreMove->nmove; // XQF文件存储了rootMove的无用数据，需要读取出来
-    tempPreMove->nmove = NULL; //切断关联
-    freeMove(tempPreMove);
+    char tag = 0;
+    int fcolrow = 0, tcolrow = 0;
+    wchar_t* remark = NULL;
+    __readTagRowcolRemark(&tag, &fcolrow, &tcolrow, &remark, fin);
+    setRemark(*rootMove, remark);
+
+    if (tag & 0x80)
+        __readMove_XQF(*rootMove, board, fin, false);
 }
 
 wchar_t* readWstring_BIN(FILE* fin)

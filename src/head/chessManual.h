@@ -44,7 +44,6 @@ void goInc(ChessManual cm, int inc);
 
 // 转变棋局实例
 void changeChessManual(ChessManual cm, ChangeType ct);
-//RecFormat getRecFormat(const char* ext);
 
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);

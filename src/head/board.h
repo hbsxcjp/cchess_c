@@ -53,9 +53,6 @@ void setBoard(Board board, const wchar_t* pieChars);
 // 给定颜色是否在棋盘底边
 bool isBottomSide(Board board, PieceColor color);
 
-// 设置棋盘底边的颜色
-void setBottomColor(Board board);
-
 // 取得某方将帅的位置seat
 Seat getKingSeat(Board board, PieceColor color);
 

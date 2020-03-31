@@ -275,9 +275,8 @@ static void __readXQF(ChessManual cm, FILE* fin)
 
 static void __getFENToSetBoard(ChessManual cm)
 {
-    wchar_t* FEN = __getFENFromCM(cm);
     wchar_t pieChars[SEATNUM + 1];
-    setBoard(cm->board, setPieCharsFromFEN(pieChars, FEN));
+    setBoard(cm->board, setPieCharsFromFEN(pieChars, __getFENFromCM(cm)));
 }
 
 static void __readBin(ChessManual cm, FILE* fin)
@@ -298,12 +297,7 @@ static void __readBin(ChessManual cm, FILE* fin)
             free(value);
         }
     }
-    //
-    //wchar_t* FEN = __getFENFromCM(cm);
-    //wchar_t pieChars[SEATNUM + 1] = { 0 };
-    //setBoard(cm->board, getPieChars_F(pieChars, FEN, wcslen(FEN)));
-    //
-
+ 
     if (tag & 0x20)
         setRemark(cm->rootMove, readWstring_BIN(fin));
     if (tag & 0x80)
@@ -674,7 +668,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //
             if (__getRecFormat(fromExt) != NOTFMT) {
-                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 ChessManual cm = newChessManual(dir_fileName);
                 //if (__readChessManual(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
@@ -708,7 +702,7 @@ void transDir(const char* dirfrom, RecFormat tofmt)
     char dirto[FILENAME_MAX];
     strcpy(dirto, dirfrom);
     strcat(getFileName_cut(dirto), EXTNAMES[tofmt]);
-    //printf("%d: %s tofmt:%s\n", __LINE__, dirto, EXTNAMES[tofmt]);
+    printf("%d: %s tofmt:%s\n", __LINE__, dirfrom, EXTNAMES[tofmt]);
 
     __transDir(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
     wchar_t wformatStr[] = L"%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n";
@@ -778,7 +772,6 @@ void testChessManual(FILE* fout)
         changeChessManual(cm, ct);
         char fname[32] = { 0 };
         sprintf(fname, "01_%d.pgn_cc", ct);
-        //resetChessManual(&cm, fname); //未成功？
         writeChessManual(cm, fname);
     }
     //*/
