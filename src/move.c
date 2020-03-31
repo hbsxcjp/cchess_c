@@ -50,7 +50,6 @@ static void __setMoveSeat_rc(Move move, Board board, int frow, int fcol, int tro
 {
     move->fseat = getSeat_rc(board, frow, fcol);
     move->tseat = getSeat_rc(board, trow, tcol);
-    move->tpiece = getPiece_s(move->tseat);
 }
 
 static void __setMoveSeat_iccs(Move move, Board board, const wchar_t* iccsStr)
@@ -133,9 +132,9 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
     int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
         frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat), colAway = abs(toCol - fcol); //  相距1或2列
     move->tseat = isLinePieceName(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
-                                                   : getSeat_rc(board, frow + movDir * num, fcol))
-                                    // 斜线走子：仕、相、马
-                                    : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
+                                                       : getSeat_rc(board, frow + movDir * num, fcol))
+                                        // 斜线走子：仕、相、马
+                                        : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
 
     setMoveZhStr(move, board);
     assert(wcscmp(zhStr, move->zhStr) == 0);
@@ -171,7 +170,7 @@ void setMoveZhStr(Move move, Board board)
     }
     move->zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
     move->zhStr[3] = NUMCHAR[color][(isLinePieceName(name) && frow != trow) ? abs(trow - frow) - 1
-                                                                        : (isBottom ? getOtherCol_c(tcol) : tcol)];
+                                                                            : (isBottom ? getOtherCol_c(tcol) : tcol)];
     move->zhStr[4] = L'\x0';
 
     //
@@ -262,8 +261,6 @@ Move addMove_zh(Move preMove, Board board, const wchar_t* zhStr, wchar_t* remark
     return __SetRemark_addMove(preMove, move, remark, isOther);
 }
 
-void setTPiece(Move move, Piece tpiece) { move->tpiece = tpiece; }
-
 void setRemark(Move move, wchar_t* remark)
 {
     free(move->remark);
@@ -290,7 +287,7 @@ void changeMove(Move move, Board board, ChangeType ct)
 
 void doMove(Board board, Move move)
 {
-    setTPiece(move, movePiece(board, move->fseat, move->tseat, BLANKPIECE));
+    move->tpiece = movePiece(board, move->fseat, move->tseat, BLANKPIECE);
 }
 
 void undoMove(Board board, Move move)

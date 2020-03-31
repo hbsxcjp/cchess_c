@@ -54,7 +54,9 @@ typedef enum {
 
 // 棋子指针类型（不透明）
 typedef struct Piece* Piece;
-typedef struct Pieces* Pieces; 
+typedef const struct Piece* CPiece;
+typedef struct Pieces* Pieces;
+typedef const struct Pieces* CPieces;
 
 // 空子的字符表示
 extern const wchar_t BLANKCHAR;
@@ -80,8 +82,10 @@ typedef enum {
 
 // 棋盘位置类型
 typedef struct Seat* Seat;
+typedef const struct Seat* CSeat;
 // 一副棋盘结构类型
 typedef struct Board* Board;
+//typedef const struct Board* CBoard;
 
 //=================================================================
 //棋局相关的类型
@@ -100,8 +104,10 @@ typedef enum {
 
 // 着法类型
 typedef struct Move* Move;
+typedef const struct Move* CMove;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
+//typedef const struct ChessManual* CChessManual;
 
 //=================================================================
 //棋局演示相关的类型
@@ -130,7 +136,7 @@ typedef enum {
 
 struct _Menu;
 // 演示类型结构
-typedef struct _Console {
+typedef struct Console_ {
     HANDLE hIn, hOut;
     ChessManual cm;
     Thema thema;

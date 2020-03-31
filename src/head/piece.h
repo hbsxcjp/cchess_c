@@ -9,26 +9,26 @@ extern const wchar_t* PieceNames[PIECECOLORNUM];
 Pieces newPieces(void);
 
 // 取得表示棋子的颜色(判断棋子值的高四位)
-PieceColor getColor(Piece piece);
+PieceColor getColor(CPiece  piece);
 PieceColor getColor_ch(wchar_t ch);
 
 // 取得对方棋子的颜色
-PieceColor getOtherColor(Piece piece);
+PieceColor getOtherColor(CPiece  piece);
 
 //  取得表示棋子的种类(取棋子值的低四位)
-PieceKind getKind(Piece piece);
+PieceKind getKind(CPiece  piece);
 
 //  取得棋子所在的位置
-Seat getSeat_p(Piece piece);
+Seat getSeat_p(CPiece  piece);
 
 //  取得表示棋子的字符
-wchar_t getChar(Piece piece);
+wchar_t getChar(CPiece  piece);
 
 // 取得表示棋子的名称
-wchar_t getPieName(Piece piece);
+wchar_t getPieName(CPiece  piece);
 
 // 取得表示棋子文本的名称
-wchar_t getPieName_T(Piece piece);
+wchar_t getPieName_T(CPiece  piece);
 
 // 判断是否棋子名
 bool isPieceName(wchar_t name);
@@ -43,7 +43,7 @@ bool isPawnPieceName(wchar_t name);
 bool isKnightPieceName(wchar_t name);
 
 // 判断是否强棋子名
-bool isStronge(Piece piece);
+bool isStronge(CPiece  piece);
 
 //  取得棋子
 Piece getKingPiece(Pieces pieces, PieceColor color);
@@ -52,8 +52,8 @@ Piece getPiece_i(Pieces pieces, PieceColor color, int index);
 
 Piece getPiece_ch(Pieces pieces, wchar_t ch);
 
-// 设置为已放置在棋盘上
-void setSeat(Piece piece, Seat seat);
+// 设置棋子的位置
+void setSeat(Piece  piece, Seat seat);
 
 // 取得表示棋子表示字符串的名称
 wchar_t* getPieString(wchar_t* pieStr, Piece piece);

@@ -48,8 +48,6 @@ void setCC_ColNo(Move move, int CC_ColNo);
 // 设置着法的中文字符串
 void setMoveZhStr(Move move, Board board);
 
-void setTPiece(Move move, Piece tpiece);
-
 // 设置remark
 void setRemark(Move move, wchar_t* remark);
 

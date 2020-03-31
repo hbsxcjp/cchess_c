@@ -42,20 +42,20 @@ Pieces newPieces(void)
     return pieces;
 }
 
-inline PieceColor getColor(Piece piece) { return piece->color; }
+inline PieceColor getColor(CPiece  piece) { return piece->color; }
 inline PieceColor getColor_ch(wchar_t ch) { return islower(ch) ? BLACK : RED; }
 
-inline PieceColor getOtherColor(Piece piece) { return !getColor(piece); }
+inline PieceColor getOtherColor(CPiece  piece) { return !getColor(piece); }
 
-inline PieceKind getKind(Piece piece) { return piece->kind; }
+inline PieceKind getKind(CPiece  piece) { return piece->kind; }
 
-inline Seat getSeat_p(Piece piece) { return piece->seat; }
+inline Seat getSeat_p(CPiece  piece) { return piece->seat; }
 
-inline wchar_t getChar(Piece piece) { return piece->color == NOTCOLOR ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)]; }
+inline wchar_t getChar(CPiece  piece) { return piece->color == NOTCOLOR ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)]; }
 
-inline wchar_t getPieName(Piece piece) { return PieceNames[getColor(piece)][getKind(piece)]; }
+inline wchar_t getPieName(CPiece  piece) { return PieceNames[getColor(piece)][getKind(piece)]; }
 
-wchar_t getPieName_T(Piece piece)
+wchar_t getPieName_T(CPiece  piece)
 {
     static const wchar_t PieceNames_t[] = L"将士象馬車砲卒";
     return getColor(piece) == RED ? getPieName(piece) : PieceNames_t[getKind(piece)];
@@ -69,7 +69,7 @@ inline bool isPawnPieceName(wchar_t name) { return PieceNames[RED][PAWN] == name
 
 inline bool isKnightPieceName(wchar_t name) { return PieceNames[RED][KNIGHT] == name; }
 
-inline bool isStronge(Piece piece) { return getKind(piece) >= KNIGHT; }
+inline bool isStronge(CPiece  piece) { return getKind(piece) >= KNIGHT; }
 
 inline Piece getKingPiece(Pieces pieces, PieceColor color) { return getPiece_i(pieces, color, KING); }
 
@@ -89,13 +89,13 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch)
     return BLANKPIECE;
 }
 
-void setSeat(Piece piece, Seat seat)
+void setSeat(Piece  piece, Seat seat)
 {
-    if (piece != BLANKPIECE)
+    //if (piece != BLANKPIECE)
         piece->seat = seat;
 }
 
-extern int getRowCol_s(Seat seat);
+extern int getRowCol_s(CSeat seat);
 wchar_t* getPieString(wchar_t* pieStr, Piece piece)
 {
     if (piece != BLANKPIECE)
