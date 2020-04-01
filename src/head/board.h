@@ -57,8 +57,7 @@ bool isBottomSide(Board board, PieceColor color);
 Seat getKingSeat(Board board, PieceColor color);
 
 // 按给定参数查找活的棋子
-int getLiveSeats(Seat* seats, Board board, PieceColor color,
-    wchar_t name, int findCol, bool getStronge);
+int getLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name, int findCol);
 
 // 取得某方"兵"的棋子位置seats
 int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name);

@@ -110,14 +110,14 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
         //wchar_t wstr[WIDEWCHARSIZE];
         //wprintf(L"%d:%s\n%s\n", __LINE__, zhStr, getBoardString(wstr, board));
         count = getLiveSeats(seats,
-            board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])), false);
+            board, color, name, __getCol(isBottom, __getNum(color, zhStr[1])));
         assert(count > 0);
-        // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为退时，修正index
-        index = (count == 2 && movDir == -1) ? 1 : 0; // 如为士象且退时
+        // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为底退、顶进时，修正index
+        index = (count == 2 && movDir == -1) ? 1 : 0; // movDir == -1：表示底退、顶进
     } else { // 非棋子名
         name = zhStr[1];
         count = isPawnPieceName(name) ? getSortPawnLiveSeats(seats, board, color, name)
-                                      : getLiveSeats(seats, board, color, name, ALLCOL, false);
+                                      : getLiveSeats(seats, board, color, name, ALLCOL);
         wchar_t preChars[6] = { 0 };
         __getPreCHars(preChars, count);
         assert(wcschr(preChars, zhStr[0]) != NULL);
@@ -151,9 +151,9 @@ void setMoveZhStr(Move move, Board board)
         trow = getRow_s(move->tseat), tcol = getCol_s(move->tseat);
     bool isBottom = isBottomSide(board, color);
     Seat seats[SIDEPIECENUM] = { 0 };
-    int count = getLiveSeats(seats, board, color, name, fcol, false);
+    int count = getLiveSeats(seats, board, color, name, fcol);
 
-    if (count > 1 && getKind(fpiece) > KNIGHT) { // 马车炮兵
+    if (count > 1 && isStronge(fpiece)) { // 马车炮兵
         if (getKind(fpiece) == PAWN)
             count = getSortPawnLiveSeats(seats, board, color, name);
         wchar_t preChars[6] = { 0 };
@@ -172,12 +172,6 @@ void setMoveZhStr(Move move, Board board)
     move->zhStr[3] = NUMCHAR[color][(isLinePieceName(name) && frow != trow) ? abs(trow - frow) - 1
                                                                             : (isBottom ? getOtherCol_c(tcol) : tcol)];
     move->zhStr[4] = L'\x0';
-
-    //
-    //wchar_t iccsStr[12], boardStr[WIDEWCHARSIZE];
-    //wprintf(L"iccs: %s zh:%s\n%s\n",
-    //    __getICCS(iccsStr, move), zhStr, getBoardString(boardStr, board));
-    //
 
     //
     //Move amove = newMove();

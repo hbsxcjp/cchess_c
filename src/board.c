@@ -38,12 +38,12 @@ static int seatCmp(const void* first, const void* second)
     return aseat < bseat ? -1 : (aseat > bseat ? 1 : 0);
 }
 
-static bool moveSameColor(Board board, Seat fseat, Seat tseat, bool reverse);
+static bool moveSameColor(Board board, Seat fseat, Seat tseat);
 
-static bool moveKilled(Board board, Seat fseat, Seat tseat, bool reverse);
+static bool moveKilled(Board board, Seat fseat, Seat tseat);
 
 static int filterMoveSeats(Seat* seats, int count, Board board, Seat fseat,
-    bool (*__filterFunc)(Board, Seat, Seat, bool), bool reverse);
+    bool (*__filterFunc)(Board, Seat, Seat), bool reverse);
 
 Board newBoard(void)
 {
@@ -178,8 +178,7 @@ inline bool isBottomSide(Board board, PieceColor color) { return board->bottomCo
 
 Seat getKingSeat(Board board, PieceColor color) { return getSeat_p(getKingPiece(board->pieces, color)); }
 
-int getLiveSeats(Seat* seats, Board board, PieceColor color,
-    wchar_t name, int findCol, bool getStronge)
+int getLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name, int findCol)
 {
     int count = 0;
     for (int i = 0; i < SIDEPIECENUM; ++i) {
@@ -187,8 +186,7 @@ int getLiveSeats(Seat* seats, Board board, PieceColor color,
         Seat seat = getSeat_p(piece);
         if (seat != NULL
             && (name == ALLPIENAME || name == getPieName(piece))
-            && (findCol == ALLCOL || getCol_s(seat) == findCol)
-            && (!getStronge || isStronge(piece)))
+            && (findCol == ALLCOL || getCol_s(seat) == findCol))
             seats[count++] = seat;
     }
     qsort(seats, count, sizeof(Seat*), seatCmp);
@@ -198,7 +196,7 @@ int getLiveSeats(Seat* seats, Board board, PieceColor color,
 int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name)
 {
     Seat pawnSeats[SIDEPIECENUM] = { NULL };
-    int liveCount = getLiveSeats(pawnSeats, board, color, name, ALLCOL, false),
+    int liveCount = getLiveSeats(pawnSeats, board, color, name, ALLCOL),
         colCount[BOARDCOL] = { 0 };
     Seat colSeats[BOARDCOL][BOARDROW] = { NULL };
     for (int i = 0; i < liveCount; ++i) {
@@ -239,8 +237,10 @@ bool isKilled(Board board, PieceColor color)
     }
 
     Seat seats[SIDEPIECENUM] = { NULL };
-    int count = getLiveSeats(seats, board, !color, ALLPIENAME, ALLCOL, true);
+    int count = getLiveSeats(seats, board, !color, ALLPIENAME, ALLCOL);
     for (int i = 0; i < count; ++i) {
+        if (!isStronge(getPiece_s(seats[i])))
+            continue;
         Seat mseats[BOARDROW + BOARDCOL] = { NULL };
         int mcount = moveSeats(mseats, board, seats[i]);
         for (int m = 0; m < mcount; ++m)
@@ -254,7 +254,7 @@ bool isKilled(Board board, PieceColor color)
 bool isDied(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM] = { NULL }, mseats[BOARDROW + BOARDCOL] = { NULL };
-    int count = getLiveSeats(fseats, board, color, ALLPIENAME, ALLCOL, false);
+    int count = getLiveSeats(fseats, board, color, ALLPIENAME, ALLCOL);
     for (int i = 0; i < count; ++i) {
         Seat fseat = fseats[i];
         int mcount = moveSeats(mseats, board, fseat);
@@ -538,33 +538,36 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
     return filterMoveSeats(seats, count, board, fseat, moveSameColor, false);
 }
 
-static bool moveSameColor(Board board, Seat fseat, Seat tseat, bool reverse)
+static bool moveSameColor(Board board, Seat fseat, Seat tseat)
 {
-    bool isSame = getColor(getPiece_s(fseat)) == getColor(getPiece_s(tseat));
-    return reverse ? !isSame : isSame;
+    return getColor(getPiece_s(fseat)) == getColor(getPiece_s(tseat));
 }
 
-static bool moveKilled(Board board, Seat fseat, Seat tseat, bool reverse)
+static bool moveKilled(Board board, Seat fseat, Seat tseat)
 {
     PieceColor fcolor = getColor(getPiece_s(fseat));
     Piece eatPiece = movePiece(board, fseat, tseat, BLANKPIECE);
     bool isKill = isKilled(board, fcolor);
     movePiece(board, tseat, fseat, eatPiece);
-    return reverse ? !isKill : isKill;
+    return isKill;
 }
 
 static int filterMoveSeats(Seat* seats, int count, Board board, Seat fseat,
-    bool (*__filterFunc)(Board, Seat, Seat, bool), bool reverse)
+    bool (*__filterFunc)(Board, Seat, Seat), bool reverse)
 {
     int index = 0;
-    while (index < count)
+    while (index < count) {
+        bool result = __filterFunc(board, fseat, seats[index]);
+        if (reverse)
+            result = !result;
         // 如符合条件，先减少count再比较序号，如小于则需要交换；如不小于则指向同一元素，不需要交换；
-        if (__filterFunc(board, fseat, seats[index], reverse) && index < --count) {
+        if (result && index < --count) {
             Seat tempSeat = seats[count];
             seats[count] = seats[index];
             seats[index] = tempSeat;
         } else
             ++index; // 不符合筛选条件，index前进一个
+    }
     return count;
 }
 
@@ -788,22 +791,20 @@ void testBoard(FILE* fout)
         //*/
 
         //* 取得各种条件下活的棋子
-        for (int color = RED; color <= BLACK; ++color)
-            for (int stronge = 0; stronge <= 1; ++stronge) {
-                Seat lvseats[PIECENUM] = { NULL };
-                int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL, stronge);
-                fwprintf(fout, L"%c%c：",
-                    color == RED ? L'红' : L'黑', stronge == 1 ? L'强' : L'全');
-                for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, board, lvseats[i]));
-                fwprintf(fout, L"count:%d\n", count);
-            }
+        for (int color = RED; color <= BLACK; ++color) {
+            Seat lvseats[PIECENUM] = { NULL };
+            int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
+            fwprintf(fout, L"%c：", color == RED ? L'红' : L'黑');
+            for (int i = 0; i < count; ++i)
+                fwprintf(fout, L"%s ", getSeatString(preStr, board, lvseats[i]));
+            fwprintf(fout, L"count:%d\n", count);
+        }
         //*/
 
         //* 取得各活棋子的可移动位置
         for (int color = RED; color <= BLACK; ++color) {
             Seat lvseats[PIECENUM] = { NULL };
-            int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL, false);
+            int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
             for (int i = 0; i < count; ++i) {
                 Seat fseat = lvseats[i];
                 fwprintf(fout, L"%s >>【", getSeatString(preStr, board, fseat));

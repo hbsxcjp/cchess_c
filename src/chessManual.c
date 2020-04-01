@@ -668,7 +668,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //
             if (__getRecFormat(fromExt) != NOTFMT) {
-                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 ChessManual cm = newChessManual(dir_fileName);
                 //if (__readChessManual(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
