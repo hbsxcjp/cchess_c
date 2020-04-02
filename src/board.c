@@ -35,7 +35,11 @@ const int ALLCOL = -1;
 static int seatCmp(const void* first, const void* second)
 {
     Seat aseat = (Seat)first, bseat = (Seat)second;
-    return aseat < bseat ? -1 : (aseat > bseat ? 1 : 0);
+    int rowdiff = getRow_s(aseat) - getRow_s(bseat);
+    if (rowdiff == 0)
+        return getCol_s(aseat) - getCol_s(bseat);
+    else
+        return rowdiff;
 }
 
 static bool moveSameColor(Board board, Seat fseat, Seat tseat);

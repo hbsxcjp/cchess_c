@@ -63,9 +63,9 @@ void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
     int count = cm->infoCount, nameLen = wcsnlen_s(name, WCHARSIZE) + 1;
     if (count == INFOSIZE || nameLen == 0)
         return;
-    cm->info[count][0] = malloc(nameLen * sizeof(name[0]));
+    cm->info[count][0] = malloc(nameLen * sizeof(wchar_t));
     wcscpy(cm->info[count][0], name);
-    cm->info[count][1] = malloc((wcsnlen_s(value, WCHARSIZE) + 1) * sizeof(value[0]));
+    cm->info[count][1] = malloc((wcsnlen_s(value, WCHARSIZE) + 1) * sizeof(wchar_t));
     wcscpy(cm->info[count][1], value);
     ++(cm->infoCount);
 }
@@ -363,7 +363,7 @@ static void __writeJSON(ChessManual cm, FILE* fout)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -407,9 +407,10 @@ static void __readPGN(ChessManual cm, FILE* fin, RecFormat fmt)
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 {
     int rowNum = (cm->maxRow_ + 1) * 2,
-        colNum = (cm->maxCol_ + 1) * 5 + 1;
-    wchar_t* moveStr = malloc((rowNum * colNum + 1) * sizeof(wchar_t));
-    wmemset(moveStr, L'　', rowNum * colNum);
+        colNum = (cm->maxCol_ + 1) * 5 + 1,
+        size = rowNum * colNum;
+    wchar_t* moveStr = malloc((size + 1) * sizeof(wchar_t));
+    wmemset(moveStr, L'　', size);
     for (int row = 0; row < rowNum; ++row) {
         moveStr[(row + 1) * colNum - 1] = L'\n';
         //if (row % 2 == 1)
@@ -418,7 +419,7 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
     moveStr[1] = L'开';
     moveStr[2] = L'始';
     moveStr[colNum + 2] = L'↓';
-    moveStr[rowNum * colNum] = L'\x0';
+    moveStr[size] = L'\x0';
 
     writeMove_PGN_CC(moveStr, colNum, cm->rootMove);
     *pmoveStr = moveStr;
@@ -670,6 +671,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //
             if (__getRecFormat(fromExt) != NOTFMT) {
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                //fflush(stdout);
                 ChessManual cm = newChessManual(dir_fileName);
                 //if (__readChessManual(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
@@ -678,6 +680,7 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 strcat(tofilename, EXTNAMES[tofmt]);
 
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
+                //fflush(stdout);
                 writeChessManual(cm, tofilename);
 
                 ++*pfcount;
@@ -703,7 +706,7 @@ void transDir(const char* dirfrom, RecFormat tofmt)
     char dirto[FILENAME_MAX] = { 0 };
     strcpy(dirto, dirfrom);
     strcat(getFileName_cut(dirto), EXTNAMES[tofmt]);
-    printf("%d: %s tofmt:%s\n", __LINE__, dirfrom, EXTNAMES[tofmt]);
+    //printf("%d: %s tofmt:%s\n", __LINE__, dirfrom, EXTNAMES[tofmt]);
 
     __transDir(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
     wchar_t wformatStr[] = L"%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n";
@@ -760,8 +763,14 @@ void testChessManual(FILE* fout)
     resetChessManual(&cm, "01.pgn_iccs");
     writeChessManual(cm, "01.pgn_zh");
 
+    //printf("%s %d ok.\n", __FILE__, __LINE__);
+    //fflush(stdout);
     resetChessManual(&cm, "01.pgn_zh");
+    //printf("%s %d ok.\n", __FILE__, __LINE__);
+    //fflush(stdout);
     writeChessManual(cm, "01.pgn_cc");
+    //printf("%s %d ok.\n", __FILE__, __LINE__);
+    //fflush(stdout);
 
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");

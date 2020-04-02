@@ -23,28 +23,49 @@ const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
 
 extern const int ALLCOL;
 
-static wchar_t* __getPreCHars(wchar_t* preChars, int count)
+static wchar_t getPreChar(bool isBottom, int count, int index)
 {
-    if (count == 2) {
-        preChars[0] = PRECHAR[0];
-        preChars[1] = PRECHAR[2];
-        preChars[2] = L'\x0';
-    } else if (count == 3)
-        wcscpy(preChars, PRECHAR);
-    else // count == 4,5
-        wcsncpy(preChars, NUMCHAR[RED], 5);
-    return preChars;
+    if (isBottom)
+        index = count - 1 - index;
+    if (count == 2 && index == 1)
+        index = 2;
+    if (count <= 3)
+        return PRECHAR[index];
+    else
+        return NUMCHAR[RED][index];
 }
 
-static int __getIndex(const wchar_t* str, wchar_t ch) { return wcschr(str, ch) - str; }
+static int getIndex_ch(bool isBottom, int count, wchar_t wch)
+{
+    int index = 0;
+    wchar_t* pwch = wcschr(PRECHAR, wch);
+    if (pwch) {
+        index = pwch - PRECHAR;
+        if (count == 2 && index == 2)
+            index = 1;
+    } else {
+        pwch = wcschr(NUMCHAR[RED], wch);
+        assert(pwch);
+        index = pwch - NUMCHAR[RED];
+    }
+    if (isBottom)
+        index = count - 1 - index;
+    return index;
+}
 
-static int __getNum(PieceColor color, wchar_t numChar) { return __getIndex(NUMCHAR[color], numChar) + 1; }
+inline static int __getIndex(const wchar_t* str, wchar_t ch) { return wcschr(str, ch) - str; }
 
-static int __getCol(bool isBottom, int num) { return isBottom ? BOARDCOL - num : num - 1; }
+inline static int __getNum(PieceColor color, wchar_t numChar) { return __getIndex(NUMCHAR[color], numChar) + 1; }
 
-static int __getMovDir(bool isBottom, wchar_t mch) { return (__getIndex(MOVCHAR, mch) - 1) * (isBottom ? 1 : -1); }
+inline static wchar_t __getNumChar(PieceColor color, int num) { return NUMCHAR[color][num - 1]; }
 
-static PieceColor __getColor_zh(const wchar_t* zhStr) { return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED; }
+inline static int __getCol(bool isBottom, int num) { return isBottom ? BOARDCOL - num : num - 1; }
+
+inline static int __getNum_col(bool isBottom, int col) { return (isBottom ? getOtherCol_c(col) : col) + 1; }
+
+inline static int __getMovDir(bool isBottom, wchar_t mch) { return (__getIndex(MOVCHAR, mch) - 1) * (isBottom ? 1 : -1); }
+
+inline static PieceColor __getColor_zh(const wchar_t* zhStr) { return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED; }
 
 static void __setMoveSeat_rc(Move move, Board board, int frow, int fcol, int trow, int tcol)
 {
@@ -98,6 +119,8 @@ inline void setCC_ColNo(Move move, int CC_ColNo) { move->CC_ColNo_ = CC_ColNo; }
 static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
+    //wprintf(L"%d %s\n", __LINE__, zhStr);
+    //fflush(stdout);
     // 根据最后一个字符判断该着法属于哪一方
     PieceColor color = __getColor_zh(zhStr);
     bool isBottom = isBottomSide(board, color);
@@ -118,24 +141,25 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
         name = zhStr[1];
         count = isPawnPieceName(name) ? getSortPawnLiveSeats(seats, board, color, name)
                                       : getLiveSeats(seats, board, color, name, ALLCOL);
-        wchar_t preChars[6] = { 0 };
-        __getPreCHars(preChars, count);
-        assert(wcschr(preChars, zhStr[0]) != NULL);
-        index = __getIndex(preChars, zhStr[0]);
-        if (isBottom)
-            index = count - 1 - index;
+        index = getIndex_ch(isBottom, count, zhStr[0]);
     }
 
-    //wprintf(L"%s index: %d count: %d\n", zhStr, index, count);
+    //wchar_t wstr[30];
+    //for (int i = 0; i < count; ++i)
+    //    wprintf(L"%s ", getSeatString(wstr, board, seats[i]));
+    //wprintf(L"\n%s index: %d count: %d\n", zhStr, index, count);
+
     assert(index < count);
     move->fseat = seats[index];
     int num = __getNum(color, zhStr[3]), toCol = __getCol(isBottom, num),
         frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat), colAway = abs(toCol - fcol); //  相距1或2列
+    //wprintf(L"%d %c %d %d %d %d %d\n", __LINE__, name, frow, fcol, movDir, colAway, toCol);
+    //fflush(stdout);
+
     move->tseat = isLinePieceName(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
                                                        : getSeat_rc(board, frow + movDir * num, fcol))
                                         // 斜线走子：仕、相、马
                                         : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
-
     setMoveZhStr(move, board);
     assert(wcscmp(zhStr, move->zhStr) == 0);
     //
@@ -156,21 +180,17 @@ void setMoveZhStr(Move move, Board board)
     if (count > 1 && isStronge(fpiece)) { // 马车炮兵
         if (getKind(fpiece) == PAWN)
             count = getSortPawnLiveSeats(seats, board, color, name);
-        wchar_t preChars[6] = { 0 };
-        __getPreCHars(preChars, count);
         int index = 0;
         while (move->fseat != seats[index])
             ++index;
-        assert(index < count);
-        move->zhStr[0] = preChars[isBottom ? count - 1 - index : index];
+        move->zhStr[0] = getPreChar(isBottom, count, index);
         move->zhStr[1] = name;
     } else { //将帅, 仕(士),相(象): 不用“前”和“后”区别，因为能退的一定在前，能进的一定在后
         move->zhStr[0] = name;
-        move->zhStr[1] = NUMCHAR[color][isBottom ? getOtherCol_c(fcol) : fcol];
+        move->zhStr[1] = __getNumChar(color, __getNum_col(isBottom, fcol));
     }
     move->zhStr[2] = MOVCHAR[frow == trow ? 1 : (isBottom == (trow > frow) ? 2 : 0)];
-    move->zhStr[3] = NUMCHAR[color][(isLinePieceName(name) && frow != trow) ? abs(trow - frow) - 1
-                                                                            : (isBottom ? getOtherCol_c(tcol) : tcol)];
+    move->zhStr[3] = __getNumChar(color, (isLinePieceName(name) && frow != trow) ? abs(trow - frow) : __getNum_col(isBottom, tcol));
     move->zhStr[4] = L'\x0';
 
     //
@@ -696,14 +716,8 @@ static wchar_t* __getRemark_PGN_CC(wchar_t* remLines[], int remCount, int row, i
     wchar_t name[12] = { 0 };
     swprintf(name, 12, L"(%d,%d)", row, col);
     for (int index = 0; index < remCount; ++index)
-        if (wcscmp(name, remLines[index * 2]) == 0) {
-            //wchar_t* thisRemark = remLines[index * 2 + 1];
-            //remark = malloc((wcslen(thisRemark) + 1) * sizeof(wchar_t));
-            //wcscpy(remark, thisRemark);
-            //wprintf(L"%d: %s: %s\n", __LINE__, name, remLines[index * 2 + 1]);
-            //break;
+        if (wcscmp(name, remLines[index * 2]) == 0)
             return remLines[index * 2 + 1];
-        }
     return remark;
 }
 
@@ -800,7 +814,7 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         free(moveLines[i]);
     for (int i = 0; i < remCount; ++i) {
         free(remLines[i * 2]);
-        //free(remLines[i * 2 + 1]);
+        //free(remLines[i * 2 + 1]); // 已赋值给move->remark
     }
     pcre16_free(remReg);
     pcre16_free(moveReg);
@@ -838,7 +852,7 @@ static void __writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move move)
         // 如字符串分配的长度不够，则增加长度
         if (wcslen(*premarkStr) + len > *premSize - 1) {
             *premSize += WIDEWCHARSIZE + len;
-            *premarkStr = realloc(*premarkStr, *premSize);
+            *premarkStr = realloc(*premarkStr, *premSize * sizeof(wchar_t));
         }
         wcscat(*premarkStr, remStr);
     }
