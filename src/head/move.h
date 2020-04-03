@@ -25,7 +25,7 @@ int getNextNo(Move move);
 int getOtherNo(Move move);
 int getCC_ColNo(Move move);
 
-const wchar_t* getRemark(Move move);
+wchar_t* getRemark(Move move);
 const wchar_t* getZhStr(Move move);
 wchar_t* getICCS(wchar_t* ICCSStr, Move move);
 
@@ -51,8 +51,8 @@ void setMoveZhStr(Move move, Board board);
 // 设置remark
 void setRemark(Move move, wchar_t* remark);
 
-// 切除move
-void cutMove(Move move);
+// 切除move，返回下着 (修复.xqf文件使用)
+Move cutMove(Move move);
 
 // 按某种变换类型变换着法记录
 void changeMove(Move move, Board board, ChangeType ct);
@@ -61,8 +61,11 @@ void changeMove(Move move, Board board, ChangeType ct);
 void doMove(Board board, Move move);
 void undoMove(Board board, Move move);
 
-// 取得某着法从头至尾的着法数组
-int getAllMove(Move* moves, const Move move);
+// 取得着法系列
+Move getMove(Move move, int nextNo, int colNo);
+int getPreMoves(Move* moves, Move move);
+int getSufMoves(Move* moves, Move move);
+int getAllMoves(Move* moves, Move move);
 
 // 输出表示着法的字符串
 wchar_t* getMoveStr(wchar_t* wstr, const Move move);

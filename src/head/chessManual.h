@@ -39,7 +39,7 @@ void backFirst(ChessManual cm);
 // 后退至指定move
 void backTo(ChessManual cm, Move move);
 
-// 前进数步
+// 前进或后退数步
 void goInc(ChessManual cm, int inc);
 
 // 转变棋局实例

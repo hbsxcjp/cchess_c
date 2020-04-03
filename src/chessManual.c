@@ -126,6 +126,18 @@ static void __setMoveNumZhStr(ChessManual cm, Move move)
     //assert(move->fseat != NULL);
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
 
+    /* 修复.xqf文件使用 (修复中炮【马8进7】.xqf)
+    if ((getNextNo(move) == 33 && getCC_ColNo(move) == 191)
+        || (getNextNo(move) == 28 && getCC_ColNo(move) == 3478))
+        if (hasNext(move))
+            move = cutMove(move);
+    if (getNextNo(move) == 36 && getCC_ColNo(move) == 191) {
+        setRemark(getPre(move), getRemark(move));
+        if (hasNext(move))
+            move = cutMove(move);
+    }
+    //*/
+
     // 先深度搜索
     setMoveZhStr(move, cm->board);
     //wprintf(L"%s ", __LINE__, getZhStr(move));
@@ -363,7 +375,7 @@ static void __writeJSON(ChessManual cm, FILE* fout)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -545,16 +557,10 @@ void goEnd(ChessManual cm)
 void goTo(ChessManual cm, Move move)
 {
     cm->currentMove = move;
-    int index = 0;
     Move preMoves[WIDEWCHARSIZE];
-    while (move != cm->rootMove) {
-        preMoves[index++] = move;
-        if (hasPreOther(move)) // 本着为变着
-            move = getPre(move);
-        move = getPre(move);
-    }
-    while (--index >= 0)
-        doMove(cm->board, preMoves[index]);
+    int count = getPreMoves(preMoves, move);
+    for (int i = 0; i < count; ++i)
+        doMove(cm->board, preMoves[i]);
 }
 
 static void __doBack(ChessManual cm)
@@ -600,12 +606,9 @@ void backTo(ChessManual cm, Move move)
 void goInc(ChessManual cm, int inc)
 {
     int count = abs(inc);
-    if (inc > 0)
-        while (count-- > 0)
-            go(cm);
-    else
-        while (count-- > 0)
-            back(cm);
+    void (*func)(ChessManual) = inc > 0 ? go : back;
+    while (count-- > 0)
+        func(cm);
 }
 
 void changeChessManual(ChessManual cm, ChangeType ct)
@@ -677,8 +680,18 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 //  delChessManual(cm);
                 //  return;
                 //}
-                strcat(tofilename, EXTNAMES[tofmt]);
+                /*
+                Move move = getMove(cm->rootMove, 28, 3478); //33, 191; 37, 191
+                if (move) {
+                    FILE* mfout = fopen("m", "w");
+                    wchar_t mstr[WIDEWCHARSIZE];
+                    fwprintf(mfout, L"%s\n", getMoveString(mstr, move));
+                    writeAllMoveStr(mfout, cm, move);
+                    fclose(mfout);
+                }
+                //*/
 
+                strcat(tofilename, EXTNAMES[tofmt]);
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
                 //fflush(stdout);
                 writeChessManual(cm, tofilename);
@@ -702,9 +715,9 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
 
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
 {
-    backFirst(cm);
     Move cmove = cm->currentMove, moves[WIDEWCHARSIZE];
-    int count = getAllMove(moves, amove);
+    backFirst(cm);
+    int count = getAllMoves(moves, amove);
     // 输出棋局和着法
     for (int i = 0; i < count; ++i) {
         Move move = moves[i];
@@ -714,7 +727,7 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     }
     for (int i = count - 1; i >= 0; --i)
         undoMove(cm->board, moves[i]);
-    //goTo(cm, cmove);
+    goTo(cm, cmove);
 }
 
 void transDir(const char* dirfrom, RecFormat tofmt)
@@ -793,17 +806,14 @@ void testChessManual(FILE* fout)
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
 
-    go(cm);
-    go(cm);
-    goOther(cm);
-    go(cm);
-    Move move = cm->currentMove;
-    FILE* mfout = fopen("m", "w");
-    wchar_t mstr[WIDEWCHARSIZE];
-    fwprintf(mfout, L"%s\n", getMoveString(mstr, cm->currentMove));
-    writeAllMoveStr(mfout, cm, move);
-    fwprintf(mfout, L"%s\n", getMoveString(mstr, cm->currentMove));
-    fclose(mfout);
+    Move move = getMove(cm->rootMove, 4, 5);
+    if (move) {
+        FILE* mfout = fopen("m", "w");
+        wchar_t mstr[WIDEWCHARSIZE];
+        fwprintf(mfout, L"%s\n", getMoveString(mstr, move));
+        writeAllMoveStr(mfout, cm, move);
+        fclose(mfout);
+    }
 
     //fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
     //    __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);

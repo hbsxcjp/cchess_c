@@ -90,7 +90,7 @@ inline int getCC_ColNo(Move move) { return move->CC_ColNo_; }
 
 inline int getRowCol_m(Move move, bool isFirst) { return getRowCol_s(isFirst ? move->fseat : move->tseat); }
 
-inline const wchar_t* getRemark(Move move) { return move->remark; }
+inline wchar_t* getRemark(Move move) { return move->remark; }
 inline const wchar_t* getZhStr(Move move) { return move->zhStr; }
 wchar_t* getICCS(wchar_t* ICCSStr, const Move move)
 {
@@ -169,6 +169,9 @@ void setMoveZhStr(Move move, Board board)
 {
     Piece fpiece = getPiece_s(move->fseat);
     if (fpiece == BLANKPIECE) {
+        printf("n:%d o:%d c:%d\n", getNextNo(move), getOtherNo(move), getCC_ColNo(move));
+        fflush(stdout);
+        //return;
     }
     assert(fpiece != BLANKPIECE);
     PieceColor color = getColor(fpiece);
@@ -283,6 +286,14 @@ void setRemark(Move move, wchar_t* remark)
     move->remark = remark;
 }
 
+Move cutMove(Move move)
+{
+    Move pmove = getPre(move), nmove = getNext(move);
+    pmove->nmove = nmove;
+    nmove->pmove = pmove;
+    return nmove;
+}
+
 void changeMove(Move move, Board board, ChangeType ct)
 {
     if (move == NULL)
@@ -321,32 +332,63 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
     return wstr;
 }
 
-int getAllMove(Move* moves, const Move move)
+Move getMove(Move move, int nextNo, int colNo)
 {
-    int mindex = 0;
-    // 提取所有前着，棋局回退至起始状态
-    Move tmove = move;
-    while (hasPre(tmove)) {
-        moves[mindex++] = tmove;
-        while (hasPreOther(tmove)) // 是变着
-            tmove = getPre(tmove);
-        tmove = getPre(tmove);
+    if (nextNo == getNextNo(move) && colNo == getCC_ColNo(move))
+        return move;
+
+    Move resMove = NULL;
+    if (hasOther(move))
+        resMove = getMove(getOther(move), nextNo, colNo);
+    if (resMove)
+        return resMove;
+
+    if (hasNext(move))
+        resMove = getMove(getNext(move), nextNo, colNo);
+
+    return resMove;
+}
+
+int getPreMoves(Move* moves, Move move)
+{
+    int index = 0;
+    if (move) {
+        while (hasPre(move)) {
+            moves[index++] = move;
+            while (hasPreOther(move)) // 推进到非变着
+                move = getPre(move);
+            move = getPre(move);
+        }
+        int mid = index / 2;
+        for (int i = 0; i < mid; ++i) {
+            int othi = index - 1 - i;
+            Move amove = moves[i];
+            moves[i] = moves[othi];
+            moves[othi] = amove;
+        }
     }
-    // 前着反序排列
-    int mid = mindex / 2;
-    for (int i = 0; i < mid; ++i) {
-        int othi = mindex - 1 - i;
-        Move amove = moves[i];
-        moves[i] = moves[othi];
-        moves[othi] = amove;
-    }
-    // 提取所有后着
-    tmove = move;
-    while (hasNext(tmove)) {
-        tmove = getNext(tmove);
-        moves[mindex++] = tmove;
-    }
-    return mindex;
+    return index;
+}
+
+int getSufMoves(Move* moves, Move move)
+{
+    int index = 0;
+    if (move)
+        while (hasNext(move)) {
+            move = getNext(move);
+            moves[index++] = move;
+        }
+    return index;
+}
+
+int getAllMoves(Move* moves, Move move)
+{
+    int count = getPreMoves(moves, move);
+    Move sufMoves[WIDEWCHARSIZE];
+    int sufCount = getSufMoves(sufMoves, move);
+    for (int i = 0; i < sufCount; ++i)
+        moves[count++] = sufMoves[i];
+    return count;
 }
 
 wchar_t* getMoveStr(wchar_t* wstr, const Move move)
@@ -366,8 +408,8 @@ wchar_t* getMoveString(wchar_t* wstr, const Move move)
 {
     if (hasPre(move)) {
         wchar_t fstr[WCHARSIZE], tstr[WCHARSIZE];
-        swprintf(wstr, WCHARSIZE, L"fseat->tseat: %s->%s remark:%s\n nextNo:%d otherNo:%d CC_ColNo:%d\n",
-            getSeatString(fstr, move->fseat), getSeatString(tstr, move->tseat),
+        swprintf(wstr, WCHARSIZE, L"fseat->tseat: %s %s->%s remark:%s\n nextNo:%d otherNo:%d CC_ColNo:%d\n",
+            getZhStr(move), getSeatString(fstr, move->fseat), getSeatString(tstr, move->tseat),
             getRemark(move) ? getRemark(move) : L"", getNextNo(move), getOtherNo(move), getCC_ColNo(move));
     }
     return wstr;
