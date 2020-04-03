@@ -87,7 +87,7 @@ Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece);
 void changeBoard(Board board, ChangeType ct);
 
 // 取得表示位置字符串的名称
-wchar_t* getSeatString(wchar_t* seatStr, Board board, Seat seat);
+wchar_t* getSeatString(wchar_t* seatStr, Seat seat);
 
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, Board board);

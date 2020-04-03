@@ -45,6 +45,9 @@ void goInc(ChessManual cm, int inc);
 // 转变棋局实例
 void changeChessManual(ChessManual cm, ChangeType ct);
 
+// 某着从头至尾的着法图示
+void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
+
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);
 // 批量转换目录的存储格式

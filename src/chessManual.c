@@ -363,7 +363,7 @@ static void __writeJSON(ChessManual cm, FILE* fout)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -546,7 +546,7 @@ void goTo(ChessManual cm, Move move)
 {
     cm->currentMove = move;
     int index = 0;
-    Move preMoves[100];
+    Move preMoves[WIDEWCHARSIZE];
     while (move != cm->rootMove) {
         preMoves[index++] = move;
         if (hasPreOther(move)) // 本着为变着
@@ -670,8 +670,8 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, __getRecFormat(fromExt));
             //
             if (__getRecFormat(fromExt) != NOTFMT) {
-                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                //fflush(stdout);
+                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                fflush(stdout);
                 ChessManual cm = newChessManual(dir_fileName);
                 //if (__readChessManual(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
@@ -700,6 +700,23 @@ static void __transDir(const char* dirfrom, const char* dirto, RecFormat tofmt,
     _findclose(hFile);
 }
 
+void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
+{
+    backFirst(cm);
+    Move cmove = cm->currentMove, moves[WIDEWCHARSIZE];
+    int count = getAllMove(moves, amove);
+    // 输出棋局和着法
+    for (int i = 0; i < count; ++i) {
+        Move move = moves[i];
+        wchar_t bstr[WIDEWCHARSIZE], tstr[WCHARSIZE];
+        fwprintf(fout, L"%s%s\n", getBoardString(bstr, cm->board), getMoveString(tstr, move));
+        doMove(cm->board, move);
+    }
+    for (int i = count - 1; i >= 0; --i)
+        undoMove(cm->board, moves[i]);
+    //goTo(cm, cmove);
+}
+
 void transDir(const char* dirfrom, RecFormat tofmt)
 {
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
@@ -713,6 +730,7 @@ void transDir(const char* dirfrom, RecFormat tofmt)
     char formatStr[WCHARSIZE] = { 0 };
     wcstombs(formatStr, wformatStr, WCHARSIZE);
     printf(formatStr, dirfrom, EXTNAMES[tofmt], fcount, dcount, movcount, remcount, remlenmax);
+    fflush(stdout);
 }
 
 void testTransDir(int fromDir, int toDir,
@@ -774,6 +792,18 @@ void testChessManual(FILE* fout)
 
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
+
+    go(cm);
+    go(cm);
+    goOther(cm);
+    go(cm);
+    Move move = cm->currentMove;
+    FILE* mfout = fopen("m", "w");
+    wchar_t mstr[WIDEWCHARSIZE];
+    fwprintf(mfout, L"%s\n", getMoveString(mstr, cm->currentMove));
+    writeAllMoveStr(mfout, cm, move);
+    fwprintf(mfout, L"%s\n", getMoveString(mstr, cm->currentMove));
+    fclose(mfout);
 
     //fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
     //    __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);

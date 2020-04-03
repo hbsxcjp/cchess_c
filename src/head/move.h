@@ -61,7 +61,12 @@ void changeMove(Move move, Board board, ChangeType ct);
 void doMove(Board board, Move move);
 void undoMove(Board board, Move move);
 
+// 取得某着法从头至尾的着法数组
+int getAllMove(Move* moves, const Move move);
+
+// 输出表示着法的字符串
 wchar_t* getMoveStr(wchar_t* wstr, const Move move);
+wchar_t* getMoveString(wchar_t* wstr, const Move move);
 
 // XQF格式
 void readMove_XQF(Move* rootMove, Board board, FILE* fin, bool isOther);

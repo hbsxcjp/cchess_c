@@ -641,7 +641,7 @@ void changeBoard(Board board, ChangeType ct)
     }
 }
 
-wchar_t* getSeatString(wchar_t* seatStr, Board board, Seat seat)
+wchar_t* getSeatString(wchar_t* seatStr, Seat seat)
 {
     wchar_t str[WCHARSIZE];
     swprintf(seatStr, WCHARSIZE, L"%02x%s", getRowCol_s(seat), getPieString(str, getPiece_s(seat)));
@@ -759,7 +759,7 @@ void testBoard(FILE* fout)
             getBoardSufString(sufStr, board),
             board,
             board->bottomColor,
-            getSeatString(seatStr, board, getKingSeat(board, board->bottomColor)));
+            getSeatString(seatStr, getKingSeat(board, board->bottomColor)));
         //*// 打印棋局
         for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
             changeBoard(board, ct);
@@ -769,7 +769,7 @@ void testBoard(FILE* fout)
                 getBoardSufString(sufStr, board),
                 board,
                 board->bottomColor,
-                getSeatString(seatStr, board, getKingSeat(board, board->bottomColor)),
+                getSeatString(seatStr, getKingSeat(board, board->bottomColor)),
                 ct);
         }
         //*/
@@ -778,7 +778,7 @@ void testBoard(FILE* fout)
         Seat rkseat = getKingSeat(board, RED),
              bkseat = getKingSeat(board, BLACK);
         fwprintf(fout, L"%s <==> %s\n",
-            getSeatString(preStr, board, rkseat), getSeatString(sufStr, board, bkseat));
+            getSeatString(preStr, rkseat), getSeatString(sufStr, bkseat));
         //*/
 
         /* 取得各棋子的可放置位置
@@ -789,7 +789,7 @@ void testBoard(FILE* fout)
                 int count = putSeats(seats, board, true, getKind(piece));
                 fwprintf(fout, L"%s =【", getPieString(preStr, piece));
                 for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L" %s ", getSeatString(preStr, board, seats[i]));
+                    fwprintf(fout, L" %s ", getSeatString(preStr, seats[i]));
                 fwprintf(fout, L"】%d\n", count);
             }
         //*/
@@ -800,7 +800,7 @@ void testBoard(FILE* fout)
             int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
             fwprintf(fout, L"%c：", color == RED ? L'红' : L'黑');
             for (int i = 0; i < count; ++i)
-                fwprintf(fout, L"%s ", getSeatString(preStr, board, lvseats[i]));
+                fwprintf(fout, L"%s ", getSeatString(preStr, lvseats[i]));
             fwprintf(fout, L"count:%d\n", count);
         }
         //*/
@@ -811,24 +811,24 @@ void testBoard(FILE* fout)
             int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
             for (int i = 0; i < count; ++i) {
                 Seat fseat = lvseats[i];
-                fwprintf(fout, L"%s >>【", getSeatString(preStr, board, fseat));
+                fwprintf(fout, L"%s >>【", getSeatString(preStr, fseat));
 
                 Seat mseats[BOARDROW + BOARDCOL] = { NULL };
                 int mcount = moveSeats(mseats, board, fseat);
                 for (int i = 0; i < mcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
+                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
                 fwprintf(fout, L"】%d", mcount);
 
                 fwprintf(fout, L" =【");
                 int cmcount = canMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < cmcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
+                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
                 fwprintf(fout, L"】%d", cmcount);
 
                 fwprintf(fout, L" +【");
                 int kmcount = killedMoveSeats(mseats, mcount, board, fseat);
                 for (int i = 0; i < kmcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, board, mseats[i]));
+                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
                 fwprintf(fout, L"】%d\n", kmcount);
             }
         }

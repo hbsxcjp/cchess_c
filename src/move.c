@@ -146,7 +146,7 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
 
     //wchar_t wstr[30];
     //for (int i = 0; i < count; ++i)
-    //    wprintf(L"%s ", getSeatString(wstr, board, seats[i]));
+    //    wprintf(L"%s ", getSeatString(wstr, seats[i]));
     //wprintf(L"\n%s index: %d count: %d\n", zhStr, index, count);
 
     assert(index < count);
@@ -168,6 +168,8 @@ static void __setMoveSeat_zh(Move move, Board board, const wchar_t* zhStr)
 void setMoveZhStr(Move move, Board board)
 {
     Piece fpiece = getPiece_s(move->fseat);
+    if (fpiece == BLANKPIECE) {
+    }
     assert(fpiece != BLANKPIECE);
     PieceColor color = getColor(fpiece);
     wchar_t name = getPieName(fpiece);
@@ -313,22 +315,61 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
 {
     wchar_t iccs[6];
     if (move && move->fseat != NULL) // 排除未赋值fseat
-        wsprintfW(wstr, L"%02x->%02x %s %s@%c",
+        swprintf(wstr, WCHARSIZE, L"%02x->%02x %s %s@%c",
             getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS(iccs, move), move->zhStr,
             (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
     return wstr;
 }
 
+int getAllMove(Move* moves, const Move move)
+{
+    int mindex = 0;
+    // 提取所有前着，棋局回退至起始状态
+    Move tmove = move;
+    while (hasPre(tmove)) {
+        moves[mindex++] = tmove;
+        while (hasPreOther(tmove)) // 是变着
+            tmove = getPre(tmove);
+        tmove = getPre(tmove);
+    }
+    // 前着反序排列
+    int mid = mindex / 2;
+    for (int i = 0; i < mid; ++i) {
+        int othi = mindex - 1 - i;
+        Move amove = moves[i];
+        moves[i] = moves[othi];
+        moves[othi] = amove;
+    }
+    // 提取所有后着
+    tmove = move;
+    while (hasNext(tmove)) {
+        tmove = getNext(tmove);
+        moves[mindex++] = tmove;
+    }
+    return mindex;
+}
+
 wchar_t* getMoveStr(wchar_t* wstr, const Move move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
-    wsprintfW(wstr, L"%s：%s\n现在：%s\n下着：%s\n下变：%s\n注解：               导航区%3d行%2d列\n%s",
+    swprintf(wstr, WIDEWCHARSIZE, L"%s：%s\n现在：%s\n下着：%s\n下变：%s\n注解：               导航区%3d行%2d列\n%s",
         ((move->pmove == NULL || move->pmove->nmove == move) ? L"前着" : L"前变"),
         __getSimpleMoveStr(preWstr, move->pmove),
         __getSimpleMoveStr(thisWstr, move),
         __getSimpleMoveStr(nextWstr, move->nmove),
         __getSimpleMoveStr(otherWstr, move->omove),
         move->nextNo_, move->CC_ColNo_ + 1, move->remark);
+    return wstr;
+}
+
+wchar_t* getMoveString(wchar_t* wstr, const Move move)
+{
+    if (hasPre(move)) {
+        wchar_t fstr[WCHARSIZE], tstr[WCHARSIZE];
+        swprintf(wstr, WCHARSIZE, L"fseat->tseat: %s->%s remark:%s\n nextNo:%d otherNo:%d CC_ColNo:%d\n",
+            getSeatString(fstr, move->fseat), getSeatString(tstr, move->tseat),
+            getRemark(move) ? getRemark(move) : L"", getNextNo(move), getOtherNo(move), getCC_ColNo(move));
+    }
     return wstr;
 }
 
