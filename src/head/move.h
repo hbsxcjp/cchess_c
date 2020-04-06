@@ -25,11 +25,9 @@ int getNextNo(Move move);
 int getOtherNo(Move move);
 int getCC_ColNo(Move move);
 
-wchar_t* getRemark(Move move);
+const wchar_t* getRemark(Move move);
 const wchar_t* getZhStr(Move move);
-wchar_t* getICCS(wchar_t* ICCSStr, Move move);
-
-PieceColor getFirstColor(Move move);
+const wchar_t* getICCS(wchar_t* ICCSStr, Move move);
 
 bool isStart(Move move);
 

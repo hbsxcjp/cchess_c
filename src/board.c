@@ -29,9 +29,6 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  RowUpLowIndex_ = 5, RowUpMidIndex_ = 7, RowUpIndex_ = BOARDROW - 1,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = BOARDCOL - 1;
 
-const wchar_t ALLPIENAME = L'\x0';
-const int ALLCOL = -1;
-
 static int seatCmp(const void* first, const void* second)
 {
     Seat aseat = (Seat)first, bseat = (Seat)second;
@@ -47,11 +44,12 @@ static bool moveSameColor(Board board, Seat fseat, Seat tseat);
 static bool moveKilled(Board board, Seat fseat, Seat tseat);
 
 static int filterMoveSeats(Seat* seats, int count, Board board, Seat fseat,
-    bool (*__filterFunc)(Board, Seat, Seat), bool reverse);
+    bool (*filterFunc__)(Board, Seat, Seat), bool reverse);
 
 Board newBoard(void)
 {
     Board board = malloc(sizeof(struct Board));
+    assert(board);
     board->pieces = newPieces();
     for (int r = 0; r < BOARDROW; ++r)
         for (int c = 0; c < BOARDCOL; ++c) {
@@ -101,7 +99,7 @@ inline Piece getPiece_rowcol(Board board, int rowcol) { return getPiece_s(getSea
 // 置入某棋盘内某位置一个棋子
 static void setPiece_s(Seat seat, Piece piece)
 {
-    if (seat != NULL)
+    if (seat)
         setSeat(seat->piece = piece, seat);
 }
 
@@ -156,15 +154,16 @@ wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
     return FEN;
 }
 
+static void resetPiece__(Pieces pieces, Piece piece)
+{
+    Seat seat = getSeat_p(piece);
+    setSeat(piece, NULL);
+    setPiece_s(seat, BLANKPIECE);
+}
+
 void resetBoard(Board board)
 {
-    for (PieceColor color = RED; color < NOTCOLOR; ++color)
-        for (int i = 0; i < SIDEPIECENUM; ++i) {
-            Piece piece = getPiece_i(board->pieces, color, i);
-            Seat seat = getSeat_p(piece);
-            setSeat(piece, NULL);
-            setPiece_s(seat, BLANKPIECE);
-        }
+    piecesMap(board->pieces, resetPiece__);
 }
 
 void setBoard(Board board, const wchar_t* pieChars)
@@ -182,40 +181,55 @@ inline bool isBottomSide(Board board, PieceColor color) { return board->bottomCo
 
 Seat getKingSeat(Board board, PieceColor color) { return getSeat_p(getKingPiece(board->pieces, color)); }
 
-int getLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name, int findCol)
+inline static bool isName__(Seat seat, wchar_t name, int col) { return getPieName(getPiece_s(seat)) == name; }
+
+inline static bool isNameCol__(Seat seat, wchar_t name, int col) { return isName__(seat, name, col) && getCol_s(seat) == col; }
+
+int filterLiveSeats__(Seat* seats, int count, bool (*func)(Seat, wchar_t, int), wchar_t name, int col)
 {
-    int count = 0;
-    for (int i = 0; i < SIDEPIECENUM; ++i) {
-        Piece piece = getPiece_i(board->pieces, color, i);
-        Seat seat = getSeat_p(piece);
-        if (seat != NULL
-            && (name == ALLPIENAME || name == getPieName(piece))
-            && (findCol == ALLCOL || getCol_s(seat) == findCol))
-            seats[count++] = seat;
+    int index = 0;
+    while (index < count) {
+        if (func(seats[index], name, col))
+            ++index;
+        else
+            seats[index] = seats[--count];
     }
-    qsort(seats, count, sizeof(Seat*), seatCmp);
-    return count;
+    qsort(seats, index, sizeof(Seat*), seatCmp);
+    return index;
+}
+
+int getLiveSeats_cn(Seat* seats, Board board, PieceColor color, wchar_t name)
+{
+    return filterLiveSeats__(seats, getLiveSeats_c(seats, board->pieces, color), isName__, name, 0);
+}
+
+int getLiveSeats_cnc(Seat* seats, Board board, PieceColor color, wchar_t name, int col)
+{
+    return filterLiveSeats__(seats, getLiveSeats_c(seats, board->pieces, color), isNameCol__, name, col);
 }
 
 int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name)
 {
     Seat pawnSeats[SIDEPIECENUM] = { NULL };
-    int liveCount = getLiveSeats(pawnSeats, board, color, name, ALLCOL),
+    int liveCount = getLiveSeats_cn(pawnSeats, board, color, name),
         colCount[BOARDCOL] = { 0 };
     Seat colSeats[BOARDCOL][BOARDROW] = { NULL };
     for (int i = 0; i < liveCount; ++i) {
         int col = getCol_s(pawnSeats[i]);
         colSeats[col][colCount[col]++] = pawnSeats[i];
     }
-    bool isBottom = isBottomSide(board, color);
-    int fcol = isBottom ? ColUpIndex_ : ColLowIndex_,
-        tcol = isBottom ? ColLowIndex_ : ColUpIndex_,
-        step = isBottom ? -1 : 1,
-        count = 0;
-    for (int col = fcol; col != tcol; col += step)
-        if (colCount[col] > 1) // 筛除小于2个的列
-            for (int i = 0; i < colCount[col]; ++i)
-                seats[count++] = colSeats[col][i];
+    int count = 0;
+    if (isBottomSide(board, color)) {
+        for (int col = BOARDCOL - 1; col >= 0; --col)
+            if (colCount[col] > 1) // 筛除小于2个的列
+                for (int i = colCount[col] - 1; i >= 0; --i)
+                    seats[count++] = colSeats[col][i];
+    } else {
+        for (int col = 0; col < BOARDCOL; ++col)
+            if (colCount[col] > 1) // 筛除小于2个的列
+                for (int i = 0; i < colCount[col]; ++i)
+                    seats[count++] = colSeats[col][i];
+    }
     return count;
 }
 
@@ -241,7 +255,7 @@ bool isKilled(Board board, PieceColor color)
     }
 
     Seat seats[SIDEPIECENUM] = { NULL };
-    int count = getLiveSeats(seats, board, !color, ALLPIENAME, ALLCOL);
+    int count = getLiveSeats_c(seats, board->pieces, !color);
     for (int i = 0; i < count; ++i) {
         if (!isStronge(getPiece_s(seats[i])))
             continue;
@@ -258,7 +272,7 @@ bool isKilled(Board board, PieceColor color)
 bool isDied(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM] = { NULL }, mseats[BOARDROW + BOARDCOL] = { NULL };
-    int count = getLiveSeats(fseats, board, color, ALLPIENAME, ALLCOL);
+    int count = getLiveSeats_c(fseats, board->pieces, color);
     for (int i = 0; i < count; ++i) {
         Seat fseat = fseats[i];
         int mcount = moveSeats(mseats, board, fseat);
@@ -557,11 +571,11 @@ static bool moveKilled(Board board, Seat fseat, Seat tseat)
 }
 
 static int filterMoveSeats(Seat* seats, int count, Board board, Seat fseat,
-    bool (*__filterFunc)(Board, Seat, Seat), bool reverse)
+    bool (*filterFunc__)(Board, Seat, Seat), bool reverse)
 {
     int index = 0;
     while (index < count) {
-        bool result = __filterFunc(board, fseat, seats[index]);
+        bool result = filterFunc__(board, fseat, seats[index]);
         if (reverse)
             result = !result;
         // 如符合条件，先减少count再比较序号，如小于则需要交换；如不小于则指向同一元素，不需要交换；
@@ -594,21 +608,25 @@ Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece)
     return tpiece;
 }
 
+static void exchangePiece__(Pieces pieces, Piece piece)
+{
+    if (getColor(piece) == BLACK)
+        return; // 只需执行一半棋子
+    Piece othPiece = getOtherPiece(pieces, piece);
+    Seat seat = getSeat_p(piece),
+         othSeat = getSeat_p(othPiece);
+    setSeat(piece, NULL);
+    setSeat(othPiece, NULL);
+    setPiece_s(seat, othPiece);
+    setPiece_s(othSeat, piece);
+}
+
 void changeBoard(Board board, ChangeType ct)
 {
     switch (ct) {
     case EXCHANGE: {
         struct Board boardBak = *board; // 复制结构
-        for (int i = 0; i < SIDEPIECENUM; ++i) {
-            Piece piece = getPiece_i(boardBak.pieces, RED, i),
-                  othPiece = getPiece_i(boardBak.pieces, BLACK, i);
-            Seat seat = getSeat_p(piece),
-                 othSeat = getSeat_p(othPiece);
-            setSeat(piece, NULL);
-            setSeat(othPiece, NULL);
-            setPiece_s(seat, othPiece);
-            setPiece_s(othSeat, piece);
-        }
+        piecesMap(boardBak.pieces, exchangePiece__);
         board->bottomColor = !(board->bottomColor);
     } break;
     case ROTATE:
@@ -782,9 +800,11 @@ void testBoard(FILE* fout)
         //*/
 
         /* 取得各棋子的可放置位置
-        for (int color = RED; color <= BLACK; ++color)
-            for (int index = 0; index < SIDEPIECENUM; ++index) {
-                Piece piece = getPiece_i(board->pieces, color, index);
+        for (int color = RED; color <= BLACK; ++color) {
+            Seat pseats[SIDEPIECENUM];
+            int pcount = getLiveSeats_c(pseats, board->pieces, color);
+            for (int i = 0; i < pcount; ++i) {
+                Piece piece = getPiece_s(pseats[i]);
                 Seat seats[BOARDROW * BOARDCOL] = { 0 };
                 int count = putSeats(seats, board, true, getKind(piece));
                 fwprintf(fout, L"%s =【", getPieString(preStr, piece));
@@ -792,12 +812,13 @@ void testBoard(FILE* fout)
                     fwprintf(fout, L" %s ", getSeatString(preStr, seats[i]));
                 fwprintf(fout, L"】%d\n", count);
             }
+        }
         //*/
 
         //* 取得各种条件下活的棋子
         for (int color = RED; color <= BLACK; ++color) {
             Seat lvseats[PIECENUM] = { NULL };
-            int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
+            int count = getLiveSeats_c(lvseats, board->pieces, color);
             fwprintf(fout, L"%c：", color == RED ? L'红' : L'黑');
             for (int i = 0; i < count; ++i)
                 fwprintf(fout, L"%s ", getSeatString(preStr, lvseats[i]));
@@ -808,7 +829,7 @@ void testBoard(FILE* fout)
         //* 取得各活棋子的可移动位置
         for (int color = RED; color <= BLACK; ++color) {
             Seat lvseats[PIECENUM] = { NULL };
-            int count = getLiveSeats(lvseats, board, color, ALLPIENAME, ALLCOL);
+            int count = getLiveSeats_c(lvseats, board->pieces, color);
             for (int i = 0; i < count; ++i) {
                 Seat fseat = lvseats[i];
                 fwprintf(fout, L"%s >>【", getSeatString(preStr, fseat));
