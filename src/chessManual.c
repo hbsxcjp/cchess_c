@@ -788,10 +788,8 @@ void testTransDir(int fromDir, int toDir,
 // 测试本翻译单元各种对象、函数
 void testChessManual(FILE* fout)
 {
-    ChessManual cm = newChessManual("03.pgn_cc");
-    writeChessManual(cm, "03.bin");
-    //ChessManual cm = newChessManual("01.xqf");
-    /*
+    ChessManual cm = newChessManual("01.xqf");
+    //*
     writeChessManual(cm, "01.bin");
 
     resetChessManual(&cm, "01.bin");
