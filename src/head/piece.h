@@ -52,8 +52,6 @@ bool isStronge(CPiece piece);
 //  取得棋子
 Piece getKingPiece(Pieces pieces, PieceColor color);
 
-Piece getPiece_cki(Pieces pieces, PieceColor color, PieceKind kind, int index);
-
 Piece getOtherPiece(Pieces pieces, Piece piece);
 
 Piece getPiece_ch(Pieces pieces, wchar_t ch);

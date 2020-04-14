@@ -611,7 +611,7 @@ Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece)
 static void exchangePiece__(Pieces pieces, Piece piece)
 {
     if (getColor(piece) == BLACK)
-        return; // 只需执行一半棋子
+        return; // 只执行一半棋子即已完成交换
     Piece othPiece = getOtherPiece(pieces, piece);
     Seat seat = getSeat_p(piece),
          othSeat = getSeat_p(othPiece);
