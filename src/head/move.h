@@ -15,8 +15,6 @@ Move addMove_rowcol(Move preMove, Board board, int frowcol, int trowcol, wchar_t
 Move addMove_iccs(Move preMove, Board board, const wchar_t* iccsStr, wchar_t* remark, bool isOther);
 Move addMove_zh(Move preMove, Board board, const wchar_t* zhStr, wchar_t* remark, bool isOther);
 
-int getRowCol_m(Move move, bool isFirst);
-
 Move getPre(Move move);
 Move getNext(Move move);
 Move getOther(Move move);
@@ -48,9 +46,6 @@ void setMoveZhStr(Move move, Board board);
 
 // 设置remark
 void setRemark(Move move, wchar_t* remark);
-
-// 切除move，返回下着 (修复.xqf文件使用)
-Move cutMove(Move move);
 
 // 按某种变换类型变换着法记录
 void changeMove(Move move, Board board, ChangeType ct);

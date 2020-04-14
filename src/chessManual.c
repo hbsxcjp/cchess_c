@@ -129,18 +129,6 @@ static void setMoveNumZhStr__(ChessManual cm, Move move)
     //assert(move->fseat);
     //wprintf(L"%3d=> %02x->%02x\n", __LINE__, move->fseat, move->tseat);
 
-    /* 修复.xqf文件使用 (修复中炮【马8进7】.xqf)
-    if ((getNextNo(move) == 33 && getCC_ColNo(move) == 191)
-        || (getNextNo(move) == 28 && getCC_ColNo(move) == 3478))
-        if (hasNext(move))
-            move = cutMove(move);
-    if (getNextNo(move) == 36 && getCC_ColNo(move) == 191) {
-        setRemark(getPre(move), getRemark(move));
-        if (hasNext(move))
-            move = cutMove(move);
-    }
-    //*/
-
     // 先深度搜索
     setMoveZhStr(move, cm->board);
     //wprintf(L"%s ", __LINE__, getZhStr(move));
@@ -683,8 +671,8 @@ static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
             //    __LINE__, dirto, fromExt, getRecFormat__(fromExt));
             //
             if (getRecFormat__(fromExt) != NOTFMT) {
-                printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                fflush(stdout);
+                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
+                //fflush(stdout);
                 ChessManual cm = newChessManual(dir_fileName);
                 //if (readChessManual__(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);

@@ -86,8 +86,6 @@ inline int getNextNo(Move move) { return move->nextNo_; }
 inline int getOtherNo(Move move) { return move->otherNo_; }
 inline int getCC_ColNo(Move move) { return move->CC_ColNo_; }
 
-inline int getRowCol_m(Move move, bool isFirst) { return getRowCol_s(isFirst ? move->fseat : move->tseat); }
-
 inline const wchar_t* getRemark(Move move) { return move->remark; }
 inline const wchar_t* getZhStr(Move move) { return move->zhStr; }
 const wchar_t* getICCS(wchar_t* ICCSStr, const Move move)
@@ -306,14 +304,6 @@ void setRemark(Move move, wchar_t* remark)
     move->remark = remark;
 }
 
-Move cutMove(Move move)
-{
-    Move pmove = getPre(move), nmove = getNext(move);
-    pmove->nmove = nmove;
-    nmove->pmove = pmove;
-    return nmove;
-}
-
 void changeMove(Move move, Board board, ChangeType ct)
 {
     if (move == NULL)
@@ -485,7 +475,16 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
     int fcolrow = 0, tcolrow = 0;
     wchar_t* remark = NULL;
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
-    Move move = addMove_rc(preMove, board, fcolrow % 10, fcolrow / 10, tcolrow % 10, tcolrow / 10, remark, isOther);
+    int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
+    Move move;
+    if (preMove->fseat && preMove->tseat && getRow_s(preMove->fseat) == frow && getCol_s(preMove->fseat) == fcol
+        && getRow_s(preMove->tseat) == trow && getCol_s(preMove->tseat) == tcol) {
+        // 某些XQF文件存在重复着法
+        move = preMove;
+        if (remark)
+            setRemark(move, remark);
+    } else
+        move = addMove_rc(preMove, board, frow, fcol, trow, tcol, remark, isOther);
 
     if (tag & 0x80) //# 有左子树
         readMove_XQF__(move, board, fin, false);
@@ -570,7 +569,7 @@ static void writeMove_BIN__(Move move, FILE* fout)
 {
     if (move == NULL)
         return;
-    unsigned char frowcol = getRowCol_m(move, true), trowcol = getRowCol_m(move, false);
+    unsigned char frowcol = getRowCol_s(move->fseat), trowcol = getRowCol_s(move->tseat);
     fwrite(&frowcol, sizeof(unsigned char), 1, fout);
     fwrite(&trowcol, sizeof(unsigned char), 1, fout);
     writeMoveTagRemark_BIN__(move, fout);
@@ -635,8 +634,8 @@ static void writeMoveRemark_JSON__(cJSON* moveJSON, Move move)
 
 static void writeMove_JSON__(cJSON* moveJSON, Move move)
 {
-    cJSON_AddNumberToObject(moveJSON, "f", getRowCol_m(move, true));
-    cJSON_AddNumberToObject(moveJSON, "t", getRowCol_m(move, false));
+    cJSON_AddNumberToObject(moveJSON, "f", getRowCol_s(move->fseat));
+    cJSON_AddNumberToObject(moveJSON, "t", getRowCol_s(move->tseat));
     writeMoveRemark_JSON__(moveJSON, move);
 
     if (hasOther(move)) {
