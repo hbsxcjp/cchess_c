@@ -748,10 +748,10 @@ void testTransDir(int fromDir, int toDir,
     int fromFmtStart, int fromFmtEnd, int toFmtStart, int toFmtEnd)
 {
     const wchar_t* wdirfroms[] = {
-        L"c:\\棋谱\\示例文件",
-        L"c:\\棋谱\\象棋杀着大全",
-        L"c:\\棋谱\\疑难文件",
-        L"c:\\棋谱\\中国象棋棋谱大全"
+        L"./棋谱/示例文件",
+        L"./棋谱/象棋杀着大全",
+        L"./棋谱/疑难文件",
+        L"./棋谱/中国象棋棋谱大全"
     };
     int dirCount = sizeof(wdirfroms) / sizeof(wdirfroms[0]);
     char dirfroms[dirCount][FILENAME_MAX];
