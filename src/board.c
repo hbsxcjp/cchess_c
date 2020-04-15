@@ -154,7 +154,7 @@ wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
     return FEN;
 }
 
-static void resetPiece__(Pieces pieces, Piece piece)
+static void resetPiece__(Piece piece, void* ptr)
 {
     Seat seat = getSeat_p(piece);
     setSeat(piece, NULL);
@@ -163,7 +163,7 @@ static void resetPiece__(Pieces pieces, Piece piece)
 
 void resetBoard(Board board)
 {
-    piecesMap(board->pieces, resetPiece__);
+    piecesMap(board->pieces, resetPiece__, NULL);
 }
 
 void setBoard(Board board, const wchar_t* pieChars)
@@ -608,10 +608,12 @@ Piece movePiece(Board board, Seat fseat, Seat tseat, Piece eatPiece)
     return tpiece;
 }
 
-static void exchangePiece__(Pieces pieces, Piece piece)
+static void exchangePiece__(Piece piece, void* ptr)
 {
+    assert(ptr);
     if (getColor(piece) == BLACK)
         return; // 只执行一半棋子即已完成交换
+    Pieces pieces = (Pieces)ptr;
     Piece othPiece = getOtherPiece(pieces, piece);
     Seat seat = getSeat_p(piece),
          othSeat = getSeat_p(othPiece);
@@ -626,7 +628,7 @@ void changeBoard(Board board, ChangeType ct)
     switch (ct) {
     case EXCHANGE: {
         struct Board boardBak = *board; // 复制结构
-        piecesMap(boardBak.pieces, exchangePiece__);
+        piecesMap(boardBak.pieces, exchangePiece__, boardBak.pieces);
         board->bottomColor = !(board->bottomColor);
     } break;
     case ROTATE:

@@ -31,13 +31,13 @@ Pieces newPieces(void)
     assert(pieces);
     int index[PIECEKINDNUM] = { 0, 1, 3, 5, 7, 9, 11 }; // 每种棋子的起始序号
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
-    for (int color = RED; color < NOTCOLOR; ++color)
+    for (int c = RED; c < NOTCOLOR; ++c)
         for (int k = KING; k < NOTKIND; ++k) {
             pieces->index[k] = index[k];
             pieces->count[k] = count[k];
             for (int i = 0; i < count[k]; ++i) {
-                Piece piece = getPiece_cki(pieces, color, k, i);
-                piece->color = color;
+                Piece piece = getPiece_cki(pieces, c, k, i);
+                piece->color = c;
                 piece->kind = k;
                 setSeat(piece, NULL);
             }
@@ -45,12 +45,13 @@ Pieces newPieces(void)
     return pieces;
 }
 
-void piecesMap(Pieces pieces, void (*func)(Pieces, Piece))
+void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr)
 {
-    for (int color = RED; color < NOTCOLOR; ++color)
+    assert(apply);
+    for (int c = RED; c < NOTCOLOR; ++c)
         for (int k = KING; k < NOTKIND; ++k)
             for (int i = 0; i < pieces->count[k]; ++i)
-                func(pieces, getPiece_cki(pieces, color, k, i));
+                apply(getPiece_cki(pieces, c, k, i), ptr);
 }
 
 inline PieceColor getColor(CPiece piece) { return piece->color; }
@@ -139,25 +140,24 @@ wchar_t* getPieString(wchar_t* pieStr, Piece piece)
     extern int getRowCol_s(CSeat seat);
     if (piece != BLANKPIECE)
         swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X", // %c
-            getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece), getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF); // getPieName(piece),
+            getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece),
+            getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF); // getPieName(piece),
     else
         pieStr = L"空";
     return pieStr;
+}
+
+static void printPiece__(Piece piece, void* ptr)
+{
+    FILE* fout = ptr;
+    wchar_t pstr[WCHARSIZE];
+    fwprintf(fout, L"%s ", getPieString(pstr, piece));
 }
 
 void testPiece(FILE* fout)
 {
     fwprintf(fout, L"testPiece：\n");
     Pieces pieces = newPieces();
-    wchar_t pstr[WCHARSIZE];
-    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
-        for (int k = KING; k < NOTKIND; ++k) {
-            for (int i = 0; i < pieces->count[k]; ++i) {
-                Piece piece = getPiece_cki(pieces, color, k, i);
-                fwprintf(fout, L"%s ", getPieString(pstr, piece));
-            }
-        }
-        fwprintf(fout, L"%s\n", getPieString(pstr, BLANKPIECE));
-    }
+    piecesMap(pieces, printPiece__, fout);
     free(pieces);
 }

@@ -9,7 +9,7 @@ extern const wchar_t* PieceNames[PIECECOLORNUM];
 Pieces newPieces(void);
 
 // 遍历每个棋子
-void piecesMap(Pieces pieces, void (*func)(Pieces, Piece));
+void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr);
 
 // 取得表示棋子的颜色(判断棋子值的高四位)
 PieceColor getColor(CPiece piece);
