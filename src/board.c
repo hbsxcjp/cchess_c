@@ -32,11 +32,14 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
 static int seatCmp(const void* first, const void* second)
 {
     Seat aseat = (Seat)first, bseat = (Seat)second;
+    //return aseat - bseat; // 指针算术运算不成功
+    //*
     int rowdiff = getRow_s(aseat) - getRow_s(bseat);
     if (rowdiff == 0)
         return getCol_s(aseat) - getCol_s(bseat);
     else
         return rowdiff;
+        //*/
 }
 
 static bool moveSameColor(Board board, Seat fseat, Seat tseat);
@@ -56,7 +59,7 @@ Board newBoard(void)
             Seat seat = getSeat_rc(board, r, c);
             seat->row = r;
             seat->col = c;
-            seat->piece = BLANKPIECE;
+            seat->piece = getBlankPiece();
         }
     board->bottomColor = RED;
     return board;
@@ -113,7 +116,7 @@ wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN)
         wchar_t ch = FEN[i];
         if (iswdigit(ch))
             for (int j = ch - L'0'; j > 0; --j)
-                pieChars[index++] = BLANKCHAR;
+                pieChars[index++] = getBlankChar();
         else if (iswalpha(ch))
             pieChars[index++] = ch;
     }
@@ -143,7 +146,7 @@ wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
                     FEN[index_F++] = L'0' + blankNum;
                 FEN[index_F++] = pieChars[index_p];
                 blankNum = 0;
-            } else //if (pieChars[index_p] == BLANKCHAR) // 肯定为真
+            } else //if (pieChars[index_p] == getBlankChar()) // 肯定为真
                 blankNum++;
         }
         if (blankNum > 0)
@@ -158,7 +161,7 @@ static void resetPiece__(Piece piece, void* ptr)
 {
     Seat seat = getSeat_p(piece);
     setSeat(piece, NULL);
-    setPiece_s(seat, BLANKPIECE);
+    setPiece_s(seat, getBlankPiece());
 }
 
 void resetBoard(Board board)
@@ -245,7 +248,7 @@ bool isKilled(Board board, PieceColor color)
         int rowLow = isBottom ? frow : trow,
             rowUp = isBottom ? trow : frow;
         for (int row = rowLow + 1; row < rowUp; ++row)
-            if (getPiece_rc(board, row, fcol) != BLANKPIECE) {
+            if (!isBlankPiece(getPiece_rc(board, row, fcol))) {
                 isBlank = false;
                 break;
             }
@@ -402,7 +405,7 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
         for (int i = 0; i < sizeof(trowcols) / sizeof(trowcols[0]); ++i)
             if (select[i]) {
                 int trow = trowcols[i][0], tcol = trowcols[i][1];
-                if (getPiece_rc(board, (frow + trow) / 2, (fcol + tcol) / 2) == BLANKPIECE)
+                if (isBlankPiece(getPiece_rc(board, (frow + trow) / 2, (fcol + tcol) / 2)))
                     seats[count++] = getSeat_rc(board, trow, tcol);
             }
     } break;
@@ -474,7 +477,7 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
                 int trow = trowcols[i][0], tcol = trowcols[i][1];
                 int legRow = abs(tcol - fcol) == 2 ? frow : (trow > frow ? frow + 1 : frow - 1),
                     legCol = abs(trow - frow) == 2 ? fcol : (tcol > fcol ? fcol + 1 : fcol - 1);
-                if (getPiece_rc(board, legRow, legCol) == BLANKPIECE)
+                if (isBlankPiece(getPiece_rc(board, legRow, legCol)))
                     seats[count++] = getSeat_rc(board, trow, tcol);
             }
     } break;
@@ -529,7 +532,7 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
                 for (int i = 0; i < tcount[line]; ++i) {
                     int trow = trowcols[line][i][0], tcol = trowcols[line][i][1];
                     seats[count++] = getSeat_rc(board, trow, tcol);
-                    if (getPiece_rc(board, trow, tcol) != BLANKPIECE)
+                    if (!isBlankPiece(getPiece_rc(board, trow, tcol)))
                         break;
                 }
         } else { // CANNON
@@ -540,11 +543,11 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
                     Seat tseat = getSeat_rc(board, trow, tcol);
                     Piece tpiece = getPiece_rc(board, trow, tcol);
                     if (!skip) {
-                        if (tpiece == BLANKPIECE)
+                        if (isBlankPiece(tpiece))
                             seats[count++] = tseat;
                         else
                             skip = true;
-                    } else if (tpiece != BLANKPIECE) {
+                    } else if (!isBlankPiece(tpiece)) {
                         seats[count++] = tseat;
                         break;
                     }
@@ -564,7 +567,7 @@ static bool moveSameColor(Board board, Seat fseat, Seat tseat)
 static bool moveKilled(Board board, Seat fseat, Seat tseat)
 {
     PieceColor fcolor = getColor(getPiece_s(fseat));
-    Piece eatPiece = movePiece(board, fseat, tseat, BLANKPIECE);
+    Piece eatPiece = movePiece(board, fseat, tseat, getBlankPiece());
     bool isKill = isKilled(board, fcolor);
     movePiece(board, tseat, fseat, eatPiece);
     return isKill;
@@ -715,7 +718,7 @@ wchar_t* getBoardString(wchar_t* boardStr, Board board)
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
             Piece piece = getPiece_rc(board, row, col);
-            if (piece != BLANKPIECE)
+            if (!isBlankPiece(piece))
                 boardStr[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
         }
     return boardStr;

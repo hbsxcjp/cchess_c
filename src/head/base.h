@@ -58,11 +58,6 @@ typedef const struct Piece* CPiece;
 typedef struct Pieces* Pieces;
 typedef const struct Pieces* CPieces;
 
-// 空子的字符表示
-extern const wchar_t BLANKCHAR;
-// 空棋子
-extern Piece BLANKPIECE;
-
 //=================================================================
 //棋盘相关的类型
 //=================================================================
@@ -85,12 +80,11 @@ typedef struct Seat* Seat;
 typedef const struct Seat* CSeat;
 // 一副棋盘结构类型
 typedef struct Board* Board;
-//typedef const struct Board* CBoard;
+typedef const struct Board* CBoard;
 
 //=================================================================
 //棋局相关的类型
 //=================================================================
-
 // 棋局存储类型
 typedef enum {
     XQF,
@@ -107,12 +101,11 @@ typedef struct Move* Move;
 typedef const struct Move* CMove;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
-//typedef const struct ChessManual* CChessManual;
+typedef const struct ChessManual* CChessManual;
 
 //=================================================================
 //棋局演示相关的类型
 //=================================================================
-
 // 区域主题颜色配置类型
 typedef enum {
     SIMPLE,

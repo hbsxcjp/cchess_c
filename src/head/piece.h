@@ -3,8 +3,6 @@
 
 #include "base.h"
 
-extern const wchar_t* PieceNames[PIECECOLORNUM];
-
 // 生成一副棋子
 Pieces newPieces(void);
 
@@ -26,6 +24,7 @@ PieceKind getKind_ch(wchar_t ch);
 Seat getSeat_p(CPiece piece);
 
 //  取得表示棋子的字符
+wchar_t getBlankChar();
 wchar_t getChar(CPiece piece);
 
 // 取得表示棋子的名称
@@ -33,6 +32,8 @@ wchar_t getPieName(CPiece piece);
 
 // 取得表示棋子文本的名称
 wchar_t getPieName_T(CPiece piece);
+
+const wchar_t* getPieceNames(PieceColor color);
 
 // 判断是否棋子名
 bool isPieceName(wchar_t name);
@@ -49,7 +50,12 @@ bool isKnightPieceName(wchar_t name);
 // 判断是否强棋子名
 bool isStronge(CPiece piece);
 
+// 判断是否空棋子
+bool isBlankPiece(CPiece piece);
+
 //  取得棋子
+Piece getBlankPiece();
+
 Piece getKingPiece(Pieces pieces, PieceColor color);
 
 Piece getOtherPiece(Pieces pieces, Piece piece);

@@ -178,12 +178,12 @@ static void setMoveSeat_zh__(Move move, Board board, const wchar_t* zhStr)
 void setMoveZhStr(Move move, Board board)
 {
     Piece fpiece = getPiece_s(move->fseat);
-    if (fpiece == BLANKPIECE) {
+    if (isBlankPiece(fpiece)) {
         printf("n:%d o:%d c:%d\n", getNextNo(move), getOtherNo(move), getCC_ColNo(move));
         fflush(stdout);
         //return;
     }
-    assert(fpiece != BLANKPIECE);
+    assert(!isBlankPiece(fpiece));
     PieceColor color = getColor(fpiece);
     wchar_t name = getPieName(fpiece);
     int frow = getRow_s(move->fseat), fcol = getCol_s(move->fseat),
@@ -324,7 +324,7 @@ void changeMove(Move move, Board board, ChangeType ct)
 
 void doMove(Board board, Move move)
 {
-    move->tpiece = movePiece(board, move->fseat, move->tseat, BLANKPIECE);
+    move->tpiece = movePiece(board, move->fseat, move->tseat, getBlankPiece());
 }
 
 void undoMove(Board board, Move move)
@@ -338,7 +338,7 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
     if (move && move->fseat) // 排除未赋值fseat
         swprintf(wstr, WCHARSIZE, L"%02x->%02x %s %s@%c",
             getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS(iccs, move), move->zhStr,
-            (move->tpiece != BLANKPIECE ? getPieName(move->tpiece) : BLANKCHAR));
+            (!isBlankPiece(move->tpiece) ? getPieName(move->tpiece) : getBlankChar()));
     return wstr;
 }
 
@@ -679,8 +679,8 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     wcscpy(ICCSZHStr, L"([");
     if (isPGN_ZH) {
         wcscat(ICCSZHStr, PRECHAR);
-        wcscat(ICCSZHStr, PieceNames[RED]);
-        wcscat(ICCSZHStr, PieceNames[BLACK]);
+        wcscat(ICCSZHStr, getPieceNames(RED));
+        wcscat(ICCSZHStr, getPieceNames(BLACK));
         wcscat(ICCSZHStr, MOVCHAR);
         wcscat(ICCSZHStr, NUMCHAR[RED]);
         wcscat(ICCSZHStr, NUMCHAR[BLACK]);

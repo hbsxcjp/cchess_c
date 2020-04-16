@@ -243,7 +243,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
 
     // 取得棋子字符串
     wchar_t pieChars[SEATNUM + 1] = { 0 };
-    wmemset(pieChars, BLANKCHAR, SEATNUM);
+    wmemset(pieChars, getBlankChar(), SEATNUM);
     const wchar_t QiziChars[] = L"RNBAKABNRCCPPPPPrnbakabnrccppppp"; // QiziXY设定的棋子顺序
     for (int i = 0; i != PIECENUM; ++i) {
         int xy = head_QiziXY[i];

@@ -14,15 +14,6 @@ struct Pieces {
     int count[PIECEKINDNUM];
 };
 
-static const wchar_t* PieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
-
-const wchar_t* PieceNames[PIECECOLORNUM] = { L"帅仕相马车炮兵", L"将士象马车炮卒" };
-
-const wchar_t BLANKCHAR = L'_';
-
-static struct Piece BLANKPIECE_ = { NOTCOLOR, NOTKIND, NULL };
-Piece BLANKPIECE = &BLANKPIECE_;
-
 static Piece getPiece_cki(Pieces pieces, PieceColor color, PieceKind kind, int index);
 
 Pieces newPieces(void)
@@ -60,29 +51,43 @@ inline PieceColor getColor_ch(wchar_t ch) { return islower(ch) ? BLACK : RED; }
 inline PieceColor getOtherColor(CPiece piece) { return !getColor(piece); }
 
 inline PieceKind getKind(CPiece piece) { return piece->kind; }
-inline PieceKind getKind_ch(wchar_t ch) { return wcschr(PieceChars[getColor_ch(ch)], ch) - PieceChars[getColor_ch(ch)]; }
+
+static const wchar_t* getPieceChars(PieceColor color)
+{
+    static const wchar_t* pieceChars[PIECECOLORNUM] = { L"KABNRCP", L"kabnrcp" };
+    return pieceChars[color];
+}
+
+inline PieceKind getKind_ch(wchar_t ch) { return wcschr(getPieceChars(getColor_ch(ch)), ch) - getPieceChars(getColor_ch(ch)); }
 
 inline Seat getSeat_p(CPiece piece) { return piece->seat; }
 
-inline wchar_t getChar(CPiece piece) { return piece->color == NOTCOLOR ? BLANKCHAR : PieceChars[getColor(piece)][getKind(piece)]; }
+inline wchar_t getBlankChar() { return L'_'; }
+inline wchar_t getChar(CPiece piece) { return piece->color == NOTCOLOR ? getBlankChar() : getPieceChars(getColor(piece))[getKind(piece)]; }
 
-inline wchar_t getPieName(CPiece piece) { return PieceNames[getColor(piece)][getKind(piece)]; }
+inline wchar_t getPieName(CPiece piece) { return getPieceNames(getColor(piece))[getKind(piece)]; }
 
-wchar_t getPieName_T(CPiece piece)
-{
-    static const wchar_t PieceNames_t[] = L"将士象馬車砲卒";
-    return getColor(piece) == RED ? getPieName(piece) : PieceNames_t[getKind(piece)];
-}
+wchar_t getPieName_T(CPiece piece) { return getColor(piece) == RED ? getPieName(piece) : L"将士象馬車砲卒"[getKind(piece)]; }
 
-inline bool isPieceName(wchar_t name) { return wcschr(PieceNames[RED], name) || wcschr(PieceNames[BLACK], name); }
+const wchar_t* getPieceNames(PieceColor color) { return color == RED ? L"帅仕相马车炮兵" : L"将士象马车炮卒"; }
+
+inline bool isPieceName(wchar_t name) { return wcschr(getPieceNames(RED), name) || wcschr(getPieceNames(BLACK), name); }
 
 inline bool isLinePieceName(wchar_t name) { return wcschr(L"将帅车炮兵卒", name); }
 
-inline bool isPawnPieceName(wchar_t name) { return PieceNames[RED][PAWN] == name || PieceNames[BLACK][PAWN] == name; }
+inline bool isPawnPieceName(wchar_t name) { return getPieceNames(RED)[PAWN] == name || getPieceNames(BLACK)[PAWN] == name; }
 
-inline bool isKnightPieceName(wchar_t name) { return PieceNames[RED][KNIGHT] == name; }
+inline bool isKnightPieceName(wchar_t name) { return getPieceNames(RED)[KNIGHT] == name; }
 
 inline bool isStronge(CPiece piece) { return getKind(piece) >= KNIGHT; }
+
+bool isBlankPiece(CPiece piece) { return piece == getBlankPiece(); }
+
+Piece getBlankPiece()
+{
+    static struct Piece BLANKPIECE_ = { NOTCOLOR, NOTKIND, NULL };
+    return &BLANKPIECE_;
+}
 
 inline Piece getKingPiece(Pieces pieces, PieceColor color) { return getPiece_cki(pieces, color, KING, 0); }
 
@@ -104,7 +109,7 @@ Piece getOtherPiece(Pieces pieces, Piece piece)
 
 Piece getPiece_ch(Pieces pieces, wchar_t ch)
 {
-    if (ch != BLANKCHAR) {
+    if (ch != getBlankChar()) {
         PieceColor color = getColor_ch(ch);
         PieceKind kind = getKind_ch(ch);
         for (int i = 0; i < pieces->count[kind]; ++i) {
@@ -114,12 +119,12 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch)
         }
         assert(!"没有找到合适的棋子。");
     }
-    return BLANKPIECE;
+    return getBlankPiece();
 }
 
 void setSeat(Piece piece, Seat seat)
 {
-    if (piece != BLANKPIECE)
+    if (!isBlankPiece(piece))
         piece->seat = seat;
 }
 
@@ -138,7 +143,7 @@ int getLiveSeats_c(Seat* seats, Pieces pieces, PieceColor color)
 wchar_t* getPieString(wchar_t* pieStr, Piece piece)
 {
     extern int getRowCol_s(CSeat seat);
-    if (piece != BLANKPIECE)
+    if (!isBlankPiece(piece))
         swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X", // %c
             getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece),
             getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF); // getPieName(piece),
