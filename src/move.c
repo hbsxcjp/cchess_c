@@ -8,20 +8,44 @@ struct Move {
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 注解
     wchar_t zhStr[6]; // 着法名称
-    struct Move *pmove, *nmove, *omove; // 前着、下着、变着
+    Move pmove, nmove, omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 
 // 着法相关的字符数组静态全局变量
-const wchar_t ICCSCOLCHAR[] = L"abcdefghi";
-const wchar_t ICCSROWCHAR[] = L"0123456789";
-const wchar_t PRECHAR[] = L"前中后";
-const wchar_t MOVCHAR[] = L"退平进";
-const wchar_t NUMCHAR[PIECECOLORNUM][BOARDCOL + 1] = {
-    L"一二三四五六七八九", L"１２３４５６７８９"
-};
+static const wchar_t PRECHAR[] = L"前中后";
+static const wchar_t MOVCHAR[] = L"退平进";
+static const wchar_t NUMWCHAR[PIECECOLORNUM][BOARDCOL + 1] = { L"一二三四五六七八九", L"１２３４５６７８９" };
 
-static wchar_t getPreChar(bool isBottom, int count, int index)
+static Move newMove__()
+{
+    Move move = malloc(sizeof(struct Move));
+    assert(move);
+    move->fseat = move->tseat = NULL;
+    move->tpiece = NULL;
+    move->remark = NULL;
+    move->zhStr[0] = L'\x0';
+    move->pmove = move->nmove = move->omove = NULL;
+    move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
+    return move;
+}
+
+static void delMove__(Move move)
+{
+    if (move == NULL)
+        return;
+    Move omove = move->omove,
+         nmove = move->nmove;
+    free(move->remark);
+    free(move);
+    delMove__(omove);
+    delMove__(nmove);
+}
+
+Move getRootMove() { return newMove__(); }
+void delRootMove(Move rootMove) { delMove__(rootMove); }
+
+static wchar_t getPreChar__(bool isBottom, int count, int index)
 {
     if (isBottom)
         index = count - 1 - index;
@@ -30,10 +54,10 @@ static wchar_t getPreChar(bool isBottom, int count, int index)
     if (count <= 3)
         return PRECHAR[index];
     else
-        return NUMCHAR[RED][index];
+        return NUMWCHAR[RED][index];
 }
 
-static int getIndex_ch(bool isBottom, int count, wchar_t wch)
+static int getIndex_ch__(bool isBottom, int count, wchar_t wch)
 {
     int index = 0;
     wchar_t* pwch = wcschr(PRECHAR, wch);
@@ -42,71 +66,118 @@ static int getIndex_ch(bool isBottom, int count, wchar_t wch)
         if (count == 2 && index == 2)
             index = 1;
     } else {
-        pwch = wcschr(NUMCHAR[RED], wch);
+        pwch = wcschr(NUMWCHAR[RED], wch);
         assert(pwch);
-        index = pwch - NUMCHAR[RED];
+        index = pwch - NUMWCHAR[RED];
     }
     if (isBottom)
         index = count - 1 - index;
     return index;
 }
 
-inline static int getIndex__(const wchar_t* str, wchar_t ch) { return wcschr(str, ch) - str; }
-
-inline static int getNum__(PieceColor color, wchar_t numChar) { return getIndex__(NUMCHAR[color], numChar) + 1; }
-
-inline static wchar_t getNumChar__(PieceColor color, int num) { return NUMCHAR[color][num - 1]; }
-
+inline static int getIndex__(const wchar_t* str, const wchar_t ch) { return wcschr(str, ch) - str; }
+inline static int getNum__(PieceColor color, wchar_t numChar) { return getIndex__(NUMWCHAR[color], numChar) + 1; }
+inline static wchar_t getNumChar__(PieceColor color, int num) { return NUMWCHAR[color][num - 1]; }
 inline static int getCol__(bool isBottom, int num) { return isBottom ? BOARDCOL - num : num - 1; }
-
 inline static int getNum_Col__(bool isBottom, int col) { return (isBottom ? getOtherCol_c(col) : col) + 1; }
-
 inline static int getMovDir__(bool isBottom, wchar_t mch) { return (getIndex__(MOVCHAR, mch) - 1) * (isBottom ? 1 : -1); }
+inline static PieceColor getColor_zh__(const wchar_t* zhStr) { return wcschr(NUMWCHAR[RED], zhStr[3]) == NULL ? BLACK : RED; }
 
-inline static PieceColor getColor_zh__(const wchar_t* zhStr) { return wcschr(NUMCHAR[RED], zhStr[3]) == NULL ? BLACK : RED; }
+inline Move getSimplePre(CMove move) { return move->pmove; }
 
-static void setMoveSeat_rc__(Move move, Board board, int frow, int fcol, int trow, int tcol)
+Move getPre(CMove move)
 {
-    move->fseat = getSeat_rc(board, frow, fcol);
-    move->tseat = getSeat_rc(board, trow, tcol);
+    //assert(hasSimplePre(move));
+    while (hasPreOther(move)) // 推进到非变着
+        move = move->pmove;
+    return move->pmove;
+}
+inline Move getNext(CMove move) { return move->nmove; }
+inline Move getOther(CMove move) { return move->omove; }
+
+Move getMove(Move move, int nextNo, int colNo)
+{
+    if (nextNo == getNextNo(move) && colNo == getCC_ColNo(move))
+        return move;
+
+    Move resMove = NULL;
+    if (hasOther(move))
+        resMove = getMove(getOther(move), nextNo, colNo);
+    if (resMove)
+        return resMove;
+
+    if (hasNext(move))
+        resMove = getMove(getNext(move), nextNo, colNo);
+
+    return resMove;
 }
 
-static void setMoveSeat_iccs__(Move move, Board board, const wchar_t* iccsStr)
+void cutMove(Move move)
 {
-    setMoveSeat_rc__(move, board,
-        getIndex__(ICCSROWCHAR, iccsStr[1]), getIndex__(ICCSCOLCHAR, iccsStr[0]),
-        getIndex__(ICCSROWCHAR, iccsStr[3]), getIndex__(ICCSCOLCHAR, iccsStr[2]));
+    if (hasPreOther(move))
+        move->pmove->omove = NULL;
+    else if (hasSimplePre(move))
+        move->pmove->nmove = NULL;
+    delMove__(move);
 }
 
-inline Move getPre(Move move) { return move->pmove; }
-inline Move getNext(Move move) { return move->nmove; }
-inline Move getOther(Move move) { return move->omove; }
-
-inline int getNextNo(Move move) { return move->nextNo_; }
-inline int getOtherNo(Move move) { return move->otherNo_; }
-inline int getCC_ColNo(Move move) { return move->CC_ColNo_; }
-
-inline const wchar_t* getRemark(Move move) { return move->remark; }
-inline const wchar_t* getZhStr(Move move) { return move->zhStr; }
-const wchar_t* getICCS(wchar_t* ICCSStr, const Move move)
+int getPreMoves(Move* moves, Move move)
 {
-    swprintf(ICCSStr, 6, L"%c%d%c%d",
-        ICCSCOLCHAR[getCol_s(move->fseat)], getRow_s(move->fseat),
-        ICCSCOLCHAR[getCol_s(move->tseat)], getRow_s(move->tseat));
-    return ICCSStr;
+    int index = 0, nextNo = getNextNo(move);
+    if (move) {
+        while (hasSimplePre(move)) {
+            moves[index++] = move;
+            move = getPre(move);
+            /*
+            while (hasPreOther(move)) // 推进到非变着
+                move = move->pmove;
+            move = move->pmove;
+            //*/
+        }
+        int mid = index / 2;
+        for (int i = 0; i < mid; ++i) {
+            int othi = index - 1 - i;
+            Move amove = moves[i];
+            moves[i] = moves[othi];
+            moves[othi] = amove;
+        }
+    }
+    assert(index == nextNo);
+    return index;
 }
 
-//inline PieceColor getFirstColor(Move move) { return move->nmove == NULL ? RED : getColor(getPiece_s(move->fseat)); }
+int getSufMoves(Move* moves, Move move)
+{
+    int index = 0;
+    if (move)
+        while (hasNext(move)) {
+            move = getNext(move);
+            moves[index++] = move;
+        }
+    return index;
+}
 
-inline bool isStart(Move move) { return !hasPre(move); }
+int getAllMoves(Move* moves, Move move)
+{
+    int count = getPreMoves(moves, move);
+    Move sufMoves[WIDEWCHARSIZE];
+    int sufCount = getSufMoves(sufMoves, move);
+    for (int i = 0; i < sufCount; ++i)
+        moves[count++] = sufMoves[i];
+    return count;
+}
 
-inline bool hasNext(Move move) { return move->nmove; }
+inline int getNextNo(CMove move) { return move->nextNo_; }
+inline int getOtherNo(CMove move) { return move->otherNo_; }
+inline int getCC_ColNo(CMove move) { return move->CC_ColNo_; }
 
-inline bool hasPre(Move move) { return move->pmove; }
+//inline PieceColor getFirstColor(CMove move) { return move->nmove == NULL ? RED : getColor(getPiece_s(move->fseat)); }
 
-inline bool hasOther(Move move) { return move->omove; }
-
-inline bool hasPreOther(Move move) { return hasPre(move) && move == move->pmove->omove; }
+inline bool isStart(CMove move) { return !hasSimplePre(move); }
+inline bool hasNext(CMove move) { return move->nmove; }
+inline bool hasSimplePre(CMove move) { return move->pmove; }
+inline bool hasOther(CMove move) { return move->omove; }
+inline bool hasPreOther(CMove move) { return hasSimplePre(move) && move == move->pmove->omove; }
 
 inline void setNextNo(Move move, int nextNo) { move->nextNo_ = nextNo; }
 inline void setOtherNo(Move move, int otherNo) { move->otherNo_ = otherNo; }
@@ -140,7 +211,7 @@ static void setMoveSeat_zh__(Move move, Board board, const wchar_t* zhStr)
         name = zhStr[1];
         count = isPawnPieceName(name) ? getSortPawnLiveSeats(seats, board, color, name)
                                       : getLiveSeats_cn(seats, board, color, name);
-        index = getIndex_ch(isBottom, count, zhStr[0]);
+        index = getIndex_ch__(isBottom, count, zhStr[0]);
     }
 
     //wchar_t wstr[30];
@@ -164,7 +235,7 @@ static void setMoveSeat_zh__(Move move, Board board, const wchar_t* zhStr)
                                                        : getSeat_rc(board, frow + movDir * num, fcol))
                                         // 斜线走子：仕、相、马
                                         : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
-    /*
+    //*
     setMoveZhStr(move, board);
     if (wcscmp(zhStr, move->zhStr) != 0) {
         wchar_t wstr[WIDEWCHARSIZE];
@@ -173,6 +244,18 @@ static void setMoveSeat_zh__(Move move, Board board, const wchar_t* zhStr)
     }
     assert(wcscmp(zhStr, move->zhStr) == 0);
     //*/
+}
+
+static void setMoveSeat_rc__(Move move, Board board, const wchar_t* rcStr)
+{
+    move->fseat = getSeat_rc(board, rcStr[0] - L'0', rcStr[1] - L'0');
+    move->tseat = getSeat_rc(board, rcStr[2] - L'0', rcStr[3] - L'0');
+}
+
+static void setMoveSeat_iccs__(Move move, Board board, const wchar_t* iccsStr)
+{
+    wchar_t rcStr[5] = { iccsStr[1], iccsStr[0] - L'a' + L'0', iccsStr[3], iccsStr[2] - L'a' + L'0' };
+    setMoveSeat_rc__(move, board, rcStr);
 }
 
 void setMoveZhStr(Move move, Board board)
@@ -198,7 +281,7 @@ void setMoveZhStr(Move move, Board board)
         int index = 0;
         while (move->fseat != seats[index])
             ++index;
-        move->zhStr[0] = getPreChar(isBottom, count, index);
+        move->zhStr[0] = getPreChar__(isBottom, count, index);
         move->zhStr[1] = name;
     } else { //将帅, 仕(士),相(象): 不用“前”和“后”区别，因为能退的一定在前，能进的一定在后
         move->zhStr[0] = name;
@@ -208,8 +291,8 @@ void setMoveZhStr(Move move, Board board)
     move->zhStr[3] = getNumChar__(color, (isLinePieceName(name) && frow != trow) ? abs(trow - frow) : getNum_Col__(isBottom, tcol));
     move->zhStr[4] = L'\x0';
 
-    //*
-    Move amove = newMove();
+    /*
+    Move amove = newMove__();
     setMoveSeat_zh__(amove, board, move->zhStr);
     if (!(move->fseat == amove->fseat && move->tseat == amove->tseat)) {
         wchar_t wstr[WIDEWCHARSIZE], fstr[WCHARSIZE], tstr[WCHARSIZE], afstr[WCHARSIZE], atstr[WCHARSIZE];
@@ -219,7 +302,7 @@ void setMoveZhStr(Move move, Board board)
         fflush(stdout);
     }
     assert(move->fseat == amove->fseat && move->tseat == amove->tseat);
-    freeMove(amove);
+    delMove__(amove);
     //
     //*/
 }
@@ -240,62 +323,53 @@ static Move setMoveOther__(Move preMove, Move move)
     return preMove->omove = move;
 }
 
-static Move SetRemark_addMove__(Move preMove, Move move, wchar_t* remark, bool isOther)
+static Move setRemark_addMove__(Move preMove, Move move, wchar_t* remark, bool isOther)
 {
     setRemark(move, remark);
     return isOther ? setMoveOther__(preMove, move) : setMoveNext__(preMove, move);
 }
 
-Move newMove()
+inline const wchar_t* getRemark(CMove move) { return move->remark; }
+
+const wchar_t* getRcStr_dbrowcol(wchar_t* rcStr, int frow, int fcol, int trow, int tcol)
 {
-    Move move = malloc(sizeof(struct Move));
-    assert(move);
-    move->fseat = move->tseat = NULL;
-    move->tpiece = NULL;
-    move->remark = NULL;
-    move->zhStr[0] = L'\x0';
-    move->pmove = move->nmove = move->omove = NULL;
-    move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
-    return move;
+    swprintf(rcStr, 5, L"%01x%01x%01x%01x", frow, fcol, trow, tcol);
+    return rcStr;
 }
 
-void freeMove(Move move)
+const wchar_t* getRcStr_rowcol(wchar_t* rcStr, int frowcol, int trowcol)
 {
-    if (move == NULL)
-        return;
-    Move omove = move->omove,
-         nmove = move->nmove;
-    free(move->remark);
-    free(move);
-    freeMove(omove);
-    freeMove(nmove);
+    return getRcStr_dbrowcol(rcStr, getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol));
 }
 
-Move addMove_rc(Move preMove, Board board, int frow, int fcol, int trow, int tcol, wchar_t* remark, bool isOther)
+inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
+
+const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 {
-    Move move = newMove();
-    setMoveSeat_rc__(move, board, frow, fcol, trow, tcol);
-    return SetRemark_addMove__(preMove, move, remark, isOther);
+    swprintf(ICCSStr, 6, L"%c%d%c%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),
+        getCol_s(move->tseat) + L'a', getRow_s(move->tseat));
+    return ICCSStr;
 }
 
-Move addMove_rowcol(Move preMove, Board board, int frowcol, int trowcol, wchar_t* remark, bool isOther)
+Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    return addMove_rc(preMove, board,
-        getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol), remark, isOther);
-}
-
-Move addMove_iccs(Move preMove, Board board, const wchar_t* iccsStr, wchar_t* remark, bool isOther)
-{
-    Move move = newMove();
-    setMoveSeat_iccs__(move, board, iccsStr);
-    return SetRemark_addMove__(preMove, move, remark, isOther);
-}
-
-Move addMove_zh(Move preMove, Board board, const wchar_t* zhStr, wchar_t* remark, bool isOther)
-{
-    Move move = newMove();
-    setMoveSeat_zh__(move, board, zhStr);
-    return SetRemark_addMove__(preMove, move, remark, isOther);
+    void (*setMoveSeat__)(Move, Board, const wchar_t*);
+    switch (fmt) {
+    case XQF:
+    case BIN:
+    case JSON:
+        setMoveSeat__ = setMoveSeat_rc__;
+        break;
+    case PGN_ICCS:
+        setMoveSeat__ = setMoveSeat_iccs__;
+        break;
+    default: // PGN_ZH PGN_CC
+        setMoveSeat__ = setMoveSeat_zh__;
+        break;
+    }
+    Move move = newMove__();
+    setMoveSeat__(move, board, wstr);
+    return setRemark_addMove__(preMove, move, remark, isOther);
 }
 
 void setRemark(Move move, wchar_t* remark)
@@ -322,17 +396,25 @@ void changeMove(Move move, Board board, ChangeType ct)
     changeMove(move->nmove, board, ct);
 }
 
-void doMove(Board board, Move move)
+void doMove(Move move)
 {
-    move->tpiece = movePiece(board, move->fseat, move->tseat, getBlankPiece());
+    move->tpiece = movePiece(move->fseat, move->tseat, getBlankPiece());
 }
 
-void undoMove(Board board, Move move)
+void undoMove(CMove move)
 {
-    movePiece(board, move->tseat, move->fseat, move->tpiece);
+    movePiece(move->tseat, move->fseat, move->tpiece);
 }
 
-static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
+wchar_t* getCmpMoveStr(wchar_t* wstr, CMove move)
+{
+    assert(move && move->fseat);
+    swprintf(wstr, 8, L"%02x%c%02x%c",
+        getRowCol_s(move->fseat), getChar(getPiece_s(move->fseat)), getRowCol_s(move->tseat), getChar(getPiece_s(move->tseat)));
+    return wstr;
+}
+
+static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
 {
     wchar_t iccs[6];
     if (move && move->fseat) // 排除未赋值fseat
@@ -342,81 +424,22 @@ static wchar_t* __getSimpleMoveStr(wchar_t* wstr, const Move move)
     return wstr;
 }
 
-Move getMove(Move move, int nextNo, int colNo)
-{
-    if (nextNo == getNextNo(move) && colNo == getCC_ColNo(move))
-        return move;
-
-    Move resMove = NULL;
-    if (hasOther(move))
-        resMove = getMove(getOther(move), nextNo, colNo);
-    if (resMove)
-        return resMove;
-
-    if (hasNext(move))
-        resMove = getMove(getNext(move), nextNo, colNo);
-
-    return resMove;
-}
-
-int getPreMoves(Move* moves, Move move)
-{
-    int index = 0;
-    if (move) {
-        while (hasPre(move)) {
-            moves[index++] = move;
-            while (hasPreOther(move)) // 推进到非变着
-                move = getPre(move);
-            move = getPre(move);
-        }
-        int mid = index / 2;
-        for (int i = 0; i < mid; ++i) {
-            int othi = index - 1 - i;
-            Move amove = moves[i];
-            moves[i] = moves[othi];
-            moves[othi] = amove;
-        }
-    }
-    return index;
-}
-
-int getSufMoves(Move* moves, Move move)
-{
-    int index = 0;
-    if (move)
-        while (hasNext(move)) {
-            move = getNext(move);
-            moves[index++] = move;
-        }
-    return index;
-}
-
-int getAllMoves(Move* moves, Move move)
-{
-    int count = getPreMoves(moves, move);
-    Move sufMoves[WIDEWCHARSIZE];
-    int sufCount = getSufMoves(sufMoves, move);
-    for (int i = 0; i < sufCount; ++i)
-        moves[count++] = sufMoves[i];
-    return count;
-}
-
-wchar_t* getMoveStr(wchar_t* wstr, const Move move)
+wchar_t* getMoveStr(wchar_t* wstr, CMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
     swprintf(wstr, WIDEWCHARSIZE, L"%s：%s\n现在：%s\n下着：%s\n下变：%s\n注解：               导航区%3d行%2d列\n%s",
         ((move->pmove == NULL || move->pmove->nmove == move) ? L"前着" : L"前变"),
-        __getSimpleMoveStr(preWstr, move->pmove),
-        __getSimpleMoveStr(thisWstr, move),
-        __getSimpleMoveStr(nextWstr, move->nmove),
-        __getSimpleMoveStr(otherWstr, move->omove),
+        getSimpleMoveStr__(preWstr, move->pmove),
+        getSimpleMoveStr__(thisWstr, move),
+        getSimpleMoveStr__(nextWstr, move->nmove),
+        getSimpleMoveStr__(otherWstr, move->omove),
         move->nextNo_, move->CC_ColNo_ + 1, move->remark);
     return wstr;
 }
 
-wchar_t* getMoveString(wchar_t* wstr, const Move move)
+wchar_t* getMoveString(wchar_t* wstr, CMove move)
 {
-    if (hasPre(move)) {
+    if (hasSimplePre(move)) {
         wchar_t fstr[WCHARSIZE], tstr[WCHARSIZE];
         swprintf(wstr, WCHARSIZE, L"fseat->tseat: %s %s->%s remark:%s\n nextNo:%d otherNo:%d CC_ColNo:%d\n",
             getZhStr(move), getSeatString(fstr, move->fseat), getSeatString(tstr, move->tseat),
@@ -483,8 +506,10 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
         move = preMove;
         if (remark)
             setRemark(move, remark);
-    } else
-        move = addMove_rc(preMove, board, frow, fcol, trow, tcol, remark, isOther);
+    } else {
+        wchar_t rcStr[5];
+        move = addMove(preMove, board, getRcStr_dbrowcol(rcStr, frow, fcol, trow, tcol), XQF, remark, isOther);
+    }
 
     if (tag & 0x80) //# 有左子树
         readMove_XQF__(move, board, fin, false);
@@ -530,7 +555,8 @@ static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
     fread(&trowcol, sizeof(unsigned char), 1, fin);
     wchar_t* remark = NULL;
     char tag = readMoveTagRemark_BIN__(&remark, fin);
-    Move move = addMove_rowcol(preMove, board, frowcol, trowcol, remark, isOther);
+    wchar_t rcStr[5];
+    Move move = addMove(preMove, board, getRcStr_rowcol(rcStr, frowcol, trowcol), BIN, remark, isOther);
 
     if (tag & 0x80)
         readMove_BIN__(move, board, fin, false);
@@ -555,7 +581,7 @@ void writeWstring_BIN(FILE* fout, const wchar_t* wstr)
     fwrite(wstr, sizeof(wchar_t), len, fout);
 }
 
-static void writeMoveTagRemark_BIN__(Move move, FILE* fout)
+static void writeMoveTagRemark_BIN__(FILE* fout, CMove move)
 {
     char tag = ((hasNext(move) ? 0x80 : 0x00)
         | (hasOther(move) ? 0x40 : 0x00)
@@ -565,26 +591,26 @@ static void writeMoveTagRemark_BIN__(Move move, FILE* fout)
         writeWstring_BIN(fout, move->remark);
 }
 
-static void writeMove_BIN__(Move move, FILE* fout)
+static void writeMove_BIN__(FILE* fout, CMove move)
 {
     if (move == NULL)
         return;
     unsigned char frowcol = getRowCol_s(move->fseat), trowcol = getRowCol_s(move->tseat);
     fwrite(&frowcol, sizeof(unsigned char), 1, fout);
     fwrite(&trowcol, sizeof(unsigned char), 1, fout);
-    writeMoveTagRemark_BIN__(move, fout);
+    writeMoveTagRemark_BIN__(fout, move);
 
     if (hasNext(move))
-        writeMove_BIN__(move->nmove, fout);
+        writeMove_BIN__(fout, move->nmove);
     if (hasOther(move))
-        writeMove_BIN__(move->omove, fout);
+        writeMove_BIN__(fout, move->omove);
 }
 
-void writeMove_BIN(FILE* fout, Move rootMove)
+void writeMove_BIN(FILE* fout, CMove rootMove)
 {
-    writeMoveTagRemark_BIN__(rootMove, fout);
+    writeMoveTagRemark_BIN__(fout, rootMove);
     if (hasNext(rootMove))
-        writeMove_BIN__(rootMove->nmove, fout);
+        writeMove_BIN__(fout, rootMove->nmove);
 }
 
 static wchar_t* readMoveRemark_JSON__(const cJSON* moveJSON)
@@ -604,7 +630,8 @@ static void readMove_JSON__(Move preMove, Board board, const cJSON* moveJSON, bo
 {
     int frowcol = cJSON_GetObjectItem(moveJSON, "f")->valueint;
     int trowcol = cJSON_GetObjectItem(moveJSON, "t")->valueint;
-    Move move = addMove_rowcol(preMove, board, frowcol, trowcol, readMoveRemark_JSON__(moveJSON), isOther);
+    wchar_t rcStr[5];
+    Move move = addMove(preMove, board, getRcStr_rowcol(rcStr, frowcol, trowcol), JSON, readMoveRemark_JSON__(moveJSON), isOther);
 
     cJSON* nmoveJSON = cJSON_GetObjectItem(moveJSON, "n");
     if (nmoveJSON)
@@ -623,7 +650,7 @@ void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON, bool i
         readMove_JSON__(rootMove, board, nmoveJSON, false);
 }
 
-static void writeMoveRemark_JSON__(cJSON* moveJSON, Move move)
+static void writeMoveRemark_JSON__(cJSON* moveJSON, CMove move)
 {
     if (move->remark) {
         char remark[WIDEWCHARSIZE];
@@ -632,7 +659,7 @@ static void writeMoveRemark_JSON__(cJSON* moveJSON, Move move)
     }
 }
 
-static void writeMove_JSON__(cJSON* moveJSON, Move move)
+static void writeMove_JSON__(cJSON* moveJSON, CMove move)
 {
     cJSON_AddNumberToObject(moveJSON, "f", getRowCol_s(move->fseat));
     cJSON_AddNumberToObject(moveJSON, "t", getRowCol_s(move->tseat));
@@ -650,7 +677,7 @@ static void writeMove_JSON__(cJSON* moveJSON, Move move)
     }
 }
 
-void writeMove_JSON(cJSON* rootmoveJSON, Move rootMove)
+void writeMove_JSON(cJSON* rootmoveJSON, CMove rootMove)
 {
     writeMoveRemark_JSON__(rootmoveJSON, rootMove);
     if (hasNext(rootMove)) {
@@ -679,15 +706,12 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     wcscpy(ICCSZHStr, L"([");
     if (isPGN_ZH) {
         wcscat(ICCSZHStr, PRECHAR);
-        wcscat(ICCSZHStr, getPieceNames(RED));
-        wcscat(ICCSZHStr, getPieceNames(BLACK));
+        wcscat(ICCSZHStr, getPieceNames());
         wcscat(ICCSZHStr, MOVCHAR);
-        wcscat(ICCSZHStr, NUMCHAR[RED]);
-        wcscat(ICCSZHStr, NUMCHAR[BLACK]);
-    } else {
-        wcscat(ICCSZHStr, ICCSCOLCHAR);
-        wcscat(ICCSZHStr, ICCSROWCHAR);
-    }
+        wcscat(ICCSZHStr, NUMWCHAR[RED]);
+        wcscat(ICCSZHStr, NUMWCHAR[BLACK]);
+    } else
+        wcscat(ICCSZHStr, L"abcdefghi\\d");
     wcscat(ICCSZHStr, L"]{4})");
 
     const wchar_t remStr[] = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
@@ -729,7 +753,7 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
         if (isOther) {
             preOtherMoves[preOthIndex++] = preMove;
             if (isPGN_ZH)
-                undoMove(board, preMove); // 回退前变着，以准备执行本变着
+                undoMove(preMove); // 回退前变着，以准备执行本变着
         }
         // 提取字符串
         int iccs_zhSize = ovector[5] - ovector[4];
@@ -738,10 +762,9 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
         wcsncpy(iccs_zhStr, tempMoveStr + ovector[4], iccs_zhSize);
         wchar_t* remark = getRemark_PGN_ICCSZH__(tempMoveStr + ovector[6], ovector[7] - ovector[6]);
         // 添加生成着法
-        move = isPGN_ZH ? addMove_zh(preMove, board, iccs_zhStr, remark, isOther)
-                        : addMove_iccs(preMove, board, iccs_zhStr, remark, isOther);
+        move = addMove(preMove, board, iccs_zhStr, fmt, remark, isOther);
         if (isPGN_ZH)
-            doMove(board, move); // 执行本着或本变着
+            doMove(move); // 执行本着或本变着
 
         // 是否有一个以上的")"
         int num = ovector[9] - ovector[8];
@@ -750,10 +773,10 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
                 preMove = preOtherMoves[--preOthIndex];
                 if (isPGN_ZH) {
                     do {
-                        undoMove(board, move); // 一直回退至前变着
-                        move = getPre(move);
+                        undoMove(move); // 一直回退至前变着
+                        move = move->pmove;
                     } while (move != preMove);
-                    doMove(board, preMove); // 执行前变着，为后续执行做好准备
+                    doMove(preMove); // 执行前变着，为后续执行做好准备
                 }
             }
         } else
@@ -761,15 +784,15 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     }
     if (isPGN_ZH)
         while (move != rootMove) {
-            undoMove(board, move);
-            move = getPre(move);
+            undoMove(move);
+            move = move->pmove;
         }
     free(moveStr);
     pcre16_free(remReg);
     pcre16_free(moveReg);
 }
 
-static void writeRemark_PGN_ICCSZH__(FILE* fout, Move move)
+static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
 {
     if (getRemark(move))
         fwprintf(fout, L" \n{%s}\n ", getRemark(move));
@@ -798,7 +821,7 @@ static void writeMove_PGN_ICCSZH__(FILE* fout, Move move, bool isPGN_ZH, bool is
         writeMove_PGN_ICCSZH__(fout, getNext(move), isPGN_ZH, false);
 }
 
-void writeMove_PGN_ICCSZH(FILE* fout, Move rootMove, RecFormat fmt)
+void writeMove_PGN_ICCSZH(FILE* fout, CMove rootMove, RecFormat fmt)
 {
     writeRemark_PGN_ICCSZH__(fout, rootMove);
     if (hasNext(rootMove))
@@ -843,7 +866,7 @@ static void addMove_PGN_CC__(Move preMove, Board board, pcre16* moveReg,
 
     wchar_t lastwc = zhStr[4];
     zhStr[4] = L'\x0';
-    Move move = addMove_zh(preMove, board, zhStr, getRemark_PGN_CC__(remLines, remCount, row, col), isOther);
+    Move move = addMove(preMove, board, zhStr, PGN_CC, getRemark_PGN_CC__(remLines, remCount, row, col), isOther);
 
     if (lastwc == L'…')
         addMove_PGN_CC__(move, board, moveReg,
@@ -851,10 +874,10 @@ static void addMove_PGN_CC__(Move preMove, Board board, pcre16* moveReg,
 
     if (getNextNo(move) < rowNum - 1
         && moveLines[(row + 1) * colNum + col][0] != L'　') {
-        doMove(board, move);
+        doMove(move);
         addMove_PGN_CC__(move, board, moveReg,
             moveLines, rowNum, colNum, row + 1, col, remLines, remCount, false);
-        undoMove(board, move);
+        undoMove(move);
     }
 }
 
@@ -945,7 +968,7 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
     pcre16_free(moveReg);
 }
 
-static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, Move move)
+static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
 {
     int row = getNextNo(move) * 2, firstCol = getCC_ColNo(move) * 5;
     wcsncpy(&moveStr[row * colNum + firstCol], getZhStr(move), 4);
@@ -962,13 +985,13 @@ static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, Move move)
     }
 }
 
-void writeMove_PGN_CC(wchar_t* moveStr, int colNum, Move rootMove)
+void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
 {
     if (hasNext(rootMove))
         writeMove_PGN_CC__(moveStr, colNum, getNext(rootMove));
 }
 
-static void writeRemark_PGN_CC__(wchar_t** premarkStr, int* premSize, Move move)
+static void writeRemark_PGN_CC__(wchar_t** premarkStr, int* premSize, CMove move)
 {
     if (getRemark(move)) {
         int len = wcslen(getRemark(move)) + 30;
@@ -989,7 +1012,20 @@ static void writeRemark_PGN_CC__(wchar_t** premarkStr, int* premSize, Move move)
         writeRemark_PGN_CC__(premarkStr, premSize, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, Move rootMove)
+void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, CMove rootMove)
 {
     writeRemark_PGN_CC__(premarkStr, premSize, rootMove);
+}
+
+bool isNotEat(Move move, int boutCount)
+{
+    int count = 2 * boutCount, preCount = getNextNo(move);
+    if (preCount < count)
+        return false;
+    Move preMoves[getNextNo(move)];
+    preCount = getPreMoves(preMoves, move);
+    while (preCount-- > 0 && count-- > 0)
+        if (!isBlankPiece(preMoves[preCount]->tpiece))
+            return false;
+    return true;
 }

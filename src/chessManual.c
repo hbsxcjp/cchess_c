@@ -32,7 +32,7 @@ ChessManual newChessManual(const char* filename)
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
     cm->board = newBoard();
-    cm->currentMove = cm->rootMove = newMove();
+    cm->currentMove = cm->rootMove = getRootMove();
     for (int i = 0; i < INFOSIZE; ++i)
         for (int j = 0; j < 2; ++j)
             cm->info[i][j] = NULL;
@@ -54,8 +54,8 @@ void delChessManual(ChessManual cm)
     for (int i = 0; i < cm->infoCount; ++i)
         for (int j = 0; j < 2; ++j)
             free(cm->info[i][j]);
-    freeMove(cm->rootMove);
-    freeBoard(cm->board);
+    delRootMove(cm->rootMove);
+    delBoard(cm->board);
     free(cm);
 }
 
@@ -133,10 +133,10 @@ static void setMoveNumZhStr__(ChessManual cm, Move move)
     setMoveZhStr(move, cm->board);
     //wprintf(L"%s ", __LINE__, getZhStr(move));
 
-    doMove(cm->board, move);
+    doMove(move);
     if (hasNext(move))
         setMoveNumZhStr__(cm, getNext(move));
-    undoMove(cm->board, move);
+    undoMove(move);
 
     // 后广度搜索
     if (hasOther(move)) {
@@ -533,16 +533,16 @@ void go(ChessManual cm)
 {
     if (hasNext(cm->currentMove)) {
         cm->currentMove = getNext(cm->currentMove);
-        doMove(cm->board, cm->currentMove);
+        doMove(cm->currentMove);
     }
 }
 
 void goOther(ChessManual cm)
 {
     if (hasOther(cm->currentMove)) {
-        undoMove(cm->board, cm->currentMove);
+        undoMove(cm->currentMove);
         cm->currentMove = getOther(cm->currentMove);
-        doMove(cm->board, cm->currentMove);
+        doMove(cm->currentMove);
     }
 }
 
@@ -555,29 +555,29 @@ void goEnd(ChessManual cm)
 void goTo(ChessManual cm, Move move)
 {
     cm->currentMove = move;
-    Move preMoves[WIDEWCHARSIZE];
+    Move preMoves[getNextNo(move)];
     int count = getPreMoves(preMoves, move);
     for (int i = 0; i < count; ++i)
-        doMove(cm->board, preMoves[i]);
+        doMove(preMoves[i]);
 }
 
 static void doBack__(ChessManual cm)
 {
-    undoMove(cm->board, cm->currentMove);
-    cm->currentMove = getPre(cm->currentMove);
+    undoMove(cm->currentMove);
+    cm->currentMove = getSimplePre(cm->currentMove);
 }
 
 void back(ChessManual cm)
 {
     if (hasPreOther(cm->currentMove))
         backOther(cm);
-    else if (hasPre(cm->currentMove))
+    else if (hasSimplePre(cm->currentMove))
         doBack__(cm);
 }
 
 void backNext(ChessManual cm)
 {
-    if (hasPre(cm->currentMove) && !hasPreOther(cm->currentMove))
+    if (hasSimplePre(cm->currentMove) && !hasPreOther(cm->currentMove))
         doBack__(cm);
 }
 
@@ -585,19 +585,19 @@ void backOther(ChessManual cm)
 {
     if (hasPreOther(cm->currentMove)) {
         doBack__(cm); // 变着回退
-        doMove(cm->board, cm->currentMove); // 前变执行
+        doMove(cm->currentMove); // 前变执行
     }
 }
 
 void backFirst(ChessManual cm)
 {
-    while (hasPre(cm->currentMove))
+    while (hasSimplePre(cm->currentMove))
         back(cm);
 }
 
 void backTo(ChessManual cm, Move move)
 {
-    while (hasPre(cm->currentMove) && cm->currentMove != move)
+    while (hasSimplePre(cm->currentMove) && cm->currentMove != move)
         back(cm);
 }
 
@@ -721,10 +721,10 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
         Move move = moves[i];
         wchar_t bstr[WIDEWCHARSIZE], tstr[WCHARSIZE];
         fwprintf(fout, L"%s%s\n", getBoardString(bstr, cm->board), getMoveString(tstr, move));
-        doMove(cm->board, move);
+        doMove(move);
     }
     for (int i = count - 1; i >= 0; --i)
-        undoMove(cm->board, moves[i]);
+        undoMove(moves[i]);
     goTo(cm, cmove);
 }
 
