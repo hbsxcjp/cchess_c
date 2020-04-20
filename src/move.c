@@ -406,12 +406,11 @@ void undoMove(CMove move)
     movePiece(move->tseat, move->fseat, move->tpiece);
 }
 
-wchar_t* getCmpMoveStr(wchar_t* wstr, CMove move)
+void getCmpMoveStr(wchar_t* wstr, CMove move)
 {
     assert(move && move->fseat);
     swprintf(wstr, 8, L"%02x%c%02x%c",
         getRowCol_s(move->fseat), getChar(getPiece_s(move->fseat)), getRowCol_s(move->tseat), getChar(getPiece_s(move->tseat)));
-    return wstr;
 }
 
 static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
