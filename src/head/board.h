@@ -34,17 +34,21 @@ Piece getPiece_s(CSeat seat);
 Piece getPiece_rc(Board board, int row, int col);
 Piece getPiece_rowcol(Board board, int rowcol);
 
-// FEN字符串转换成pieChars表示的棋盘局面, pieChars包含90个字符
-wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN);
-// 取得棋盘局面的字符串表示, pieChars包含90个字符
+// 取得棋盘局面的pieChars字符串表示, 包含90个字符
 wchar_t* getPieChars_board(wchar_t* pieChars, Board board);
-// pieChars表示的棋盘局面转换成FEN字符串，返回FEN, pieChars包含90个字符
-wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars);
+// pieChars表示的棋盘局面转换成FEN字符串，返回FEN
+wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars);
+// 取得棋盘局面的FEN字符串表示
+wchar_t* getFEN_board(wchar_t* FEN, Board board);
+// FEN字符串转换成pieChars表示的棋盘局面
+wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);
 
 // 棋盘复位
 void resetBoard(Board board);
-// 使用一个字符串设置棋盘局面, pieChars包含90个字符
-void setBoard(Board board, const wchar_t* pieChars);
+// 使用一个pieChars字符串设置棋盘局面, 包含90个字符
+void setBoard_pieChars(Board board, const wchar_t* pieChars);
+// 使用一个FEN字符串设置棋盘局面
+void setBoard_FEN(Board board, const wchar_t* FEN);
 
 // 给定颜色是否在棋盘底边
 bool isBottomSide(CBoard board, PieceColor color);
@@ -83,6 +87,8 @@ void changeBoard(Board board, ChangeType ct);
 
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);
+// 输出某棋盘局面的文本字符串，长度小于1024
+wchar_t* getBoardString_pieceChars(wchar_t* boardStr, const wchar_t* pieChars);
 // 输出某棋盘局面的文本字符串，长度小于1024
 wchar_t* getBoardString(wchar_t* boardStr, Board board);
 // 棋盘上边标识字符串

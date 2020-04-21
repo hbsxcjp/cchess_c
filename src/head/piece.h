@@ -24,8 +24,10 @@ PieceKind getKind_ch(wchar_t ch);
 wchar_t getBlankChar();
 wchar_t getChar(CPiece piece);
 // 取得表示棋子的名称
+wchar_t getPieName_ch(wchar_t ch);
 wchar_t getPieName(CPiece piece);
 // 取得表示棋子文本的名称
+wchar_t getPieName_T_ch(wchar_t ch);
 wchar_t getPieName_T(CPiece piece);
 const wchar_t* getPieceNames(void);
 

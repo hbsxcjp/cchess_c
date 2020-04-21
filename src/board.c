@@ -94,7 +94,45 @@ static void setPiece_s__(Seat seat, Piece piece)
 // 置入某棋盘内某行、某列位置一个棋子
 static void setPiece_rc__(Board board, int row, int col, Piece piece) { setPiece_s__(getSeat_rc(board, row, col), piece); }
 
-wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN)
+wchar_t* getPieChars_board(wchar_t* pieChars, Board board)
+{
+    int index = 0;
+    for (int row = BOARDROW - 1; row >= 0; --row)
+        for (int col = 0; col < BOARDCOL; ++col)
+            pieChars[index++] = getChar(getPiece_rc(board, row, col));
+    pieChars[SEATNUM] = L'\x0';
+    return pieChars;
+}
+
+wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars)
+{
+    int fi = 0, pi = 0;
+    for (int row = 0; row < BOARDROW; ++row) {
+        int blankNum = 0;
+        for (int col = 0; col < BOARDCOL; ++col, ++pi) {
+            if (iswalpha(pieChars[pi])) {
+                if (blankNum > 0)
+                    FEN[fi++] = L'0' + blankNum;
+                FEN[fi++] = pieChars[pi];
+                blankNum = 0;
+            } else //if (pieChars[pi] == getBlankChar()) // 肯定为真
+                blankNum++;
+        }
+        if (blankNum > 0)
+            FEN[fi++] = L'0' + blankNum;
+        FEN[fi++] = L'/'; // 插入行分隔符
+    }
+    FEN[--fi] = L'\x0';
+    return FEN;
+}
+
+wchar_t* getFEN_board(wchar_t* FEN, Board board)
+{
+    wchar_t pieChars[SEATNUM + 1];
+    return getFEN_pieChars(FEN, getPieChars_board(pieChars, board));
+}
+
+wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
 {
     int len = wcslen(FEN);
     for (int i = 0, index = 0; i < len && index < SEATNUM; ++i) {
@@ -109,39 +147,6 @@ wchar_t* setPieCharsFromFEN(wchar_t* pieChars, const wchar_t* FEN)
     return pieChars;
 }
 
-wchar_t* getPieChars_board(wchar_t* pieChars, Board board)
-{
-    int index = 0;
-    for (int row = BOARDROW - 1; row >= 0; --row)
-        for (int col = 0; col < BOARDCOL; ++col)
-            pieChars[index++] = getChar(getPiece_rc(board, row, col));
-    pieChars[SEATNUM] = L'\x0';
-    return pieChars;
-}
-
-wchar_t* setFENFromPieChars(wchar_t* FEN, const wchar_t* pieChars)
-{
-    int index_F = 0;
-    for (int row = 0; row < BOARDROW; ++row) {
-        int blankNum = 0;
-        for (int col = 0; col < BOARDCOL; ++col) {
-            int index_p = row * BOARDCOL + col;
-            if (iswalpha(pieChars[index_p])) {
-                if (blankNum > 0)
-                    FEN[index_F++] = L'0' + blankNum;
-                FEN[index_F++] = pieChars[index_p];
-                blankNum = 0;
-            } else //if (pieChars[index_p] == getBlankChar()) // 肯定为真
-                blankNum++;
-        }
-        if (blankNum > 0)
-            FEN[index_F++] = L'0' + blankNum;
-        FEN[index_F++] = L'/'; // 插入行分隔符
-    }
-    FEN[--index_F] = L'\x0';
-    return FEN;
-}
-
 static void resetPiece__(Piece piece, void* ptr)
 {
     Seat seat = getSeat_p(piece);
@@ -154,7 +159,7 @@ void resetBoard(Board board)
     piecesMap(board->pieces, resetPiece__, NULL);
 }
 
-void setBoard(Board board, const wchar_t* pieChars)
+void setBoard_pieChars(Board board, const wchar_t* pieChars)
 {
     assert(wcslen(pieChars) == SEATNUM);
     resetBoard(board);
@@ -163,6 +168,12 @@ void setBoard(Board board, const wchar_t* pieChars)
         for (int col = 0; col < BOARDCOL; ++col)
             setPiece_rc__(board, row, col, getPiece_ch(board->pieces, pieChars[index++]));
     board->bottomColor = getRow_s(getKingSeat(board, RED)) < RowLowUpIndex_ ? RED : BLACK;
+}
+
+void setBoard_FEN(Board board, const wchar_t* FEN)
+{
+    wchar_t pieChars[SEATNUM + 1];
+    setBoard_pieChars(board, getPieChars_FEN(pieChars, FEN));
 }
 
 inline bool isBottomSide(CBoard board, PieceColor color) { return board->bottomColor == color; }
@@ -612,27 +623,27 @@ wchar_t* getSeatString(wchar_t* seatStr, CSeat seat)
     return seatStr;
 }
 
-wchar_t* getBoardString(wchar_t* boardStr, Board board)
+wchar_t* getBoardString_pieceChars(wchar_t* boardStr, const wchar_t* pieChars)
 { //*
-    const wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
-                                 "┃　│　│　│╲│╱│　│　│　┃\n"
-                                 "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                                 "┃　│　│　│╱│╲│　│　│　┃\n"
-                                 "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                                 "┃　│　│　│　│　│　│　│　┃\n"
-                                 "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                                 "┃　│　│　│　│　│　│　│　┃\n"
-                                 "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
-                                 "┃　　　　　　　　　　　　　　　┃\n"
-                                 "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
-                                 "┃　│　│　│　│　│　│　│　┃\n"
-                                 "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
-                                 "┃　│　│　│　│　│　│　│　┃\n"
-                                 "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
-                                 "┃　│　│　│╲│╱│　│　│　┃\n"
-                                 "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
-                                 "┃　│　│　│╱│╲│　│　│　┃\n"
-                                 "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
+    static const wchar_t boardStr_t[] = L"┏━┯━┯━┯━┯━┯━┯━┯━┓\n"
+                                        "┃　│　│　│╲│╱│　│　│　┃\n"
+                                        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                        "┃　│　│　│╱│╲│　│　│　┃\n"
+                                        "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+                                        "┃　　　　　　　　　　　　　　　┃\n"
+                                        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+                                        "┃　│　│　│　│　│　│　│　┃\n"
+                                        "┠─╬─┼─┼─┼─┼─┼─╬─┨\n"
+                                        "┃　│　│　│╲│╱│　│　│　┃\n"
+                                        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+                                        "┃　│　│　│╱│╲│　│　│　┃\n"
+                                        "┗━┷━┷━┷━┷━┷━┷━┷━┛\n"; // 边框粗线，输出文本文件使用
     //*/
     /*/
     wchar_t boardStr_t[] = L"　　＋－－－－－－－－－－－－－－－＋\n"
@@ -658,11 +669,17 @@ wchar_t* getBoardString(wchar_t* boardStr, Board board)
     wcscpy(boardStr, boardStr_t);
     for (int row = 0; row < BOARDROW; ++row)
         for (int col = 0; col < BOARDCOL; ++col) {
-            Piece piece = getPiece_rc(board, row, col);
-            if (!isBlankPiece(piece))
-                boardStr[(BOARDROW - row - 1) * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T(piece);
+            wchar_t ch = *pieChars++;
+            if (ch != getBlankChar())
+                boardStr[row * 2 * (BOARDCOL * 2) + col * 2] = getPieName_T_ch(ch);
         }
     return boardStr;
+}
+
+wchar_t* getBoardString(wchar_t* boardStr, Board board)
+{
+    wchar_t pieChars[SEATNUM + 1];
+    return getBoardString_pieceChars(boardStr, getPieChars_board(pieChars, board));
 }
 
 // 棋盘上边标识字符串
@@ -701,17 +718,17 @@ void testBoard(FILE* fout)
 
         //* FEN转换成PieChars
         wchar_t pieChars[SEATNUM + 1];
-        setPieCharsFromFEN(pieChars, FENs[i]);
+        getPieChars_FEN(pieChars, FENs[i]);
         fwprintf(fout, L"     FEN:%s size:%d\nPieChars:%s size:%d\n",
             FENs[i], wcslen(FENs[i]), pieChars, wcslen(pieChars));
         //*/
 
         //* 设置棋局，生成PieChars，转换成FEN
-        setBoard(board, pieChars);
+        setBoard_pieChars(board, pieChars);
 
         getPieChars_board(pieChars, board);
         wchar_t FEN[SEATNUM + 1];
-        setFENFromPieChars(FEN, pieChars);
+        getFEN_pieChars(FEN, pieChars);
         fwprintf(fout, L"PieChars:%s size:%d\n     FEN:%s size:%d\n",
             pieChars, wcslen(pieChars), FEN, wcslen(FEN));
         //*/

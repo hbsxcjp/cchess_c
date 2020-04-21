@@ -100,16 +100,6 @@ static RecFormat getRecFormat__(const char* ext)
     return NOTFMT;
 }
 
-static wchar_t* getFENFromCM__(ChessManual cm)
-{
-    wchar_t fen[] = L"FEN";
-    for (int i = 0; i < cm->infoCount; ++i)
-        if (wcscmp(cm->info[i][0], fen) == 0)
-            return cm->info[i][1];
-    addInfoItem(cm, fen, L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
-    return cm->info[cm->infoCount - 1][1];
-}
-
 static void setMoveNumZhStr__(ChessManual cm, Move move)
 { //*
     ++cm->movCount_;
@@ -268,7 +258,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
     addInfoItem(cm, L"PlayType", PlayType[(int)(headCodeA_H[0])]); // 编码定义存储
-    setFENFromPieChars(tempStr, pieChars);
+    getFEN_pieChars(tempStr, pieChars);
     addInfoItem(cm, L"FEN", wcscat(tempStr, headWhoPlay ? L" -r" : L" -b")); // 转换FEN存储
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
     addInfoItem(cm, L"Result", Result[(int)headPlayResult]); // 编码定义存储
@@ -280,10 +270,19 @@ static void readXQF__(ChessManual cm, FILE* fin)
     readMove_XQF(&cm->rootMove, cm->board, fin, false);
 }
 
+static wchar_t* getFENFromCM__(ChessManual cm)
+{
+    wchar_t fen[] = L"FEN";
+    for (int i = 0; i < cm->infoCount; ++i)
+        if (wcscmp(cm->info[i][0], fen) == 0)
+            return cm->info[i][1];
+    addInfoItem(cm, fen, L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
+    return cm->info[cm->infoCount - 1][1];
+}
+
 static void getFENToSetBoard__(ChessManual cm)
 {
-    wchar_t pieChars[SEATNUM + 1];
-    setBoard(cm->board, setPieCharsFromFEN(pieChars, getFENFromCM__(cm)));
+    setBoard_FEN(cm->board, getFENFromCM__(cm));
 }
 
 static void readBin__(ChessManual cm, FILE* fin)

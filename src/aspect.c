@@ -11,7 +11,7 @@ struct MoveRec {
 };
 
 struct Aspect {
-    wchar_t pieceStr[SEATNUM + 1];
+    wchar_t FEN[60]; // FEN的最大长度59
     MoveRec lastMoveRec;
     Aspect preAspect;
 };
@@ -20,6 +20,57 @@ struct AspectTable {
     int size, length;
     Aspect* lastAspects;
 };
+
+void addMoveRecStr__(wchar_t* wstr, MoveRec mrc)
+{
+    if (mrc == NULL)
+        return;
+    wchar_t mstr[WCHARSIZE];
+    swprintf(mstr, WCHARSIZE, L"\n\t\tm:%p s:%s", mrc->move, mrc->cmpStr);
+    wcscat(wstr, mstr);
+    addMoveRecStr__(wstr, mrc->preMoveRec);
+}
+
+wchar_t* getMoveRecStr(wchar_t* wstr, MoveRec mrc)
+{
+    if (mrc)
+        addMoveRecStr__(wstr, mrc);
+    return wstr;
+}
+
+void addAspectStr__(wchar_t* wstr, Aspect asp)
+{
+    if (asp == NULL)
+        return;
+    wchar_t astr[SUPERWIDEWCHARSIZE];
+    swprintf(wstr, SUPERWIDEWCHARSIZE, L"\n\tFEN:%s %s", asp->FEN, getMoveRecStr(astr, asp->lastMoveRec));
+    wcscat(wstr, astr);
+    addAspectStr__(wstr, asp->preAspect);
+}
+
+wchar_t* getAspectStr(wchar_t* wstr, Aspect asp)
+{
+    if (asp)
+        addAspectStr__(wstr, asp);
+    return wstr;
+}
+
+wchar_t* getAspectTableStr(wchar_t* wstr, AspectTable table)
+{
+    if (table) {
+        wchar_t tstr[WCHARSIZE];
+        for (int i = 0; i < table->size; ++i) {
+            Aspect lasp = table->lastAspects[i];
+            if (lasp) {
+                swprintf(tstr, WCHARSIZE, L"%d:", i);
+                wcscat(wstr, tstr);
+                getAspectStr(wstr, lasp);
+            }
+            wcscat(wstr, L"\n\n");
+        }
+    }
+    return wstr;
+}
 
 static MoveRec newMoveRec__(MoveRec preMoveRec, CMove move)
 {
@@ -41,12 +92,12 @@ static void delMoveRec__(MoveRec mrc)
     delMoveRec__(preMoveRec);
 }
 
-static Aspect newAspect__(Aspect preAspect, const wchar_t* pieceStr, CMove move)
+static Aspect newAspect__(Aspect preAspect, const wchar_t* FEN, CMove move)
 {
-    assert(pieceStr && wcslen(pieceStr) == SEATNUM);
+    assert(FEN && wcslen(FEN) == SEATNUM);
     Aspect aspect = malloc(sizeof(struct Aspect));
     assert(aspect);
-    wcscpy(aspect->pieceStr, pieceStr);
+    wcscpy(aspect->FEN, FEN);
     aspect->lastMoveRec = newMoveRec__(NULL, move);
     aspect->preAspect = preAspect;
     return aspect;
@@ -63,7 +114,7 @@ static void delAspect__(Aspect aspect)
 }
 
 // BKDR Hash Function
-unsigned int BKDRHash(wchar_t* wstr)
+unsigned int BKDRHash(const wchar_t* wstr)
 {
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
@@ -104,39 +155,39 @@ void delAspectTable(AspectTable table)
 int aspectTable_length(AspectTable table) { return table->length; }
 
 // 取得最后的局面记录
-static Aspect* getLastAspect__(AspectTable table, const wchar_t* pieceStr)
+static Aspect* getLastAspect__(AspectTable table, const wchar_t* FEN)
 {
-    return &table->lastAspects[BKDRHash((wchar_t*)pieceStr)];
+    return &table->lastAspects[BKDRHash(FEN)];
 }
 
 // 取得相同哈希值下相同局面的记录
-static Aspect getAspect__(Aspect arc, const wchar_t* pieceStr)
+static Aspect getAspect__(Aspect arc, const wchar_t* FEN)
 {
-    while (arc && wcscmp(arc->pieceStr, pieceStr) != 0)
+    while (arc && wcscmp(arc->FEN, FEN) != 0)
         arc = arc->preAspect;
     return arc;
 }
 
-MoveRec aspectTable_get(AspectTable table, const wchar_t* pieceStr)
+MoveRec aspectTable_get(AspectTable table, const wchar_t* FEN)
 {
-    Aspect arc = getAspect__(*getLastAspect__(table, pieceStr), pieceStr);
+    Aspect arc = getAspect__(*getLastAspect__(table, FEN), FEN);
     return arc ? arc->lastMoveRec : NULL;
 }
 
-MoveRec aspectTable_put(AspectTable table, const wchar_t* pieceStr, CMove move)
+MoveRec aspectTable_put(AspectTable table, const wchar_t* FEN, CMove move)
 {
-    Aspect *parc = getLastAspect__(table, pieceStr), arc = getAspect__(*parc, pieceStr);
+    Aspect *parc = getLastAspect__(table, FEN), arc = getAspect__(*parc, FEN);
     if (arc == NULL) {
-        arc = newAspect__(*parc, pieceStr, move);
+        arc = newAspect__(*parc, FEN, move);
         *parc = arc;
     }
     return arc->lastMoveRec;
 }
 
-bool aspectTable_remove(AspectTable table, const wchar_t* pieceStr, CMove move)
+bool aspectTable_remove(AspectTable table, const wchar_t* FEN, CMove move)
 {
     bool finish = false;
-    Aspect *parc = getLastAspect__(table, pieceStr), arc = getAspect__(*parc, pieceStr);
+    Aspect *parc = getLastAspect__(table, FEN), arc = getAspect__(*parc, FEN);
     if (arc) {
         MoveRec lmrc = arc->lastMoveRec, mrc = lmrc;
         while (mrc) {
@@ -164,10 +215,10 @@ bool aspectTable_remove(AspectTable table, const wchar_t* pieceStr, CMove move)
     return finish;
 }
 
-int getLoopCount(AspectTable table, const wchar_t* pieceStr)
+int getLoopCount(AspectTable table, const wchar_t* FEN)
 {
     int count = 0;
-    MoveRec lmrc = aspectTable_get(table, pieceStr);
+    MoveRec lmrc = aspectTable_get(table, FEN);
     if (lmrc) {
         CMove move = lmrc->move;
         MoveRec mrc = lmrc->preMoveRec;
