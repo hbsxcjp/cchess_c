@@ -28,6 +28,7 @@ bool hasNext(CMove move);
 bool hasSimplePre(CMove move);
 bool hasOther(CMove move);
 bool hasPreOther(CMove move);
+bool isRootMove(CMove move);
 
 void setNextNo(Move move, int nextNo);
 void setOtherNo(Move move, int otherNo);
@@ -54,7 +55,6 @@ void doMove(Move move);
 void undoMove(CMove move);
 
 // 输出表示着法的字符串
-void getCmpMoveStr(wchar_t* wstr, CMove move); // 比较着法是否相等字符串
 wchar_t* getMoveStr(wchar_t* wstr, CMove move);
 wchar_t* getMoveString(wchar_t* wstr, CMove move);
 

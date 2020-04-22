@@ -3,6 +3,9 @@
 
 #include "base.h"
 
+// 哈希函数
+unsigned int BKDRHash(const wchar_t* wstr);
+
 // 去掉字符串前后的空白字符
 char* trim(char* str);
 
@@ -17,6 +20,9 @@ const char* getExt(const char* filename);
 
 // 从文件当前指针至尾部获取宽字符串
 wchar_t* getWString(FILE* fin);
+
+// 字符串连接，根据需要重新分配内存空间
+void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr);
 
 // 复制文件
 int copyFile(const char* SourceFile, const char* NewFile);

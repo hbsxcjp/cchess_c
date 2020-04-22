@@ -24,7 +24,7 @@ static Move newMove__()
     move->fseat = move->tseat = NULL;
     move->tpiece = NULL;
     move->remark = NULL;
-    move->zhStr[0] = L'\x0';
+    wcscpy(move->zhStr, L"0000");
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -178,6 +178,7 @@ inline bool hasNext(CMove move) { return move->nmove; }
 inline bool hasSimplePre(CMove move) { return move->pmove; }
 inline bool hasOther(CMove move) { return move->omove; }
 inline bool hasPreOther(CMove move) { return hasSimplePre(move) && move == move->pmove->omove; }
+inline bool isRootMove(CMove move) { return move->pmove == NULL; }
 
 inline void setNextNo(Move move, int nextNo) { move->nextNo_ = nextNo; }
 inline void setOtherNo(Move move, int otherNo) { move->otherNo_ = otherNo; }
@@ -346,8 +347,11 @@ inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 {
-    swprintf(ICCSStr, 6, L"%c%d%c%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),
-        getCol_s(move->tseat) + L'a', getRow_s(move->tseat));
+    if (move->fseat == NULL) // rootMove
+        wcscpy(ICCSStr, L"0000");
+    else
+        swprintf(ICCSStr, 6, L"%c%d%c%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),
+            getCol_s(move->tseat) + L'a', getRow_s(move->tseat));
     return ICCSStr;
 }
 
@@ -404,13 +408,6 @@ void doMove(Move move)
 void undoMove(CMove move)
 {
     movePiece(move->tseat, move->fseat, move->tpiece);
-}
-
-void getCmpMoveStr(wchar_t* wstr, CMove move)
-{
-    assert(move && move->fseat);
-    swprintf(wstr, 8, L"%02x%c%02x%c",
-        getRowCol_s(move->fseat), getChar(getPiece_s(move->fseat)), getRowCol_s(move->tseat), getChar(getPiece_s(move->tseat)));
 }
 
 static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
@@ -990,30 +987,33 @@ void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
         writeMove_PGN_CC__(moveStr, colNum, getNext(rootMove));
 }
 
-static void writeRemark_PGN_CC__(wchar_t** premarkStr, int* premSize, CMove move)
+static void writeRemark_PGN_CC__(wchar_t** pstr, int* size, CMove move)
 {
     if (getRemark(move)) {
         int len = wcslen(getRemark(move)) + 30;
         wchar_t remarkStr[len + 1];
         swprintf(remarkStr, len, L"(%d,%d): {%s}\n", getNextNo(move), getCC_ColNo(move), getRemark(move));
+        writeWString(pstr, size, remarkStr);
+        /*
         // 如字符串分配的长度不够，则增加长度
-        if (wcslen(*premarkStr) + len > *premSize - 1) {
-            *premSize += WIDEWCHARSIZE + len;
-            *premarkStr = realloc(*premarkStr, *premSize * sizeof(wchar_t));
-            assert(*premarkStr);
+        if (wcslen(*pstr) + len > *size - 1) {
+            *size += WIDEWCHARSIZE + len;
+            *pstr = realloc(*pstr, *size * sizeof(wchar_t));
+            assert(*pstr);
         }
-        wcscat(*premarkStr, remarkStr);
+        wcscat(*pstr, remarkStr);
+        //*/
     }
 
     if (hasOther(move))
-        writeRemark_PGN_CC__(premarkStr, premSize, getOther(move));
+        writeRemark_PGN_CC__(pstr, size, getOther(move));
     if (hasNext(move))
-        writeRemark_PGN_CC__(premarkStr, premSize, getNext(move));
+        writeRemark_PGN_CC__(pstr, size, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, CMove rootMove)
+void writeRemark_PGN_CC(wchar_t** pstr, int* size, CMove rootMove)
 {
-    writeRemark_PGN_CC__(premarkStr, premSize, rootMove);
+    writeRemark_PGN_CC__(pstr, size, rootMove);
 }
 
 bool isNotEat(Move move, int boutCount)

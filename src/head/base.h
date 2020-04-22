@@ -100,8 +100,8 @@ typedef enum {
 typedef struct Move* Move;
 typedef const struct Move* CMove;
 // 局面记录类型
-typedef struct AspectTable* AspectTable;
-typedef const struct AspectTable* CAspectTable;
+typedef struct Aspects* Aspects;
+typedef const struct Aspects* CAspects;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
 typedef const struct ChessManual* CChessManual;

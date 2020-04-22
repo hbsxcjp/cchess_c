@@ -1,5 +1,6 @@
 #define PCRE_STATIC
 #include "head/chessManual.h"
+#include "head/aspect.h"
 #include "head/board.h"
 #include "head/move.h"
 #include "head/piece.h"
@@ -772,6 +773,25 @@ void testTransDir(int fromDir, int toDir,
     }
 }
 
+static void setAspects__(Aspects aspects, Board board, Move move)
+{
+    if (move == NULL)
+        return;
+    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
+    fflush(stdout);
+
+    wchar_t FEN[SEATNUM + 1];
+    putAspect(aspects, getFEN_board(FEN, board), move);
+
+    if (!isRootMove(move))
+        doMove(move);
+    setAspects__(aspects, board, getNext(move));
+    if (!isRootMove(move))
+        undoMove(move);
+
+    setAspects__(aspects, board, getOther(move));
+}
+
 // 测试本翻译单元各种对象、函数
 void testChessManual(FILE* fout)
 {
@@ -822,6 +842,17 @@ void testChessManual(FILE* fout)
         writeChessManual(cm, fname);
     }
     //*/
+
+    Aspects aspects = newAspects();
+    setAspects__(aspects, cm->board, cm->rootMove);
+    int size = WIDEWCHARSIZE;
+    wchar_t* wstr = malloc(size * sizeof(wchar_t));
+    assert(wstr);
+    wstr[0] = L'\x0';
+    writeAspectsStr(&wstr, &size, aspects);
+    FILE* afout = fopen("a", "w");
+    //fwprintf(afout, L"%s", wstr);
+    fclose(afout);
 
     delChessManual(cm);
 }

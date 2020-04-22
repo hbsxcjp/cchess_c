@@ -1,5 +1,18 @@
 #include "head/tools.h"
 
+// BKDR Hash Function
+unsigned int BKDRHash(const wchar_t* wstr)
+{
+    unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+
+    while (*wstr) {
+        hash = hash * seed + (*wstr++);
+    }
+
+    return (hash & 0x7FFFFFFF);
+}
+
 char* trim(char* str)
 {
     size_t size = strlen(str);
@@ -61,6 +74,18 @@ wchar_t* getWString(FILE* fin)
         wstr[index++] = fgetwc(fin);
     wstr[index] = L'\x0';
     return wstr;
+}
+
+void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr)
+{
+    int len = wcslen(wstr);
+    // 如字符串分配的长度不够，则增加长度
+    if (wcslen(*pstr) + len > *size - 1) {
+        *size += WIDEWCHARSIZE + len;
+        *pstr = realloc(*pstr, *size * sizeof(wchar_t));
+        assert(*pstr);
+    }
+    wcscat(*pstr, wstr);
 }
 
 /*****************************************************************************************
