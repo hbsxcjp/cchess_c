@@ -11,6 +11,7 @@
 #define INFOSIZE 32
 
 struct ChessManual {
+    wchar_t* fileName;
     Board board;
     Move rootMove, currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
@@ -32,6 +33,9 @@ ChessManual newChessManual(const char* filename)
 {
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
+    wchar_t* fname = malloc(strlen(filename) * sizeof(wchar_t));
+    mbstowcs(fname, filename, FILENAME_MAX);
+    cm->fileName = fname;
     cm->board = newBoard();
     cm->currentMove = cm->rootMove = getRootMove();
     for (int i = 0; i < INFOSIZE; ++i)
@@ -52,6 +56,7 @@ void delChessManual(ChessManual cm)
 {
     if (cm == NULL)
         return;
+    free(cm->fileName);
     for (int i = 0; i < cm->infoCount; ++i)
         for (int j = 0; j < 2; ++j)
             free(cm->info[i][j]);
@@ -371,7 +376,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -728,6 +733,41 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
+static void setAspects__(Aspects aspects, Board board, Move move)
+{
+    if (move == NULL)
+        return;
+    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
+    fflush(stdout);
+
+    wchar_t FEN[SEATNUM + 1];
+    putAspect(aspects, getFEN_board(FEN, board), move);
+
+    if (!isRootMove(move))
+        doMove(move);
+    setAspects__(aspects, board, getNext(move));
+    if (!isRootMove(move))
+        undoMove(move);
+
+    setAspects__(aspects, board, getOther(move));
+}
+
+void writeAllAspectStr(FILE* fout, ChessManual cm)
+{
+    int size = WIDEWCHARSIZE;
+    wchar_t* wstr = malloc(size * sizeof(wchar_t));
+    assert(wstr);
+    wstr[0] = L'\x0';
+
+    Aspects aspects = newAspects();
+    setAspects__(aspects, cm->board, cm->rootMove);
+    writeAspectsStr(&wstr, &size, aspects);
+    delAspects(aspects);
+
+    fwprintf(fout, L"%s", wstr);
+    free(wstr);
+}
+
 void transDir(const char* dirfrom, RecFormat tofmt)
 {
     int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
@@ -771,25 +811,6 @@ void testTransDir(int fromDir, int toDir,
                 }
         }
     }
-}
-
-static void setAspects__(Aspects aspects, Board board, Move move)
-{
-    if (move == NULL)
-        return;
-    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
-    fflush(stdout);
-
-    wchar_t FEN[SEATNUM + 1];
-    putAspect(aspects, getFEN_board(FEN, board), move);
-
-    if (!isRootMove(move))
-        doMove(move);
-    setAspects__(aspects, board, getNext(move));
-    if (!isRootMove(move))
-        undoMove(move);
-
-    setAspects__(aspects, board, getOther(move));
 }
 
 // 测试本翻译单元各种对象、函数
@@ -843,15 +864,11 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    Aspects aspects = newAspects();
-    setAspects__(aspects, cm->board, cm->rootMove);
-    int size = WIDEWCHARSIZE;
-    wchar_t* wstr = malloc(size * sizeof(wchar_t));
-    assert(wstr);
-    wstr[0] = L'\x0';
-    writeAspectsStr(&wstr, &size, aspects);
-    FILE* afout = fopen("a", "w");
-    //fwprintf(afout, L"%s", wstr);
+    char str[FILENAME_MAX];
+    wcstombs(str, cm->fileName, FILENAME_MAX);
+    strcat(str, ".as");
+    FILE* afout = fopen(str, "w");
+    writeAllAspectStr(afout, cm);
     fclose(afout);
 
     delChessManual(cm);

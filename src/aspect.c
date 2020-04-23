@@ -118,6 +118,7 @@ MoveRec putAspect(Aspects aspects, const wchar_t* FEN, CMove move)
     if (arc == NULL) { // 表中不存在，则添加
         arc = newAspect__(*parc, FEN, move);
         *parc = arc;
+        aspects->length++;
     }
     return arc->lastMoveRec;
 }
@@ -190,7 +191,7 @@ static void writeMoveRecStr__(wchar_t** pstr, int* size, MoveRec mrc)
     if (mrc == NULL)
         return;
     wchar_t wstr[WCHARSIZE];
-    swprintf(wstr, WCHARSIZE, L"\t\tm:%p s:%s\n", mrc->move, mrc->iccs);
+    swprintf(wstr, WCHARSIZE, L"\t\tmove@:%p iccs:%s\n", mrc->move, mrc->iccs);
     writeWString(pstr, size, wstr);
     writeMoveRecStr__(pstr, size, mrc->preMoveRec);
 }
@@ -209,7 +210,6 @@ static void writeAspectStr__(wchar_t** pstr, int* size, Aspect asp)
     swprintf(wstr, WCHARSIZE, L"\tFEN:%s\n", asp->FEN);
     writeWString(pstr, size, wstr);
     writeMoveRecStr(pstr, size, asp->lastMoveRec);
-    writeWString(pstr, size, L"\n");
     writeAspectStr__(pstr, size, asp->preAspect);
 }
 
@@ -226,10 +226,11 @@ void writeAspectsStr(wchar_t** pstr, int* size, CAspects aspects)
     for (int i = 0; i < aspects->size; ++i) {
         Aspect lasp = aspects->lastAspects[i];
         if (lasp) {
-            swprintf(wstr, WCHARSIZE, L"%3d:\n", i);
+            swprintf(wstr, WCHARSIZE, L"\n%3d.\n", i);
             writeWString(pstr, size, wstr);
             writeAspectStr(pstr, size, lasp);
-            writeWString(pstr, size, L"\n");
         }
     }
+    swprintf(wstr, WCHARSIZE, L"\naspect count:%3d\n", aspects->length);
+    writeWString(pstr, size, wstr);
 }
