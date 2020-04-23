@@ -376,7 +376,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -634,6 +634,54 @@ void changeChessManual(ChessManual cm, ChangeType ct)
     goTo(cm, curMove);
 }
 
+void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
+{
+    Move cmove = cm->currentMove, moves[WIDEWCHARSIZE];
+    backFirst(cm);
+    int count = getAllMoves(moves, amove);
+    // 输出棋局和着法
+    for (int i = 0; i < count; ++i) {
+        Move move = moves[i];
+        wchar_t bstr[WIDEWCHARSIZE], tstr[WCHARSIZE];
+        fwprintf(fout, L"%s%s\n", getBoardString(bstr, cm->board), getMoveString(tstr, move));
+        doMove(move);
+    }
+    for (int i = count - 1; i >= 0; --i)
+        undoMove(moves[i]);
+    goTo(cm, cmove);
+}
+
+static void putAspect__(Aspects aspects, Board board, Move move)
+{
+    wchar_t FEN[SEATNUM + 1];
+    putAspect(aspects, getFEN_board(FEN, board), move);
+}
+
+static void setAspects__(Aspects aspects, Board board, Move move)
+{
+    if (move == NULL)
+        return;
+    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
+    fflush(stdout);
+
+    putAspect__(aspects, board, move);
+    doMove(move);
+    setAspects__(aspects, board, getNext(move));
+    undoMove(move);
+
+    setAspects__(aspects, board, getOther(move));
+}
+
+void writeAllAspectStr(FILE* fout, ChessManual cm)
+{
+    Aspects aspects = newAspects();
+    putAspect__(aspects, cm->board, cm->rootMove);
+    setAspects__(aspects, cm->board, getNext(cm->rootMove));
+    writeAspectsStr(fout, aspects);
+    fwprintf(fout, L"cm->moveCount_:%d ", cm->movCount_);
+    delAspects(aspects);
+}
+
 static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
     int* pfcount, int* pdcount, int* pmovcount, int* premcount, int* premlenmax)
 {
@@ -714,58 +762,6 @@ static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
         }
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
-}
-
-void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
-{
-    Move cmove = cm->currentMove, moves[WIDEWCHARSIZE];
-    backFirst(cm);
-    int count = getAllMoves(moves, amove);
-    // 输出棋局和着法
-    for (int i = 0; i < count; ++i) {
-        Move move = moves[i];
-        wchar_t bstr[WIDEWCHARSIZE], tstr[WCHARSIZE];
-        fwprintf(fout, L"%s%s\n", getBoardString(bstr, cm->board), getMoveString(tstr, move));
-        doMove(move);
-    }
-    for (int i = count - 1; i >= 0; --i)
-        undoMove(moves[i]);
-    goTo(cm, cmove);
-}
-
-static void setAspects__(Aspects aspects, Board board, Move move)
-{
-    if (move == NULL)
-        return;
-    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
-    fflush(stdout);
-
-    wchar_t FEN[SEATNUM + 1];
-    putAspect(aspects, getFEN_board(FEN, board), move);
-
-    if (!isRootMove(move))
-        doMove(move);
-    setAspects__(aspects, board, getNext(move));
-    if (!isRootMove(move))
-        undoMove(move);
-
-    setAspects__(aspects, board, getOther(move));
-}
-
-void writeAllAspectStr(FILE* fout, ChessManual cm)
-{
-    int size = WIDEWCHARSIZE;
-    wchar_t* wstr = malloc(size * sizeof(wchar_t));
-    assert(wstr);
-    wstr[0] = L'\x0';
-
-    Aspects aspects = newAspects();
-    setAspects__(aspects, cm->board, cm->rootMove);
-    writeAspectsStr(&wstr, &size, aspects);
-    delAspects(aspects);
-
-    fwprintf(fout, L"%s", wstr);
-    free(wstr);
 }
 
 void transDir(const char* dirfrom, RecFormat tofmt)
@@ -864,12 +860,7 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    char str[FILENAME_MAX];
-    wcstombs(str, cm->fileName, FILENAME_MAX);
-    strcat(str, ".as");
-    FILE* afout = fopen(str, "w");
-    writeAllAspectStr(afout, cm);
-    fclose(afout);
+    writeAllAspectStr(fout, cm);
 
     delChessManual(cm);
 }

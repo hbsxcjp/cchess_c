@@ -5,8 +5,7 @@
 #include "head/tools.h"
 
 struct MoveRec {
-    CMove move; // ×Å·¨Ö¸Õë
-    wchar_t iccs[6];
+    CMove move; // ç€æ³•æŒ‡é’ˆ
     MoveRec preMoveRec;
 };
 
@@ -17,7 +16,7 @@ struct Aspect {
 };
 
 struct Aspects {
-    int size, length;
+    int size, length, movCount;
     Aspect* lastAspects;
 };
 
@@ -27,7 +26,6 @@ static MoveRec newMoveRec__(MoveRec preMoveRec, CMove move)
     MoveRec mrc = malloc(sizeof(struct MoveRec));
     assert(mrc);
     mrc->move = move;
-    getICCS(mrc->iccs, move);
     mrc->preMoveRec = preMoveRec;
     return mrc;
 }
@@ -58,8 +56,8 @@ static void delAspect__(Aspect aspect)
     if (aspect == NULL)
         return;
     Aspect preAspect = aspect->preAspect;
-    delMoveRec__(aspect->lastMoveRec);
     free(aspect->FEN);
+    delMoveRec__(aspect->lastMoveRec);
     free(aspect);
     delAspect__(preAspect);
 }
@@ -69,7 +67,7 @@ Aspects newAspects(void)
     int size = 509;
     Aspects aspects = malloc(sizeof(struct Aspects) + size * sizeof(Aspect*));
     aspects->size = size;
-    aspects->length = 0;
+    aspects->length = aspects->movCount = 0;
     aspects->lastAspects = (Aspect*)(aspects + 1);
     for (int i = 0; i < size; ++i)
         aspects->lastAspects[i] = NULL;
@@ -79,26 +77,24 @@ Aspects newAspects(void)
 void delAspects(Aspects aspects)
 {
     assert(aspects);
-    if (aspects->length > 0) {
-        Aspect arc, pre = NULL;
-        for (int i = 0; i < aspects->size; ++i)
-            for (arc = aspects->lastAspects[i]; arc; arc = pre) {
-                pre = arc->preAspect;
-                delAspect__(arc);
-            }
-    }
+    Aspect arc, pre;
+    for (int i = 0; i < aspects->size; ++i)
+        for (arc = aspects->lastAspects[i]; arc; arc = pre) {
+            pre = arc->preAspect;
+            delAspect__(arc);
+        }
     free(aspects);
 }
 
 int getAspects_length(Aspects aspects) { return aspects->length; }
 
-// È¡µÃ×îºóµÄ¾ÖÃæ¼ÇÂ¼
+// å–å¾—æœ€åŽçš„å±€é¢è®°å½•
 static Aspect* getLastAspect__(CAspects aspects, const wchar_t* FEN)
 {
     return &aspects->lastAspects[BKDRHash(FEN) % aspects->size];
 }
 
-// È¡µÃÏàÍ¬¹þÏ£ÖµÏÂÏàÍ¬¾ÖÃæµÄ¼ÇÂ¼
+// å–å¾—ç›¸åŒå“ˆå¸Œå€¼ä¸‹ç›¸åŒå±€é¢çš„è®°å½•
 static Aspect getAspect__(Aspect arc, const wchar_t* FEN)
 {
     while (arc && wcscmp(arc->FEN, FEN) != 0)
@@ -114,34 +110,37 @@ MoveRec getAspect(CAspects aspects, const wchar_t* FEN)
 
 MoveRec putAspect(Aspects aspects, const wchar_t* FEN, CMove move)
 {
-    Aspect *parc = getLastAspect__(aspects, FEN), arc = getAspect__(*parc, FEN);
-    if (arc == NULL) { // ±íÖÐ²»´æÔÚ£¬ÔòÌí¼Ó
-        arc = newAspect__(*parc, FEN, move);
-        *parc = arc;
+    Aspect *plarc = getLastAspect__(aspects, FEN),
+           arc = getAspect__(*plarc, FEN);
+    if (arc == NULL) { // è¡¨ä¸­ä¸å­˜åœ¨ï¼Œåˆ™æ·»åŠ 
+        arc = newAspect__(*plarc, FEN, move);
+        *plarc = arc;
         aspects->length++;
-    }
+    } else
+        arc->lastMoveRec = newMoveRec__(arc->lastMoveRec, move);
+    aspects->movCount++;
     return arc->lastMoveRec;
 }
 
 bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move)
 {
     bool finish = false;
-    Aspect *parc = getLastAspect__(aspects, FEN), arc = getAspect__(*parc, FEN);
+    Aspect *plarc = getLastAspect__(aspects, FEN), arc = getAspect__(*plarc, FEN);
     if (arc) {
         MoveRec lmrc = arc->lastMoveRec, mrc = lmrc;
         while (mrc) {
             if (mrc->move == move) {
-                // Ïµ×î½ü×Å·¨
+                // ç³»æœ€è¿‘ç€æ³•
                 if (arc->lastMoveRec == mrc) {
-                    // ÓÐÇ°×Å·¨
+                    // æœ‰å‰ç€æ³•
                     if (mrc->preMoveRec)
                         arc->lastMoveRec = mrc->preMoveRec;
-                    // ±¾¾ÖÃæÒÑÎÞ×Å·¨£¬ÔòÉ¾³ý¾ÖÃæ
+                    // æœ¬å±€é¢å·²æ— ç€æ³•ï¼Œåˆ™åˆ é™¤å±€é¢
                     else {
-                        if (*parc == arc)
-                            *parc = NULL;
+                        if (*plarc == arc)
+                            *plarc = NULL;
                         else {
-                            Aspect larc = *parc;
+                            Aspect larc = *plarc;
                             while (larc->preAspect != arc)
                                 larc = larc->preAspect;
                             larc->preAspect = arc->preAspect;
@@ -165,72 +164,52 @@ bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move)
 int getLoopCount(CAspects aspects, const wchar_t* FEN)
 {
     int count = 0;
-    MoveRec lmrc = getAspect(aspects, FEN);
-    if (lmrc) {
-        MoveRec mrc = lmrc->preMoveRec;
-        while (mrc) {
-            // ×Å·¨ÏàµÈ
-            if (wcscmp(lmrc->iccs, mrc->iccs) == 0) {
-                // ÅÐ¶Ï×Å·¨ÊÇ·ñÁ¬Í¨£¨ÊÇÖ±½ÓÇ°ºó×Å¹ØÏµ£¬¶ø²»ÊÇÆ½ÐÐµÄ±ä×Å¹ØÏµ£©
-                CMove move = lmrc->move;
-                while ((move = getPre(move))) {
-                    if (move == mrc->move) {
-                        count++;
-                        break;
-                    }
+    MoveRec lmrc = getAspect(aspects, FEN), mrc = lmrc;
+    if (lmrc == NULL)
+        return count;
+    wchar_t liccs[6], iccs[6];
+    while ((mrc = mrc->preMoveRec))
+        // ç€æ³•ç›¸ç­‰
+        if (wcscmp(getICCS(liccs, lmrc->move), getICCS(iccs, mrc->move)) == 0) {
+            // åˆ¤æ–­ç€æ³•æ˜¯å¦è¿žé€šï¼ˆæ˜¯ç›´æŽ¥å‰åŽç€å…³ç³»ï¼Œè€Œä¸æ˜¯å¹³è¡Œçš„å˜ç€å…³ç³»ï¼‰
+            CMove move = lmrc->move;
+            while ((move = getPre(move)))
+                if (move == mrc->move) {
+                    count++;
+                    break;
                 }
-            }
-            mrc = mrc->preMoveRec;
         }
-    }
     return count;
 }
 
-static void writeMoveRecStr__(wchar_t** pstr, int* size, MoveRec mrc)
+static void writeMoveRecStr__(FILE* fout, MoveRec mrc)
 {
     if (mrc == NULL)
         return;
-    wchar_t wstr[WCHARSIZE];
-    swprintf(wstr, WCHARSIZE, L"\t\tmove@:%p iccs:%s\n", mrc->move, mrc->iccs);
-    writeWString(pstr, size, wstr);
-    writeMoveRecStr__(pstr, size, mrc->preMoveRec);
+    wchar_t iccs[6];
+    fwprintf(fout, L"\t\tmove@:%p iccs:%s\n", mrc->move, getICCS(iccs, mrc->move));
+    writeMoveRecStr__(fout, mrc->preMoveRec);
 }
 
-static void writeMoveRecStr(wchar_t** pstr, int* size, MoveRec mrc)
-{
-    if (mrc)
-        writeMoveRecStr__(pstr, size, mrc);
-}
-
-static void writeAspectStr__(wchar_t** pstr, int* size, Aspect asp)
+static void writeAspectStr__(FILE* fout, Aspect asp)
 {
     if (asp == NULL)
         return;
-    wchar_t wstr[WCHARSIZE];
-    swprintf(wstr, WCHARSIZE, L"\tFEN:%s\n", asp->FEN);
-    writeWString(pstr, size, wstr);
-    writeMoveRecStr(pstr, size, asp->lastMoveRec);
-    writeAspectStr__(pstr, size, asp->preAspect);
+    fwprintf(fout, L"\tFEN:%s\n", asp->FEN);
+    writeMoveRecStr__(fout, asp->lastMoveRec);
+    writeAspectStr__(fout, asp->preAspect);
 }
 
-static void writeAspectStr(wchar_t** pstr, int* size, Aspect asp)
-{
-    if (asp)
-        writeAspectStr__(pstr, size, asp);
-}
-
-void writeAspectsStr(wchar_t** pstr, int* size, CAspects aspects)
+void writeAspectsStr(FILE* fout, CAspects aspects)
 {
     assert(aspects);
-    wchar_t wstr[WCHARSIZE];
+    int a = 0;
     for (int i = 0; i < aspects->size; ++i) {
         Aspect lasp = aspects->lastAspects[i];
         if (lasp) {
-            swprintf(wstr, WCHARSIZE, L"\n%3d.\n", i);
-            writeWString(pstr, size, wstr);
-            writeAspectStr(pstr, size, lasp);
+            fwprintf(fout, L"\n%3d. HASH:%4d\n", a++, i);
+            writeAspectStr__(fout, lasp);
         }
     }
-    swprintf(wstr, WCHARSIZE, L"\naspect count:%3d\n", aspects->length);
-    writeWString(pstr, size, wstr);
+    fwprintf(fout, L"\naspect_count:%d aspect_movCount:%d ", aspects->length, aspects->movCount);
 }

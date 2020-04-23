@@ -347,7 +347,7 @@ inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 {
-    if (move->fseat == NULL) // rootMove
+    if (isRootMove(move)) 
         wcscpy(ICCSStr, L"0000");
     else
         swprintf(ICCSStr, 6, L"%c%d%c%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),

@@ -3,27 +3,27 @@
 
 #include "base.h"
 
-// ×Å·¨¼ÇÂ¼ÀàĞÍ
+// ç€æ³•è®°å½•ç±»å‹
 typedef struct MoveRec* MoveRec;
-// ¾ÖÃæ¼ÇÂ¼ÀàĞÍ
+// å±€é¢è®°å½•ç±»å‹
 typedef struct Aspect* Aspect;
 
-// ĞÂ½¨¡¢É¾³ı¾ÖÃæ¹şÏ£±í
+// æ–°å»ºã€åˆ é™¤å±€é¢å“ˆå¸Œè¡¨
 Aspects newAspects(void);
 void delAspects(Aspects aspects);
 
 int getAspects_length(Aspects aspects);
-// È¡µÃ¾ÖÃæµÄ×î½üµÄ×Å·¨¼ÇÂ¼
+// å–å¾—å±€é¢çš„æœ€è¿‘çš„ç€æ³•è®°å½•
 MoveRec getAspect(CAspects aspects, const wchar_t* FEN);
-// ÖÃÈëÒ»¸ö¾ÖÃæ(ÈçÒÑ´æÔÚÏàÍ¬¾ÖÃæÔò²»ĞèÖÃÈë)£¬²¢·µ»Ø×î½üµÄ×Å·¨¼ÇÂ¼
+// ç½®å…¥ä¸€ä¸ªå±€é¢(å¦‚å·²å­˜åœ¨ç›¸åŒå±€é¢åˆ™ä¸éœ€ç½®å…¥)ï¼Œå¹¶è¿”å›æœ€è¿‘çš„ç€æ³•è®°å½•
 MoveRec putAspect(Aspects aspects, const wchar_t* FEN, CMove move);
-// É¾³ıÄ³¾ÖÃæÏÂµÄÄ³×Å·¨£¬Èç¹û¾ÖÃæÏÂÒÑÃ»ÓĞ×Å·¨ÔòÉ¾³ı¾ÖÃæ
+// åˆ é™¤æŸå±€é¢ä¸‹çš„æŸç€æ³•ï¼Œå¦‚æœå±€é¢ä¸‹å·²æ²¡æœ‰ç€æ³•åˆ™åˆ é™¤å±€é¢
 bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move);
 
-// È¡µÃ¾ÖÃæ×î½üÒÑÑ­»·´ÎÊı
+// å–å¾—å±€é¢æœ€è¿‘å·²å¾ªç¯æ¬¡æ•°
 int getLoopCount(CAspects aspects, const wchar_t* FEN);
 
-// Êä³ö¾ÖÃæ×Ö·û´®
-void writeAspectsStr(wchar_t** pstr, int* size, CAspects aspects);
+// è¾“å‡ºå±€é¢å­—ç¬¦ä¸²
+void writeAspectsStr(FILE* fout, CAspects aspects);
 
 #endif
