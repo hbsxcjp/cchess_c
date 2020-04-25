@@ -651,20 +651,12 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
-static void putAspect__(Aspects aspects, Board board, Move move)
-{
-    wchar_t FEN[SEATNUM + 1];
-    putAspect(aspects, getFEN_board(FEN, board), move);
-}
-
 static void setAspects__(Aspects aspects, Board board, Move move)
 {
     if (move == NULL)
         return;
-    wprintf(L"%d: %s\n", __LINE__, getZhStr(move));
-    fflush(stdout);
-
-    putAspect__(aspects, board, move);
+    putAspect_b(aspects, board, move);
+    
     doMove(move);
     setAspects__(aspects, board, getNext(move));
     undoMove(move);
@@ -675,7 +667,7 @@ static void setAspects__(Aspects aspects, Board board, Move move)
 void writeAllAspectStr(FILE* fout, ChessManual cm)
 {
     Aspects aspects = newAspects();
-    putAspect__(aspects, cm->board, cm->rootMove);
+    assert(aspects);
     setAspects__(aspects, cm->board, getNext(cm->rootMove));
     writeAspectsStr(fout, aspects);
     fwprintf(fout, L"cm->moveCount_:%d ", cm->movCount_);

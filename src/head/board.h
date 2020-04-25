@@ -25,6 +25,9 @@ int getRowCol_s(CSeat seat);
 int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);
 
+// 判断位置是否相同
+bool isSameSeat(CSeat aseat, CSeat bseat);
+
 // 根据行、列值获取seat
 Seat getSeat_rc(Board board, int row, int col);
 Seat getSeat_rowcol(Board board, int rowcol);
@@ -61,13 +64,17 @@ int getLiveSeats_cnc(Seat* seats, Board board, PieceColor color, wchar_t name, i
 // 取得某方"兵"的棋子位置seats
 int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name);
 
-// 将帅是否对面
-bool kingIsFace(Board board, PieceColor color);
-// 将帅是否被杀
-bool kingIsKilled(Board board, PieceColor color);
-// 某方棋子是否已困毙
+// 是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
+bool isKill(Board board, PieceColor color);
+// 是否杀（凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”）
+bool isWillKill(Board board, PieceColor color);
+// 是否捉（凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段)吃掉对方某个无根子，称为“捉”）
+bool isCatch(Board board, PieceColor color);
+// 是否将帅对面
+bool isFace(Board board, PieceColor color);
+// 是否困毙
 bool isUnableMove(Board board, PieceColor color);
-// 某方棋子是否已输棋 (根据象棋规则，还需添加更多条件)
+// 是否已输棋 (根据象棋规则，还需添加更多条件)
 bool isFail(Board board, PieceColor color);
 
 // 某棋盘红黑定方向后某种棋子可置入位置的集合，返回位置个数（至少90个）

@@ -8,6 +8,7 @@ struct Move {
     Piece tpiece; // 目标位置棋子
     wchar_t* remark; // 注解
     wchar_t zhStr[6]; // 着法名称
+    bool kill, willKill, catch; // 将、杀、捉
     Move pmove, nmove, omove; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
@@ -25,6 +26,7 @@ static Move newMove__()
     move->tpiece = NULL;
     move->remark = NULL;
     wcscpy(move->zhStr, L"0000");
+    move->kill = move->willKill = move->catch = false;
     move->pmove = move->nmove = move->omove = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
@@ -179,6 +181,14 @@ inline bool hasSimplePre(CMove move) { return move->pmove; }
 inline bool hasOther(CMove move) { return move->omove; }
 inline bool hasPreOther(CMove move) { return hasSimplePre(move) && move == move->pmove->omove; }
 inline bool isRootMove(CMove move) { return move->pmove == NULL; }
+inline bool isSameMove(CMove lmove, CMove pmove) { return isSameSeat(lmove->fseat, pmove->fseat) && isSameSeat(lmove->tseat, pmove->tseat); }
+bool isConnected(CMove lmove, CMove pmove)
+{
+    assert(pmove);
+    while (lmove && lmove != pmove)
+        lmove = getPre(lmove);
+    return lmove;
+}
 
 inline void setNextNo(Move move, int nextNo) { move->nextNo_ = nextNo; }
 inline void setOtherNo(Move move, int otherNo) { move->otherNo_ = otherNo; }
@@ -334,7 +344,7 @@ inline const wchar_t* getRemark(CMove move) { return move->remark; }
 
 const wchar_t* getRcStr_dbrowcol(wchar_t* rcStr, int frow, int fcol, int trow, int tcol)
 {
-    swprintf(rcStr, 5, L"%01x%01x%01x%01x", frow, fcol, trow, tcol);
+    swprintf(rcStr, 5, L"%1x%1x%1x%1x", frow, fcol, trow, tcol);
     return rcStr;
 }
 
@@ -347,7 +357,7 @@ inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 {
-    if (isRootMove(move)) 
+    if (isRootMove(move))
         wcscpy(ICCSStr, L"0000");
     else
         swprintf(ICCSStr, 6, L"%c%d%c%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),
@@ -373,7 +383,16 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
     }
     Move move = newMove__();
     setMoveSeat__(move, board, wstr);
-    return setRemark_addMove__(preMove, move, remark, isOther);
+    setRemark_addMove__(preMove, move, remark, isOther);
+
+    doMove(move);
+    PieceColor color = getColor(getPiece_s(move->fseat));
+    move->kill = isKill(board, getOtherColor(color));
+    move->willKill = isWillKill(board, color);
+    move->catch = isCatch(board, color);
+    undoMove(move);
+
+    return move;
 }
 
 void setRemark(Move move, wchar_t* remark)
@@ -412,8 +431,9 @@ void undoMove(CMove move)
 
 static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
 {
+    wstr[0] = L'\x0';
     wchar_t iccs[6];
-    if (move && move->fseat) // 排除未赋值fseat
+    if (move)
         swprintf(wstr, WCHARSIZE, L"%02x->%02x %s %s@%c",
             getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS(iccs, move), move->zhStr,
             (!isBlankPiece(move->tpiece) ? getPieName(move->tpiece) : getBlankChar()));
@@ -796,7 +816,7 @@ static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
 
 static void writeMove_PGN_ICCSZH__(FILE* fout, Move move, bool isPGN_ZH, bool isOther)
 {
-    wchar_t boutStr[WCHARSIZE], iccs_zhStr[WCHARSIZE];
+    wchar_t boutStr[WCHARSIZE], iccs_zhStr[6];
     swprintf(boutStr, WCHARSIZE, L"%d. ", (getNextNo(move) + 1) / 2);
     bool isEven = getNextNo(move) % 2 == 0;
     if (isOther) {
@@ -1016,7 +1036,7 @@ void writeRemark_PGN_CC(wchar_t** pstr, int* size, CMove rootMove)
     writeRemark_PGN_CC__(pstr, size, rootMove);
 }
 
-bool isNotEat(Move move, int boutCount)
+static bool isStatus__(Move move, int boutCount, bool (*func)(Move))
 {
     int count = 2 * boutCount, preCount = getNextNo(move);
     if (preCount < count)
@@ -1024,7 +1044,19 @@ bool isNotEat(Move move, int boutCount)
     Move preMoves[getNextNo(move)];
     preCount = getPreMoves(preMoves, move);
     while (preCount-- > 0 && count-- > 0)
-        if (!isBlankPiece(preMoves[preCount]->tpiece))
+        if (!func(preMoves[preCount]))
             return false;
     return true;
 }
+
+static bool isEatPiece__(Move move) { return !isBlankPiece(move->tpiece); }
+bool isNotEat(Move move, int boutCount) { return isStatus__(move, boutCount, isEatPiece__); }
+
+static bool isKill__(Move move) { return move->kill; }
+bool isContinuousKill(Move move, int boutCount) { return isStatus__(move, boutCount, isKill__); }
+
+static bool isWillKill__(Move move) { return move->willKill; }
+bool isContinuousWillKill(Move move, int boutCount) { return isStatus__(move, boutCount, isWillKill__); }
+
+static bool isCatch__(Move move) { return move->catch; }
+bool isContinuousCatch(Move move, int boutCount) { return isStatus__(move, boutCount, isCatch__); }

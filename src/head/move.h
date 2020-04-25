@@ -29,6 +29,10 @@ bool hasSimplePre(CMove move);
 bool hasOther(CMove move);
 bool hasPreOther(CMove move);
 bool isRootMove(CMove move);
+// 判断着法是否相同
+bool isSameMove(CMove lmove, CMove pmove);
+// 判断着法是否连通（是直接前后着关系，而不是平行的变着关系）
+bool isConnected(CMove lmove, CMove pmove);
 
 void setNextNo(Move move, int nextNo);
 void setOtherNo(Move move, int otherNo);
@@ -39,6 +43,7 @@ const wchar_t* getRcStr_dbrowcol(wchar_t* rcStr, int frow, int fcol, int trow, i
 const wchar_t* getRcStr_rowcol(wchar_t* rcStr, int frowcol, int trowcol);
 const wchar_t* getZhStr(CMove move);
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
+
 // 添加着法
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
 
@@ -78,5 +83,11 @@ void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, CMove rootMove);
 
 // 判断给定着法及回合数内，是否未吃一子
 bool isNotEat(Move move, int boutCount); //(未测试)
+// 凡走子连续不停照将，而形成循环者，称为“长将”
+bool isContinuousKill(Move move, int boutCount); //(未测试)
+// 凡走子连续不停杀着，而形成循环者，称为“长杀”
+bool isContinuousWillKill(Move move, int boutCount); //(未测试)
+// 凡走子连续追捉一子或数子，而形成循环者，称为“长捉”
+bool isContinuousCatch(Move move, int boutCount); //(未测试)
 
 #endif

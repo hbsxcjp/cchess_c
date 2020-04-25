@@ -17,11 +17,12 @@ int getAspects_length(Aspects aspects);
 MoveRec getAspect(CAspects aspects, const wchar_t* FEN);
 // 置入一个局面(如已存在相同局面则不需置入)，并返回最近的着法记录
 MoveRec putAspect(Aspects aspects, const wchar_t* FEN, CMove move);
+MoveRec putAspect_b(Aspects aspects, Board board, CMove move);
 // 删除某局面下的某着法，如果局面下已没有着法则删除局面
 bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move);
 
-// 取得局面最近已循环次数
-int getLoopCount(CAspects aspects, const wchar_t* FEN);
+// 取得局面循环着法的距离
+int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
 
 // 输出局面字符串
 void writeAspectsStr(FILE* fout, CAspects aspects);

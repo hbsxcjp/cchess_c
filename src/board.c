@@ -67,6 +67,8 @@ inline int getRowCol_s(CSeat seat) { return (getRow_s(seat) << 4) | getCol_s(sea
 inline int getRow_rowcol(int rowcol) { return (rowcol & 0xF0) >> 4; }
 inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
 
+bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowCol_s(bseat); }
+
 inline Seat getSeat_rc(Board board, int row, int col)
 {
     /*
@@ -244,7 +246,25 @@ int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t nam
     return count;
 }
 
-bool kingIsFace(Board board, PieceColor color)
+bool isKill(Board board, PieceColor color)
+{
+    Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
+    int count = getLiveSeats_cs(seats, board->pieces, getOtherColor(color));
+    for (int i = 0; i < count; ++i) {
+        int mcount = moveSeats(mseats, board, seats[i]);
+        for (int m = 0; m < mcount; ++m)
+            // 本方将帅位置在对方强子可走位置范围内
+            if (mseats[m] == kingSeat)
+                return true;
+    }
+    return false;
+}
+
+bool isWillKill(Board board, PieceColor color) { return false; } // 待完善
+
+bool isCatch(Board board, PieceColor color) { return false; } // 待完善
+
+bool isFace(Board board, PieceColor color)
 {
     bool isBottom = isBottomSide(board, color);
     Seat kingSeat = getKingSeat(board, color),
@@ -261,20 +281,6 @@ bool kingIsFace(Board board, PieceColor color)
     return true;
 }
 
-bool kingIsKilled(Board board, PieceColor color)
-{
-    Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int count = getLiveSeats_cs(seats, board->pieces, getOtherColor(color));
-    for (int i = 0; i < count; ++i) {
-        int mcount = moveSeats(mseats, board, seats[i]);
-        for (int m = 0; m < mcount; ++m)
-            // 本方将帅位置在对方强子可走位置范围内
-            if (mseats[m] == kingSeat)
-                return true;
-    }
-    return false;
-}
-
 bool isUnableMove(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
@@ -287,7 +293,7 @@ bool isUnableMove(Board board, PieceColor color)
 
 bool isFail(Board board, PieceColor color)
 {
-    return kingIsFace(board, color) || kingIsKilled(board, color) || isUnableMove(board, color);
+    return isFace(board, color) || isKill(board, color) || isUnableMove(board, color);
 }
 
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind)
