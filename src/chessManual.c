@@ -655,7 +655,7 @@ static void setAspects__(Aspects aspects, Board board, Move move)
 {
     if (move == NULL)
         return;
-    putAspect_b(aspects, board, move);
+    putAspect_bm(aspects, board, move);
     
     doMove(move);
     setAspects__(aspects, board, getNext(move));

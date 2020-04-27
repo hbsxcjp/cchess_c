@@ -342,15 +342,20 @@ static Move setRemark_addMove__(Move preMove, Move move, wchar_t* remark, bool i
 
 inline const wchar_t* getRemark(CMove move) { return move->remark; }
 
-const wchar_t* getRcStr_dbrowcol(wchar_t* rcStr, int frow, int fcol, int trow, int tcol)
+static const wchar_t* getRcStr_dbrowcol__(wchar_t* rcStr, int frow, int fcol, int trow, int tcol)
 {
-    swprintf(rcStr, 5, L"%1x%1x%1x%1x", frow, fcol, trow, tcol);
+    swprintf(rcStr, 8, L"%1x%1x%1x%1x", frow, fcol, trow, tcol);
     return rcStr;
 }
 
-const wchar_t* getRcStr_rowcol(wchar_t* rcStr, int frowcol, int trowcol)
+static const wchar_t* getRcStr_rowcol__(wchar_t* rcStr, int frowcol, int trowcol)
 {
-    return getRcStr_dbrowcol(rcStr, getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol));
+    return getRcStr_dbrowcol__(rcStr, getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol));
+}
+
+const wchar_t* getRcStr_m(wchar_t* rcStr, CMove move)
+{
+    return getRcStr_dbrowcol__(rcStr, getRow_s(move->fseat), getCol_s(move->fseat), getRow_s(move->tseat), getCol_s(move->tseat));
 }
 
 inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
@@ -524,7 +529,7 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
             setRemark(move, remark);
     } else {
         wchar_t rcStr[5];
-        move = addMove(preMove, board, getRcStr_dbrowcol(rcStr, frow, fcol, trow, tcol), XQF, remark, isOther);
+        move = addMove(preMove, board, getRcStr_dbrowcol__(rcStr, frow, fcol, trow, tcol), XQF, remark, isOther);
     }
 
     if (tag & 0x80) //# 有左子树
@@ -572,7 +577,7 @@ static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
     wchar_t* remark = NULL;
     char tag = readMoveTagRemark_BIN__(&remark, fin);
     wchar_t rcStr[5];
-    Move move = addMove(preMove, board, getRcStr_rowcol(rcStr, frowcol, trowcol), BIN, remark, isOther);
+    Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), BIN, remark, isOther);
 
     if (tag & 0x80)
         readMove_BIN__(move, board, fin, false);
@@ -647,7 +652,7 @@ static void readMove_JSON__(Move preMove, Board board, const cJSON* moveJSON, bo
     int frowcol = cJSON_GetObjectItem(moveJSON, "f")->valueint;
     int trowcol = cJSON_GetObjectItem(moveJSON, "t")->valueint;
     wchar_t rcStr[5];
-    Move move = addMove(preMove, board, getRcStr_rowcol(rcStr, frowcol, trowcol), JSON, readMoveRemark_JSON__(moveJSON), isOther);
+    Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), JSON, readMoveRemark_JSON__(moveJSON), isOther);
 
     cJSON* nmoveJSON = cJSON_GetObjectItem(moveJSON, "n");
     if (nmoveJSON)
