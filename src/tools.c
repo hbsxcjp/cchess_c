@@ -1,5 +1,45 @@
 #include "head/tools.h"
 
+bool isPrime(int n)
+{
+    if (n <= 3)
+        return n > 1;
+    for (int i = 2, sn = sqrt(n); i <= sn; i++)
+        if (n % i == 0)
+            return false;
+    return true;
+}
+
+int getPrimes(int* primes, int bitCount)
+{
+    int index = 0;
+    for (int i = 1; i < bitCount; ++i) {
+        int n = (1 << i) - 1;
+        while (n > 1 && !isPrime(n))
+            n--;
+        primes[index++] = n;
+    }
+    return index;
+}
+/*
+    int primes[32];
+    int count = getPrimes(primes, 32);
+    for (int i = 0; i < count; i++)
+        fwprintf(fout, L"%d, ", primes[i]);
+//*/
+
+int getPrime(int size)
+{
+    //static int primes[] = { 509, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65521, INT_MAX };
+    static int primes[] = { 3, 7, 13, 31, 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521,
+        131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
+        67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647, INT_MAX };
+    int i = 0;
+    while (primes[i] < size)
+        i++;
+    return primes[i];
+}
+
 // BKDR Hash Function
 unsigned int BKDRHash(const wchar_t* wstr)
 {

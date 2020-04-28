@@ -95,17 +95,12 @@ static void delAspect__(Aspect aspect)
 
 static Aspects newAspects__(int size)
 {
-    //static int primes[] = { 509, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65521, INT_MAX };
-    //int size = 1 << 10; // 如果哈希函数的散列效果较好，容量长度可以不用素数。使用2的幂，容易取模、翻番
-    //int i = 1;
-    //for (; primes[i] < size; i++)
-    //    ;
-
-    Aspects aspects = malloc(sizeof(struct Aspects) + size * sizeof(Aspect*));
+    size = getPrime(size);
+    Aspects aspects = malloc(sizeof(struct Aspects));
     aspects->size = size;
     aspects->length = aspects->movCount = 0;
     aspects->loadfactor = 0.8;
-    aspects->lastAspects = (Aspect*)(aspects + 1);
+    aspects->lastAspects = malloc(size * sizeof(Aspect*));
     for (int i = 0; i < size; ++i)
         aspects->lastAspects[i] = NULL;
     return aspects;
@@ -113,7 +108,7 @@ static Aspects newAspects__(int size)
 
 Aspects newAspects(void)
 {
-    return newAspects__(509);
+    return newAspects__(1 << 0);
 }
 
 void delAspects(Aspects aspects)
@@ -126,11 +121,11 @@ void delAspects(Aspects aspects)
 
 int getAspects_length(Aspects aspects) { return aspects->length; }
 
-// 取得最后的局面记录
-static Aspect* getLastAspect__(CAspects aspects, const wchar_t* FEN)
-{
-    return &aspects->lastAspects[BKDRHash(FEN) % aspects->size]; // 等效于：& (aspects->size - 1)
-}
+// 取得局面哈希值取模后的数组序号值
+inline static int getIndex_FEN__(const wchar_t* FEN, int size) { return BKDRHash(FEN) % size; }
+
+// 取得最后的局面记录指针
+inline static Aspect* getLastAspect__(CAspects aspects, const wchar_t* FEN) { return &aspects->lastAspects[getIndex_FEN__(FEN, aspects->size)]; }
 
 // 取得相同哈希值下相同局面的记录
 static Aspect getAspect__(Aspect arc, const wchar_t* FEN)
@@ -146,33 +141,47 @@ MoveRec getAspect(CAspects aspects, const wchar_t* FEN)
     return arc ? arc->lastMoveRec : NULL;
 }
 
-// 原局面全面迁移至新表
-static Aspects expandCapacity__(Aspects aspects)
+inline static void insertAspect__(Aspect* plarc, Aspect larc)
 {
-    int size = aspects->size > INT_MAX / 2 ? INT_MAX : aspects->size * 2;
-    Aspects newAspects = newAspects__(size);
-    newAspects->length = aspects->length;
-    newAspects->movCount = aspects->movCount;
+    larc->preAspect = *plarc;
+    *plarc = larc;
+}
+
+// 原局面(指针数组下内容)全面迁移至新表
+static void expandCapacity__(Aspects aspects)
+{
+    int size = getPrime(aspects->size << 1);
+    printf("%d: %d\n", __LINE__, size);
+    fflush(stdout);
+    Aspect *oldLastAspects = aspects->lastAspects,
+           *newLastAspects = malloc(size * sizeof(Aspect*));
+    for (int i = 0; i < size; ++i)
+        newLastAspects[i] = NULL;
     for (int i = 0; i < aspects->size; ++i) {
-        Aspect larc = aspects->lastAspects[i];
-        if (larc)
-            *getLastAspect__(newAspects, larc->FEN) = larc;
+        Aspect larc = oldLastAspects[i];
+        while (larc) {
+            Aspect preArc = larc->preAspect,
+                   *pnlarc = &newLastAspects[getIndex_FEN__(larc->FEN, size)];
+            insertAspect__(pnlarc, larc);
+            larc = preArc;
+        }
     }
-    free(aspects);
-    return newAspects;
+    aspects->size = size;
+    aspects->lastAspects = newLastAspects;
+    free(oldLastAspects);
 }
 
 static MoveRec putAspect__(Aspects aspects, const wchar_t* FEN, const void* source, MoveSourceType mst)
 {
+    // 检查容量，如果超出装载因子则扩容
+    if (aspects->length > aspects->size * aspects->loadfactor || aspects->size == INT_MAX)
+        expandCapacity__(aspects);
     Aspect *plarc = getLastAspect__(aspects, FEN), arc = getAspect__(*plarc, FEN);
-    if (arc == NULL) { // 表中不存在该局面，则添加aspect、move
-        // 检查容量，如果超出装载因子则扩容
-        if (aspects->length > aspects->size * aspects->loadfactor || aspects->size == INT_MAX)
-            ; //aspects = expandCapacity__(aspects);
+    if (arc == NULL) {
         arc = newAspect__(*plarc, FEN, source, mst);
-        *plarc = arc;
+        insertAspect__(plarc, arc);
         aspects->length++;
-    } else { // 表中已存在该局面
+    } else {
         if (mst == MoveRcStrPtr) {
             MoveRec mrc = getMoveRec__(arc->lastMoveRec, (const wchar_t*)source);
             if (mrc) {

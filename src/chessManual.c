@@ -656,7 +656,7 @@ static void setAspects__(Aspects aspects, Board board, Move move)
     if (move == NULL)
         return;
     putAspect_bm(aspects, board, move);
-    
+
     doMove(move);
     setAspects__(aspects, board, getNext(move));
     undoMove(move);
@@ -670,7 +670,7 @@ void writeAllAspectStr(FILE* fout, ChessManual cm)
     assert(aspects);
     setAspects__(aspects, cm->board, getNext(cm->rootMove));
     writeAspectsStr(fout, aspects);
-    fwprintf(fout, L"cm->moveCount_:%d ", cm->movCount_);
+    fwprintf(fout, L"cm->moveCount_:%d\n", cm->movCount_);
     delAspects(aspects);
 }
 
@@ -853,6 +853,7 @@ void testChessManual(FILE* fout)
     //*/
 
     writeAllAspectStr(fout, cm);
+
 
     delChessManual(cm);
 }

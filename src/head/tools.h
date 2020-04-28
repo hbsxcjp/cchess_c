@@ -3,6 +3,11 @@
 
 #include "base.h"
 
+bool isPrime(int n);
+int getPrimes(int* primes, int bitCount);
+// 取得比size大的质数
+int getPrime(int size);
+
 // 哈希函数
 unsigned int BKDRHash(const wchar_t* wstr);
 
