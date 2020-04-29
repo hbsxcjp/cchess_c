@@ -18,6 +18,12 @@ struct ChessManual {
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
 
+typedef struct OperateDirData {
+    int fcount, dcount, movcount, remcount, remlenmax;
+    char* dirto;
+    RecFormat tofmt;
+} * OperateDirData;
+
 static const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
@@ -376,7 +382,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -664,16 +670,81 @@ static void setAspects__(Aspects aspects, Board board, Move move)
     setAspects__(aspects, board, getOther(move));
 }
 
-void writeAllAspectStr(FILE* fout, ChessManual cm)
+void writeAspect__(FILE* fout, ChessManual cm, void write(FILE*, CAspects))
 {
     Aspects aspects = newAspects();
     assert(aspects);
     setAspects__(aspects, cm->board, getNext(cm->rootMove));
-    writeAspectsStr(fout, aspects);
-    fwprintf(fout, L"cm->moveCount_:%d\n", cm->movCount_);
+    write(fout, aspects);
     delAspects(aspects);
 }
 
+void writeAllAspectStr(FILE* fout, ChessManual cm)
+{
+    writeAspect__(fout, cm, writeAspectsStr);
+    fwprintf(fout, L"cm->moveCount_:%d\n", cm->movCount_);
+}
+
+void storeAllAspects(FILE* fout, ChessManual cm)
+{
+    writeAspect__(fout, cm, storeAspects);
+}
+
+static void operateDir__(const char* dirfrom, void operateFile(const char*, void*), void* ptr)
+{
+    long hFile = 0; //文件句柄
+    struct _finddata_t fileinfo = { 0 }; //文件信息
+    char dir_fileName[FILENAME_MAX];
+    sprintf(dir_fileName, "%s\\*", dirfrom);
+    //printf("%d: %s\n", __LINE__, dir_fileName);
+    if ((hFile = _findfirst(dir_fileName, &fileinfo)) == -1)
+        return;
+
+    do {
+        dir_fileName[strlen(dir_fileName) - 1] = '\x0'; // 去掉*号
+        strcat(dir_fileName, fileinfo.name);
+        //sprintf(dir_fileName, "%s\\%s", dirfrom, fileinfo.name);
+        if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
+            if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
+                continue;
+            operateDir__(dir_fileName, operateFile, ptr);
+        } else if (getRecFormat__(getExt(fileinfo.name)) != NOTFMT) //如果是可处理格式的文件,执行转换
+            operateFile(dir_fileName, ptr);
+    } while (_findnext(hFile, &fileinfo) == 0);
+    _findclose(hFile);
+}
+
+static void transFile__(const char* dir_fileName, void* ptr)
+{
+    OperateDirData odata = ptr;
+    ChessManual cm = newChessManual(dir_fileName);
+    /*
+    Move move = getMove(cm->rootMove, 28, 3478); //33, 191; 37, 191
+    if (move) {
+        FILE* mfout = fopen("m", "w");
+        wchar_t mstr[WIDEWCHARSIZE];
+        fwprintf(mfout, L"%s\n", getMoveString(mstr, move));
+        writeAllMoveStr(mfout, cm, move);
+        fclose(mfout);
+    }
+    //*/
+
+    char tofilename[FILENAME_MAX];
+    sprintf(tofilename, "%s\\%s%s", odata->dirto, getFileName_cut(dir_fileName), EXTNAMES[odata->tofmt]);
+
+    //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
+    //fflush(stdout);
+    writeChessManual(cm, tofilename);
+
+    ++odata->fcount;
+    odata->movcount += cm->movCount_;
+    odata->remcount += cm->remCount_;
+    if (odata->remlenmax < cm->maxRemLen_)
+        odata->remlenmax = cm->maxRemLen_;
+    delChessManual(cm);
+}
+
+/*
 static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
     int* pfcount, int* pdcount, int* pmovcount, int* premcount, int* premlenmax)
 {
@@ -719,11 +790,14 @@ static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
                 //fflush(stdout);
                 ChessManual cm = newChessManual(dir_fileName);
+
                 //if (readChessManual__(cm, dir_fileName) == NULL) {
                 //  delChessManual(cm);
                 //  return;
                 //}
-                /*
+                //*/
+
+/*
                 Move move = getMove(cm->rootMove, 28, 3478); //33, 191; 37, 191
                 if (move) {
                     FILE* mfout = fopen("m", "w");
@@ -734,6 +808,7 @@ static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
                 }
                 //*/
 
+/*
                 strcat(tofilename, EXTNAMES[tofmt]);
                 //printf("%s %d: %s\n", __FILE__, __LINE__, tofilename);
                 //fflush(stdout);
@@ -755,21 +830,28 @@ static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
+//*/
 
 void transDir(const char* dirfrom, RecFormat tofmt)
 {
-    int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
+    //int fcount = 0, dcount = 0, movcount = 0, remcount = 0, remlenmax = 0;
     char dirto[FILENAME_MAX] = { 0 };
     strcpy(dirto, dirfrom);
     strcat(getFileName_cut(dirto), EXTNAMES[tofmt]);
+    OperateDirData odata = malloc(sizeof(struct OperateDirData));
+    odata->fcount = odata->dcount = odata->movcount = odata->remcount = odata->remlenmax = 0;
+    odata->dirto = dirto;
+    odata->tofmt = tofmt;
     //printf("%d: %s tofmt:%s\n", __LINE__, dirfrom, EXTNAMES[tofmt]);
 
-    transDir__(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
-    wchar_t wformatStr[] = L"%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n";
-    char formatStr[WCHARSIZE] = { 0 };
-    wcstombs(formatStr, wformatStr, WCHARSIZE);
-    printf(formatStr, dirfrom, EXTNAMES[tofmt], fcount, dcount, movcount, remcount, remlenmax);
+    //transDir__(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
+    operateDir__(dirfrom, transFile__, odata);
+
+    printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n",
+        dirfrom, EXTNAMES[tofmt], odata->fcount, odata->dcount, odata->movcount, odata->remcount, odata->remlenmax);
     fflush(stdout);
+
+    free(odata);
 }
 
 void testTransDir(int fromDir, int toDir,
@@ -853,7 +935,6 @@ void testChessManual(FILE* fout)
     //*/
 
     writeAllAspectStr(fout, cm);
-
 
     delChessManual(cm);
 }

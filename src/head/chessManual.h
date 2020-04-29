@@ -49,6 +49,8 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 // 输出所有局面
 void writeAllAspectStr(FILE* fout, ChessManual cm);
+// 存储局面数据
+void storeAllAspects(FILE* fout, ChessManual cm);
 
 // 转换棋局存储格式
 void transDir(const char* dirfrom, RecFormat fmt);
