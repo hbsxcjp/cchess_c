@@ -17,11 +17,14 @@ char* trim(char* str);
 // 去掉宽字符串前后的空白字符
 wchar_t* wtrim(wchar_t* wstr);
 
-// 从文件名去掉扩展名
-char* getFileName_cut(char* filename);
-
+// 从文件名提取目录名
+char* getDirName(char* filename);
+// 从文件名提取纯文件名，去掉目录
+char* getFileName(char* filename);
 // 从文件名提取扩展名
-const char* getExt(const char* filename);
+const char* getExtName(const char* filename);
+// 转换文件的扩展名
+char* transFileExtName(char* filename, const char* extname);
 
 // 从文件当前指针至尾部获取宽字符串
 wchar_t* getWString(FILE* fin);

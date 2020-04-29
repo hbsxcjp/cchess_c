@@ -89,17 +89,39 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
-char* getFileName_cut(char* filename)
+static char* getSplitChar__(char* filename)
 {
-    char* pext = strrchr(filename, '.');
+    char* pext = strrchr(filename, '/');
+    if (pext == NULL)
+        pext = strrchr(filename, '\\');
+    return pext;
+}
+
+char* getDirName(char* filename)
+{
+    char* pext = getSplitChar__(filename);
     if (pext != NULL)
         *pext = '\0';
     return filename;
 }
 
-const char* getExt(const char* filename)
+char* getFileName(char* filename)
+{
+    char* pext = getSplitChar__(filename);
+    return pext ? pext + 1 : filename;
+}
+
+const char* getExtName(const char* filename)
 {
     return strrchr(filename, '.');
+}
+
+char* transFileExtName(char* filename, const char* extname)
+{
+    char* pext = strrchr(filename, '.');
+    if (pext != NULL)
+        *pext = '\0';
+    return strcat(filename, extname);
 }
 
 wchar_t* getWString(FILE* fin)
