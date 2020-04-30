@@ -30,17 +30,17 @@ static const char* EXTNAMES[] = {
 static const char FILETAG[] = "learnchess";
 
 // 从文件读取到chessManual
-static void readChessManual__(ChessManual cm, const char* filename);
+static void readChessManual__(ChessManual cm, const char* fileName);
 
 // 增删改move后，更新zhStr、行列数值
 static void setMoveNumZhStr__(ChessManual cm, Move move);
 
-ChessManual newChessManual(const char* filename)
+ChessManual newChessManual(const char* fileName)
 {
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
-    wchar_t* fname = malloc(strlen(filename) * sizeof(wchar_t));
-    mbstowcs(fname, filename, FILENAME_MAX);
+    wchar_t* fname = malloc(strlen(fileName) * sizeof(wchar_t));
+    mbstowcs(fname, fileName, FILENAME_MAX);
     cm->fileName = fname;
     cm->board = newBoard();
     cm->currentMove = cm->rootMove = getRootMove();
@@ -48,14 +48,14 @@ ChessManual newChessManual(const char* filename)
         for (int j = 0; j < 2; ++j)
             cm->info[i][j] = NULL;
     cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
-    readChessManual__(cm, filename);
+    readChessManual__(cm, fileName);
     return cm;
 }
 
-ChessManual resetChessManual(ChessManual* cm, const char* filename)
+ChessManual resetChessManual(ChessManual* cm, const char* fileName)
 {
     delChessManual(*cm);
-    return *cm = newChessManual(filename);
+    return *cm = newChessManual(fileName);
 }
 
 void delChessManual(ChessManual cm)
@@ -382,7 +382,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -472,11 +472,11 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
     }
 }
 
-void readChessManual__(ChessManual cm, const char* filename)
+void readChessManual__(ChessManual cm, const char* fileName)
 {
-    if (filename == NULL || strlen(filename) == 0)
+    if (fileName == NULL || strlen(fileName) == 0)
         return;
-    const char* ext = getExtName(filename);
+    const char* ext = getExtName(fileName);
     if (ext == NULL)
         return;
     RecFormat fmt = getRecFormat__(ext);
@@ -484,7 +484,7 @@ void readChessManual__(ChessManual cm, const char* filename)
         wprintf(L"未实现的打开文件扩展名！");
         return;
     }
-    FILE* fin = fopen(filename,
+    FILE* fin = fopen(fileName,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
     if (fin == NULL)
         return;
@@ -512,14 +512,14 @@ void readChessManual__(ChessManual cm, const char* filename)
     fclose(fin);
 }
 
-void writeChessManual(ChessManual cm, const char* filename)
+void writeChessManual(ChessManual cm, const char* fileName)
 {
-    RecFormat fmt = getRecFormat__(getExtName(filename));
+    RecFormat fmt = getRecFormat__(getExtName(fileName));
     if (fmt == NOTFMT) {
         wprintf(L"未实现的写入文件扩展名！");
         return;
     }
-    FILE* fout = fopen(filename,
+    FILE* fout = fopen(fileName,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "wb" : "w");
     if (fout == NULL)
         return;
@@ -670,12 +670,18 @@ static void setAspects__(Aspects aspects, Board board, Move move)
     setAspects__(aspects, board, getOther(move));
 }
 
-void writeAspect__(FILE* fout, ChessManual cm, void write(FILE*, CAspects))
+Aspects getAspects_cm(ChessManual cm)
 {
     Aspects aspects = newAspects();
     assert(aspects);
     setAspects__(aspects, cm->board, getNext(cm->rootMove));
-    write(fout, aspects);
+    return aspects;
+}
+
+void writeAspect__(FILE* fout, ChessManual cm, void writeFun(FILE*, CAspects))
+{
+    Aspects aspects = getAspects_cm(cm);
+    writeFun(fout, aspects);
     delAspects(aspects);
 }
 
@@ -798,14 +804,21 @@ void testTransDir(int fromDir, int toDir, int fmtStart, int fmtEnd, int toFmtSta
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
-    for (int dir = fromDir; dir < sizeof(dirfroms) / sizeof(dirfroms[0]) && dir != toDir; ++dir)
+    for (int dir = fromDir; dir < sizeof(dirfroms) / sizeof(dirfroms[0]) && dir != toDir; ++dir) {
+        dirToAspects__(fout, dirfroms[dir]);
         for (int fromFmt = fmtStart; fromFmt != fmtEnd; ++fromFmt)
             for (int toFmt = toFmtStart; toFmt != toFmtEnd; ++toFmt)
                 if (toFmt > XQF && toFmt != fromFmt) {
                     transDir__(dirfroms[dir], fmts[fromFmt], fmts[toFmt]);
-                    dirToAspects__(fout, dirfroms[dir]);
                 }
+    }
     fclose(fout);
+
+    Aspects aspects = getAspects_fin("asp");
+    fout = fopen("asp_1", "w");
+    storeAspects(fout, aspects);
+    fclose(fout);
+    delAspects(aspects);
 }
 
 // 测试本翻译单元各种对象、函数

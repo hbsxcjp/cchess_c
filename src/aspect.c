@@ -5,14 +5,14 @@
 #include "head/tools.h"
 
 typedef enum {
-    MovePtr,
-    MoveRcStrPtr
+    MovePtrSource,
+    MoveRecSource
 } MoveSourceType;
 
 struct MoveRec {
-    CMove move; // 着法指针
-    wchar_t rcStr[8]; // "rcrc"
-    int count; // 发生次数
+    CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
+    int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
+    int count; // 历史棋谱中该着法已发生的次数(0:表示后续有相同着法)
     int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
@@ -29,27 +29,39 @@ struct Aspects {
     Aspect* lastAspects;
 };
 
+static int getRowCols__(unsigned int source) { return (source >> 16) & 0xFFFF; }
+static int getCount__(unsigned int source) { return (source >> 8) & 0xFF; }
+static int getWeight__(unsigned int source) { return source & 0xFF; }
+
 static MoveRec newMoveRec__(MoveRec preMoveRec, const void* source, MoveSourceType mst)
 {
     assert(source);
     MoveRec mr = malloc(sizeof(struct MoveRec));
     assert(mr);
+    mr->preMoveRec = preMoveRec;
     switch (mst) {
-    case MovePtr:
+    case MovePtrSource: {
         mr->move = (CMove)source;
-        wchar_t tempRcStr[5];
-        wcscpy(mr->rcStr, getRcStr_m(tempRcStr, mr->move));
-        break;
-    case MoveRcStrPtr:
+        mr->rowcols = getRowCols_m(mr->move);
+        mr->count = 1;
+        MoveRec pmr = mr;
+        while ((pmr = pmr->preMoveRec))
+            if (mr->rowcols == pmr->rowcols) {
+                pmr->count = 0; // 重复标记
+                mr->count++;
+            }
+        mr->weight = 0;
+    } break;
+    case MoveRecSource: {
         mr->move = NULL;
-        wcscpy(mr->rcStr, (const wchar_t*)source);
-        break;
+        unsigned int src = *(unsigned int*)source;
+        mr->rowcols = getRowCols__(src);
+        mr->count = getCount__(src);
+        mr->weight = getWeight__(src);
+    } break;
     default:
         break;
     }
-    mr->count = 1;
-    mr->weight = 0;
-    mr->preMoveRec = preMoveRec;
     return mr;
 }
 
@@ -63,9 +75,10 @@ static void delMoveRec__(MoveRec mr)
 }
 
 // 取得相同局面下的着法记录
-static MoveRec getMoveRec__(MoveRec mr, const wchar_t* rcStr)
+static MoveRec getMoveRec__(MoveRec mr, unsigned int* source)
 {
-    while (mr && wcscmp(mr->rcStr, rcStr) != 0)
+    int rowcols = getRowCols__(*source);
+    while (mr && mr->rowcols != rowcols)
         mr = mr->preMoveRec;
     return mr;
 }
@@ -111,6 +124,26 @@ Aspects newAspects(void)
     return newAspects__(0);
 }
 
+Aspects getAspects_fin(const char* fileName)
+{
+    FILE* fin = fopen(fileName, "r");
+    Aspects aspects = newAspects();
+    assert(aspects);
+    wchar_t lineStr[FILENAME_MAX] = { 0 };
+    while (fgetws(lineStr, FILENAME_MAX, fin)) {
+        wchar_t FEN[SEATNUM] = { 0 };
+        if (swscanf(lineStr, L"%s", FEN) != 1)
+            continue;
+        wchar_t* sourceStr = lineStr + wcslen(FEN);
+        unsigned int source = 0;
+        while (swscanf(sourceStr, L"%x", &source) == 1) {
+            putAspect_fu(aspects, FEN, &source);
+            sourceStr += 9; // 8位数字和1个空格
+        }
+    }
+    return aspects;
+}
+
 void delAspects(Aspects aspects)
 {
     assert(aspects);
@@ -141,20 +174,15 @@ MoveRec getAspect(CAspects aspects, const wchar_t* FEN)
     return asp ? asp->lastMoveRec : NULL;
 }
 
-inline static void insertAspect__(Aspect* plarc, Aspect lasp)
-{
-    lasp->preAspect = *plarc;
-    *plarc = lasp;
-}
-
 // 检查容量，如果超出装载因子则扩容, 原局面(指针数组下内容)全面迁移至新表
 static void checkCapacity__(Aspects aspects)
 {
     if (aspects->length < aspects->size * aspects->loadfactor || aspects->size == INT_MAX)
         return;
     int size = getPrime(aspects->size);
-    printf("%d: %d\n", __LINE__, size);
-    fflush(stdout);
+    //printf("%d: %d\n", __LINE__, size);
+    //fflush(stdout);
+
     Aspect *oldLastAspects = aspects->lastAspects,
            *newLastAspects = malloc(size * sizeof(Aspect*));
     for (int i = 0; i < size; ++i)
@@ -163,8 +191,11 @@ static void checkCapacity__(Aspects aspects)
         Aspect lasp = oldLastAspects[i];
         while (lasp) {
             Aspect preArc = lasp->preAspect,
-                   *pnlarc = &newLastAspects[getIndex_FEN__(lasp->FEN, size)];
-            insertAspect__(pnlarc, lasp);
+                   *plarc = &newLastAspects[getIndex_FEN__(lasp->FEN, size)];
+            // 在新表的新哈希位置插入lasp
+            lasp->preAspect = *plarc;
+            *plarc = lasp;
+            // 往前推进
             lasp = preArc;
         }
     }
@@ -173,38 +204,29 @@ static void checkCapacity__(Aspects aspects)
     free(oldLastAspects);
 }
 
-static MoveRec putAspect__(Aspects aspects, const wchar_t* FEN, const void* source, MoveSourceType mst)
+static void putAspect__(Aspects aspects, const wchar_t* FEN, const void* source, MoveSourceType mst)
 {
     checkCapacity__(aspects);
     Aspect *plarc = getLastAspect__(aspects, FEN), asp = getAspect__(*plarc, FEN);
     if (asp == NULL) {
-        asp = newAspect__(*plarc, FEN, source, mst);
-        insertAspect__(plarc, asp);
+        *plarc = newAspect__(*plarc, FEN, source, mst);
         aspects->length++;
     } else {
-        if (mst == MoveRcStrPtr) {
-            MoveRec mr = getMoveRec__(asp->lastMoveRec, (const wchar_t*)source);
-            if (mr) {
-                mr->count++;
-                return mr;
-            }
-        }
+        // 已有相同着法，则不添加
+        if (mst == MoveRecSource && getMoveRec__(asp->lastMoveRec, (unsigned int*)source))
+            return;
         asp->lastMoveRec = newMoveRec__(asp->lastMoveRec, source, mst);
     }
     aspects->movCount++;
-    return asp->lastMoveRec;
 }
 
-MoveRec putAspect_bm(Aspects aspects, Board board, CMove move)
+void putAspect_bm(Aspects aspects, Board board, CMove move)
 {
     wchar_t FEN[SEATNUM + 1];
-    return putAspect__(aspects, getFEN_board(FEN, board), move, MovePtr);
+    putAspect__(aspects, getFEN_board(FEN, board), move, MovePtrSource);
 }
 
-MoveRec putAspect_fs(Aspects aspects, const wchar_t* FEN, const wchar_t* rcStr)
-{
-    return putAspect__(aspects, FEN, rcStr, MoveRcStrPtr);
-}
+void putAspect_fu(Aspects aspects, const wchar_t* FEN, unsigned int* source) { putAspect__(aspects, FEN, source, MoveRecSource); }
 
 bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move)
 {
@@ -311,12 +333,13 @@ void writeAspectsStr(FILE* fout, CAspects aspects)
 
 static void printfAspectLib__(Aspect asp, void* ptr)
 {
-    fwprintf((FILE*)ptr, L"\n%s\n", asp->FEN);
+    fwprintf((FILE*)ptr, L"\n%s ", asp->FEN);
 }
 
 static void printfMoveRecLib__(MoveRec mr, void* ptr)
 {
-    fwprintf((FILE*)ptr, L"%s ", mr->rcStr);
+    if (mr->count > 0) // 排除重复标记的着法
+        fwprintf((FILE*)ptr, L"%04x%02x%02x ", mr->rowcols, mr->count, mr->weight);
 }
 
 static void writeAspectLib__(Aspect lasp, void* ptr)

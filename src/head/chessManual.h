@@ -4,10 +4,10 @@
 #include "base.h"
 
 // 新建chessManual
-ChessManual newChessManual(const char* filename);
+ChessManual newChessManual(const char* fileName);
 
 // 从文件读取重置chessManual
-ChessManual resetChessManual(ChessManual* cm, const char* filename);
+ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 
 // 删除chessManual
 void delChessManual(ChessManual cm);
@@ -21,7 +21,7 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
 
 // 从chessManual存储到文件
-void writeChessManual(ChessManual cm, const char* filename);
+void writeChessManual(ChessManual cm, const char* fileName);
 
 // 前进一步
 void go(ChessManual cm);
@@ -38,15 +38,16 @@ void backOther(ChessManual cm);
 void backFirst(ChessManual cm);
 // 后退至指定move
 void backTo(ChessManual cm, Move move);
-
 // 前进或后退数步
 void goInc(ChessManual cm, int inc);
 
 // 转变棋局实例
 void changeChessManual(ChessManual cm, ChangeType ct);
-
 // 某着从头至尾的着法图示
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
+
+// 生成局面表
+Aspects getAspects_cm(ChessManual cm);
 // 输出所有局面
 void writeAllAspectStr(FILE* fout, ChessManual cm);
 // 存储局面数据

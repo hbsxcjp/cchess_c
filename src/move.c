@@ -353,6 +353,8 @@ static const wchar_t* getRcStr_rowcol__(wchar_t* rcStr, int frowcol, int trowcol
     return getRcStr_dbrowcol__(rcStr, getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol));
 }
 
+int getRowCols_m(CMove move) { return (getRowCol_s(move->fseat) << 8) | getRowCol_s(move->tseat); }
+
 const wchar_t* getRcStr_m(wchar_t* rcStr, CMove move)
 {
     return getRcStr_dbrowcol__(rcStr, getRow_s(move->fseat), getCol_s(move->fseat), getRow_s(move->tseat), getCol_s(move->tseat));

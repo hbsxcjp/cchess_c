@@ -39,6 +39,8 @@ void setOtherNo(Move move, int otherNo);
 void setCC_ColNo(Move move, int CC_ColNo);
 
 const wchar_t* getRemark(CMove move);
+// 获取行列整数值 "rcrc"
+int getRowCols_m(CMove move);
 const wchar_t* getRcStr_m(wchar_t* rcStr, CMove move);
 const wchar_t* getZhStr(CMove move);
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
