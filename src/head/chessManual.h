@@ -52,8 +52,6 @@ void writeAllAspectStr(FILE* fout, ChessManual cm);
 // 存储局面数据
 void storeAllAspects(FILE* fout, ChessManual cm);
 
-// 转换棋局存储格式
-void transDir(const char* dirfrom, RecFormat fromfmt, RecFormat fmt);
 // 批量转换目录的存储格式
 void testTransDir(int fromDir, int toDir,
     int fromFmtStart, int fromFmtEnd, int toFmtStart, int toFmtEnd);

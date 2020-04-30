@@ -20,6 +20,7 @@ struct ChessManual {
 
 typedef struct OperateDirData {
     int fcount, dcount, movcount, remcount, remlenmax;
+    const char *fromDir, *toDir;
     RecFormat fromfmt, tofmt;
 } * OperateDirData;
 
@@ -381,7 +382,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -689,46 +690,46 @@ void storeAllAspects(FILE* fout, ChessManual cm)
     writeAspect__(fout, cm, storeAspects);
 }
 
-static void operateDir__(const char* dirfrom, void operateFile(char*, void*), void* ptr)
+static void operateDir__(const char* fromDir, void operateFile(char*, void*), void* ptr)
 {
     long hFile = 0; //文件句柄
     struct _finddata_t fileinfo = { 0 }; //文件信息
-    char dirname[FILENAME_MAX];
-    sprintf(dirname, "%s\\*", dirfrom);
-    //printf("%d: %s\n", __LINE__, dirname);
+
+    char findName[FILENAME_MAX];
+    snprintf(findName, FILENAME_MAX, "%s/*", fromDir);
+    //printf("%d: %s\n", __LINE__, findName);
     //fflush(stdout);
 
-    if ((hFile = _findfirst(dirname, &fileinfo)) == -1)
+    if ((hFile = _findfirst(findName, &fileinfo)) == -1)
         return;
 
     do {
         if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
             continue;
         char dir_fileName[FILENAME_MAX];
-        snprintf(dir_fileName, FILENAME_MAX, "%s/%s", dirfrom, fileinfo.name);
-        if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
+        snprintf(dir_fileName, FILENAME_MAX, "%s/%s", fromDir, fileinfo.name);
+
+        //如果是目录,迭代之
+        if (fileinfo.attrib & _A_SUBDIR) {
             operateDir__(dir_fileName, operateFile, ptr);
-        } else if (getRecFormat__(getExtName(fileinfo.name)) != NOTFMT) //如果是可处理格式的文件,执行转换
+            //如果是可处理格式的文件,执行转换
+        } else if (getRecFormat__(getExtName(fileinfo.name)) != NOTFMT)
             operateFile(dir_fileName, ptr);
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
 
-static void replaceExtName(char* fileName, const char* fext, const char* text)
+static void fileToAspect__(char* fileName, void* ptr)
 {
-    char* pos;
-    for (int i = strlen(fileName) - 1; i >= 0; --i)
-        if (isupper(fileName[i]))
-            fileName[i] = tolower(fileName[i]);
-    while ((pos = strstr(fileName, fext))) {
-        int offset = pos - fileName;
-        char tmpFileName[FILENAME_MAX];
-        strcpy(tmpFileName, fileName);
-        tmpFileName[offset] = '\x0';
-        strcat(tmpFileName, text);
-        strcat(tmpFileName, pos + strlen(fext));
-        strcpy(fileName, tmpFileName);
-    }
+    FILE* fout = ptr;
+    ChessManual cm = newChessManual(fileName);
+    storeAllAspects(fout, cm);
+    delChessManual(cm);
+}
+
+static void dirToAspects__(FILE* fout, const char* fromDir)
+{
+    operateDir__(fromDir, fileToAspect__, fout);
 }
 
 static void transFile__(char* fileName, void* ptr)
@@ -738,17 +739,21 @@ static void transFile__(char* fileName, void* ptr)
     //printf("%d: %s\n", __LINE__, fileName);
     //fflush(stdout);
 
-    replaceExtName(fileName, EXTNAMES[odata->fromfmt], EXTNAMES[odata->tofmt]);
-    char toDirName[FILENAME_MAX];
-    strcpy(toDirName, fileName);
+    char toFileName[FILENAME_MAX], toDirName[FILENAME_MAX];
+    snprintf(toDirName, FILENAME_MAX, "%s%s", odata->toDir, fileName + strlen(odata->fromDir));
     getDirName(toDirName);
-    if (access(toDirName, 0) != 0)
+    if (strlen(toDirName) > 0 && access(toDirName, 0) != 0) {
         mkdir(toDirName);
+        //printf("%d: %s\n", __LINE__, toDirName);
+        //fflush(stdout);
+    }
 
-    //printf("%d: %s\n", __LINE__, fileName);
+    transFileExtName(fileName, EXTNAMES[odata->tofmt]);
+    snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
+    //printf("%d: %s\n", __LINE__, toFileName);
     //fflush(stdout);
 
-    writeChessManual(cm, fileName);
+    writeChessManual(cm, toFileName);
     ++odata->fcount;
     odata->movcount += cm->movCount_;
     odata->remcount += cm->remCount_;
@@ -757,134 +762,50 @@ static void transFile__(char* fileName, void* ptr)
     delChessManual(cm);
 }
 
-/*
-static void transDir__(const char* dirfrom, const char* dirto, RecFormat tofmt,
-    int* pfcount, int* pdcount, int* pmovcount, int* premcount, int* premlenmax)
+// 转换棋局存储格式
+static void transDir__(const char* fromDir, RecFormat fromfmt, RecFormat tofmt)
 {
-    long hFile = 0; //文件句柄
-    struct _finddata_t fileinfo = { 0 }; //文件信息
-    if (access(dirto, 0) != 0)
-        mkdir(dirto);
-    char dirName[FILENAME_MAX] = { 0 };
-    strcpy(dirName, dirfrom);
-    //printf("%d: %s\n", __LINE__, dirName);
-    if ((hFile = _findfirst(strcat(dirName, "\\*"), &fileinfo)) == -1)
-        return;
+    char toDir[FILENAME_MAX]; //, curDir[FILENAME_MAX];
+    sprintf(toDir, "%s%s", fromDir, EXTNAMES[tofmt]);
+    //getcwd(curDir, FILENAME_MAX);
+    //chdir(fromDir);
 
-    do {
-        char name[FILENAME_MAX] = { 0 };
-        strcpy(name, fileinfo.name);
-        char dir_fileName[FILENAME_MAX] = { 0 };
-        strcpy(dir_fileName, dirfrom);
-        strcat(strcat(dir_fileName, "\\"), name);
-        //printf("%d: len:%d %s\n", __LINE__, (int)strlen(dir_fileName), dir_fileName);
-
-        if (fileinfo.attrib & _A_SUBDIR) { //如果是目录,迭代之
-            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
-                continue;
-            ++*pdcount;
-            char subdirto[FILENAME_MAX] = { 0 };
-            strcpy(subdirto, dirto);
-            strcat(strcat(subdirto, "\\"), name);
-            transDir__(dir_fileName, subdirto, tofmt,
-                pfcount, pdcount, pmovcount, premcount, premlenmax);
-        } else { //如果是文件,执行转换
-            char fromExt[FILENAME_MAX] = { 0 };
-            strcpy_s(fromExt, FILENAME_MAX, getExtName(name));
-            //printf("%d: %s len:%d\n", __LINE__, name, (int)strlen(name));
-
-            char toFileName[FILENAME_MAX] = { 0 };
-            strcpy(toFileName, dirto);
-            strcat(strcat(toFileName, "\\"), transFileExtName(name));
-            //printf("%d: dirto: %s fromExt: %s Recformat: %d\n",
-            //    __LINE__, dirto, fromExt, getRecFormat__(fromExt));
-            //
-            if (getRecFormat__(fromExt) != NOTFMT) {
-                //printf("%s %d: %s\n", __FILE__, __LINE__, dir_fileName);
-                //fflush(stdout);
-                ChessManual cm = newChessManual(dir_fileName);
-
-                //if (readChessManual__(cm, dir_fileName) == NULL) {
-                //  delChessManual(cm);
-                //  return;
-                //}
-                //*/
-
-/*
-                Move move = getMove(cm->rootMove, 28, 3478); //33, 191; 37, 191
-                if (move) {
-                    FILE* mfout = fopen("m", "w");
-                    wchar_t mstr[WIDEWCHARSIZE];
-                    fwprintf(mfout, L"%s\n", getMoveString(mstr, move));
-                    writeAllMoveStr(mfout, cm, move);
-                    fclose(mfout);
-                }
-                //*/
-
-/*
-                strcat(toFileName, EXTNAMES[tofmt]);
-                //printf("%s %d: %s\n", __FILE__, __LINE__, toFileName);
-                //fflush(stdout);
-                writeChessManual(cm, toFileName);
-
-                ++*pfcount;
-                *pmovcount += cm->movCount_;
-                *premcount += cm->remCount_;
-                if (*premlenmax < cm->maxRemLen_)
-                    *premlenmax = cm->maxRemLen_;
-                delChessManual(cm);
-            } else {
-                //strcat(toFileName, fromExt);
-                //copyFile(dir_fileName, toFileName);
-                //printf("%d: %s\n", __LINE__, toFileName);
-            }
-            //
-        }
-    } while (_findnext(hFile, &fileinfo) == 0);
-    _findclose(hFile);
-}
-//*/
-
-void transDir(const char* dirfrom, RecFormat fromfmt, RecFormat tofmt)
-{
     OperateDirData odata = malloc(sizeof(struct OperateDirData));
     odata->fcount = odata->dcount = odata->movcount = odata->remcount = odata->remlenmax = 0;
+    odata->fromDir = fromDir;
+    odata->toDir = toDir;
     odata->fromfmt = fromfmt;
     odata->tofmt = tofmt;
-
-    //transDir__(dirfrom, dirto, tofmt, &fcount, &dcount, &movcount, &remcount, &remlenmax);
-    operateDir__(dirfrom, transFile__, odata);
+    operateDir__(fromDir, transFile__, odata);
 
     printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n",
-        dirfrom, EXTNAMES[odata->tofmt], odata->fcount, odata->dcount, odata->movcount, odata->remcount, odata->remlenmax);
+        fromDir, toDir, odata->fcount, odata->dcount, odata->movcount, odata->remcount, odata->remlenmax);
     fflush(stdout);
 
+    //chdir(curDir);
     free(odata);
 }
 
-void testTransDir(int fromDir, int toDir,
-    int fromFmtStart, int fromFmtEnd, int toFmtStart, int toFmtEnd)
+void testTransDir(int fromDir, int toDir, int fmtStart, int fmtEnd, int toFmtStart, int toFmtEnd)
 {
     const char* dirfroms[] = {
-        "./chessManual/示例文件",
-        "./chessManual/象棋杀着大全",
-        "./chessManual/疑难文件",
-        "./chessManual/中国象棋棋谱大全"
+        "chessManual/示例文件",
+        "chessManual/象棋杀着大全",
+        "chessManual/疑难文件",
+        "chessManual/中国象棋棋谱大全"
     };
+    FILE* fout = fopen("asp", "w");
 
-    RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     // 调节三个循环变量的初值、终值，控制转换目录
-    for (int dir = fromDir; dir < sizeof(dirfroms) / sizeof(dirfroms[0]) && dir != toDir; ++dir) {
-        for (int fromFmt = fromFmtStart; fromFmt != fromFmtEnd; ++fromFmt) {
-            char fromDirName[FILENAME_MAX];
-            strcpy(fromDirName, dirfroms[dir]);
-            strcat(fromDirName, EXTNAMES[fmts[fromFmt]]);
+    RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
+    for (int dir = fromDir; dir < sizeof(dirfroms) / sizeof(dirfroms[0]) && dir != toDir; ++dir)
+        for (int fromFmt = fmtStart; fromFmt != fmtEnd; ++fromFmt)
             for (int toFmt = toFmtStart; toFmt != toFmtEnd; ++toFmt)
                 if (toFmt > XQF && toFmt != fromFmt) {
-                    transDir(fromDirName, fmts[fromFmt], fmts[toFmt]);
+                    transDir__(dirfroms[dir], fmts[fromFmt], fmts[toFmt]);
+                    dirToAspects__(fout, dirfroms[dir]);
                 }
-        }
-    }
+    fclose(fout);
 }
 
 // 测试本翻译单元各种对象、函数

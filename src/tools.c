@@ -102,6 +102,8 @@ char* getDirName(char* filename)
     char* pext = getSplitChar__(filename);
     if (pext != NULL)
         *pext = '\0';
+    else
+        filename[0] = '\0';
     return filename;
 }
 

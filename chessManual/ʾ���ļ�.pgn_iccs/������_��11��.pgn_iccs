@@ -1,0 +1,27 @@
+[TitleA "第11局"]
+[Event ""]
+[Date ""]
+[Site ""]
+[Red ""]
+[Black ""]
+[Opening ""]
+[RMKWriter ""]
+[Author ""]
+[PlayType "残局"]
+[FEN "9/4N4/3k5/9/2b6/9/9/9/9/5K3 -b"]
+[Result "红胜"]
+[Version "18"]
+
+ 
+{　　高象、将在上三线，马可捉到象。
+}
+ 1. f0e0  
+{　　平帅占中，压缩将的活动范围，是入局的要着。
+}
+  c5e7 (1. ... d7d8 2. e8d6  d8d7 3. e0e1  c5a7 4. d6b7 )2. e8g7  e7g5 (2. ... e7g9 3. g7f9  
+{　　运马抢占选位，策划抢占上三线大角摛象，是获胜的重要步骤。
+}
+  g9i7 4. f9h8  i7g5 (4. ... d7d8 5. h8f7  d8d7 6. e0e1  
+{　　得象胜。
+}
+ )5. h8f7  g5e7 6. f7e5  d7d8 7. e5c6 )3. g7f9  g5i7 4. f9h8  i7g5 5. h8f7  g5e7 6. f7e5  d7d8 7. e5c6  d8e8 8. c6e7 

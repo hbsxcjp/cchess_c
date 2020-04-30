@@ -1,0 +1,36 @@
+[TitleA "$3、第一轮 柳大华　红先和 吕钦 2001.1"]
+[Event "$3、第一轮 柳大华　红先和 吕钦 2001.1"]
+[Date ""]
+[Site ""]
+[Red ""]
+[Black ""]
+[Opening ""]
+[RMKWriter "郭有志"]
+[Author "郭有志"]
+[PlayType "全局"]
+[FEN "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR -b"]
+[Result "和棋"]
+[Version "16"]
+
+1. g0e2  b7d7 2. a0a1  b9c7 3. a1d1  h9g7 4. b0a2  a9b9 5. a3a4  b9b5 6. d1d4  b5f5 7. a2b4  c6c5 8. h0i2  f9e8 9. i3i4  g6g5 10. i2h4  h7h2  
+{车无好点可占，采取一车换双
+}
+ (10. ... f5f6 (10. ... f5f8 )11. b4d5  d7d4 12. d5f6 )11. h4f5  g7f5 12. d4f4  h2b2 13. f4f5  c9e7 14. i0h0  b2b3 15. h0h4  b3e3 16. d0e1  e3e5 17. c3c4  d7d5  
+{轰车护兵，好棋！
+}
+ 18. f5f3  i6i5 19. c4c5  e5c5 20. h4d4  i5i4  
+{弃子
+}
+ 21. b4d5  c7d5 22. d4d5  c5c7  
+{当务之急是消灭红兵
+}
+ 23. d5d6  c7a7 24. d6a6  a7a4  
+{再弃子，精彩！！
+}
+ 25. a6a4  i9i7 26. a4e4  e6e5 27. e4e5  
+{三弃子
+}
+  i4h4 28. f3f8  g5g4 29. e5e6  i7f7  
+{单车仕象全守和双车
+}
+ (29. ... g4g3 30. e6g6  i7i9 31. g6g3  g9i7 32. g3e3  e7g5 )
