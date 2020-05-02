@@ -34,11 +34,13 @@ void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr);
 
 // 复制文件
 int copyFile(const char* SourceFile, const char* NewFile);
+// 循环目录下文件，调用操作函数
+void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr);
 
 // 提取目录下的文件信息
-void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive);
+//void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive);
 
 // 测试函数
-void testTools(FILE* fout);
+//void testTools(FILE* fout);
 
 #endif

@@ -21,6 +21,7 @@ int getOtherRow_s(CSeat seat);
 int getOtherCol_s(CSeat seat);
 
 // 获取行列整数值
+int getRowCol_rc(int row, int col);
 int getRowCol_s(CSeat seat);
 int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);

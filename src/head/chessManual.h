@@ -46,12 +46,10 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 // 某着从头至尾的着法图示
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
-// 生成局面表
-Aspects getAspects_cm(ChessManual cm);
-// 输出所有局面
-void writeAllAspectStr(FILE* fout, ChessManual cm);
-// 存储局面数据
-void storeAllAspects(FILE* fout, ChessManual cm);
+// 批量存储目录到局面记录库
+void dirToAspects(Aspects aspects, const char* fromDir);
+// 批量转换棋局存储格式
+void transDir(const char* fromDir, RecFormat fromfmt, RecFormat tofmt);
 
 // 批量转换目录的存储格式
 void testTransDir(int fromDir, int toDir,

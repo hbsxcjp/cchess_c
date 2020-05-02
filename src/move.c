@@ -97,23 +97,6 @@ Move getPre(CMove move)
 inline Move getNext(CMove move) { return move->nmove; }
 inline Move getOther(CMove move) { return move->omove; }
 
-Move getMove(Move move, int nextNo, int colNo)
-{
-    if (nextNo == getNextNo(move) && colNo == getCC_ColNo(move))
-        return move;
-
-    Move resMove = NULL;
-    if (hasOther(move))
-        resMove = getMove(getOther(move), nextNo, colNo);
-    if (resMove)
-        return resMove;
-
-    if (hasNext(move))
-        resMove = getMove(getNext(move), nextNo, colNo);
-
-    return resMove;
-}
-
 void cutMove(Move move)
 {
     if (hasPreOther(move))
@@ -181,7 +164,7 @@ inline bool hasSimplePre(CMove move) { return move->pmove; }
 inline bool hasOther(CMove move) { return move->omove; }
 inline bool hasPreOther(CMove move) { return hasSimplePre(move) && move == move->pmove->omove; }
 inline bool isRootMove(CMove move) { return move->pmove == NULL; }
-inline bool isSameMove(CMove lmove, CMove pmove) { return isSameSeat(lmove->fseat, pmove->fseat) && isSameSeat(lmove->tseat, pmove->tseat); }
+inline bool isSameMove(CMove lmove, CMove pmove) { return getRowCols_m(lmove) == getRowCols_m(pmove); }
 bool isConnected(CMove lmove, CMove pmove)
 {
     assert(pmove);
@@ -342,23 +325,13 @@ static Move setRemark_addMove__(Move preMove, Move move, wchar_t* remark, bool i
 
 inline const wchar_t* getRemark(CMove move) { return move->remark; }
 
-static const wchar_t* getRcStr_dbrowcol__(wchar_t* rcStr, int frow, int fcol, int trow, int tcol)
+static const wchar_t* getRcStr_rowcol__(wchar_t* rcStr, int frowcol, int trowcol)
 {
-    swprintf(rcStr, 8, L"%1x%1x%1x%1x", frow, fcol, trow, tcol);
+    swprintf(rcStr, 8, L"%02x%02x", frowcol, trowcol);
     return rcStr;
 }
 
-static const wchar_t* getRcStr_rowcol__(wchar_t* rcStr, int frowcol, int trowcol)
-{
-    return getRcStr_dbrowcol__(rcStr, getRow_rowcol(frowcol), getCol_rowcol(frowcol), getRow_rowcol(trowcol), getCol_rowcol(trowcol));
-}
-
 int getRowCols_m(CMove move) { return (getRowCol_s(move->fseat) << 8) | getRowCol_s(move->tseat); }
-
-const wchar_t* getRcStr_m(wchar_t* rcStr, CMove move)
-{
-    return getRcStr_dbrowcol__(rcStr, getRow_s(move->fseat), getCol_s(move->fseat), getRow_s(move->tseat), getCol_s(move->tseat));
-}
 
 inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
@@ -447,6 +420,24 @@ static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
     return wstr;
 }
 
+static void moveMap__(Move move, void apply(Move, void*, void*), void* ptr1, void* ptr2)
+{
+    if (move == NULL)
+        return;
+    apply(move, ptr1, ptr2);
+
+    doMove(move);
+    moveMap__(getNext(move), apply, ptr1, ptr2);
+    undoMove(move);
+
+    moveMap__(getOther(move), apply, ptr1, ptr2);
+}
+
+void moveMap(Move rootMove, void apply(Move, void*, void*), void* ptr1, void* ptr2)
+{
+    moveMap__(getNext(rootMove), apply, ptr1, ptr2);
+}
+
 wchar_t* getMoveStr(wchar_t* wstr, CMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
@@ -531,7 +522,7 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
             setRemark(move, remark);
     } else {
         wchar_t rcStr[5];
-        move = addMove(preMove, board, getRcStr_dbrowcol__(rcStr, frow, fcol, trow, tcol), XQF, remark, isOther);
+        move = addMove(preMove, board, getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol)), XQF, remark, isOther);
     }
 
     if (tag & 0x80) //# 有左子树

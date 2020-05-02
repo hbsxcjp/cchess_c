@@ -182,6 +182,35 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
+void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr)
+{
+    long hFile = 0; //文件句柄
+    struct _finddata_t fileinfo = { 0 }; //文件信息
+
+    char findName[FILENAME_MAX];
+    snprintf(findName, FILENAME_MAX, "%s/*", fromDir);
+    //printf("%d: %s\n", __LINE__, findName);
+    //fflush(stdout);
+
+    if ((hFile = _findfirst(findName, &fileinfo)) == -1)
+        return;
+
+    do {
+        if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
+            continue;
+        char dir_fileName[FILENAME_MAX];
+        snprintf(dir_fileName, FILENAME_MAX, "%s/%s", fromDir, fileinfo.name);
+
+        //如果是目录,迭代之
+        if (fileinfo.attrib & _A_SUBDIR) {
+            operateDir(dir_fileName, operateFile, ptr);
+            //如果是可处理格式的文件,执行转换
+        } else
+            operateFile(dir_fileName, ptr);
+    } while (_findnext(hFile, &fileinfo) == 0);
+    _findclose(hFile);
+}
+/*
 static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
 {
     if (*fileCount > maxCount) {
@@ -224,10 +253,10 @@ void getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount,
 void testTools(FILE* fout)
 {
     wchar_t* paths[] = {
-        L"c:\\棋谱\\示例文件.pgn_zh",
-        L"c:\\棋谱\\象棋杀着大全.pgn_zh",
-        L"c:\\棋谱\\疑难文件.pgn_iccs",
-        L"c:\\棋谱\\中国象棋棋谱大全"
+        L"chessManual/示例文件",
+        L"chessManual/象棋杀着大全",
+        L"chessManual/疑难文件",
+        L"chessManual/中国象棋棋谱大全"
     };
     int sum = 0;
     for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
@@ -241,3 +270,4 @@ void testTools(FILE* fout)
     }
     fwprintf(fout, L"总共包括:%d个文件。\n", sum);
 }
+//*/

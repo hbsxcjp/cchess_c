@@ -29,6 +29,26 @@ static const char* EXTNAMES[] = {
 };
 static const char FILETAG[] = "learnchess";
 
+// 根据文件扩展名取得存储记录类型
+static RecFormat getRecFormat__(const char* ext)
+{
+    if (ext) {
+        char lowExt[WCHARSIZE] = { 0 };
+        int len = min(WCHARSIZE, strlen(ext));
+        for (int i = 0; i < len; ++i)
+            lowExt[i] = tolower(ext[i]);
+        for (int f = XQF; f < NOTFMT; ++f)
+            if (strcmp(lowExt, EXTNAMES[f]) == 0)
+                return f;
+    }
+    return NOTFMT;
+}
+
+static bool fileIsRight__(const char* fileName)
+{
+    return fileName && getRecFormat__(getExtName(fileName)) != NOTFMT;
+}
+
 // 从文件读取到chessManual
 static void readChessManual__(ChessManual cm, const char* fileName);
 
@@ -97,19 +117,6 @@ void delInfoItem(ChessManual cm, const wchar_t* name)
             --(cm->infoCount);
             break;
         }
-}
-
-// 根据文件扩展名取得存储记录类型
-static RecFormat getRecFormat__(const char* ext)
-{
-    char lowExt[WCHARSIZE] = { 0 };
-    int len = min(WCHARSIZE, strlen(ext));
-    for (int i = 0; i < len; ++i)
-        lowExt[i] = tolower(ext[i]);
-    for (int f = XQF; f < NOTFMT; ++f)
-        if (strcmp(lowExt, EXTNAMES[f]) == 0)
-            return f;
-    return NOTFMT;
 }
 
 static void setMoveNumZhStr__(ChessManual cm, Move move)
@@ -474,12 +481,7 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 
 void readChessManual__(ChessManual cm, const char* fileName)
 {
-    if (fileName == NULL || strlen(fileName) == 0)
-        return;
-    const char* ext = getExtName(fileName);
-    if (ext == NULL)
-        return;
-    RecFormat fmt = getRecFormat__(ext);
+    RecFormat fmt = getRecFormat__(getExtName(fileName));
     if (fmt == NOTFMT) {
         wprintf(L"未实现的打开文件扩展名！");
         return;
@@ -657,89 +659,24 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
-static void setAspects__(Aspects aspects, Board board, Move move)
+static void fileToAspect__(char* fileName, void* aspects)
 {
-    if (move == NULL)
+    if (!fileIsRight__(fileName))
         return;
-    putAspect_bm(aspects, board, move);
-
-    doMove(move);
-    setAspects__(aspects, board, getNext(move));
-    undoMove(move);
-
-    setAspects__(aspects, board, getOther(move));
-}
-
-Aspects getAspects_cm(ChessManual cm)
-{
-    Aspects aspects = newAspects();
-    assert(aspects);
-    setAspects__(aspects, cm->board, getNext(cm->rootMove));
-    return aspects;
-}
-
-void writeAspect__(FILE* fout, ChessManual cm, void writeFun(FILE*, CAspects))
-{
-    Aspects aspects = getAspects_cm(cm);
-    writeFun(fout, aspects);
-    delAspects(aspects);
-}
-
-void writeAllAspectStr(FILE* fout, ChessManual cm)
-{
-    writeAspect__(fout, cm, writeAspectsStr);
-    fwprintf(fout, L"cm->moveCount_:%d\n", cm->movCount_);
-}
-
-void storeAllAspects(FILE* fout, ChessManual cm)
-{
-    writeAspect__(fout, cm, storeAspects);
-}
-
-static void operateDir__(const char* fromDir, void operateFile(char*, void*), void* ptr)
-{
-    long hFile = 0; //文件句柄
-    struct _finddata_t fileinfo = { 0 }; //文件信息
-
-    char findName[FILENAME_MAX];
-    snprintf(findName, FILENAME_MAX, "%s/*", fromDir);
-    //printf("%d: %s\n", __LINE__, findName);
-    //fflush(stdout);
-
-    if ((hFile = _findfirst(findName, &fileinfo)) == -1)
-        return;
-
-    do {
-        if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
-            continue;
-        char dir_fileName[FILENAME_MAX];
-        snprintf(dir_fileName, FILENAME_MAX, "%s/%s", fromDir, fileinfo.name);
-
-        //如果是目录,迭代之
-        if (fileinfo.attrib & _A_SUBDIR) {
-            operateDir__(dir_fileName, operateFile, ptr);
-            //如果是可处理格式的文件,执行转换
-        } else if (getRecFormat__(getExtName(fileinfo.name)) != NOTFMT)
-            operateFile(dir_fileName, ptr);
-    } while (_findnext(hFile, &fileinfo) == 0);
-    _findclose(hFile);
-}
-
-static void fileToAspect__(char* fileName, void* ptr)
-{
-    FILE* fout = ptr;
     ChessManual cm = newChessManual(fileName);
-    storeAllAspects(fout, cm);
+    moveMap(cm->rootMove, setAspects_m, (Aspects)aspects, cm->board);
     delChessManual(cm);
 }
 
-static void dirToAspects__(FILE* fout, const char* fromDir)
+void dirToAspects(Aspects aspects, const char* fromDir)
 {
-    operateDir__(fromDir, fileToAspect__, fout);
+    operateDir(fromDir, fileToAspect__, aspects);
 }
 
 static void transFile__(char* fileName, void* ptr)
 {
+    if (!fileIsRight__(fileName))
+        return;
     OperateDirData odata = ptr;
     ChessManual cm = newChessManual(fileName);
     //printf("%d: %s\n", __LINE__, fileName);
@@ -768,8 +705,7 @@ static void transFile__(char* fileName, void* ptr)
     delChessManual(cm);
 }
 
-// 转换棋局存储格式
-static void transDir__(const char* fromDir, RecFormat fromfmt, RecFormat tofmt)
+void transDir(const char* fromDir, RecFormat fromfmt, RecFormat tofmt)
 {
     char toDir[FILENAME_MAX]; //, curDir[FILENAME_MAX];
     sprintf(toDir, "%s%s", fromDir, EXTNAMES[tofmt]);
@@ -782,7 +718,7 @@ static void transDir__(const char* fromDir, RecFormat fromfmt, RecFormat tofmt)
     odata->toDir = toDir;
     odata->fromfmt = fromfmt;
     odata->tofmt = tofmt;
-    operateDir__(fromDir, transFile__, odata);
+    operateDir(fromDir, transFile__, odata);
 
     printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n",
         fromDir, toDir, odata->fcount, odata->dcount, odata->movcount, odata->remcount, odata->remlenmax);
@@ -800,25 +736,30 @@ void testTransDir(int fromDir, int toDir, int fmtStart, int fmtEnd, int toFmtSta
         "chessManual/疑难文件",
         "chessManual/中国象棋棋谱大全"
     };
-    FILE* fout = fopen("asp", "w");
+
+    Aspects aspects = newAspects();
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = fromDir; dir < sizeof(dirfroms) / sizeof(dirfroms[0]) && dir != toDir; ++dir) {
-        dirToAspects__(fout, dirfroms[dir]);
+        dirToAspects(aspects, dirfroms[dir]);
         for (int fromFmt = fmtStart; fromFmt != fmtEnd; ++fromFmt)
             for (int toFmt = toFmtStart; toFmt != toFmtEnd; ++toFmt)
                 if (toFmt > XQF && toFmt != fromFmt) {
-                    transDir__(dirfroms[dir], fmts[fromFmt], fmts[toFmt]);
+                    transDir(dirfroms[dir], fmts[fromFmt], fmts[toFmt]);
                 }
     }
+
+    FILE* fout = fopen("asp", "w");
+    storeAspects(fout, aspects);
+    delAspects(aspects);
     fclose(fout);
 
-    Aspects aspects = getAspects_fin("asp");
     fout = fopen("asp_1", "w");
+    aspects = getAspects_fin("asp");
     storeAspects(fout, aspects);
-    fclose(fout);
     delAspects(aspects);
+    fclose(fout);
 }
 
 // 测试本翻译单元各种对象、函数
@@ -852,15 +793,6 @@ void testChessManual(FILE* fout)
     resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
 
-    Move move = getMove(cm->rootMove, 4, 5);
-    if (move) {
-        FILE* mfout = fopen("m", "w");
-        wchar_t mstr[WIDEWCHARSIZE];
-        fwprintf(mfout, L"%s\n", getMoveString(mstr, move));
-        writeAllMoveStr(mfout, cm, move);
-        fclose(mfout);
-    }
-
     //fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
     //    __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 
@@ -872,7 +804,10 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    writeAllAspectStr(fout, cm);
+    Aspects aspects = getAspects_bm(cm->board, cm->rootMove);
+    writeAspectsStr(fout, aspects);
+    fwprintf(fout, L"cm->moveCount_:%d\n", cm->movCount_);
+    delAspects(aspects);
 
     delChessManual(cm);
 }

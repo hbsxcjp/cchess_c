@@ -63,8 +63,9 @@ inline int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
 inline int getOtherRow_s(CSeat seat) { return getOtherRow_r(getRow_s(seat)); }
 inline int getOtherCol_s(CSeat seat) { return getOtherCol_c(getCol_s(seat)); }
 
-inline int getRowCol_s(CSeat seat) { return (getRow_s(seat) << 4) | getCol_s(seat); }
-inline int getRow_rowcol(int rowcol) { return (rowcol & 0xF0) >> 4; }
+inline int getRowCol_rc(int row, int col) { return (row << 4) | col; }
+inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_s(seat)); }
+inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
 inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
 
 bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowCol_s(bseat); }

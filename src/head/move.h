@@ -13,7 +13,6 @@ Move getSimplePre(CMove move); // 取得简单前着-数据内部表示的前个
 Move getPre(CMove move);
 Move getNext(CMove move);
 Move getOther(CMove move);
-Move getMove(Move move, int nextNo, int colNo);
 void cutMove(Move move); //(未测试)
 int getPreMoves(Move* moves, Move move);
 int getSufMoves(Move* moves, Move move);
@@ -41,7 +40,6 @@ void setCC_ColNo(Move move, int CC_ColNo);
 const wchar_t* getRemark(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
-const wchar_t* getRcStr_m(wchar_t* rcStr, CMove move);
 const wchar_t* getZhStr(CMove move);
 const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
 
@@ -59,6 +57,9 @@ void changeMove(Move move, Board board, ChangeType ct);
 // 执行或回退
 void doMove(Move move);
 void undoMove(CMove move);
+
+// 遍历每个着法
+void moveMap(Move rootMove, void apply(Move, void*, void*), void* ptr1, void* ptr2);
 
 // 输出表示着法的字符串
 wchar_t* getMoveStr(wchar_t* wstr, CMove move);
