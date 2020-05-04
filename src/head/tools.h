@@ -10,6 +10,8 @@ int getPrime(int size);
 
 // 哈希函数
 unsigned int BKDRHash(const wchar_t* wstr);
+unsigned int DJBHash(const wchar_t* wstr);
+unsigned int SDBMHash(const wchar_t* wstr);
 
 // 去掉字符串前后的空白字符
 char* trim(char* str);

@@ -7,6 +7,7 @@
 typedef struct MoveRec* MoveRec;
 // 局面记录类型
 typedef struct Aspect* Aspect;
+typedef struct AspectAnalysis* AspectAnalysis;
 
 // 新建、删除局面哈希表
 Aspects newAspects(void);
@@ -31,5 +32,7 @@ void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
 void writeAspectsStr(FILE* fout, CAspects aspects);
 // 存储局面数据
 void storeAspects(FILE* fout, CAspects aspects);
+// 分析局面库储存状况
+void doAnalyzeAspects(FILE* fout, CAspects aspects);
 
 #endif

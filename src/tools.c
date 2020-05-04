@@ -53,6 +53,26 @@ unsigned int BKDRHash(const wchar_t* wstr)
     return (hash & 0x7FFFFFFF);
 }
 
+unsigned int DJBHash(const wchar_t* wstr)
+{
+    unsigned int hash = 5381;
+    int len = wcslen(wstr);
+    for (int i = 0; i < len; i++) {
+        hash = ((hash << 5) + hash) + wstr[i];
+    }
+    return hash;
+}
+
+unsigned int SDBMHash(const wchar_t* wstr)
+{
+    unsigned int hash = 0;
+    int len = wcslen(wstr);
+    for (int i = 0; i < len; i++) {
+        hash = (hash << 5) + (hash << 16) - hash + wstr[i];
+    }
+    return hash;
+}
+
 char* trim(char* str)
 {
     size_t size = strlen(str);

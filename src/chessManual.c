@@ -758,6 +758,8 @@ void testTransDir(int fromDir, int toDir, int fmtStart, int fmtEnd, int toFmtSta
     fout = fopen("asp_1", "w");
     aspects = getAspects_fin("asp");
     storeAspects(fout, aspects);
+    doAnalyzeAspects(fout, aspects);
+
     delAspects(aspects);
     fclose(fout);
 }
