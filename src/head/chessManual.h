@@ -47,13 +47,12 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
 // 批量存储目录到局面记录库
-void dirToAspects(Aspects aspects, const char* fromDir);
+void dirToAspects(Aspects aspects, const char* dirName);
 // 批量转换棋局存储格式
-void transDir(const char* fromDir, RecFormat fromfmt, RecFormat tofmt);
+void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
 
 // 批量转换目录的存储格式
-void testTransDir(int fromDir, int toDir,
-    int fromFmtStart, int fromFmtEnd, int toFmtStart, int toFmtEnd);
+void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd);
 
 // 测试本翻译单元各种对象、函数
 void testChessManual(FILE* fout);

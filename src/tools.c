@@ -1,5 +1,10 @@
 #include "head/tools.h"
 
+typedef struct FileInfos {
+    FileInfo* fis;
+    int size, count;
+} * FileInfos;
+
 bool isPrime(int n)
 {
     if (n <= 3)
@@ -31,7 +36,7 @@ int getPrimes(int* primes, int bitCount)
 int getPrime(int size)
 {
     //static int primes[] = { 509, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65521, INT_MAX };
-    static int primes[] = { 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, //3, 7, 13, 31, 61, 127, 251,
+    static int primes[] = { 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, //3, 7, 13, 31,
         131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
         67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647, INT_MAX };
     int i = 0;
@@ -109,41 +114,41 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
-static char* getSplitChar__(char* filename)
+static char* getSplitChar__(char* fileName)
 {
-    char* pext = strrchr(filename, '/');
+    char* pext = strrchr(fileName, '/');
     if (pext == NULL)
-        pext = strrchr(filename, '\\');
+        pext = strrchr(fileName, '\\');
     return pext;
 }
 
-char* getDirName(char* filename)
+char* getDirName(char* fileName)
 {
-    char* pext = getSplitChar__(filename);
+    char* pext = getSplitChar__(fileName);
     if (pext != NULL)
         *pext = '\0';
     else
-        filename[0] = '\0';
-    return filename;
+        fileName[0] = '\0';
+    return fileName;
 }
 
-char* getFileName(char* filename)
+char* getFileName(char* fileName)
 {
-    char* pext = getSplitChar__(filename);
-    return pext ? pext + 1 : filename;
+    char* pext = getSplitChar__(fileName);
+    return pext ? pext + 1 : fileName;
 }
 
-const char* getExtName(const char* filename)
+const char* getExtName(const char* fileName)
 {
-    return strrchr(filename, '.');
+    return strrchr(fileName, '.');
 }
 
-char* transFileExtName(char* filename, const char* extname)
+char* transFileExtName(char* fileName, const char* extname)
 {
-    char* pext = strrchr(filename, '.');
+    char* pext = strrchr(fileName, '.');
     if (pext != NULL)
         *pext = '\0';
-    return strcat(filename, extname);
+    return strcat(fileName, extname);
 }
 
 wchar_t* getWString(FILE* fin)
@@ -202,93 +207,85 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr)
+void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive)
 {
     long hFile = 0; //文件句柄
     struct _finddata_t fileinfo = { 0 }; //文件信息
-
     char findName[FILENAME_MAX];
-    snprintf(findName, FILENAME_MAX, "%s/*", fromDir);
+    snprintf(findName, FILENAME_MAX, "%s/*", dirName);
     //printf("%d: %s\n", __LINE__, findName);
     //fflush(stdout);
-
     if ((hFile = _findfirst(findName, &fileinfo)) == -1)
         return;
 
     do {
         if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
             continue;
-        char dir_fileName[FILENAME_MAX];
-        snprintf(dir_fileName, FILENAME_MAX, "%s/%s", fromDir, fileinfo.name);
-
-        //如果是目录,迭代之
-        if (fileinfo.attrib & _A_SUBDIR) {
-            operateDir(dir_fileName, operateFile, ptr);
-            //如果是可处理格式的文件,执行转换
-        } else
-            operateFile(dir_fileName, ptr);
+        snprintf(findName, FILENAME_MAX, "%s/%s", dirName, fileinfo.name);
+        //如果是目录且要求递归，则递归调用
+        if (fileinfo.attrib & _A_SUBDIR && recursive)
+            operateDir(findName, operateFile, ptr, recursive);
+        else {
+            strcpy(fileinfo.name, findName);
+            operateFile(&fileinfo, ptr);
+        }
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
 
-/*
-static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
+FileInfos newFileInfos(void)
 {
-    if (*fileCount > maxCount) {
-        wprintf(L"文件数量已达到最大值。\n");
-        return;
-    }
-
-    //wprintf(L"%d: %s\n", __LINE__, dirName);
-    long hFile = 0; //文件句柄
-    struct _wfinddata_t fileinfo; //文件信息
-    wchar_t findDirName[FILENAME_MAX];
-    wcscat(wcscpy(findDirName, dirName), L"\\*");
-    if ((hFile = _wfindfirst(findDirName, &fileinfo)) == -1)
-        return;
-
-    do {
-        if (wcscmp(fileinfo.name, L".") == 0) // 本级目录
-            continue;
-        struct _wfinddata_t* afileInfo = &fileInfos[(*fileCount)++];
-        afileInfo->attrib = fileinfo.attrib;
-        afileInfo->size = fileinfo.size;
-        wcscpy(afileInfo->name, fileinfo.name);
-        if (wcscmp(fileinfo.name, L"..") == 0) // 上一级目录
-            continue;
-        if (isRecursive && fileinfo.attrib & _A_SUBDIR) {
-            wcscat(wcscat(wcscpy(findDirName, dirName), L"\\"), fileinfo.name);
-            __getFileInfos(fileInfos, fileCount, maxCount, findDirName, isRecursive);
-        }
-    } while (_wfindnext(hFile, &fileinfo) == 0);
-
-    _findclose(hFile);
+    FileInfos fileInfos = malloc(sizeof(struct FileInfos));
+    fileInfos->count = 0;
+    fileInfos->size = 256;
+    fileInfos->fis = malloc(fileInfos->size * sizeof(FileInfo));
+    assert(fileInfos);
+    return fileInfos;
 }
 
-void getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
+void delFileInfos(FileInfos fileInfos)
 {
-    __getFileInfos(fileInfos, fileCount, maxCount, dirName, isRecursive);
+    for (int i = 0; i < fileInfos->count; ++i)
+        free(fileInfos->fis[i]);
+    free(fileInfos->fis);
+    free(fileInfos);
+}
+
+static void addFileInfos__(FileInfo fileInfo, void* ptr)
+{
+    FileInfos fileInfos = (FileInfos)ptr;
+    if (fileInfos->count == fileInfos->size) {
+        fileInfos->size += fileInfos->size;
+        fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
+        assert(fileInfos->fis);
+    }
+    FileInfo fi = malloc(sizeof(struct _finddata_t));
+    *fi = *fileInfo; //复制结构
+    fileInfos->fis[fileInfos->count++] = fi;
+}
+
+void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
+{
+    operateDir(dirName, addFileInfos__, fileInfos, recursive);
 }
 
 // 测试函数
-void testTools(FILE* fout)
+void testTools(FILE* fout, const char** chessManualDirName, int size, const char* ext)
 {
-    wchar_t* paths[] = {
-        L"chessManual/示例文件",
-        L"chessManual/象棋杀着大全",
-        L"chessManual/疑难文件",
-        L"chessManual/中国象棋棋谱大全"
-    };
+    fprintf(fout, "\n");
     int sum = 0;
-    for (int i = 0; i < sizeof(paths) / sizeof(paths[0]); ++i) {
-        int count = 0;
-        struct _wfinddata_t fileInfos[THOUSAND];
-        getFileInfos(fileInfos, &count, THOUSAND, paths[i], true);
-        for (int i = 0; i < count; ++i)
-            fwprintf(fout, L"attr:%2x size:%9d %s\n", fileInfos[i].attrib, fileInfos[i].size, fileInfos[i].name);
-        sum += count;
-        fwprintf(fout, L"%s 包含: %d个文件。\n\n", paths[i], count);
+    for (int i = 0; i < size; ++i) {
+        FileInfos fileInfos = newFileInfos();
+
+        char dirName[FILENAME_MAX];
+        sprintf(dirName, "%s%s", chessManualDirName[i], ext);
+        getFileInfos(fileInfos, dirName, true);
+        for (int i = 0; i < fileInfos->count; ++i)
+            fprintf(fout, "attr:%2u size:%lu %s\n", fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
+        sum += fileInfos->count;
+        fprintf(fout, "%s 包含: %d个文件。\n\n", chessManualDirName[i], fileInfos->count);
+
+        delFileInfos(fileInfos);
     }
-    fwprintf(fout, L"总共包括:%d个文件。\n", sum);
+    fprintf(fout, "总共包括:%d个文件。\n", sum);
 }
-//*/

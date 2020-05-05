@@ -12,7 +12,7 @@ typedef enum {
 struct MoveRec {
     CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
-    int count; // 历史棋谱中某局面下该着法已发生的次数(0:表示后续有相同着法)
+    int number; // 历史棋谱中某局面下该着法已发生的次数(0:表示后续有相同着法)
     int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
@@ -30,9 +30,9 @@ struct Aspects {
 };
 
 struct AspectAnalysis {
-    int *mCount, mSize, mLength; // 着法发生次数
-    int *lmCount, lmSize, lmLength; // 同一局面下着法个数
-    int *laCount, laSize, laLength; // 同一哈希值下局面个数
+    int *mNumber, mSize, mCount; // 着法发生次数
+    int *lmNumber, lmSize, lmCount; // 同一局面下着法个数
+    int *laNumber, laSize, laCount; // 同一哈希值下局面个数
 };
 
 static int getRowCols__(unsigned int source) { return source >> 16; }
@@ -49,12 +49,12 @@ static MoveRec newMoveRec__(MoveRec preMoveRec, const void* source, MoveSourceTy
     case MovePtrSource: {
         mr->move = (CMove)source;
         mr->rowcols = getRowCols_m(mr->move);
-        mr->count = 1;
+        mr->number = 1;
         MoveRec pmr = mr;
         while ((pmr = pmr->preMoveRec))
             if (mr->rowcols == pmr->rowcols) {
-                mr->count += pmr->count;
-                pmr->count = 0; // 标记重复
+                mr->number += pmr->number;
+                pmr->number = 0; // 标记重复
                 break; // 再往前推，如有重复在此之前也已被标记
             }
         mr->weight = 0;
@@ -63,7 +63,7 @@ static MoveRec newMoveRec__(MoveRec preMoveRec, const void* source, MoveSourceTy
         mr->move = NULL;
         unsigned int src = *(unsigned int*)source;
         mr->rowcols = getRowCols__(src);
-        mr->count = getCount__(src);
+        mr->number = getCount__(src);
         mr->weight = getWeight__(src);
     } break;
     default:
@@ -119,7 +119,15 @@ static Aspects newAspects__(int size)
 
 Aspects newAspects(void)
 {
-    return newAspects__(1024);
+    return newAspects__(0);
+}
+
+void delAspects(Aspects aspects)
+{
+    assert(aspects);
+    for (int i = 0; i < aspects->size; ++i)
+        delAspect__(aspects->lastAspects[i]);
+    free(aspects);
 }
 
 static void putAspect__(Aspects aspects, const wchar_t* FEN, const void* source, MoveSourceType mst);
@@ -154,14 +162,6 @@ Aspects getAspects_fin(const char* fileName)
     }
     fclose(fin);
     return aspects;
-}
-
-void delAspects(Aspects aspects)
-{
-    assert(aspects);
-    for (int i = 0; i < aspects->size; ++i)
-        delAspect__(aspects->lastAspects[i]);
-    free(aspects);
 }
 
 int getAspects_length(Aspects aspects) { return aspects->aspCount; }
@@ -341,23 +341,24 @@ static void printfAspect__(Aspect asp, void* ptr)
     fwprintf((FILE*)ptr, L"FEN:%s\n", asp->FEN);
 }
 
-static void writeAspectStr__(Aspect lasp, void* ptr)
+static void writeAspect__(Aspect lasp, void* ptr)
 {
     aspectLink__(lasp, printfAspect__, moveRecLink__, printfMoveRec__, ptr);
 }
 
-void writeAspectsStr(FILE* fout, CAspects aspects)
+void writeAspects(FILE* fout, CAspects aspects)
 {
     assert(aspects);
-    aspectsMap(aspects, writeAspectStr__, fout);
-    fwprintf(fout, L"\n【aspect size:%d aspCount:%d movCount:%d】 ", aspects->size, aspects->aspCount, aspects->movCount);
+    aspectsMap(aspects, writeAspect__, fout);
+    fwprintf(fout, L"\n\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f】\n",
+        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size);
 }
 
 static void printfMoveRecLib__(MoveRec mr, void* ptr)
 {
     // 排除重复标记的着法
-    if (mr->count > 0)
-        fwprintf((FILE*)ptr, L"0x%04x%02x%02x ", mr->rowcols, mr->count, mr->weight);
+    if (mr->number > 0)
+        fwprintf((FILE*)ptr, L"0x%04x%02x%02x ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectLib__(Aspect asp, void* ptr)
@@ -365,7 +366,7 @@ static void printfAspectLib__(Aspect asp, void* ptr)
     fwprintf((FILE*)ptr, L"\n%s ", asp->FEN);
 }
 
-static void storeAspectLib__(Aspect lasp, void* ptr)
+static void storeAspect__(Aspect lasp, void* ptr)
 {
     aspectLink__(lasp, printfAspectLib__, moveRecLink__, printfMoveRecLib__, ptr);
 }
@@ -373,82 +374,81 @@ static void storeAspectLib__(Aspect lasp, void* ptr)
 void storeAspects(FILE* fout, CAspects aspects)
 {
     assert(aspects);
-    aspectsMap(aspects, storeAspectLib__, fout);
+    aspectsMap(aspects, storeAspect__, fout);
 }
 
 static AspectAnalysis newAspectAnalysis__(void)
 {
     AspectAnalysis aa = malloc(sizeof(struct AspectAnalysis));
     aa->mSize = aa->lmSize = aa->laSize = 256;
-    aa->mLength = aa->lmLength = aa->laLength = 0;
-    aa->mCount = malloc(aa->mSize * sizeof(int));
-    aa->lmCount = malloc(aa->lmSize * sizeof(int));
-    aa->laCount = malloc(aa->laSize * sizeof(int));
+    aa->mCount = aa->lmCount = aa->laCount = 0;
+    aa->mNumber = malloc(aa->mSize * sizeof(int));
+    aa->lmNumber = malloc(aa->lmSize * sizeof(int));
+    aa->laNumber = malloc(aa->laSize * sizeof(int));
     return aa;
 }
 
 static void delAspectAnalysis__(AspectAnalysis aa)
 {
-    free(aa->mCount);
-    free(aa->lmCount);
-    free(aa->laCount);
+    free(aa->mNumber);
+    free(aa->lmNumber);
+    free(aa->laNumber);
     free(aa);
 }
 
-static void checkApendArray__(int** array, int* size, int* length, int value)
+static void checkApendArray__(int** array, int* size, int* count, int value)
 {
-    if (*length >= *size) {
+    if (*count >= *size) {
         *size += *size;
         *array = realloc(*array, *size * sizeof(int));
     }
-    (*array)[(*length)++] = value;
+    (*array)[(*count)++] = value;
 }
 
-static void analyzeMoveRecLib__(MoveRec mr, void* ptr)
+static void calculateMoveRecLib__(MoveRec mr, void* ptr)
 {
     AspectAnalysis aa = (AspectAnalysis)ptr;
-    checkApendArray__(&aa->mCount, &aa->mSize, &aa->mLength, mr->count);
+    checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
-static void analyzeAspectLib__(Aspect asp, void* ptr)
+static void calculateAspectLib__(Aspect asp, void* ptr)
 {
     AspectAnalysis aa = (AspectAnalysis)ptr;
     int mcount = 1;
     MoveRec mr = asp->lastMoveRec;
     while ((mr = mr->preMoveRec))
         mcount++;
-    checkApendArray__(&aa->lmCount, &aa->lmSize, &aa->lmLength, mcount);
+    checkApendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, mcount);
 }
 
-static void doAnalyzeAspectLib__(Aspect lasp, void* ptr)
+static void analyzeAspect__(Aspect lasp, void* ptr)
 {
-    aspectLink__(lasp, analyzeAspectLib__, moveRecLink__, analyzeMoveRecLib__, ptr);
+    aspectLink__(lasp, calculateAspectLib__, moveRecLink__, calculateMoveRecLib__, ptr);
 }
 
-static void calWriteCount__(FILE* fout, const wchar_t* entry, int* count, int size, int length)
+static void calWriteCount__(FILE* fout, const wchar_t* entry, int* number, int size, int count)
 {
-    if (length <= 0 || size <= 0)
+    if (count <= 0 || size <= 0)
         return;
     int imax = 0, total = 0;
-    for (int i = 0; i < length; ++i) {
-        imax = max(imax, count[i]);
-        total += count[i];
+    for (int i = 0; i < count; ++i) {
+        imax = max(imax, number[i]);
+        total += number[i];
     }
-    double ave = (double)total / length, scale = 1.0 * length / size, varinace = 0, difference = 0, stdDiff = 0;
-    for (int i = 0; i < length; ++i) {
-        difference = count[i] - ave;
+    double ave = (double)total / count, scale = 1.0 * count / size, varinace = 0, difference = 0, stdDiff = 0;
+    for (int i = 0; i < count; ++i) {
+        difference = number[i] - ave;
         varinace += difference * difference;
     }
-    varinace /= length - 1;
+    varinace /= count - 1;
     stdDiff = sqrt(varinace);
-    fwprintf(fout, L"分析 %8s => 平均:%.2f 方差:%.2f 标准差:%.2f 最大:%d 使用数组:%d 总数:%d 填充比例:%5.2f\n",
-        entry, ave, varinace, stdDiff, imax, length, total, scale);
+    fwprintf(fout, L"分析%8s => 平均:%.2f 最大:%2d 总数:%d 方差:%.2f 标准差:%.2f 【数组 使用:%d 大小:%d 填充因子:%5.2f】\n",
+        entry, ave, imax, total, varinace, stdDiff, count, size, scale);
 }
 
-void doAnalyzeAspects(FILE* fout, CAspects aspects)
+void analyzeAspects(FILE* fout, CAspects aspects)
 {
     assert(aspects);
-    fwprintf(fout, L"\n\n局面 局面数:%d 着法数:%d 数组大小:%d \n", aspects->aspCount, aspects->movCount, aspects->size);
     AspectAnalysis aa = newAspectAnalysis__();
     for (int i = 0; i < aspects->size; ++i) {
         Aspect asp = aspects->lastAspects[i];
@@ -457,12 +457,14 @@ void doAnalyzeAspects(FILE* fout, CAspects aspects)
         int count = 1;
         while ((asp = asp->preAspect))
             count++;
-        checkApendArray__(&aa->laCount, &aa->laSize, &aa->laLength, count);
+        checkApendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
     }
-    aspectsMap(aspects, doAnalyzeAspectLib__, aa);
-    calWriteCount__(fout, L"move", aa->mCount, aa->mSize, aa->mLength);
-    calWriteCount__(fout, L"moveRec", aa->lmCount, aa->lmSize, aa->lmLength);
-    calWriteCount__(fout, L"aspect", aa->laCount, aa->laSize, aa->laLength);
+    aspectsMap(aspects, analyzeAspect__, aa);
+    fwprintf(fout, L"\n\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f】\n",
+        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size);
+    calWriteCount__(fout, L"move", aa->mNumber, aa->mSize, aa->mCount);
+    calWriteCount__(fout, L"moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
+    calWriteCount__(fout, L"aspect", aa->laNumber, aa->laSize, aa->laCount);
 
     delAspectAnalysis__(aa);
 }

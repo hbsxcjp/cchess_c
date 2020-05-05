@@ -26,15 +26,21 @@ int main(int argc, char const* argv[])
     testPiece(fout);
     testBoard(fout);
     testChessManual(fout);
-    //testTools(fout);
+
+    const char* chessManualDirName[] = {
+        "chessManual/示例文件",
+        "chessManual/象棋杀着大全",
+        "chessManual/疑难文件",
+        "chessManual/中国象棋棋谱大全"
+    };
+    int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
+    testTools(fout, chessManualDirName, size, ".xqf");
     //*
-    if (argc == 7) {
-        testTransDir(atoi(argv[1]), atoi(argv[2]),
-            atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]));
-    } else {
-        testTransDir(0, 2, 0, 1, 1, 2);
-        //testTransDir(0, 2, 0, 6, 0, 6);
-        //testTransDir(2, 3, 0, 3, 1, 3);
+    if (argc == 4)
+        testTransDir(chessManualDirName, size, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
+    else {
+        testTransDir(chessManualDirName, size, 2, 1, 2);
+        //testTransDir(chessManualDirName, size, 2, 6, 6);
     }
     //*/
 

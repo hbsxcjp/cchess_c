@@ -3,6 +3,10 @@
 
 #include "base.h"
 
+// 文件信息结构数组指针
+typedef struct _finddata_t* FileInfo;
+typedef struct FileInfos* FileInfos;
+
 bool isPrime(int n);
 int getPrimes(int* primes, int bitCount);
 // 取得比size大的质数
@@ -37,12 +41,15 @@ void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr);
 // 复制文件
 int copyFile(const char* SourceFile, const char* NewFile);
 // 循环目录下文件，调用操作函数
-void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr);
+void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive);
 
+// 新建删除文件信息结构组
+FileInfos newFileInfos(void);
+void delFileInfos(FileInfos fileInfos);
 // 提取目录下的文件信息
-//void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive);
+void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive);
 
 // 测试函数
-void testTools(FILE* fout);
+void testTools(FILE* fout, const char** chessManualDirName, int size, const char* ext);
 
 #endif

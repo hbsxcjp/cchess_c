@@ -11,10 +11,11 @@ typedef struct AspectAnalysis* AspectAnalysis;
 
 // 新建、删除局面哈希表
 Aspects newAspects(void);
+void delAspects(Aspects aspects);
+
 void setAspects_m(Move move, void* aspects, void* board);
 Aspects getAspects_bm(Board board, Move rootMove);
 Aspects getAspects_fin(const char* fileName);
-void delAspects(Aspects aspects);
 
 int getAspects_length(Aspects aspects);
 // 取得局面的最近的着法记录
@@ -29,10 +30,10 @@ int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
 void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
 
 // 输出局面字符串
-void writeAspectsStr(FILE* fout, CAspects aspects);
+void writeAspects(FILE* fout, CAspects aspects);
 // 存储局面数据
 void storeAspects(FILE* fout, CAspects aspects);
 // 分析局面库储存状况
-void doAnalyzeAspects(FILE* fout, CAspects aspects);
+void analyzeAspects(FILE* fout, CAspects aspects);
 
 #endif
