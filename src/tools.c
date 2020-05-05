@@ -230,6 +230,7 @@ void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr)
     } while (_findnext(hFile, &fileinfo) == 0);
     _findclose(hFile);
 }
+
 /*
 static void __getFileInfos(struct _wfinddata_t fileInfos[], int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive)
 {

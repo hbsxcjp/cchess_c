@@ -659,7 +659,7 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
-static void fileToAspect__(char* fileName, void* aspects)
+static void fileToAspects__(char* fileName, void* aspects)
 {
     if (!fileIsRight__(fileName))
         return;
@@ -670,7 +670,7 @@ static void fileToAspect__(char* fileName, void* aspects)
 
 void dirToAspects(Aspects aspects, const char* fromDir)
 {
-    operateDir(fromDir, fileToAspect__, aspects);
+    operateDir(fromDir, fileToAspects__, aspects);
 }
 
 static void transFile__(char* fileName, void* ptr)

@@ -119,7 +119,7 @@ static Aspects newAspects__(int size)
 
 Aspects newAspects(void)
 {
-    return newAspects__(0);
+    return newAspects__(1024);
 }
 
 static void putAspect__(Aspects aspects, const wchar_t* FEN, const void* source, MoveSourceType mst);
@@ -202,13 +202,14 @@ static void checkAspectsCapacity__(Aspects aspects)
         newLastAspects[i] = NULL;
     for (int i = 0; i < aspects->size; ++i) {
         asp = oldLastAspects[i];
-        if (asp)
-            do {
-                preAsp = asp->preAspect;
-                pasp = &newLastAspects[getIndex_FEN__(asp->FEN, size)];
-                asp->preAspect = *pasp;
-                *pasp = asp;
-            } while ((asp = preAsp));
+        if (asp == NULL)
+            continue;
+        do {
+            preAsp = asp->preAspect;
+            pasp = &newLastAspects[getIndex_FEN__(asp->FEN, size)];
+            asp->preAspect = *pasp;
+            *pasp = asp;
+        } while ((asp = preAsp));
     }
     aspects->size = size;
     aspects->lastAspects = newLastAspects;
@@ -397,7 +398,7 @@ static void delAspectAnalysis__(AspectAnalysis aa)
 static void checkApendArray__(int** array, int* size, int* length, int value)
 {
     if (*length >= *size) {
-        *size += *length;
+        *size += *size;
         *array = realloc(*array, *size * sizeof(int));
     }
     (*array)[(*length)++] = value;
@@ -412,11 +413,11 @@ static void analyzeMoveRecLib__(MoveRec mr, void* ptr)
 static void analyzeAspectLib__(Aspect asp, void* ptr)
 {
     AspectAnalysis aa = (AspectAnalysis)ptr;
-    int count = 1;
+    int mcount = 1;
     MoveRec mr = asp->lastMoveRec;
     while ((mr = mr->preMoveRec))
-        count++;
-    checkApendArray__(&aa->lmCount, &aa->lmSize, &aa->lmLength, count);
+        mcount++;
+    checkApendArray__(&aa->lmCount, &aa->lmSize, &aa->lmLength, mcount);
 }
 
 static void doAnalyzeAspectLib__(Aspect lasp, void* ptr)
@@ -426,21 +427,29 @@ static void doAnalyzeAspectLib__(Aspect lasp, void* ptr)
 
 static void calWriteCount__(FILE* fout, const wchar_t* entry, int* count, int size, int length)
 {
+    if (length <= 0 || size <= 0)
+        return;
     int imax = 0, total = 0;
     for (int i = 0; i < length; ++i) {
         imax = max(imax, count[i]);
         total += count[i];
     }
-    double ave = length ? (double)total / length : 0, scale = 1.0 * length / size;
-    fwprintf(fout, L"analysis %8s => average:%10.2f max:%10d length:%10d total:%10d fillScale:%5.2f\n", entry, ave, imax, length, total, scale);
+    double ave = (double)total / length, scale = 1.0 * length / size, varinace = 0, difference = 0, stdDiff = 0;
+    for (int i = 0; i < length; ++i) {
+        difference = count[i] - ave;
+        varinace += difference * difference;
+    }
+    varinace /= length - 1;
+    stdDiff = sqrt(varinace);
+    fwprintf(fout, L"分析 %8s => 平均:%.2f 方差:%.2f 标准差:%.2f 最大:%d 使用数组:%d 总数:%d 填充比例:%5.2f\n",
+        entry, ave, varinace, stdDiff, imax, length, total, scale);
 }
 
 void doAnalyzeAspects(FILE* fout, CAspects aspects)
 {
     assert(aspects);
-    fwprintf(fout, L"\n\naspect size:%d aspCount:%d movCount:%d\n", aspects->size, aspects->aspCount, aspects->movCount);
+    fwprintf(fout, L"\n\n局面 局面数:%d 着法数:%d 数组大小:%d \n", aspects->aspCount, aspects->movCount, aspects->size);
     AspectAnalysis aa = newAspectAnalysis__();
-    aspectsMap(aspects, doAnalyzeAspectLib__, aa);
     for (int i = 0; i < aspects->size; ++i) {
         Aspect asp = aspects->lastAspects[i];
         if (asp == NULL)
@@ -450,6 +459,7 @@ void doAnalyzeAspects(FILE* fout, CAspects aspects)
             count++;
         checkApendArray__(&aa->laCount, &aa->laSize, &aa->laLength, count);
     }
+    aspectsMap(aspects, doAnalyzeAspectLib__, aa);
     calWriteCount__(fout, L"move", aa->mCount, aa->mSize, aa->mLength);
     calWriteCount__(fout, L"moveRec", aa->lmCount, aa->lmSize, aa->lmLength);
     calWriteCount__(fout, L"aspect", aa->laCount, aa->laSize, aa->laLength);

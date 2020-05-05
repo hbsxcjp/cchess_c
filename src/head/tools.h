@@ -43,6 +43,6 @@ void operateDir(const char* fromDir, void operateFile(char*, void*), void* ptr);
 //void getFileInfos(struct _wfinddata_t* fileInfos, int* fileCount, int maxCount, const wchar_t* dirName, bool isRecursive);
 
 // 测试函数
-//void testTools(FILE* fout);
+void testTools(FILE* fout);
 
 #endif
