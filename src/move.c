@@ -758,6 +758,9 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
          preOtherMoves[WIDEWCHARSIZE] = { NULL };
     int preOthIndex = 0, length = 0;
     wchar_t* tempMoveStr = moveStr;
+    printf("读取moveStr... ");
+    fflush(stdout);
+    
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
         regCount = pcre16_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)

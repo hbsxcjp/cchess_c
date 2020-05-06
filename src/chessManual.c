@@ -424,9 +424,14 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
 
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
+    printf("准备读取info... ");
+    fflush(stdout);
     readInfo_PGN__(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     getFENToSetBoard__(cm);
+    
+    printf("准备读取move... ");
+    fflush(stdout);
     (fmt == PGN_CC) ? readMove_PGN_CC(cm->rootMove, fin, cm->board) : readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
 }
 
@@ -501,7 +506,11 @@ void readChessManual__(ChessManual cm, const char* fileName)
         readJSON__(cm, fin);
         break;
     default:
+        printf("准备读取文件...%s ", fileName);
+        fflush(stdout);
         readPGN__(cm, fin, fmt);
+        printf("读取成功！ ");
+        fflush(stdout);
         break;
     }
     if (fmt == XQF || fmt == BIN || fmt == JSON)
@@ -511,6 +520,9 @@ void readChessManual__(ChessManual cm, const char* fileName)
     if (hasNext(cm->rootMove))
         setMoveNumZhStr__(cm, getNext(cm->rootMove)); // 驱动函数
     //*/
+    printf("设置成功！\n");
+    fflush(stdout);
+
     fclose(fin);
 }
 
@@ -679,10 +691,10 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
         return;
+    printf("%d: %s\n", __LINE__, fileName);
+    fflush(stdout);
     OperateDirData odata = ptr;
     ChessManual cm = newChessManual(fileName);
-    //printf("%d: %s\n", __LINE__, fileName);
-    //fflush(stdout);
 
     char toFileName[FILENAME_MAX], toDirName[FILENAME_MAX];
     snprintf(toDirName, FILENAME_MAX, "%s%s", odata->toDir, fileName + strlen(odata->fromDir));
@@ -695,8 +707,8 @@ static void transFile__(FileInfo fileInfo, void* ptr)
 
     transFileExtName(fileName, EXTNAMES[odata->tofmt]);
     snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
-    //printf("%d: %s\n", __LINE__, toFileName);
-    //fflush(stdout);
+    printf("%d: %s\n", __LINE__, toFileName);
+    fflush(stdout);
 
     writeChessManual(cm, toFileName);
     ++odata->fcount;
@@ -803,6 +815,9 @@ void testChessManual(FILE* fout)
         writeChessManual(cm, fname);
     }
     //*/
+
+    resetChessManual(&cm, "02.pgn_iccs");
+    //writeChessManual(cm, "02.pgn_zh");
 
     Aspects aspects = getAspects_bm(cm->board, cm->rootMove);
     writeAspects(fout, aspects);
