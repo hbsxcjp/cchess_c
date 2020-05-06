@@ -33,6 +33,8 @@ void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
 void writeAspects(FILE* fout, CAspects aspects);
 // 存储局面数据
 void storeAspects(FILE* fout, CAspects aspects);
+// 存储局面MD5数据
+void storeAspectMD5(FILE* fout, CAspects aspects);
 // 分析局面库储存状况
 void analyzeAspects(FILE* fout, CAspects aspects);
 

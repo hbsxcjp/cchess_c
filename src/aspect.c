@@ -19,6 +19,7 @@ struct MoveRec {
 
 struct Aspect {
     wchar_t* FEN;
+    unsigned long long md5[2];
     MoveRec lastMoveRec;
     Aspect preAspect;
 };
@@ -375,6 +376,29 @@ void storeAspects(FILE* fout, CAspects aspects)
 {
     assert(aspects);
     aspectsMap(aspects, storeAspect__, fout);
+}
+
+static void printfMoveRecMD5__(MoveRec mr, void* ptr)
+{
+    // 排除重复标记的着法
+    if (mr->number > 0)
+        ; //  fwprintf((FILE*)ptr, L"0x%04x%02x%02x ", mr->rowcols, mr->number, mr->weight);
+}
+
+static void printfAspectMD5__(Aspect asp, void* ptr)
+{
+    //fwprintf((FILE*)ptr, L"\n%s ", asp->FEN);
+}
+
+static void storeAspectMD5__(Aspect lasp, void* ptr)
+{
+    aspectLink__(lasp, printfAspectMD5__, moveRecLink__, printfMoveRecMD5__, ptr);
+}
+
+void storeAspectMD5(FILE* fout, CAspects aspects)
+{
+    assert(aspects);
+    aspectsMap(aspects, storeAspectMD5__, fout);
 }
 
 static AspectAnalysis newAspectAnalysis__(void)
