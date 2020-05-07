@@ -1,5 +1,6 @@
 #include "head/aspect.h"
 #include "head/board.h"
+#include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
@@ -19,7 +20,7 @@ struct MoveRec {
 
 struct Aspect {
     wchar_t* FEN;
-    unsigned long long md5[2];
+    unsigned char md5[16];
     MoveRec lastMoveRec;
     Aspect preAspect;
 };
@@ -36,9 +37,9 @@ struct AspectAnalysis {
     int *laNumber, laSize, laCount; // 同一哈希值下局面个数
 };
 
-static int getRowCols__(unsigned int source) { return source >> 16; }
-static int getCount__(unsigned int source) { return (source >> 8) & 0xFF; }
-static int getWeight__(unsigned int source) { return source & 0xFF; }
+static int getRowCols__(unsigned int mrValue) { return mrValue >> 16; }
+static int getCount__(unsigned int mrValue) { return (mrValue >> 8) & 0xFF; }
+static int getWeight__(unsigned int mrValue) { return mrValue & 0xFF; }
 
 static MoveRec newMoveRec__(MoveRec preMoveRec, const void* source, MoveSourceType mst)
 {
@@ -62,10 +63,10 @@ static MoveRec newMoveRec__(MoveRec preMoveRec, const void* source, MoveSourceTy
     } break;
     case MoveRecSource: {
         mr->move = NULL;
-        unsigned int src = *(unsigned int*)source;
-        mr->rowcols = getRowCols__(src);
-        mr->number = getCount__(src);
-        mr->weight = getWeight__(src);
+        unsigned int mrValue = *(unsigned int*)source;
+        mr->rowcols = getRowCols__(mrValue);
+        mr->number = getCount__(mrValue);
+        mr->weight = getWeight__(mrValue);
     } break;
     default:
         break;
@@ -89,6 +90,10 @@ static Aspect newAspect__(Aspect preAspect, const wchar_t* FEN, const void* sour
     //assert(asp);
     asp->FEN = malloc((wcslen(FEN) + 1) * sizeof(wchar_t));
     wcscpy(asp->FEN, FEN);
+    char fen[SEATNUM];
+    wcstombs(fen, FEN, SEATNUM);
+    getMD5(asp->md5, fen);
+
     asp->lastMoveRec = newMoveRec__(NULL, source, mst);
     asp->preAspect = preAspect;
     return asp;
@@ -146,19 +151,36 @@ Aspects getAspects_bm(Board board, Move rootMove)
     return aspects;
 }
 
-Aspects getAspects_fin(const char* fileName)
+Aspects getAspects_fs(const char* fileName)
 {
     Aspects aspects = newAspects();
     FILE* fin = fopen(fileName, "r");
     wchar_t lineStr[FILENAME_MAX], FEN[SEATNUM], *sourceStr;
-    unsigned int source = 0;
+    unsigned int mrValue = 0;
     while (fgetws(lineStr, FILENAME_MAX, fin)) {
         if (swscanf(lineStr, L"%s", FEN) != 1)
             continue;
         sourceStr = lineStr + wcslen(FEN);
-        while (swscanf(sourceStr, L"%x", &source) == 1) { //wcslen(sourceStr) > 10 &&
-            putAspect__(aspects, FEN, &source, MoveRecSource);
+        while (swscanf(sourceStr, L"%x", &mrValue) == 1) { //wcslen(sourceStr) > 10 &&
+            putAspect__(aspects, FEN, &mrValue, MoveRecSource);
             sourceStr += 11; //source存储长度为11个字符:0x+8位数字+1个空格
+        }
+    }
+    fclose(fin);
+    return aspects;
+}
+
+Aspects getAspects_fb(const char* fileName)
+{
+    Aspects aspects = newAspects();
+    FILE* fin = fopen(fileName, "rb");
+    char md5[16], count = 0;
+    unsigned int mrValue;
+    while (fread(md5, 16, 1, fin) == 16) {
+        fread(&count, 1, 1, fin);
+        for (int i = 0; i < count; ++i) {
+            fread(&mrValue, 4, 1, fin);
+            putAspect__(aspects, L"", &mrValue, MoveRecSource);
         }
     }
     fclose(fin);
@@ -381,13 +403,20 @@ void storeAspects(FILE* fout, CAspects aspects)
 static void printfMoveRecMD5__(MoveRec mr, void* ptr)
 {
     // 排除重复标记的着法
-    if (mr->number > 0)
-        ; //  fwprintf((FILE*)ptr, L"0x%04x%02x%02x ", mr->rowcols, mr->number, mr->weight);
+    if (mr->number > 0) {
+        unsigned int mrValue = (mr->rowcols << 16) | (mr->number << 8) | mr->weight;
+        fwrite(&mrValue, 4, 1, (FILE*)ptr); // 4个字节
+    }
 }
 
 static void printfAspectMD5__(Aspect asp, void* ptr)
 {
-    //fwprintf((FILE*)ptr, L"\n%s ", asp->FEN);
+    fwrite(asp->md5, 16, 1, (FILE*)ptr); // 16个字节
+    char count = 1;
+    MoveRec mr = asp->lastMoveRec;
+    while ((mr = mr->preMoveRec))
+        count++;
+    fwrite(&count, 1, 1, (FILE*)ptr); // 1个字节
 }
 
 static void storeAspectMD5__(Aspect lasp, void* ptr)

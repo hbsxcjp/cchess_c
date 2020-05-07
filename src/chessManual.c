@@ -424,14 +424,14 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
 
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
-    printf("准备读取info... ");
-    fflush(stdout);
+    //printf("准备读取info... ");
+    //fflush(stdout);
     readInfo_PGN__(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     getFENToSetBoard__(cm);
-    
-    printf("准备读取move... ");
-    fflush(stdout);
+
+    //printf("准备读取move... ");
+    //fflush(stdout);
     (fmt == PGN_CC) ? readMove_PGN_CC(cm->rootMove, fin, cm->board) : readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
 }
 
@@ -506,11 +506,11 @@ void readChessManual__(ChessManual cm, const char* fileName)
         readJSON__(cm, fin);
         break;
     default:
-        printf("准备读取文件...%s ", fileName);
-        fflush(stdout);
+        //printf("准备读取文件...%s ", fileName);
+        //fflush(stdout);
         readPGN__(cm, fin, fmt);
-        printf("读取成功！ ");
-        fflush(stdout);
+        //printf("读取成功！ ");
+        //fflush(stdout);
         break;
     }
     if (fmt == XQF || fmt == BIN || fmt == JSON)
@@ -520,7 +520,7 @@ void readChessManual__(ChessManual cm, const char* fileName)
     if (hasNext(cm->rootMove))
         setMoveNumZhStr__(cm, getNext(cm->rootMove)); // 驱动函数
     //*/
-    printf("设置成功！\n");
+    //printf("设置成功！\n");
     fflush(stdout);
 
     fclose(fin);
@@ -691,13 +691,13 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
         return;
-    printf("%d: %s\n", __LINE__, fileName);
-    fflush(stdout);
+    //printf("%d: %s\n", __LINE__, fileName);
+    //fflush(stdout);
     OperateDirData odata = ptr;
     ChessManual cm = newChessManual(fileName);
 
     char toFileName[FILENAME_MAX], toDirName[FILENAME_MAX];
-    snprintf(toDirName, FILENAME_MAX, "%s%s", odata->toDir, fileName + strlen(odata->fromDir));
+    snprintf(toDirName, FILENAME_MAX, "%s%s", odata->toDir, fileName); // + strlen(odata->fromDir)
     getDirName(toDirName);
     if (strlen(toDirName) > 0 && access(toDirName, 0) != 0) {
         mkdir(toDirName);
@@ -707,8 +707,8 @@ static void transFile__(FileInfo fileInfo, void* ptr)
 
     transFileExtName(fileName, EXTNAMES[odata->tofmt]);
     snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
-    printf("%d: %s\n", __LINE__, toFileName);
-    fflush(stdout);
+    //printf("%d: %s\n", __LINE__, toFileName);
+    //fflush(stdout);
 
     writeChessManual(cm, toFileName);
     ++odata->fcount;
@@ -733,6 +733,11 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     odata->toDir = toDir;
     odata->fromfmt = fromfmt;
     odata->tofmt = tofmt;
+    if (strlen(toDir) > 0 && access(toDir, 0) != 0) {
+        mkdir(toDir);
+        printf("%d: %s\n", __LINE__, toDir);
+        fflush(stdout);
+    }
     operateDir(fromDir, transFile__, odata, true);
 
     printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n",
@@ -754,8 +759,8 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
         sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
         dirToAspects(aspects, fromDir);
 
-        for (int fromFmt = XQF; fromFmt != fmtEnd; ++fromFmt)
-            for (int toFmt = BIN; toFmt != toFmtEnd; ++toFmt)
+        for (int fromFmt = XQF; fromFmt < fmtEnd; ++fromFmt)
+            for (int toFmt = BIN; toFmt < toFmtEnd; ++toFmt)
                 if (toFmt != fromFmt)
                     transDir(chessManualDirName[dir], fmts[fromFmt], fmts[toFmt]);
     }
@@ -766,7 +771,7 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     fclose(fout);
 
     fout = fopen("asp_1", "w");
-    aspects = getAspects_fin("asp");
+    aspects = getAspects_fs("asp");
     storeAspects(fout, aspects);
     analyzeAspects(fout, aspects);
 
@@ -816,16 +821,13 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    resetChessManual(&cm, "02.pgn_iccs");
-    //writeChessManual(cm, "02.pgn_zh");
-
     Aspects aspects = getAspects_bm(cm->board, cm->rootMove);
     writeAspects(fout, aspects);
     storeAspects(fout, aspects);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
 
-    //aspects = getAspects_fin("asp");
+    //aspects = getAspects_fs("asp");
     //delAspects(aspects);
     //fclose(fout);
 

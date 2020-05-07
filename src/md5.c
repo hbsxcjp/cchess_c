@@ -211,11 +211,19 @@ static void MD5Transform(unsigned int state[4], unsigned char block[64])
 
 void getMD5(unsigned char* digest, char* source)
 {
-    MD5_CTX md5 = malloc(sizeof(struct MD5_CTX));
-    MD5Init(md5);
-    MD5Update(md5, (unsigned char*)source, strlen(source));
-    MD5Final(md5, digest);
-    free(md5);
+    MD5_CTX context = malloc(sizeof(struct MD5_CTX));
+    MD5Init(context);
+    MD5Update(context, (unsigned char*)source, strlen(source));
+    MD5Final(context, digest);
+    free(context);
+}
+
+bool isSame(unsigned char* src, unsigned char* des)
+{
+    for (int i = 0; i < 16; ++i)
+        if (src[i] != des[i])
+            return false;
+    return true;
 }
 
 /*

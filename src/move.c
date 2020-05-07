@@ -347,30 +347,29 @@ const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    void (*setMoveSeat__)(Move, Board, const wchar_t*);
+    Move move = newMove__();
     switch (fmt) {
     case XQF:
     case BIN:
     case JSON:
-        setMoveSeat__ = setMoveSeat_rc__;
+        setMoveSeat_rc__(move, board, wstr);
         break;
     case PGN_ICCS:
-        setMoveSeat__ = setMoveSeat_iccs__;
+        setMoveSeat_iccs__(move, board, wstr);
         break;
     default: // PGN_ZH PGN_CC
-        setMoveSeat__ = setMoveSeat_zh__;
+        setMoveSeat_zh__(move, board, wstr);
         break;
     }
-    Move move = newMove__();
-    setMoveSeat__(move, board, wstr);
     setRemark_addMove__(preMove, move, remark, isOther);
 
-    doMove(move);
-    PieceColor color = getColor(getPiece_s(move->fseat));
-    move->kill = isKill(board, getOtherColor(color));
-    move->willKill = isWillKill(board, color);
-    move->catch = isCatch(board, color);
-    undoMove(move);
+    // 以下在fmt==pgn_iccs时未成功？
+    //doMove(move);
+    //PieceColor color = getColor(getPiece_s(move->fseat));
+    //move->kill = isKill(board, getOtherColor(color));
+    //move->willKill = isWillKill(board, color);
+    //move->catch = isCatch(board, color);
+    //undoMove(move);
 
     return move;
 }
@@ -758,9 +757,9 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
          preOtherMoves[WIDEWCHARSIZE] = { NULL };
     int preOthIndex = 0, length = 0;
     wchar_t* tempMoveStr = moveStr;
-    printf("读取moveStr... ");
-    fflush(stdout);
-    
+    //printf("读取moveStr... \n");
+    //fflush(stdout);
+
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
         regCount = pcre16_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
@@ -780,6 +779,7 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
         wchar_t* remark = getRemark_PGN_ICCSZH__(tempMoveStr + ovector[6], ovector[7] - ovector[6]);
         // 添加生成着法
         move = addMove(preMove, board, iccs_zhStr, fmt, remark, isOther);
+
         if (isPGN_ZH)
             doMove(move); // 执行本着或本变着
 

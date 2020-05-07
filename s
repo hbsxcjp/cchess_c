@@ -29,7 +29,7 @@ PieChars:rnbakabnr__________c_____c_p_p_p_p_p__________________P_P_P_P_P_C_____C
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04
+board：@00000000001BA030 bottomColor:0 04红帅K@04
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 车━马━相━仕━帅━仕━相━马━车
@@ -53,7 +53,7 @@ board：@000000000079A030 bottomColor:0 04红帅K@04
 車━馬━象━士━将━士━象━馬━車
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000079A030 bottomColor:1 04黑将k@04 ct:0
+board：@00000000001BA030 bottomColor:1 04黑将k@04 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 車━馬━象━士━将━士━象━馬━車
@@ -77,7 +77,7 @@ board：@000000000079A030 bottomColor:1 04黑将k@04 ct:0
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 車━馬━象━士━将━士━象━馬━車
@@ -101,7 +101,7 @@ board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:2
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 94黑将k@94
 红：04红帅K@04 03红仕A@03 05红仕A@05 02红相B@02 06红相B@06 01红马N@01 07红马N@07 00红车R@00 08红车R@08 21红炮C@21 27红炮C@27 30红兵P@30 32红兵P@32 34红兵P@34 36红兵P@36 38红兵P@38 count:16
 黑：94黑将k@94 93黑士a@93 95黑士a@95 92黑象b@92 96黑象b@96 91黑馬n@91 97黑馬n@97 90黑車r@90 98黑車r@98 71黑砲c@71 77黑砲c@77 60黑卒p@60 62黑卒p@62 64黑卒p@64 66黑卒p@66 68黑卒p@68 count:16
@@ -166,7 +166,7 @@ PieChars:_____a_______ak__r______R__________p___________________________B____N__
 ┗━┷━┷━砲━┷━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 14红帅K@14
+board：@00000000001BA030 bottomColor:0 14红帅K@14
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━┯━┯━┯━仕━┯━┯━┓
@@ -190,7 +190,7 @@ board：@000000000079A030 bottomColor:0 14红帅K@14
 ┗━┷━┷━炮━┷━┷━┷━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000079A030 bottomColor:1 14黑将k@14 ct:0
+board：@00000000001BA030 bottomColor:1 14黑将k@14 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━┯━┯━炮━┯━┯━┓
@@ -214,7 +214,7 @@ board：@000000000079A030 bottomColor:1 14黑将k@14 ct:0
 ┗━┷━┷━仕━┷━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 13红帅K@13 ct:1
+board：@00000000001BA030 bottomColor:0 13红帅K@13 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━炮━┯━┯━┯━┯━┓
@@ -238,7 +238,7 @@ board：@000000000079A030 bottomColor:0 13红帅K@13 ct:1
 ┗━┷━┷━┷━┷━仕━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 15红帅K@15 ct:2
+board：@00000000001BA030 bottomColor:0 15红帅K@15 ct:2
 15红帅K@15 <==> 84黑将k@84
 红：15红帅K@15 05红仕A@05 14红仕A@14 18红车R@18 93红炮C@93 38红兵P@38 count:6
 黑：84黑将k@84 70黑象b@70 78黑象b@78 75黑馬n@75 26黑車r@26 count:5
@@ -282,7 +282,7 @@ PieChars:__b_kab______a________c_________________________R_______________C______
 ┗━┷━相━帅━┷━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 03红帅K@03
+board：@00000000001BA030 bottomColor:0 03红帅K@03
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━相━┯━帅━仕━相━┯━┓
@@ -306,7 +306,7 @@ board：@000000000079A030 bottomColor:0 03红帅K@03
 ┗━┷━象━将━┷━┷━象━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000079A030 bottomColor:1 03黑将k@03 ct:0
+board：@00000000001BA030 bottomColor:1 03黑将k@03 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━┯━┯━将━象━┯━┓
@@ -330,7 +330,7 @@ board：@000000000079A030 bottomColor:1 03黑将k@03 ct:0
 ┗━┷━相━仕━帅━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━将━┯━┯━象━┯━┓
@@ -354,7 +354,7 @@ board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
 ┗━┷━相━┷━帅━仕━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:2
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 93黑将k@93
 红：04红帅K@04 05红仕A@05 14红仕A@14 02红相B@02 06红相B@06 84红车R@84 24红炮C@24 count:7
 黑：93黑将k@93 92黑象b@92 96黑象b@96 53黑車r@53 71黑砲c@71 count:5
@@ -399,7 +399,7 @@ PieChars:____kab______a________b_______N__________________N________n________B___
 ┗━┷━┷━仕━帅━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04
+board：@00000000001BA030 bottomColor:0 04红帅K@04
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━┯━┯━帅━仕━相━┯━┓
@@ -423,7 +423,7 @@ board：@000000000079A030 bottomColor:0 04红帅K@04
 ┗━┷━┷━士━将━┷━象━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000079A030 bottomColor:1 04黑将k@04 ct:0
+board：@00000000001BA030 bottomColor:1 04黑将k@04 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━┯━将━士━┯━┯━┓
@@ -447,7 +447,7 @@ board：@000000000079A030 bottomColor:1 04黑将k@04 ct:0
 ┗━┷━相━仕━帅━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━士━将━┯━象━┯━┓
@@ -471,7 +471,7 @@ board：@000000000079A030 bottomColor:0 04红帅K@04 ct:1
 ┗━┷━┷━┷━帅━仕━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000079A030 bottomColor:0 04红帅K@04 ct:2
+board：@00000000001BA030 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 94黑将k@94
 红：04红帅K@04 05红仕A@05 14红仕A@14 06红相B@06 24红相B@24 64红马N@64 count:6
 黑：94黑将k@94 84黑士a@84 93黑士a@93 74黑象b@74 96黑象b@96 33黑馬n@33 54黑馬n@54 count:7
@@ -489,3 +489,6091 @@ board：@000000000079A030 bottomColor:0 04红帅K@04 ct:2
 33黑馬n@33 >>【12空 14红仕A@14 52空 45空 21空 25空 41空 】7 =【12空 14红仕A@14 52空 45空 21空 25空 41空 】7 +【】0
 54黑馬n@54 >>【66空 35空 42空 46空 62空 】5 =【66空 35空 42空 46空 62空 】5 +【】0
 
+FEN:9/3k5/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3
+	move@:00000000001BC840 iccs:i1h1
+FEN:9/3k5/b7b/9/9/9/8P/6rn1/4AK1R1/4CA3
+	move@:00000000001BC8A0 iccs:h1h2
+FEN:9/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/3C1A3
+	move@:00000000006E0790 iccs:g5e4
+FEN:9/3k5/b7b/9/9/9/8r/5K3/4A4/3AC4
+	move@:00000000006E0730 iccs:i3f3
+FEN:9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/3C1A3
+	move@:00000000006E0910 iccs:d0e0
+FEN:9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/4CA3
+	move@:00000000006E0490 iccs:g2f2
+FEN:9/3k5/b7b/9/9/9/8P/9/5K1r1/3ACA3
+	move@:00000000001BC600 iccs:f1f2
+FEN:9/3k5/b7b/9/9/9/5r3/5K3/4A4/3AC4
+	move@:00000000006E0310 iccs:f2e2
+FEN:9/4k4/b7b/9/9/4n4/8P/5r3/4AK2R/4CA3
+	move@:00000000006E0250 iccs:e1f2
+FEN:9/3k5/b7b/9/9/9/8P/5K3/7r1/3ACA3
+	move@:00000000001BCA80 iccs:h1h3
+FEN:3C5/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/5A3
+	move@:00000000006E0DF0 iccs:d9d0
+	move@:00000000006E09D0 iccs:d9d2
+	move@:00000000006E0A90 iccs:e1f2
+	move@:00000000006E01F0 iccs:i3i4
+FEN:9/4k4/b7b/9/9/4n4/8P/5A3/5K2R/4CA3
+	move@:00000000006E0B50 iccs:e4g3
+FEN:9/3k5/b7b/9/9/9/5r2P/5K3/4A4/3AC4
+	move@:00000000006E0C70 iccs:f2e2
+FEN:9/3k5/b7b/9/9/9/8P/6rR1/4AK3/4CA3
+	move@:00000000001BCBA0 iccs:g2h2
+FEN:9/3k5/b7b/9/9/6n2/8P/6r2/4AK1R1/4CA3
+	move@:00000000001BC720 iccs:g4h2
+FEN:9/3k5/b7b/9/9/9/8P/7r1/5K3/3ACA3
+	move@:00000000001BC5A0 iccs:h2h1
+FEN:9/3k5/b7b/9/9/9/8r/4K4/4A4/3AC4
+	move@:00000000006E0970 iccs:e2f2
+FEN:9/3k5/b7b/9/9/9/7rP/5K3/4A4/3AC4
+	move@:00000000001BC4E0 iccs:h3f3
+FEN:3C5/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/5A3
+	move@:00000000001BC540 iccs:d9d0
+FEN:9/4k4/b7b/9/9/4n4/8P/4C1r2/4AK2R/5A3
+	move@:00000000006E0430 iccs:e4g3
+FEN:9/4k4/b7b/9/6n2/9/8P/3C2r2/4AK2R/5A3
+	move@:00000000006E05B0 iccs:g5e4
+FEN:9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK1R1/5A3
+	move@:00000000006E08B0 iccs:g2f2
+FEN:3C5/4k4/b7b/9/9/4n3P/9/6r2/4AK2R/5A3
+	move@:00000000006E0130 iccs:i1i3
+FEN:9/3k5/b7b/9/9/9/5r3/4K4/4A4/3AC4
+	move@:00000000006E04F0 iccs:d8d9
+FEN:9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK2R/5A3
+	move@:00000000006E0850 iccs:d2e2
+	move@:00000000006E0F10 iccs:i1h1
+FEN:9/3k5/b7b/9/9/9/7rP/5K3/9/3ACA3
+	move@:00000000001BC480 iccs:f0e1
+FEN:3C5/4k4/b4n2b/9/9/9/8P/6r2/4AK2R/5A3
+	move@:00000000001BC780 iccs:f7g5
+	move@:00000000001BC6C0 iccs:f7e5
+FEN:9/4k4/b7b/9/9/4n4/8P/3C1r3/4AK1R1/5A3
+	move@:00000000006E03D0 iccs:e1f2
+FEN:9/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/3C1A3
+	move@:00000000001BC900 iccs:e5g4
+FEN:9/3k5/b7b/9/9/9/5r2P/4K4/4A4/3AC4
+	move@:00000000006E0CD0 iccs:f3i3
+FEN:3C5/4k4/b7b/9/6n2/9/8P/5Ar2/5K2R/5A3
+	move@:00000000006E0FD0 iccs:g5h3
+FEN:9/4k4/b7b/9/9/4n4/8P/3C1A3/5K1R1/5A3
+	move@:00000000006E0AF0 iccs:e4g3
+	move@:00000000006E0550 iccs:e4d2
+FEN:9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3
+	move@:00000000001BC9C0 iccs:e8d8
+FEN:3C5/4k4/b7b/9/6n2/8P/9/6r2/4AK2R/5A3
+	move@:00000000006E0EB0 iccs:g5e4
+FEN:3k5/9/b7b/9/9/9/5r3/4K4/4A4/3AC4
+	move@:00000000006E0A30 iccs:e0f0
+FEN:3C5/4k4/b7b/9/9/4n3P/8R/6r2/4AK3/5A3
+	move@:00000000006E0190 iccs:g2g1
+FEN:9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/3C1A3
+	move@:00000000001BCB40 iccs:d0e0
+FEN:9/3k5/b7b/9/9/9/8P/7r1/4AK3/4CA3
+	move@:00000000001BCAE0 iccs:e1d0
+
+
+【数组 局面数(使用):38 着法数:44 大小:61 填充因子: 0.62】
+
+9/3k5/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3 0x18170100 
+9/3k5/b7b/9/9/9/8P/6rn1/4AK1R1/4CA3 0x17270100 
+9/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/3C1A3 0x56440100 
+9/3k5/b7b/9/9/9/8r/5K3/4A4/3AC4 0x38350100 
+9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/3C1A3 0x03040100 
+9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/4CA3 0x26250100 
+9/3k5/b7b/9/9/9/8P/9/5K1r1/3ACA3 0x15250100 
+9/3k5/b7b/9/9/9/5r3/5K3/4A4/3AC4 0x25240100 
+9/4k4/b7b/9/9/4n4/8P/5r3/4AK2R/4CA3 0x14250100 
+9/3k5/b7b/9/9/9/8P/5K3/7r1/3ACA3 0x17370100 
+3C5/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/5A3 0x93030100 0x93230100 0x14250100 0x38480100 
+9/4k4/b7b/9/9/4n4/8P/5A3/5K2R/4CA3 0x44360100 
+9/3k5/b7b/9/9/9/5r2P/5K3/4A4/3AC4 0x25240100 
+9/3k5/b7b/9/9/9/8P/6rR1/4AK3/4CA3 0x26270100 
+9/3k5/b7b/9/9/6n2/8P/6r2/4AK1R1/4CA3 0x46270100 
+9/3k5/b7b/9/9/9/8P/7r1/5K3/3ACA3 0x27170100 
+9/3k5/b7b/9/9/9/8r/4K4/4A4/3AC4 0x24250100 
+9/3k5/b7b/9/9/9/7rP/5K3/4A4/3AC4 0x37350100 
+3C5/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/5A3 0x93030100 
+9/4k4/b7b/9/9/4n4/8P/4C1r2/4AK2R/5A3 0x44360100 
+9/4k4/b7b/9/6n2/9/8P/3C2r2/4AK2R/5A3 0x56440100 
+9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK1R1/5A3 0x26250100 
+3C5/4k4/b7b/9/9/4n3P/9/6r2/4AK2R/5A3 0x18380100 
+9/3k5/b7b/9/9/9/5r3/4K4/4A4/3AC4 0x83930100 
+9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK2R/5A3 0x23240100 0x18170100 
+9/3k5/b7b/9/9/9/7rP/5K3/9/3ACA3 0x05140100 
+3C5/4k4/b4n2b/9/9/9/8P/6r2/4AK2R/5A3 0x75560100 0x75540100 
+9/4k4/b7b/9/9/4n4/8P/3C1r3/4AK1R1/5A3 0x14250100 
+9/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/3C1A3 0x54460100 
+9/3k5/b7b/9/9/9/5r2P/4K4/4A4/3AC4 0x35380100 
+3C5/4k4/b7b/9/6n2/9/8P/5Ar2/5K2R/5A3 0x56370100 
+9/4k4/b7b/9/9/4n4/8P/3C1A3/5K1R1/5A3 0x44360100 0x44230100 
+9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3 0x84830100 
+3C5/4k4/b7b/9/6n2/8P/9/6r2/4AK2R/5A3 0x56440100 
+3k5/9/b7b/9/9/9/5r3/4K4/4A4/3AC4 0x04050100 
+3C5/4k4/b7b/9/9/4n3P/8R/6r2/4AK3/5A3 0x26160100 
+9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/3C1A3 0x03040100 
+9/3k5/b7b/9/9/9/8P/7r1/4AK3/4CA3 0x14030100 
+
+【数组 局面数(使用):38 着法数:44 大小:61 填充因子: 0.62】
+分析    move => 平均:1.00 最大: 1 总数:44 方差:0.00 标准差:0.00 【数组 使用:44 大小:256 填充因子: 0.17】
+分析 moveRec => 平均:1.16 最大: 4 总数:44 方差:0.30 标准差:0.55 【数组 使用:38 大小:256 填充因子: 0.15】
+分析  aspect => 平均:1.52 最大: 4 总数:38 方差:0.59 标准差:0.77 【数组 使用:25 大小:256 填充因子: 0.10】
+
+attr:32 size:1268 chessManual/示例文件.xqf/- 北京张强 (和) 上海胡荣华 (1993.4.27于南京).xqf
+attr:32 size:1456 chessManual/示例文件.xqf/05WY0001.XQF
+attr:32 size:3173 chessManual/示例文件.xqf/4四量拨千斤.XQF
+attr:32 size:1725 chessManual/示例文件.xqf/5、第二轮 吕钦　红先胜 徐天红 2001.1.XQF
+attr:32 size:1376 chessManual/示例文件.xqf/单马类_第02局.XQF
+attr:32 size:1186 chessManual/示例文件.xqf/单马类_第03局.XQF
+attr:32 size:1466 chessManual/示例文件.xqf/单马类_第06局.XQF
+attr:32 size:1224 chessManual/示例文件.xqf/单马类_第10局.XQF
+attr:32 size:1344 chessManual/示例文件.xqf/单马类_第11局.XQF
+attr:32 size:1792 chessManual/示例文件.xqf/单马类_第18局.XQF
+attr:32 size:1891 chessManual/示例文件.xqf/双马类_第3局.XQF
+attr:32 size:1420 chessManual/示例文件.xqf/将族屏风马先负过宫炮.XQF
+attr:32 size:1160 chessManual/示例文件.xqf/布局陷阱--飞相局对金钩炮.XQF
+attr:32 size:1600 chessManual/示例文件.xqf/炮兵类_第9局.XQF
+attr:32 size:1240 chessManual/示例文件.xqf/神骑突围.XQF
+attr:32 size:1468 chessManual/示例文件.xqf/第01局.XQF
+attr:32 size:1808 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/10、第四轮 柳大华　红先胜　徐天红　.XQF
+attr:32 size:1730 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/11、第四轮 胡荣华　红先负　吕钦　.XQF
+attr:32 size:1340 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/12、第四轮 陶汉明　红先和　许银川　.XQF
+attr:32 size:2160 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/13、第五轮 徐天红　红先和　胡荣华.XQF
+attr:32 size:1480 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/14、第五轮 许银川　红先和　柳大华.XQF
+attr:32 size:1552 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/15、第五轮 吕钦　红先和　陶汉明　.XQF
+attr:32 size:2507 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/1、第一轮 徐天红　红先负 许银川 2001.1.XQF
+attr:32 size:1582 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/2、第一轮 陶汉明　红先胜 胡荣华 2001.1.XQF
+attr:32 size:1454 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/3、第一轮 柳大华　红先和 吕钦 2001.1.XQF
+attr:32 size:1614 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/4、第二轮 胡荣华　红先和 许银川 2001.1.XQF
+attr:32 size:1725 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/5、第二轮 吕钦　红先胜 徐天红 2001.1.XQF
+attr:32 size:1260 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/6、第二轮 陶汉明　红先和 柳大华.XQF
+attr:32 size:1232 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/7、第三轮 徐天红　红先和　陶汉明.XQF
+attr:32 size:1400 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/8、第三轮 许银川　红先和　吕钦.XQF
+attr:32 size:1288 chessManual/示例文件.xqf/第21届五羊杯赛对局选（评注版）/9、第三轮 柳大华 红先和　胡荣华.XQF
+attr:32 size:1165 chessManual/示例文件.xqf/车兵和车卒士（第2局）029.xqf
+attr:32 size:1226 chessManual/示例文件.xqf/车炮类_第01局.XQF
+attr:32 size:1264 chessManual/示例文件.xqf/马兵类_第01局.XQF
+chessManual/示例文件 包含: 34个文件。
+
+attr:32 size:282 chessManual/象棋杀着大全.xqf/01单兵和单炮类/单兵和单炮类.txt
+attr:32 size:1096 chessManual/象棋杀着大全.xqf/01单兵和单炮类/定式01.XQF
+attr:32 size:1144 chessManual/象棋杀着大全.xqf/01单兵和单炮类/定式02.XQF
+attr:32 size:1114 chessManual/象棋杀着大全.xqf/01单兵和单炮类/定式03.XQF
+attr:32 size:1114 chessManual/象棋杀着大全.xqf/01单兵和单炮类/定式04.XQF
+attr:32 size:1162 chessManual/象棋杀着大全.xqf/01单兵和单炮类/第01局.XQF
+attr:32 size:1416 chessManual/象棋杀着大全.xqf/01单兵和单炮类/第02局.XQF
+attr:32 size:899 chessManual/象棋杀着大全.xqf/02单马类/单马类.txt
+attr:32 size:1064 chessManual/象棋杀着大全.xqf/02单马类/定式01.XQF
+attr:32 size:1066 chessManual/象棋杀着大全.xqf/02单马类/定式02.XQF
+attr:32 size:1196 chessManual/象棋杀着大全.xqf/02单马类/第01局.XQF
+attr:32 size:1376 chessManual/象棋杀着大全.xqf/02单马类/第02局.XQF
+attr:32 size:1186 chessManual/象棋杀着大全.xqf/02单马类/第03局.XQF
+attr:32 size:1563 chessManual/象棋杀着大全.xqf/02单马类/第04局.XQF
+attr:32 size:1316 chessManual/象棋杀着大全.xqf/02单马类/第05局.XQF
+attr:32 size:1466 chessManual/象棋杀着大全.xqf/02单马类/第06局.XQF
+attr:32 size:1394 chessManual/象棋杀着大全.xqf/02单马类/第07局.XQF
+attr:32 size:1186 chessManual/象棋杀着大全.xqf/02单马类/第08局.XQF
+attr:32 size:1569 chessManual/象棋杀着大全.xqf/02单马类/第09局.XQF
+attr:32 size:1224 chessManual/象棋杀着大全.xqf/02单马类/第10局.XQF
+attr:32 size:1275 chessManual/象棋杀着大全.xqf/02单马类/第11A局.XQF
+attr:32 size:1344 chessManual/象棋杀着大全.xqf/02单马类/第11局.XQF
+attr:32 size:1160 chessManual/象棋杀着大全.xqf/02单马类/第12局.XQF
+attr:32 size:1272 chessManual/象棋杀着大全.xqf/02单马类/第13局.XQF
+attr:32 size:1204 chessManual/象棋杀着大全.xqf/02单马类/第14局.XQF
+attr:32 size:1346 chessManual/象棋杀着大全.xqf/02单马类/第15局.XQF
+attr:32 size:1198 chessManual/象棋杀着大全.xqf/02单马类/第16局.XQF
+attr:32 size:1304 chessManual/象棋杀着大全.xqf/02单马类/第17局.XQF
+attr:32 size:1792 chessManual/象棋杀着大全.xqf/02单马类/第18局.XQF
+attr:32 size:401 chessManual/象棋杀着大全.xqf/03炮兵类/炮兵类.txt
+attr:32 size:1234 chessManual/象棋杀着大全.xqf/03炮兵类/第1局.XQF
+attr:32 size:1220 chessManual/象棋杀着大全.xqf/03炮兵类/第2局.XQF
+attr:32 size:1108 chessManual/象棋杀着大全.xqf/03炮兵类/第3局.XQF
+attr:32 size:1180 chessManual/象棋杀着大全.xqf/03炮兵类/第4局.XQF
+attr:32 size:1350 chessManual/象棋杀着大全.xqf/03炮兵类/第5局.XQF
+attr:32 size:1304 chessManual/象棋杀着大全.xqf/03炮兵类/第6局.XQF
+attr:32 size:1436 chessManual/象棋杀着大全.xqf/03炮兵类/第7局.XQF
+attr:32 size:1518 chessManual/象棋杀着大全.xqf/03炮兵类/第8局.XQF
+attr:32 size:1600 chessManual/象棋杀着大全.xqf/03炮兵类/第9局.XQF
+attr:32 size:1066 chessManual/象棋杀着大全.xqf/04马兵类/定式01.XQF
+attr:32 size:1068 chessManual/象棋杀着大全.xqf/04马兵类/定式02.XQF
+attr:32 size:1264 chessManual/象棋杀着大全.xqf/04马兵类/第01局.XQF
+attr:32 size:1350 chessManual/象棋杀着大全.xqf/04马兵类/第03局.XQF
+attr:32 size:1292 chessManual/象棋杀着大全.xqf/04马兵类/第04局.XQF
+attr:32 size:1336 chessManual/象棋杀着大全.xqf/04马兵类/第05局.XQF
+attr:32 size:1399 chessManual/象棋杀着大全.xqf/04马兵类/第06局.XQF
+attr:32 size:1663 chessManual/象棋杀着大全.xqf/04马兵类/第07局.XQF
+attr:32 size:1442 chessManual/象棋杀着大全.xqf/04马兵类/第08局.XQF
+attr:32 size:408 chessManual/象棋杀着大全.xqf/04马兵类/马兵类.txt
+attr:32 size:350 chessManual/象棋杀着大全.xqf/05双炮类/双炮类.txt
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/05双炮类/第00局.XQF
+attr:32 size:1220 chessManual/象棋杀着大全.xqf/05双炮类/第1局.XQF
+attr:32 size:1186 chessManual/象棋杀着大全.xqf/05双炮类/第2局.XQF
+attr:32 size:1326 chessManual/象棋杀着大全.xqf/05双炮类/第3局.XQF
+attr:32 size:416 chessManual/象棋杀着大全.xqf/06双马类/双马类.txt
+attr:32 size:1170 chessManual/象棋杀着大全.xqf/06双马类/第1局.XQF
+attr:32 size:1210 chessManual/象棋杀着大全.xqf/06双马类/第2局.XQF
+attr:32 size:1891 chessManual/象棋杀着大全.xqf/06双马类/第3局.XQF
+attr:32 size:1486 chessManual/象棋杀着大全.xqf/06双马类/第4局.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/07马炮类/定式01.XQF
+attr:32 size:1064 chessManual/象棋杀着大全.xqf/07马炮类/定式02.XQF
+attr:32 size:1182 chessManual/象棋杀着大全.xqf/07马炮类/第01局.XQF
+attr:32 size:1174 chessManual/象棋杀着大全.xqf/07马炮类/第02局.XQF
+attr:32 size:1322 chessManual/象棋杀着大全.xqf/07马炮类/第03局.XQF
+attr:32 size:1290 chessManual/象棋杀着大全.xqf/07马炮类/第04局.XQF
+attr:32 size:1160 chessManual/象棋杀着大全.xqf/07马炮类/第05A局.XQF
+attr:32 size:1286 chessManual/象棋杀着大全.xqf/07马炮类/第05局.XQF
+attr:32 size:1386 chessManual/象棋杀着大全.xqf/07马炮类/第06局.XQF
+attr:32 size:1454 chessManual/象棋杀着大全.xqf/07马炮类/第07局.XQF
+attr:32 size:1342 chessManual/象棋杀着大全.xqf/07马炮类/第08局.XQF
+attr:32 size:1456 chessManual/象棋杀着大全.xqf/07马炮类/第09局.XQF
+attr:32 size:1619 chessManual/象棋杀着大全.xqf/07马炮类/第10局.XQF
+attr:32 size:1686 chessManual/象棋杀着大全.xqf/07马炮类/第11局.XQF
+attr:32 size:521 chessManual/象棋杀着大全.xqf/07马炮类/马炮类.txt
+attr:32 size:1152 chessManual/象棋杀着大全.xqf/08车兵类/定式01.XQF
+attr:32 size:1192 chessManual/象棋杀着大全.xqf/08车兵类/定式02.XQF
+attr:32 size:1414 chessManual/象棋杀着大全.xqf/08车兵类/定式03.XQF
+attr:32 size:1252 chessManual/象棋杀着大全.xqf/08车兵类/第1局.XQF
+attr:32 size:1360 chessManual/象棋杀着大全.xqf/08车兵类/第2局.XQF
+attr:32 size:1192 chessManual/象棋杀着大全.xqf/08车兵类/第4局.XQF
+attr:32 size:1284 chessManual/象棋杀着大全.xqf/08车兵类/第5局.XQF
+attr:32 size:1340 chessManual/象棋杀着大全.xqf/08车兵类/第6局.XQF
+attr:32 size:1352 chessManual/象棋杀着大全.xqf/08车兵类/第7局.XQF
+attr:32 size:1276 chessManual/象棋杀着大全.xqf/08车兵类/第8局.XQF
+attr:32 size:2442 chessManual/象棋杀着大全.xqf/08车兵类/第9局.XQF
+attr:32 size:714 chessManual/象棋杀着大全.xqf/08车兵类/车兵类.txt
+attr:32 size:1226 chessManual/象棋杀着大全.xqf/09车炮类/第01局.XQF
+attr:32 size:1232 chessManual/象棋杀着大全.xqf/09车炮类/第02局.XQF
+attr:32 size:1148 chessManual/象棋杀着大全.xqf/09车炮类/第03局.XQF
+attr:32 size:1210 chessManual/象棋杀着大全.xqf/09车炮类/第04局.XQF
+attr:32 size:1354 chessManual/象棋杀着大全.xqf/09车炮类/第05局.XQF
+attr:32 size:1224 chessManual/象棋杀着大全.xqf/09车炮类/第06A局.XQF
+attr:32 size:1412 chessManual/象棋杀着大全.xqf/09车炮类/第06局.XQF
+attr:32 size:1566 chessManual/象棋杀着大全.xqf/09车炮类/第07局.XQF
+attr:32 size:1384 chessManual/象棋杀着大全.xqf/09车炮类/第08局.XQF
+attr:32 size:1830 chessManual/象棋杀着大全.xqf/09车炮类/第09局.XQF
+attr:32 size:2129 chessManual/象棋杀着大全.xqf/09车炮类/第10局.XQF
+attr:32 size:471 chessManual/象棋杀着大全.xqf/09车炮类/车炮类.txt
+attr:32 size:1040 chessManual/象棋杀着大全.xqf/09车炮类/附局1.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/09车炮类/附局2.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/09车炮类/附局3.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/09车炮类/附局4.XQF
+attr:32 size:1056 chessManual/象棋杀着大全.xqf/09车炮类/附局5.XQF
+attr:32 size:1064 chessManual/象棋杀着大全.xqf/09车炮类/附局6.XQF
+attr:32 size:1040 chessManual/象棋杀着大全.xqf/10车马类/定式01.XQF
+attr:32 size:1040 chessManual/象棋杀着大全.xqf/10车马类/定式02.XQF
+attr:32 size:1156 chessManual/象棋杀着大全.xqf/10车马类/定式03.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/10车马类/定式04.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/10车马类/定式05.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/10车马类/定式06.XQF
+attr:32 size:1048 chessManual/象棋杀着大全.xqf/10车马类/定式07.XQF
+attr:32 size:1056 chessManual/象棋杀着大全.xqf/10车马类/定式08.XQF
+attr:32 size:1056 chessManual/象棋杀着大全.xqf/10车马类/定式09.XQF
+attr:32 size:1072 chessManual/象棋杀着大全.xqf/10车马类/定式10.XQF
+attr:32 size:1468 chessManual/象棋杀着大全.xqf/10车马类/第01局.XQF
+attr:32 size:1198 chessManual/象棋杀着大全.xqf/10车马类/第02局.XQF
+attr:32 size:916 chessManual/象棋杀着大全.xqf/10车马类/车马类.txt
+attr:32 size:1072 chessManual/象棋杀着大全.xqf/前言.txt
+attr:32 size:14385 chessManual/象棋杀着大全.xqf/第01局.docx
+attr:32 size:464 chessManual/象棋杀着大全.xqf/象棋杀着大全.txt
+chessManual/象棋杀着大全 包含: 120个文件。
+
+attr:32 size:1101322 chessManual/疑难文件.xqf/中炮【马8进7】.XQF
+attr:32 size:732814 chessManual/疑难文件.xqf/中炮对屏风马.XQF
+attr:32 size:449527 chessManual/疑难文件.xqf/仙人指路全集（史上最全最新版）.XQF
+attr:32 size:36310 chessManual/疑难文件.xqf/飞相局【卒7进1】.XQF
+attr:32 size:915179 chessManual/疑难文件.xqf/黑用开局库.XQF
+chessManual/疑难文件 包含: 5个文件。
+
+attr:32 size:45 chessManual/中国象棋棋谱大全.xqf/中国象棋谱在线下载.txt
+attr:32 size:1326 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/001 三军用命 围困得子.XQF
+attr:32 size:1088 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/002 曲径通幽 海阔天空.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/003 避实就虚 步步紧逼.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/004 中路诱敌 谋子致胜.XQF
+attr:32 size:1194 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/005 御驾亲征 勇冠三军.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/006 声东击西 两翼包抄.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/007 明修栈道 暗渡陈仓.XQF
+attr:32 size:1092 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/008 软硬兼施 势如破竹.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/009 狭路相逢 勇者为胜.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/010 投鞭断流 车轮滚滚.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/011 兵强马壮 八面玲珑.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/012 左右腾挪 双车逼宫.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/013 飞象扬威 锁定乾坤.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/014 天降奇兵 一叶轻舟.XQF
+attr:32 size:1080 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/015 投石问路 马到成功.XQF
+attr:32 size:1350 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/016 横刀立马 勇摧重城.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/017 项庄舞剑 意在沛公.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/018 诱敌深入 兵不厌诈.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/019 招招领先 夺命连环.XQF
+attr:32 size:1174 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/020 马炮纵横 逐鹿沙场.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/021 车入险地 无危自寒.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/022 卒入九宫 势必英雄.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/023 巧破封锁 虎口拔牙.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/024 强兵之末 击其隋归.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/025 逞强贪功 自酿苦果.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/026 分力出击 齐头并进.XQF
+attr:32 size:1096 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/027 借炮使马 妙手夺子.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/028 车炮夹攻 一鼓作气.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/029 石破天惊 豁然开朗.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/030 车借马力 乘虚而入.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/031 车炮侧击 敲山震虎.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/032 骏马驰骋 傲视群雄.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/033 突出奇兵 一箭双雕.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/034 借力还击 丝线牵牛.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/035 精雕细琢 百炼成钢.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/036 前呼后应 审时度势.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/037 衔枚急进 奋勇争先.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/038 适时渡兵 力控全局.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/039 炮镇中路 全面开花.XQF
+attr:32 size:1096 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/040 临危不乱 以攻代守.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/041 以退为进 马如游龙.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/042 围点打援 妙手夺马.XQF
+attr:32 size:1186 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/043 螳螂捕蝉 黄雀在后.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/044 围魏救赵 自解危机.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/045 炮声隆隆 叩关成功.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/046 醉翁之意 隐伏杀机.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/047 双杯献酒 葫芦藏宝.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/048 巧设诱饵 神兵天降.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/049 全场紧逼 攻势如潮.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/050 火中取栗 慧眼识宝.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/051 双车夹击 直捣黄龙.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/052 运筹帷幄 侧翼进袭.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/053 不入虎穴 焉得虎子.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/054 棋错一招 满盘皆输.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/055 老将出马 一个顶俩.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/056 避实就虚 出其不意.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/057 骏马追风 势不可挡.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/058 金戈铁马 笑傲江湖.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/059 审时度势 妙笔生花.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/060 前追后打 截获正果.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/061 横车立马 气贯长虹.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/062 弃兵突进 措手不及.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/063 绵里藏针 引而不发.XQF
+attr:32 size:1088 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/064 明察秋毫 突袭获胜.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/065 增兵减灶 请君入瓮.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/066 左右开弓 步步为营.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/067 龙骧虎步 一鼓作气.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/068 见缝插针 水到渠成.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/069 后退一步 海阔天空.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/070 马回窝心 必遭凶险.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/071 攻守兼备 应付自如.XQF
+attr:32 size:1166 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/072 兵戎相见 侧击奏凯.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/073 龙翻潭底 履险如夷.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/074 双骑出击 迅猛如雷.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/075 卖弄玄机 反遭暗算.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/076 两翼齐动 龙飞凤舞.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/077 重拳出击 倒挂金钩.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/078 隔山打牛 敲山震虎.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/079 精细用兵 知难而进.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/080 巧妙构思 独具匠心.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/081 围追堵截 前赴后继.XQF
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/082 左突右闪 钳形进逼.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/083 两军相对 勇者胜出.XQF
+attr:32 size:1290 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/084 炮守要隘 占尽先机.XQF
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/085 中路突破 侧翼结果.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/086 招招凶狠 当仁不让.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/087 火眼金睛 一击中的.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/088 门户洞开 诱敌深入.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/089 飞炮渡河 泰山压顶.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/090 挥车进击 直插咽喉.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/091 刀光剑影 唇亡齿寒.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/092 紧抓机会 妙手迭出.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/093 马奔卧槽 落花流水.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/094 守株待兔 引蛇出洞.XQF
+attr:32 size:1185 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/095 及时切入 击中要害.XQF
+attr:32 size:1202 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/096 胸怀全局 成算在心.XQF
+attr:32 size:1242 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/097 紧追不放 一追到底.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/098 突出奇招 高奏凯歌.XQF
+attr:32 size:1250 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/099 运兵堵路 气吞山河.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/100 马如游龙 妙手得子.XQF
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/101 兵贵神速 失不再来.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/102 调虎离山 回马金枪.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/103 马踏连营打破僵局.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/104 进退自如 一石二鸟.XQF
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/105 身手矫健 马炮嘶鸣.XQF
+attr:32 size:1406 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/106 左炮右移 威力无比.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/107 三子联攻 如鱼得水.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/108 兵多将广 从容调度.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/109 瞬间之机 抓住不放.XQF
+attr:32 size:1378 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/110 巧渡七卒 快马加鞭.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/111 老谋深算 巧着破敌.XQF
+attr:32 size:1298 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/112 车马调动 此序井然.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/113 拖刀之计 发力在后.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/114 佯攻中路 侧翼突破.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/115 先屯粮草 暂缓称王.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/116 宽窄并用 得势得分.XQF
+attr:32 size:1602 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/117 趁隙猛攻 夺子而归.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/118 隔断归路 锐意攻坚.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/119 铁兵横渡 防不胜防.XQF
+attr:32 size:1214 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/120 炮架中路 火力凶猛.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/121 轻轻挪炮 功力非凡.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/122 饿虎扑食 强取豪夺.XQF
+attr:32 size:1285 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/123 攻防有序 谋子占先.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/124 以车砍马 将计就计.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/125 风平浪静 暗潮汹涌.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/126 挥师急进 全局在胸.XQF
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/127 收发自如 从容进取.XQF
+attr:32 size:1186 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/128 冲开缺口 落井下石.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/129 以退为进 宁静致远.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/130 逆水行舟 不进则退.XQF
+attr:32 size:1290 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/131 妙手飞相 全局在胸.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/132 连续牵制 巧妙夺子.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/133 左右调度 次序严谨.XQF
+attr:32 size:1226 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/134 停车问路 借花献佛.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/135 胆大心细 打破僵局.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/136 以车扳马 似笨实佳.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/137 以退为进 四壁生辉.XQF
+attr:32 size:1306 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/138 隔河对峙 暗运内力.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/139 收网打鱼 瓮中捉鳖.XQF
+attr:32 size:1370 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/140 甘为人梯 开通道路.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/141 虎口夺食 力拔千斤.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/142 挥炮攻车 反戈一击.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/143 顺水推舟 夺子而胜.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/144 双炮齐鸣 锐意攻坚.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/145 马回窝心 别有洞天.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/146 挺卒拦截 一招两用.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/147 弯弓搭箭 盘马而出.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/148 追风逐电 顺式出击.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/149 飞相拦截 锁定胜局.XQF
+attr:32 size:1150 chessManual/中国象棋棋谱大全.xqf/中局/实战中局——夺子取胜技巧150局/150 炮镇中路 力拼肋道.XQF
+attr:32 size:166212 chessManual/中国象棋棋谱大全.xqf/全局/东方剑客自制将族开局库/复件 Opening.lib
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/全局/事林广记（总2局）/饶先列手取胜局.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/全局/事林广记（总2局）/饶先顺手取胜局.XQF
+attr:32 size:4421 chessManual/中国象棋棋谱大全.xqf/全局/全国最佳一盘棋5局/1959年最佳一盘棋.XQF
+attr:32 size:4459 chessManual/中国象棋棋谱大全.xqf/全局/全国最佳一盘棋5局/1964年最佳一盘棋.XQF
+attr:32 size:5090 chessManual/中国象棋棋谱大全.xqf/全局/全国最佳一盘棋5局/1981年最佳一盘棋.XQF
+attr:32 size:5268 chessManual/中国象棋棋谱大全.xqf/全局/全国最佳一盘棋5局/1982年最佳一盘棋.XQF
+attr:32 size:4189 chessManual/中国象棋棋谱大全.xqf/全局/全国最佳一盘棋5局/1983年最佳一盘棋.XQF
+attr:32 size:1700 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第1局 当头炮直车破屏风马局.xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第2局 当头炮破屏风马起着进兵局.xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第3局 顺炮直车破横车局.xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第4局 软屏风马破当头炮局.xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第5局 横车龟背炮破当头炮屏风马局.xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第6局 横车龟背炮破当头炮局.xqf
+attr:32 size:1386 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第7局 横车象改转炮破当头炮局.xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/全局/反梅花谱/第8局 横车破直车士相局.xqf
+attr:32 size:1942 chessManual/中国象棋棋谱大全.xqf/全局/吴氏梅花谱/让先屏风马破士角炮夹马炮局 局三.XQF
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/全局/吴氏梅花谱/让先屏风马破士角马局 局五.XQF
+attr:32 size:2387 chessManual/中国象棋棋谱大全.xqf/全局/吴氏梅花谱/让先屏风马破当头横车局 局二.XQF
+attr:32 size:2073 chessManual/中国象棋棋谱大全.xqf/全局/吴氏梅花谱/让先屏风马破当头炮夹马局　局四.XQF
+attr:32 size:2866 chessManual/中国象棋棋谱大全.xqf/全局/吴氏梅花谱/让先屏风马破当头直车局　局一.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第一局　让刘尚龄单先第一局(吴胜).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第七局 让傅瑞天双先第二局(傅胜).xqf
+attr:32 size:1076 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第九局 让施嘉谟单先第二局(施胜).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第二局 让刘尚龄单先第二局(吴胜).xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第五局 让傅瑞天单先第一局(吴胜).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第八局 让施嘉谟单先第一局(吴胜).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第六局 让傅瑞天双先第一局(吴胜).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十一局 让施嘉谟单先第四局(施胜).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十三局 让施嘉谟单先第六局(吴胜).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十二局 让施嘉谟单先第五局(吴胜).xqf
+attr:32 size:1048 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十五局 让施嘉谟单先第八局(吴胜).xqf
+attr:32 size:1088 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十六局 让宣才宝单先第一局(吴胜).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十四局 让施嘉谟单先第七局(吴胜).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第十局 让施嘉谟单先第三局(施胜).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/全局/吴绍龙象棋谱/第四局 让陈泰丰单先第一局(吴胜).xqf
+attr:32 size:3947 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/得先/第1局当头炮直车破屏风马.XQF
+attr:32 size:2447 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/得先/第2局当头炮横车破屏风马.XQF
+attr:32 size:2122 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/得先/第3局当头炮破屏风马直车.XQF
+attr:32 size:1872 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/得先/第4局当头炮横车破屏风马进炮.XQF
+attr:32 size:1936 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/得先/第5局当头炮直车破屏风马慢士.XQF
+attr:32 size:2130 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第1局单提马破屏风马.XQF
+attr:32 size:2368 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第2局破士相进兵局.XQF
+attr:32 size:1710 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第3局破进兵局.XQF
+attr:32 size:2718 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第4局破过宫炮局.XQF
+attr:32 size:1482 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第5局让右炮顺手当头炮.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/杂局/第6局让右炮顺手士角炮.XQF
+attr:32 size:3986 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第1局屏风马破当头炮横车.XQF
+attr:32 size:3274 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第2局屏风马破当头炮活捉车.XQF
+attr:32 size:2960 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第3局屏风马破当头炮捉车.XQF
+attr:32 size:3193 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第4局屏风马破当头炮直横车.XQF
+attr:32 size:2396 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第5局屏风马破巡河车.XQF
+attr:32 size:1518 chessManual/中国象棋棋谱大全.xqf/全局/善庆堂重订梅花变/让先/第6局屏风马破过河炮打卒.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第一局 杭县关春林(先) 平阳谢侠逊(和).xqf
+attr:32 size:1056 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第七局 香山曾展鸿(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第三局黄冈罗天扬先平阳谢侠逊和.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第九局 汉阳雷海山(二先) 平阳谢侠逊(胜).xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第二十一局 江宁万启有(二先) 平阳谢侠逊(和).xqf
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第二十三局江宁万启有二先胜平阳谢侠逊.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第二十二局 江宁万启有(二先) 平阳谢侠逊(胜).xqf
+attr:32 size:1407 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第二十局江宁万启有二先平阳谢侠逊和.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第二局 黄冈罗天阳(先) 平阳谢侠逊(和).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第五局 杭县吴之谦(先胜) 平阳谢侠逊.xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第八局 杭县冯眉荪(先) 平阳谢侠逊(和).xqf
+attr:32 size:1378 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第六局杭县吴之谦先平阳谢侠逊胜.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十一局 吴县潘鸣岗(二先) 平阳谢侠逊(和).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十七局江宁万启有先平阳谢侠逊和.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十三局 扬州张锦荣(先) 平阳谢侠逊(和).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十九局 江宁万启有(先) 平阳谢侠逊(和).xqf
+attr:32 size:1190 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十二局江陵吴松亭二先平阳谢侠逊胜.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十五局江都周德裕先平阳谢侠逊和.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十八局 江宁万启有(先) 平阳谢侠逊(和).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十六局 江宁万启有(先) 平阳谢侠逊(和).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十四局永嘉林奕仙先平阳谢侠逊胜.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第十局 江宁鲍子波(二先) 平阳谢侠逊(和).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──内编/第四局莆田连学正先平阳谢侠逊胜.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第一局 林奕仙(先胜) 王浩然.xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第七局 李志英(先胜) 张锦荣.xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第三局 林奕仙(先) 王浩然(胜).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第二局 王浩然(先胜) 林奕仙.xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第五局 林奕仙(先胜) 张锦荣.xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第六局 张锦荣(先胜) 林奕仙.xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──名手对局汇录选粹/第四局 林奕仙(先和) 王浩然.xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第一局　让刘尚龄单先第一局(吴胜).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第七局 让傅瑞天双先第二局(傅胜).xqf
+attr:32 size:1076 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第九局 让施嘉谟单先第二局(施胜).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第二局 让刘尚龄单先第二局(吴胜).xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第五局 让傅瑞天单先第一局(吴胜).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第八局 让施嘉谟单先第一局(吴胜).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第六局 让傅瑞天双先第一局(吴胜).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十一局 让施嘉谟单先第四局(施胜).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十三局 让施嘉谟单先第六局(吴胜).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十二局 让施嘉谟单先第五局(吴胜).xqf
+attr:32 size:1048 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十五局 让施嘉谟单先第八局(吴胜).xqf
+attr:32 size:1088 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十六局 让宣才宝单先第一局(吴胜).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十四局 让施嘉谟单先第七局(吴胜).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第十局 让施嘉谟单先第三局(施胜).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──吴兆龙象棋谱选粹/第四局 让陈泰丰单先第一局(吴胜).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第一局 绍县赵书田(先) 平阳谢侠逊(胜)(让左马).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第七局 鄞县蔡鸣阳(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第三局 江陵吴松亭(先) 平阳谢侠逊(和).xqf
+attr:32 size:1056 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十一局 扬州张锦荣(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十七局 江宁万启有(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十三局 江宁万启有(先) 平阳谢侠逊(和).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十五局 江宁万启有 平阳谢侠逊(先胜).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十六局 江宁万启有(胜) 平阳谢侠逊(先).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十四局 江宁万启有(先胜) 平阳谢侠逊.xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二十局 扬州张锦荣(胜) 平阳谢侠逊(先).xqf
+attr:32 size:1563 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第二局 江陵吴松亭(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第八局 扬州窦国柱(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第六局 吴县许振葆(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1235 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十一局 香山曾展鸿(先) 平阳谢侠逊(和).xqf
+attr:32 size:1092 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十三局 江都周德裕(先) 平阳谢侠逊(和).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十九局 扬州张锦荣(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十二局 永嘉林奕仙(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十五局 江都周德裕(先) 平阳谢侠逊(胜).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十八局 扬州张锦荣(胜) 平阳谢侠逊(先).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──平阳谢侠逊奕棋选/第十四局 江都周德裕(胜) 平阳谢侠逊(先).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──梦吾象集/第一局 京兆刘燮如(先) 蛟川钱梦吾(胜).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──梦吾象集/第三局 蛟川钱梦吾(先和) 京兆孟鹤龄.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──梦吾象集/第二局天津庞谒庭先胜天津陈开泰.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──海洲汇选/第三局 江都周德裕(先) 黄冈罗天阳(胜).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──海洲汇选/第二局 江都周德裕(先) 黄冈罗天阳(和).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──海洲汇选/第五局 扬州窦国柱(先) 永嘉林奕仙(胜).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──海洲汇选/第四局 江陵吴松亭(先) 黄冈罗天阳(胜).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第一局 嘉善顾水如(先) 合肥段芝泉(让右马胜).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第三局 永嘉林奕仙(先) 江都周焕文(和).xqf
+attr:32 size:1611 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第二局 吴县张澹如(先胜) 江都周焕文.xqf
+attr:32 size:1718 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第五局 江都周德裕(先) 汉阳雷海山(胜).xqf
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第六局武进费绵钦先胜香山曾展鸿.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──烂柯丛钞选粹/第四局 汉阳雷海山(先) 江都周德裕.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第一局　屏风马巡河炮抵当头炮局(和).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第七局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第三局 屏风马抵左当头炮局(和).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第九局 右单提马抵右当头炮局(和).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第二局 屏风马抵左当头炮局(和).xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第五局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第八局 左单提马抵右当头炮局(和).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第十一局 对兵局(红胜).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第十二局 对兵局(红破中卒胜).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第十局 当头炮抵当头炮局(和).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──石杨遗局/第四局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋图棋新谱《名手对局》选粹/第一局 镇江王浩然(先胜) 永嘉林奕仙.xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋图棋新谱《名手对局》选粹/第二局 永嘉林奕仙(先胜) 镇江王浩然.xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第一局 沈文荧(先) 张锦荣(胜).xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第七局 张锦荣(先胜) 张观云.xqf
+attr:32 size:1597 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第三局 张锦荣(先) 王浩然(胜).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第九局 杨万源(先) 万启有(胜).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二十一局 窦国柱(先胜) 吴松亭.xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二十三局 万启有(先胜) 沈文荧.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二十五局 窦国柱(先胜) 邓春林.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二十四局 朱锦堂(先) 张锦荣(胜).xqf
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二十局 窦国柱(先) 吴松亭(胜).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第二局 林奕仙(先胜) 沈文荧.xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第五局 张锦荣(先和) 周焕文.xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第八局 丁志鸿(二先) 万启有(胜).xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第六局 张锦荣(先) 张观云(胜).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十一局 张锦荣(先胜) 周德裕.xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十七局 罗天阳(先胜) 张锦荣.xqf
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十九局 吴松亭(先和) 张锦荣.xqf
+attr:32 size:1548 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十二局 张锦荣(先) 周德裕(胜).xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十五局 窦国柱(先胜) 罗天阳.xqf
+attr:32 size:1748 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十八局 张锦荣(先胜) 罗天阳.xqf
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十六局 窦国柱(先) 邓春林(胜).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第十四局 周德裕(先胜) 张锦荣.xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁续编选粹/第四局 张锦荣(先) 王浩然(胜).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第一局 杨万源(先) 张锦荣(胜).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第七局 张锦荣(先胜) 周德裕.xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第三局 邓春林(先) 林奕仙(胜).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第九局 王浩然(先胜) 周焕文.xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第二十一局 张锦荣(先) 周德裕(胜).xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第二十二局 张锦荣(先) 周德裕.xqf
+attr:32 size:1072 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第二十局 张锦荣(先胜) 万启有.xqf
+attr:32 size:1802 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第二局 杨万源(先) 张锦荣(胜).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第五局 杨万源(先) 王浩然(胜).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第八局 周焕文(先胜) 王浩然.xqf
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第六局 沈文荧(先) 王浩然(胜).xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十一局 张锦荣(先) 万启有(胜).xqf
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十七局 朱锦堂(先胜) 窦国柱.xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十三局 王浩然(先和) 周焕文.xqf
+attr:32 size:1375 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十九局 万启有(先) 张锦荣(胜).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十二局 周焕文(先和) 王浩然.xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十五局 王浩然(先和) 周焕文.xqf
+attr:32 size:1615 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十八局 张锦荣(先) 雷海山(胜).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十六局 周焕文(先和) 王浩然.xqf
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十四局 周焕文(先和) 王浩然.xqf
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第十局 张锦荣(先) 五浩然(胜).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──象棋萃菁选粹/第四局 沈文荧(先) 林奕仙(胜).xqf
+attr:32 size:1856 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘──霖生抄存/第一局 黄冈罗天阳(先胜) 扬州窦国柱.xqf
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘－－象棋比赛参观记/第一局江都周德裕先胜黄冈罗天扬.XQF
+attr:32 size:1306 chessManual/中国象棋棋谱大全.xqf/全局/奕乘/奕乘－－象棋比赛参观记/第二局黄冈罗天扬先胜江都周德裕.XQF
+attr:32 size:339 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/引言.txt
+attr:32 size:1570 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/列手炮局.XQF
+attr:32 size:1478 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/横车夹马炮破单提马.XQF
+attr:32 size:1433 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/横车破右车单提马局.XQF
+attr:32 size:1598 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/横车鸳鸯马破右单提马.XQF
+attr:32 size:1803 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/直车对直车局（起马－中炮）.XQF
+attr:32 size:1732 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/直车破单提马局.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/直车马炮局.XQF
+attr:32 size:2097 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/顺炮横车破士角炮.XQF
+attr:32 size:1446 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/得先/顺炮直车破横车.XQF
+attr:32 size:2884 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/屏风马变边马局.XQF
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/屏风马局.XQF
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/屏风马直车局.XQF
+attr:32 size:1822 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/屏风马直车破直车.XQF
+attr:32 size:1554 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/屏风马破当头炮.XQF
+attr:32 size:1603 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/让三先屏风马破当头炮去马局.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/让双先顺炮为士角炮局.XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/让左马得先横车顺炮局.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/让左马得先顺炮横车破士角炮局.XQF
+attr:32 size:2072 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/让左马得先顺炮直车局.XQF
+attr:32 size:1670 chessManual/中国象棋棋谱大全.xqf/全局/崇本堂梅花谱/让先/顺炮横车变叠炮局.XQF
+attr:32 size:2186 chessManual/中国象棋棋谱大全.xqf/全局/无双品梅花谱/第一局：破当头炮及过河车去卒后退一着法.xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/全局/无双品梅花谱/第三局：破当头炮及过河车去卒后退二着法.xqf
+attr:32 size:2052 chessManual/中国象棋棋谱大全.xqf/全局/无双品梅花谱/第二局：破当头炮及过河车去卒后平二着法.xqf
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/全局/无双品梅花谱/第四局：破当头炮及过河车去卒后平二.xqf
+attr:32 size:468 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/Readme.txt
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局01.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局02.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局03.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局04.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局05.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局06.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局07.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局08.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局09.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局10.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局11.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局12.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局13.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/全局/林兴荣遗局/小剃头遗局14.XQF
+attr:32 size:2388 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第10局让先列炮对攻双直车.XQF
+attr:32 size:2196 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第11局得先顶头卒对攻一兵抢三先.XQF
+attr:32 size:2299 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第12局让先屏风马对攻穿宫马.XQF
+attr:32 size:5310 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第1局让先屏风马对攻当门炮.XQF
+attr:32 size:3729 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第2局让先屏风马对攻当门炮.XQF
+attr:32 size:3518 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第3局得先当门炮对攻屏风马.XQF
+attr:32 size:4236 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第4局得先当门炮对攻屏风马.XQF
+attr:32 size:2148 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第5局让先顺炮直车攻横车.XQF
+attr:32 size:2446 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第6局让先顺炮横车攻直车.XQF
+attr:32 size:2873 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第7局让先顺炮横车攻直车.XQF
+attr:32 size:2410 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第8局让先顺炮横车攻横车.XQF
+attr:32 size:2157 chessManual/中国象棋棋谱大全.xqf/全局/梅花变法谱/第9局得先列炮对攻直横车.XQF
+attr:32 size:1465 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第01局当头炮横车鸳鸯马.XQF
+attr:32 size:3430 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第02局当头炮右横左直车.XQF
+attr:32 size:1851 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第03局当头炮横车鸳鸯马.XQF
+attr:32 size:1551 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第04局夹马炮横车鸳鸯马.XQF
+attr:32 size:1774 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第05局屏风马直车弃卒争先.XQF
+attr:32 size:1919 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第06局屏风马直车与夹马炮.XQF
+attr:32 size:2135 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第07局屏风马右巡河炮横车.XQF
+attr:32 size:2721 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第08局屏风马双巡河炮直车.XQF
+attr:32 size:2657 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第09局单提马炮二平三.XQF
+attr:32 size:2514 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第10局屏风马横车左炮巡河.XQF
+attr:32 size:1649 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第11局屏风马直车右炮巡河.XQF
+attr:32 size:1977 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第12局单提马当头炮化窝心.XQF
+attr:32 size:2946 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第13局夹卒炮左直车右横车.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第14局屏风马直车进三位卒.XQF
+attr:32 size:2006 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/上卷/第15局屏风马变边马直车.XQF
+attr:32 size:1761 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第01局饶双先顺手炮吐士角直车.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第02局饶双先顺手炮直车巡河.XQF
+attr:32 size:2021 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第03局饶右炮应炮直车破当头炮.XQF
+attr:32 size:1892 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第04局饶左马当头炮横车盘头马.XQF
+attr:32 size:1874 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第05局饶左马顺手炮横车破直车.XQF
+attr:32 size:2222 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第06局饶左马顺手炮直车破横车.XQF
+attr:32 size:1805 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第07局饶左马顺手炮横车破先背补.XQF
+attr:32 size:1503 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第08局饶左马列手炮直车炮压马.XQF
+attr:32 size:1877 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第09局饶左马一先当头炮横车.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第10局饶左马一先单提马变顺手炮.XQF
+attr:32 size:2080 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第11局饶右马一先顺手炮横车.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第12局饶双马应当头卒不打出林车.XQF
+attr:32 size:1318 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第13局饶双马同上例双直车.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第14局饶双马应当头卒不打出林车.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第15局饶双马巡河炮破斗巡河炮.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第16局饶双马右炮巡河左炮当头.XQF
+attr:32 size:1202 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第17局饶双马右炮巡河破列手炮.XQF
+attr:32 size:2142 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第18局饶左车顺手炮直车破横车.XQF
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第19局饶左车当头炮横车破直车.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第20局饶左车当头炮横车进中兵.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/下卷/第21局饶左车直车骑河化窝心炮.XQF
+attr:32 size:1597 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第01局夹马炮横车鸳鸯马.XQF
+attr:32 size:1363 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第02局当头炮盘头马进中兵.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第03局当头炮鸳鸯马进中兵.XQF
+attr:32 size:1719 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第04局顺手炮横车左炮巡河.XQF
+attr:32 size:1793 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第05局夹马炮直车进中兵.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第06局夹马炮横车进中兵.XQF
+attr:32 size:1513 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第07局屏风马直车破当头炮.XQF
+attr:32 size:1545 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第08局屏风马横车破当头炮.XQF
+attr:32 size:1618 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第09局屏风马巡河炮直车.XQF
+attr:32 size:1569 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第10局列手炮就打当头卒.XQF
+attr:32 size:1354 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第11局顺手炮横车进七兵.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第12局顺手炮横车进七兵.XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第13局夹马炮直车进中兵.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/全局/梅花泉/中卷/第14局顺手炮直车破金鹏.XQF
+attr:32 size:2248 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/列手炮/第1局巡河车攻车守河口兑兵.XQF
+attr:32 size:1968 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/列手炮/第2局攻右车守河口后上马打车.XQF
+attr:32 size:2662 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/列手炮/第3局攻右车守河口后平炮兑车.XQF
+attr:32 size:2570 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/列手炮/第4局攻右车过河后平炮兑车.XQF
+attr:32 size:3287 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/列手炮/第5局攻未进右车先平炮兑车.XQF
+attr:32 size:2140 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第1局破巡河车吃卒用炮打象.XQF
+attr:32 size:2220 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第2局破炮先去象后上三路马.XQF
+attr:32 size:2582 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第3局破炮打象后换士上右马.XQF
+attr:32 size:3701 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第4局退炮破巡河车挺兵兑卒.XQF
+attr:32 size:4292 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第5局退炮横车破巡河车边马.XQF
+attr:32 size:2090 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第6局退右炮破过河车贪吃卒.XQF
+attr:32 size:1832 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第7局飞象进马破过河车边马.XQF
+attr:32 size:2366 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/屏风马破当头炮/第8局挺马前卒破直横车边马.XQF
+attr:32 size:2140 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破转角马/第1局取中兵压马破上右士.XQF
+attr:32 size:2100 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破转角马/第2局取中兵压马破左士兑炮.XQF
+attr:32 size:2230 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破转角马/第3局取中兵压马破左士平炮.XQF
+attr:32 size:2114 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破过宫炮/第1局横车破巡河车平七吃卒.XQF
+attr:32 size:2532 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破过宫炮/第2局横车破左炮平七路取马.XQF
+attr:32 size:2892 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破过宫炮/第3局横车夹马破过宫炮移中.XQF
+attr:32 size:3135 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破过宫炮/第4局横车退炮破八路炮过河.XQF
+attr:32 size:3364 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/当头炮破过宫炮/第5局横车破过河车吃卒压马.XQF
+attr:32 size:2288 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/总结.txt
+attr:32 size:2393 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮横车破直车/第1局攻直车过河捉马士角炮.XQF
+attr:32 size:1808 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮横车破直车/第2局攻直车守河口挺卒兑兵.XQF
+attr:32 size:3176 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮横车破直车/第3局攻直车守河再补士角炮.XQF
+attr:32 size:2507 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮横车破直车/第4局挺边兵跃边马攻上左士.XQF
+attr:32 size:2360 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮横车破直车/第5局左炮过河攻上边马出车.XQF
+attr:32 size:2654 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮直车破横车/第1局巡河炮攻横车尾随捉马.XQF
+attr:32 size:2303 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮直车破横车/第2局巡河炮攻横车拦河去兵.XQF
+attr:32 size:1655 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮直车破横车/第3局巡河炮攻横车退而复进.XQF
+attr:32 size:2192 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮直车破横车/第4局巡河炮攻横车拦河轧炮.XQF
+attr:32 size:2098 chessManual/中国象棋棋谱大全.xqf/全局/梅花谱/顺炮直车破横车/第5局攻巡河炮再挺边卒.XQF
+attr:32 size:1577 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/列炮破敛炮018.xqf
+attr:32 size:1826 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/列炮破补士角炮019.xqf
+attr:32 size:2040 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/右炮横车破缠角马象局015.xqf
+attr:32 size:2118 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/右炮横车破象局014.xqf
+attr:32 size:3516 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/右炮直车破右单提马士象局013.xqf
+attr:32 size:2848 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/右炮直车破左单提马士象局012.xqf
+attr:32 size:8377 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/大列手炮局016.xqf
+attr:32 size:2211 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/小列手破大列手炮局017.xqf
+attr:32 size:2098 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/屏风马破当头炮020.xqf
+attr:32 size:3070 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破先补士角炮007.xqf
+attr:32 size:3098 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破夹马炮009.xqf
+attr:32 size:3189 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破直车不食弃马003.xqf
+attr:32 size:4031 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破直车他先上马弃马002.xqf
+attr:32 size:6430 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破直车弃马001.xqf
+attr:32 size:2079 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破直车用马004.xqf
+attr:32 size:1895 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破直车用马005.xqf
+attr:32 size:3240 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮横车破背补士角炮006.xqf
+attr:32 size:3635 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮直车左炮巡河破横车010.xqf
+attr:32 size:1926 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮直车左炮巡河破横车夹马011.xqf
+attr:32 size:1841 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/得先/顺炮窝心横车破士角炮008.xqf
+attr:32 size:1362 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/借炮使马（1）004.xqf
+attr:32 size:1305 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/借炮使马（2）.xqf
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/借车使炮（1）003.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/借车使炮（2）.xqf
+attr:32 size:1119 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双低兵和双士098.xqf
+attr:32 size:1145 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双低兵和双象100.xqf
+attr:32 size:1213 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双低兵和双象101.xqf
+attr:32 size:1127 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双低兵胜单缺象096.xqf
+attr:32 size:1121 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双炮和双象069.xqf
+attr:32 size:1080 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双车兵胜双车.xqf
+attr:32 size:1138 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双车和车炮双士002.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双车和马炮士象全001.xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双车炮胜双车.xqf
+attr:32 size:1186 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/双马饮泉005.xqf
+attr:32 size:1118 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵和象086.xqf
+attr:32 size:1121 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵士和炮091.xqf
+attr:32 size:1215 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵士胜单缺象081.xqf
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵相胜双象.XQF
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜卒双士.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜单缺象082.xqf
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜双卒088.xqf
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜双士087.xqf
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜士象全1.XQF
+attr:32 size:1147 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜士象全2.XQF
+attr:32 size:1203 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜炮090.xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜炮双士083.xqf
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜象085.xqf
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜象1.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜象2-(085).xqf
+attr:32 size:1181 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮兵胜边卒089.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮双兵胜双象084.xqf
+attr:32 size:1153 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮和三兵094.xqf
+attr:32 size:1109 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮和双炮093.xqf
+attr:32 size:1111 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮和双炮士092.xqf
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/炮士胜双士.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和双卒士象全022.xqf
+attr:32 size:1139 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和双炮卒025.xqf
+attr:32 size:1141 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和双炮双象024.xqf
+attr:32 size:1493 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车卒士（第1局）028.xqf
+attr:32 size:1165 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车卒士（第2局）029.xqf
+attr:32 size:1131 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车士（第1局）032.xqf
+attr:32 size:1131 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车士（第2局）033.xqf
+attr:32 size:1131 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车士（第3局）034.xqf
+attr:32 size:1187 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵和车士（第4局）035.xqf
+attr:32 size:1297 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜4卒双士026.xqf
+attr:32 size:1187 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜4卒士027.xqf
+attr:32 size:1191 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜车036.xqf
+attr:32 size:1303 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜车卒象030.xqf
+attr:32 size:1143 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜车士031.xqf
+attr:32 size:1205 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车兵胜车象.xqf
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车卒和车士.xqf
+attr:32 size:1145 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车双兵和车士象全023.xqf
+attr:32 size:1137 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和三卒066.xqf
+attr:32 size:1101 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和三卒2.XQF
+attr:32 size:1125 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双卒双士057.xqf
+attr:32 size:1125 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双卒双象058.xqf
+attr:32 size:1088 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双炮.XQF
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双炮卒（第1局）059.xqf
+attr:32 size:1163 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双炮卒（第2局）060.xqf
+attr:32 size:1121 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和双马068.xqf
+attr:32 size:1125 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和只马当士047.xqf
+attr:32 size:1125 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和只马当象048.xqf
+attr:32 size:1237 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和士象全1.xqf
+attr:32 size:1165 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和士象全2.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双卒（第1局）061.xqf
+attr:32 size:1149 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双卒（第2局）062.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双卒（第3局）063.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双卒（第4局）064.xqf
+attr:32 size:1131 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双士（第1局）050.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双士（第2局）051.xqf
+attr:32 size:1123 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和炮双象053.xqf
+attr:32 size:1056 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和车炮.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马兵象（第1局）054.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马兵象（第2局）055.xqf
+attr:32 size:1133 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马兵象（第3局）056.xqf
+attr:32 size:1139 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马双卒065.xqf
+attr:32 size:1084 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马双象.XQF
+attr:32 size:1153 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车和马炮067.xqf
+attr:32 size:1195 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车底兵胜车037.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮和车014.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮和车018.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮和车卒021.xqf
+attr:32 size:1138 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮和车双士013.xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮和车象016.xqf
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮士胜车双象011.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮相和车卒020.xqf
+attr:32 size:1142 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮相胜车双象012.xqf
+attr:32 size:1199 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮胜单车017.xqf
+attr:32 size:1199 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮胜车017.xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车炮胜车士015.xqf
+attr:32 size:1131 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜三卒.XQF
+attr:32 size:1155 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜双卒双士1.XQF
+attr:32 size:1064 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜双卒双士2.XQF
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜双炮.XQF
+attr:32 size:1123 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第1局）038.xqf
+attr:32 size:1235 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第2局）039.xqf
+attr:32 size:1185 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第3局）040.xqf
+attr:32 size:1169 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第4局）041.xqf
+attr:32 size:1123 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第5局）042.xqf
+attr:32 size:1123 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第6局）043.xqf
+attr:32 size:1123 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第7局）044.xqf
+attr:32 size:1249 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第8局）045.xqf
+attr:32 size:1171 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜士象全（第9局）046.xqf
+attr:32 size:1225 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜炮卒士049.xqf
+attr:32 size:1177 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜炮双象052.xqf
+attr:32 size:1987 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双士1.XQF
+attr:32 size:1082 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双士2.XQF
+attr:32 size:1331 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双士3.XQF
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双士4.XQF
+attr:32 size:2270 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双象1.XQF
+attr:32 size:1183 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车胜马双象2.XQF
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马冷着（第1局）007.xqf
+attr:32 size:1342 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马冷着（第2局）008.xqf
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马和车010.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马和车双士009.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马炮和车卒019.xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/车马炮局006.xqf
+attr:32 size:1529 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和单缺士073.xqf
+attr:32 size:1269 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和单缺象072.xqf
+attr:32 size:1115 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和士象全071.xqf
+attr:32 size:1118 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和炮079.xqf
+attr:32 size:1122 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和炮双象076.xqf
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和马兵078.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵和马炮077.xqf
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜卒双士075.xqf
+attr:32 size:1111 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜士象全070.xqf
+attr:32 size:1426 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜炮卒双士074.xqf
+attr:32 size:1110 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜炮卒士象全.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜炮象.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马兵胜马080.xqf
+attr:32 size:1143 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马和炮士象095.xqf
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马和象.XQF
+attr:32 size:1028 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/马胜士.XQF
+attr:32 size:1173 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/高低兵胜双士097.xqf
+attr:32 size:1111 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/高低兵胜双象099.xqf
+attr:32 size:1127 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/高兵和炮士103.xqf
+attr:32 size:1149 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/桔中秘残局谱/高兵士和炮双士102.xqf
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-中炮破士象转角马局013.xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-列手炮兑车压马010.xqf
+attr:32 size:5179 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-大列手炮局008.xqf
+attr:32 size:1390 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-小列手炮弃相陷车011.xqf
+attr:32 size:1928 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-小列手破大列手炮局009.xqf
+attr:32 size:1830 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-屏风马破当头炮012.xqf
+attr:32 size:6314 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮横车破直车夺先001.xqf
+attr:32 size:2946 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮横车破直车弃马002.xqf
+attr:32 size:1974 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮横车破直车沉炮003.xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮直车卧槽马007.xqf
+attr:32 size:1933 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮直车夹马炮起相保马破横车006.xqf
+attr:32 size:2055 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮直车巡河破横车005.xqf
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让先/让先-顺炮直车破横车004.xqf
+attr:32 size:1430 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破右单提马003.xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破屏风马007.xqf
+attr:32 size:2149 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破左单提马J004.xqf
+attr:32 size:2208 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破当头炮不取兵002.xqf
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破当头炮取兵001.xqf
+attr:32 size:2116 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-巡河炮破象局006.xqf
+attr:32 size:1414 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-破斗巡河炮005.xqf
+attr:32 size:1510 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让双马/让双马-窝心炮破右单提马008.xqf
+attr:32 size:1409 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-先马后炮横车005.xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-列手炮010.xqf
+attr:32 size:1398 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-列手炮破夹马009.xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-横车炮破士象右单提马006.xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-直车破士象右单提马007.xqf
+attr:32 size:1948 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-顺炮横车破他先上马002.xqf
+attr:32 size:1789 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-顺炮横车破先补士角炮003.xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-顺炮横车破夹马炮004.xqf
+attr:32 size:3781 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-顺炮横车破直车001.xqf
+attr:32 size:1772 chessManual/中国象棋棋谱大全.xqf/全局/橘中秘/让左马/让左马-顺炮直车破横车008.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第一局　屏风马巡河炮抵当头炮局(和).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第七局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第三局 屏风马抵左当头炮局(和).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第九局 右单提马抵右当头炮局(和).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第二局 屏风马抵左当头炮局(和).xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第五局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第八局 左单提马抵右当头炮局(和).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第十一局 对兵局(红胜).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第十二局 对兵局(红破中卒胜).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第十局 当头炮抵当头炮局(和).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/全局/石杨遗局/第四局 屏风马抵右当头炮局(和).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/中炮先胜将族单提马.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/中炮先胜将族单提马2.XQF
+attr:32 size:2080 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/中炮先胜将族屏风马边车.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/将族屏风马先负中炮.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/将族屏风马先负先锋马.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/将族屏风马先负过宫炮.XQF
+attr:32 size:2048 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/将族屏风马先负过宫炮2.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/将族屏风马先负飞象.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/拐脚马先胜将族屏风马.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/胜象棋大师III之法/过宫炮先胜将族屏风马.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/1“自”字 信手炮 （共五局）/“自”字 第一局.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/1“自”字 信手炮 （共五局）/“自”字 第三局.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/1“自”字 信手炮 （共五局）/“自”字 第二局.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/1“自”字 信手炮 （共五局）/“自”字 第五局.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/1“自”字 信手炮 （共五局）/“自”字 第四局.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/2“出”字 列手炮 （共五局）/“出”字 第一局.xqf
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/2“出”字 列手炮 （共五局）/“出”字 第三局.xqf
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/2“出”字 列手炮 （共五局）/“出”字 第二局.xqf
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/2“出”字 列手炮 （共五局）/“出”字 第五局.xqf
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/2“出”字 列手炮 （共五局）/“出”字 第四局.xqf
+attr:32 size:1190 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/3“洞”字 入手炮 （共五局）/“洞”字 第一局.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/3“洞”字 入手炮 （共五局）/“洞”字 第三局.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/3“洞”字 入手炮 （共五局）/“洞”字 第二局.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/3“洞”字 入手炮 （共五局）/“洞”字 第五局.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/3“洞”字 入手炮 （共五局）/“洞”字 第四局.XQF
+attr:32 size:1214 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/4“来”字 顺手炮 （共五局）/“来”字 第一局.xqf
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/4“来”字 顺手炮 （共五局）/“来”字 第三局.xqf
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/4“来”字 顺手炮 （共五局）/“来”字 第二局.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/4“来”字 顺手炮 （共五局）/“来”字 第五局.xqf
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/4“来”字 顺手炮 （共五局）/“来”字 第四局.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/5“无”字 袖手炮 （共五局）/“无”字 第一局.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/5“无”字 袖手炮 （共五局）/“无”字 第三局.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/5“无”字 袖手炮 （共五局）/“无”字 第二局.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/5“无”字 袖手炮 （共五局）/“无”字 第五局.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/5“无”字 袖手炮 （共五局）/“无”字 第四局.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/6“敌”字 出手炮 （共五局）/“敌”字 第一局.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/6“敌”字 出手炮 （共五局）/“敌”字 第三局.xqf
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/6“敌”字 出手炮 （共五局）/“敌”字 第二局.xqf
+attr:32 size:1310 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/6“敌”字 出手炮 （共五局）/“敌”字 第五局.xqf
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/6“敌”字 出手炮 （共五局）/“敌”字 第四局.xqf
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/7“手”字 应手炮 （共五局）/“手”字 第一局.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/7“手”字 应手炮 （共五局）/“手”字 第三局.xqf
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/7“手”字 应手炮 （共五局）/“手”字 第二局.xqf
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/7“手”字 应手炮 （共五局）/“手”字 第五局.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/全局/自出洞来无敌手/7“手”字 应手炮 （共五局）/“手”字 第四局.xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第01局 钟  珍 先胜 董文渊.xqf
+attr:32 size:1944 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第02局 周德裕 先和 钟  珍.xqf
+attr:32 size:2120 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第03局 李  贵 先负 曾展雄.xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第04局 张长石 先负 曾展雄.xqf
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第05局 黄松轩 先胜 卢  辉.xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第06局 雷法耀 先和 黄松轩.xqf
+attr:32 size:2288 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第07局 卢  辉 先胜 黄松轩.xqf
+attr:32 size:1680 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第08局 卢  辉 先胜 李庆全.xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第09局 谢侠逊 先负 冯敬如.xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第10局 许容斋 先负 冯敬如.xqf
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第11局 李庆全 先胜 曾展雄.xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第12局 林弈仙 先负 李庆全.xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第13局 杨官磷 先胜 董文渊.xqf
+attr:32 size:1680 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第14局 杨官磷 先胜 袁天成.xqf
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第15局 陈松顺 先胜 惠颂祥.xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第16局 陈松顺 先胜 屠景明.xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第17局 许容斋 先和 黄松轩.xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第18局 张澹如 先胜 周焕文.xqf
+attr:32 size:1976 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第19局 侯玉山 先负 张德魁.xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第20局 张德魁 先胜 万启有.xqf
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第21局 那健庭 先胜 万启有.xqf
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第22局 田玉书 先和 那健庭.xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第23局 徐词海 先胜 彭述圣.xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第24局 徐词海 先胜 赵松宽.xqf
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第25局 曹德纯 先负 全海龙.xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第26局 全海龙 先胜 王嘉良.xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第27局 杨茂荣 先胜 田玉书.xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第28局 杨茂荣 先胜 徐词海.xqf
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第29局 田玉书 先负 侯玉山.xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第30局 庞蔼庭 先胜 陈开泰.xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第31局 庞蔼庭 先胜 张德魁.xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第32局 董文渊 先负 谢小然.xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第33局 全海龙 先负 谢小然.xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第34局 刘？如 先负 钱梦吾.xqf
+attr:32 size:1912 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第35局 张德魁 先负 胡震洲.xqf
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第36局 胡震洲 先和 谢小然.xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第37局 赵文宣 先胜 那健庭.xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第38局 赵文宣 先胜 沈则勘.xqf
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第39局 杨茂荣 先负 田玉书.XQF
+attr:32 size:2120 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第40局 侯玉山 先负 田玉书.xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第41局 彭述圣 先胜 徐词海.xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第42局 张德魁 先负 彭述圣.xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第43局 彭述圣（让左马） 先胜 侯玉山.xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第44局 周德裕 先负 雷海山.xqf
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第45局 张锦荣 先负 雷海山.xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第46局 罗天扬 先胜 张锦荣.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第47局 罗天扬 先胜 何鲁荫.xqf
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第48局 吴淞亭 先胜 谢侠逊.xqf
+attr:32 size:1896 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第49局 吴淞亭 先和 周德裕.xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第50局 费绵钦 先胜 曾展雄.xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第51局 林荣兴 先胜 黄松轩.xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第52局 何醒武 先负 林荣兴.xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第53局 林荣兴 先胜 万启有.xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第54局 屠景明 先胜 陈松顺.xqf
+attr:32 size:2000 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第55局 屠景明 先胜 董文渊.xqf
+attr:32 size:1712 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第56局 李武尚 先胜 周德裕.xqf
+attr:32 size:1688 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第57局 黄  骚 先负 李武尚.xqf
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第58局 李义庭 先负 何顺安.xqf
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第59局 吴效鲁 先负 何顺安.xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第60局 朱剑秋 先胜 王嘉良.xqf
+attr:32 size:1840 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第61局 朱剑秋 先胜 何顺安.xqf
+attr:32 size:1888 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第62局 庞凤元 先和 王羽屏.xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第63局 王浩然 先和 孟文轩.xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第64局 杨万源 先负 王浩然.xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第65局 周焕文 先胜 王浩然.xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第66局 周焕文 先和 王浩然.xqf
+attr:32 size:1600 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第67局 张锦荣 先胜 张观云.xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第68局 张锦荣 先胜 周德裕.xqf
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第69局 周德裕 先胜 黄松轩 .xqf
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第70局 张德魁 先负 周德裕.xqf
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第71局 刘寿彭 先负 窦国柱.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第72局 窦国柱 先胜 邓春林.xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第73局 励志英 先胜 张锦荣.xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第74局 连学正 先胜 沈志奕.xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第75局 连学正 先和 邵次明.xqf
+attr:32 size:1738 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第76局 窦国柱 先负 邓春林.xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第77局 张锦荣 先负 万启有.xqf
+attr:32 size:1984 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第78局 万启有 先胜 张德魁.xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第79局 邵次明 先胜 孟文轩.xqf
+attr:32 size:2120 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第80局 杨官磷 先负 刘忆慈.xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第81局 刘忆慈 先和 印邦春.xqf
+attr:32 size:1848 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第82局 周德裕 先负 董文渊.xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第83局 董文渊 先胜 钟  珍.xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第84局 张锦荣 先负 张观云.xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第85局 沈文荧 先负 林弈仙.xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第86局 林弈仙 先胜 王浩然.xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第87局 陈粤樵 先负 谢侠逊.xqf
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第88局 谢侠逊 先胜 黄松轩.xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第89局 沈志奕 先胜 高  琪.xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第90局 沈志奕 先胜 刘忆慈.xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第91局 刘尚龄 先负 吴兆龙.xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第92局 施嘉谟 先负 吴兆龙.xqf
+attr:32 size:1896 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第93局 陈德元 先负 贾题韬.xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第94局 张青皓 先和 贾题韬.xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/全局/近代国手名局/第95局 孟文轩 先胜 王浩然.xqf
+attr:32 size:19456 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/关于《金鹏十八变》与《桔中秘》.doc
+attr:32 size:6392 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N01顺炮横车破直车弃马局.xqf
+attr:32 size:4031 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N02顺炮横车破直车他先上马弃马局.xqf
+attr:32 size:3189 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N03顺炮横车破直车弃马他不打局.xqf
+attr:32 size:2085 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N04顺炮横车破直车弃车局.xqf
+attr:32 size:1895 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N05顺炮横车破直车弃双车局.xqf
+attr:32 size:2425 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N06顺炮横车破背补士局.xqf
+attr:32 size:3070 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N07顺炮横车破补士角炮局.xqf
+attr:32 size:1605 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N08窝心炮破补士角炮局.xqf
+attr:32 size:2430 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N09顺炮横车破夹马炮.xqf
+attr:32 size:3635 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N10顺炮直车破横车局.xqf
+attr:32 size:1782 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N11顺炮直车破横车夹马局.xqf
+attr:32 size:2364 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N12顺炮直车破左单提马局.xqf
+attr:32 size:2611 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N13顺平炮破右单提马士象局.xqf
+attr:32 size:1794 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N14顺炮横车破象局.xqf
+attr:32 size:1634 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N15炮局破象局.xqf
+attr:32 size:5677 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N16大列手炮局.xqf
+attr:32 size:1715 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N17小列手破大列手炮局.xqf
+attr:32 size:1405 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N18列炮破士先敛炮.xqf
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N19列炮直车破补士角炮局.xqf
+attr:32 size:2098 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N20屏风马破当头炮局.xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/得先/N21顺炮横车破横车.XQF
+attr:32 size:4063 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N22让先-顺炮横车破直车夺先.xqf
+attr:32 size:2546 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N23让先-顺炮横车破直车弃马局.xqf
+attr:32 size:1730 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N24让先-顺炮横车破直车沉炮局.xqf
+attr:32 size:4297 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N25让先-大列手炮局.xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N26让先-列手炮沉炮局.xqf
+attr:32 size:1928 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N27让先-小列手破大列手炮直车局.xqf
+attr:32 size:1390 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N28让先-小列手局.xqf
+attr:32 size:1830 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N29让先-屏风马破当头炮局.xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N30让先-顺炮直车夹马起相保马胜车局.xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N31让先-顺炮直车破横车巡河车局.xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N32让先-顺炮直车破横车.xqf
+attr:32 size:1550 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N33让先-顺炮直车卧槽马局.xqf
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N34让先-炮破象缠角马局.xqf
+attr:32 size:1497 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让先/N35让先-顺炮横车夺先局.XQF
+attr:32 size:1430 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N46让双马-得先破右单提马.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N47让双马-得先破屏风马.xqf
+attr:32 size:1756 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N48让双马-得先破象局.xqf
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N49让双马-得先顺炮局.xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N50让双马-得先用炮局.xqf
+attr:32 size:1414 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让双马/N51让双马-破斗巡河炮.xqf
+attr:32 size:3781 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N36让左马-得先顺手炮局.xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N37让左马-顺手炮破他先上马局.xqf
+attr:32 size:1789 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N38让左马-得先破补士角炮.xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N39让左马-破夹马列士角炮局.xqf
+attr:32 size:1409 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N40让左马-得先用马局.xqf
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N41让左马-得先顺炮横车破单提马局.xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N42让左马-得先直车破单提马局.xqf
+attr:32 size:1398 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N43让左马-破列手炮夹马局.xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N44让左马-得先列手炮.xqf
+attr:32 size:1772 chessManual/中国象棋棋谱大全.xqf/全局/金鹏十八变/让左马/N45让左马-直车破顺手炮局.xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/全局/韬略元机/让先大列手炮局（三）.XQF
+attr:32 size:1681 chessManual/中国象棋棋谱大全.xqf/全局/韬略元机/让先左叠炮破横车局.XQF
+attr:32 size:1574 chessManual/中国象棋棋谱大全.xqf/全局/韬略元机/让先顺炮横车夺先局.XQF
+attr:32 size:2013 chessManual/中国象棋棋谱大全.xqf/全局/韬略元机/让双先争先之法（对兵局）.XQF
+attr:32 size:1696 chessManual/中国象棋棋谱大全.xqf/全局/韬略元机/让双先象局破当头炮局.XQF
+attr:32 size:2288 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (和) 广东吕钦 (1994.7.31于上海).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (和) 广东吕钦 (1997.10.14于漳州).XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (和) 广东许银川 (1995.7.17于广州).XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (和) 江苏徐天红 (1990年10月22日于杭州).XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (胜) 广东许银川 (1994.7.30于上海).XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (负) 广东吕钦 (1990年10月19日于杭州).XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 上海万春林 (负) 湖北柳大华 (1990年10月23日于杭州).XQF
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 广东吕钦 (胜) 上海万春林 (1988年9月4日于呼和浩特).XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 广东吕钦 (胜) 上海万春林 (1997.5.7于上海松江县).XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 湖北柳大华 (负) 上海万春林 (1988年9月9日于呼和浩特).XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 黑龙江赵国荣 (胜) 上海万春林 (1990年10月15日于杭州钢铁厂).XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/- 黑龙江赵国荣 (胜) 上海万春林 (1990年10月16日于杭州).XQF
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/010 - 厦门郑一泓 (和) 上海万春林 (1997.10.6于漳州).XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/013 - 邮电袁洪梁 (和) 上海八建万春林 (1996.5.16于成都).XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/017 - 上海万春林 (胜) 四川李艾东 (1995.10.15于吴县市).XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/040 - 吉林洪智 (胜) 上海万春林 (1998.12.8于深圳).XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/056 - 上海八建万春林 (和) 湖北李望祥 (1996.5.17于成都).XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/059 - 机电臧如意 (负) 上海万春林 (1999.4.17于漳州).XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/067 - 上海万春林 (胜) 北京靳玉砚 (1997.10.7于漳州).XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/068 - 黑龙江张晓平 (负) 上海万春林 (1998.3.28于昆明).XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/072 - 上海万春林 (负) 湖北李智平 (1997.5.8于上海松江县).XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/077 - 上海万春林 (和) 广东许银川 (1995.7.17于广州).XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/078 - 成都刘浩和 (和) 上海八建万春林 (1996.5.18于成都).XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/09-局万春林先负胡荣华.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/10-局胡荣华先胜万春林.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/101 - 深圳刘星 (负) 上海万春林 (1997.10.7于漳州).XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/102 - 上海万春林 (胜) 冶金候龙登 (1996.5.19于成都).XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/119 - 浦东徐健秒 (负) 上海万春林 (1998.12.10于深圳).XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/124 - 上海万春林 (胜) 江苏王斌 (1999.4.19于漳州).XQF
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/142 - 上海万春林 (和) 黑龙江赵国荣 (1998.12.11于深圳).XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/158 - 火车头杨德琪 (和) 上海万春林 (1997.10.10于漳州).XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/161 - 广东吕钦 (胜) 上海万春林 (1999.4.19于漳州).XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/165 - 上海万春林 (胜) 山东侯昭忠 (1997.5.11于上海松江县).XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/178 - 湖南张申宏 (负) 上海万春林 (1998.12.13于深圳).XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/191 - 冶金肖革联 (负) 上海万春林 (1998.4.2于昆明).XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/199 - 上海万春林 (胜) 邮电朱祖勤 (1997.5.12于上海松江县).XQF
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/208 - 上海万春林 (和) 火车头金波 (1998.12.13于深圳).XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/219 - 广东陈富杰 (和) 上海万春林 (1996.5.24于成都).XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/220 - 上海万春林 (和) 上海林宏敏 (1997.10.12于漳州).XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/222 - 香港赵汝权 (负) 上海万春林 (1998.12.15于深圳).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/235 - 上海万春林 (和) 广东吕钦 (1997.10.14于漳州).XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/256 - 上海万春林 (和) 河北阎文清 (1998.12.16于深圳).XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/272 - 上海万春林 (胜) 福建王晓华 (1999.4.23于漳州).XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/274- 吉林陶汉明 (和) 上海万春林 (1998.12.17于深圳).XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/282 - 深圳卜风波 (胜) 上海万春林 (1998.12.18于深圳).XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/326 - 上海浦东蒋志梁 (和) 上海万春林 (1999.4.24于漳州).XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先和李雪松.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先和许银川.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先和黄世清.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先和黄海林.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先胜卜凤波.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先胜景学义.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先胜王斌.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先胜金波.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先负张强.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/万春林先负王跃飞.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/上海万春林 (和) 江苏徐天红 (99.1.22 荥阳).XQF
+attr:32 size:1704 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/上海万春林 (和) 浙江陈寒峰 (99.1.21 荥阳).XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/中炮对三步虎.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/中炮过河车对屏风马.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/五七炮对屏风马2.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/吕钦先胜万春林.XQF
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/对兵局 杨VS万.XQF
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/张强先胜万春林.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/张申宏先和万春林.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/景学义先和万春林.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/李鸿嘉先和万春林.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/王晓华先和万春林.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/聂铁文先和万春林.XQF
+attr:32 size:1800 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/董旭彬先胜万春林.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/许银川先胜万春林.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/重庆许文学 (负) 上海万春林 (99.1.23 荥阳).XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/金波先胜万春林.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/闫文清先负万春林.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/万春林专集/顺炮局.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮七路马对屏风马.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮七路马对屏风马2.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮七路马对屏风马3.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对三步虎.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对三步虎2.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对单提马.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对屏风马.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对屏风马2.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对屏风马3.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对屏风马左炮过河.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮对左炮封车转后补列炮2.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮巡河炮对屏风马.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮横车对反宫马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮直车压马对反宫马.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对屏风马.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对屏风马平炮兑车4.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对左马盘河.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/中炮过河车对左马盘河2.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对反宫马.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马2.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马3.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马4.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马5.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马6.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马7.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮对屏风马8.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮进七兵对反宫马飞右象.XQF
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮进三兵对反宫马飞左象.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五七炮进三兵对反宫马飞左象2.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五九炮对反宫马.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五九炮对屏风马.XQF
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五八炮对屏风马.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五六炮对屏风马.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五六炮对屏风马2.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/五六炮进三兵对反宫马飞左象.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路2.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路3.XQF
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路对卒底炮.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路对卒底炮2.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路对卒底炮3.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路对卒底炮4.XQF
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路对卒底炮转顺炮.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路转中炮对卒底炮2.XQF
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路转中炮对卒底炮3.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路转中炮对卒底炮4.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/仙人指路转中炮对卒底炮5.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/起马局.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/起马局2.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/顺炮局.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对士角炮.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对士角炮2.XQF
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对士角炮3.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对左中炮.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对左过宫炮.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对左过宫炮2.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对左过宫炮3.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对左过宫炮4.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对起马局.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对起马局2.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对过宫炮.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/于幼华专集/飞相局对飞象.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/中炮对屏风马.XQF
+attr:32 size:1696 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/中炮过河车对屏风马.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/中炮过河车对屏风马2.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/五八炮对屏风马.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/仙人指路.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/仙人指路对卒底炮.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/仙人指路对卒底炮2.XQF
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/后补列炮.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/对兵局.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/顺炮局.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/顺炮局2.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/顺炮局3.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/于红木专集/顺炮局4.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮七路马对屏风马.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对双炮过河.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对双炮过河2.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对反宫马.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对反宫马2.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马2.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马3.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马4.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马5.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马6.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马7.XQF
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对屏风马8.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对左炮封车转后补列炮2.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对左炮封车转后补列炮3.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮对左马盘河.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮巡河炮对屏风马.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮巡河炮对屏风马2.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮横车对反宫马.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马2.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马3.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马4.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马5.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马6.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马7.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对屏风马平炮兑车4.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对左马盘河.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对左马盘河2.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对左马盘河3.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对左马盘河4.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮过河车对左马盘河5.XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮进中兵对反宫马.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮高左炮对左马盘河.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮高左炮对左马盘河2.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/中炮高左炮对左马盘河3.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马2.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马3.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马4.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马5.XQF
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对屏风马6.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五七炮对巡河炮.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五八炮对反宫马.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五六炮对反宫马.XQF
+attr:32 size:1908 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五六炮对屏风马.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/五六炮对屏风马2.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对卒底炮.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对卒底炮2.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对卒底炮3.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对卒底炮4.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对起马局.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对过宫炮.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对飞相局.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路对飞象局.XQF
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路转中炮对卒底炮2.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路转中炮对卒底炮3.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路转中炮对卒底炮4.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/仙人指路转中炮对卒底炮5.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/士角炮对挺卒.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/对兵局.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/过宫炮对三步虎.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/顺炮两头蛇对直横车.XQF
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/顺炮局.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/顺炮直车对缓开车.XQF
+attr:32 size:1548 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/飞相局对右过宫炮.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/飞相局对左中炮.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/飞相局对左中炮2.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/刘殿中专集/飞相局对左过宫炮.XQF
+attr:32 size:46460 chessManual/中国象棋棋谱大全.xqf/大师专集/吕钦专集.CBL
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/中炮对屏风马.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/中炮过河车对屏风马.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/五六炮进七兵对反宫马.XQF
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/后补列炮.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/后补列炮2.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/对兵局.XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/对兵局2.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮横车对直车.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮横车对直车2.XQF
+attr:32 size:1314 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮直车对先进7卒.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮直车对横车.XQF
+attr:32 size:1394 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮直车对横车2.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮直车对横车3.XQF
+attr:32 size:1450 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/顺炮直车对直车.XQF
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/飞相局对右过宫炮.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/飞相局对士角炮.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/吴贵临专集/飞相局对士角炮2.XQF
+attr:32 size:4624 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛01.xqf
+attr:32 size:3728 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛02.xqf
+attr:32 size:5556 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛03.xqf
+attr:32 size:5115 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛04.xqf
+attr:32 size:4686 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛05.xqf
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛06.xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛07.xqf
+attr:32 size:4462 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛08.xqf
+attr:32 size:1585 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛09.xqf
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/大师专集/吴陶十局赛/吴陶十局赛10.xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/伍霞  先负  王琳娜.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/何伟艳  先负  王琳娜.XQF
+attr:32 size:1495 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/党国蕾　先负　王琳娜.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/刚秋英  先和  王琳娜.xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/单霞丽  先负  王琳娜.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/姚海晶  先负  王琳娜.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/尤颍钦  先胜  王琳娜.XQF
+attr:32 size:1435 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/尤颍钦  先胜  王琳娜（2）.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/常婉华  先负  王琳娜.xqf
+attr:32 size:1387 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/廖艳莉  先负  王琳娜.XQF
+attr:32 size:1482 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤  先胜  王琳娜.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤  先胜  王琳娜（2）.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤  先负  王琳娜.xqf
+attr:32 size:1381 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤　先和　王琳娜.XQF
+attr:32 size:1569 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤　先和　王琳娜（2）.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张国凤　先和　王琳娜（3）.XQF
+attr:32 size:1409 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/张梅  先负  王琳娜.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/文静  先和  王琳娜.xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/欧阳琦琳  先和  王琳娜.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/熊艳  先负  王琳娜.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先和  高懿屏.XQF
+attr:32 size:1483 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先和  鸥阳琦琳.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  冯晓曦.xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  刚秋英.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  刚秋英（2）.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  单霞丽.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  吴兰香.XQF
+attr:32 size:1493 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  唐东梅.XQF
+attr:32 size:1426 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  尤颖钦.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  张国凤.XQF
+attr:32 size:1361 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  张国凤（3）.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  张国凤（4）.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  文静.xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  欧阳琦琳.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  毕彬彬.xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  章文彤.XQF
+attr:32 size:1437 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  胡明.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  胡明（2）.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  郑慧君.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  郭瑞霞.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  郭瑞霞（2）.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  金海英.XQF
+attr:32 size:1371 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  黄耀珏.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜  黄芳.xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先胜 温满红.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜  先负  胡明.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜 先负  张国凤（3）.XQF
+attr:32 size:1983 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先和　郭莉萍.XQF
+attr:32 size:1467 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先和　郭莉萍（2）.XQF
+attr:32 size:1469 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　张国凤.XQF
+attr:32 size:1665 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　张国凤（2）.XQF
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　张国凤（4）.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　张国凤（5）.XQF
+attr:32 size:1421 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　郭莉萍.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　郭莉萍（2）.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先胜　郭莉萍（3）.XQF
+attr:32 size:1309 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先负　张国凤 （2）.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先负　张国凤 （4）.XQF
+attr:32 size:1341 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/王琳娜　先负　张国凤.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭瑞霞  先负  王琳娜.xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭瑞霞  先负  王琳娜（2）.XQF
+attr:32 size:1459 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭莉萍　先和　王琳娜.XQF
+attr:32 size:1748 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭莉萍　先和　王琳娜（2）.XQF
+attr:32 size:1493 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭莉萍　先胜　王琳娜.XQF
+attr:32 size:1339 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/郭莉萍　先负　王琳娜.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/金海英  先负  王琳娜.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/马革英  先负  王琳娜.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/马麟  先负  王琳娜.xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/高华 先胜  王琳娜.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/黄子君  先负  王琳娜.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/女子特级大师王琳娜专集/黄薇  先胜  王琳娜.XQF
+attr:32 size:1793 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对反宫马.XQF
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对反宫马2.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对屏风马.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对屏风马2.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对屏风马3.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮对屏风马4.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮过河车对屏风马.XQF
+attr:32 size:1840 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/中炮过河车对屏风马2.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/五七炮对反宫马.XQF
+attr:32 size:1688 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/五七炮对屏风马.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/五八炮对屏风马.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/五八炮对屏风马2.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/五六炮对屏风马.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/仙人指路.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/仙人指路2.XQF
+attr:32 size:1399 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/仙人指路对卒底炮.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/对兵局.XQF
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/飞相局.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/飞相局2.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/飞相局3.XQF
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/飞相局对士角炮.XQF
+attr:32 size:1461 chessManual/中国象棋棋谱大全.xqf/大师专集/孙勇征专集/飞相局对士角炮2.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮对三步虎.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮对先锋马.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮过河车对屏风马.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮过河车对屏风马2.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮过河车对屏风马3.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/中炮过河车对屏风马4.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/五七炮对屏风马.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/五七炮进七兵对反宫马飞右象.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/五七炮进七兵对反宫马飞右象2.XQF
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/五八炮进三兵对反宫马.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/列手炮.XQF
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/过宫炮对单提马.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/顺炮直车对横车.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/顺炮直车对横车2.XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/飞相局对仙人指路.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/飞相局对左中炮.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/飞相局对左过宫炮.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/飞相局对起马局.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/戴荣光专集/飞相局对边马局.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/上士局.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮七路马对屏风马.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮七路马对屏风马2.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮七路马对屏风马3.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对三步虎.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对三步虎2.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对单提马.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对单提马2.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对双炮过河.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对双炮过河2.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对双炮过河3.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马10.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马11.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马12.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马13.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马14.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马15.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马16.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马17.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马18.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马19.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马2.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马3.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马4.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马5.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马6.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马7.XQF
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马8.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对屏风马9.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮对龟背炮.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对右炮寻河.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对右炮寻河2.XQF
+attr:32 size:1660 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对屏风马.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对左炮寻河.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对左炮寻河2.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对左炮寻河3.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮巡河炮对左炮寻河4.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马2.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马3.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马4.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马5.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马6.XQF
+attr:32 size:1800 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车10.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车11.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车12.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车13.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车14.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车4.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车5.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车6.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车7.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车8.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对屏风马平炮兑车9.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河10.XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河11.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河2.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河3.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河4.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河5.XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河6.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河7.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河8.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮过河车对左马盘河9.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮进中兵对反宫马.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮进中兵对反宫马2.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮进中兵对反宫马3.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/中炮高左炮对左马盘河12.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马10.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马11.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马2.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马3.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马4.XQF
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马5.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马6.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马7.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马8.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮对屏风马9.XQF
+attr:32 size:1712 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五七炮进三兵对反宫马飞左象.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五九炮对屏风马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五九炮对屏风马2.XQF
+attr:32 size:1548 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮对单提马.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮对反宫马.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮对屏风马.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮对屏风马2.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮对屏风马3.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮进七兵对反宫马.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮进七兵对反宫马2.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/五六炮进七兵对反宫马飞左象.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/仙人指路对中炮.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/仙人指路对中炮2.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/仙人指路对卒底炮.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/仙人指路对卒底炮转列炮.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/仙人指路对金钩炮.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/列手炮.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/列手炮2.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/士角炮对中炮.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/对兵局.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/起马局.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/起马局2.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮局.XQF
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮局2.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮局3.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮局4.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮横车对直车.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮横车对直车2.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车2.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车3.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车4.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车5.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车6.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/顺炮直车对横车7.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对仙人指路.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对仙人指路2.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对右中炮.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对右过宫炮.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对士角炮.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对士角炮2.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对士角炮3.XQF
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对左中炮.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对左过宫炮.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/王嘉良专集/飞相局对左过宫炮2.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/003 - 江苏王斌 (负) 黑龙江张影富 (1995.5.15于四川).XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/008 - 江苏王斌 (胜) 张纯 (1996.5.16于成都).XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/036 - 湖北王斌 (胜) 江苏王斌 (1997.5.7于上海松江县).XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/04广东吕钦先和江苏王斌.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/053 - 江苏王斌 (胜) 安徽傅光明 (1997.10.6于漳州).XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/055 - 火车头金波 (负) 江苏王斌 (1999.4.17于漳州).XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/091 - 江苏王斌 (负) 河北李来群 (1999.4.18于漳州).XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/093 - 上海孙勇征 (负) 江苏王斌 (1995.8.22于青岛).XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/124 - 上海万春林 (胜) 江苏王斌 (1999.4.19于漳州).XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/126 - 火车头宋国强 (负) 江苏王斌 (1997.5.9于上海松江县).XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/135 - 江苏王斌 (胜) 上海孙勇征 (1994.8于江苏镇江).XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/136 - 江苏王斌 (负) 广东陈富杰 (1994.8于江苏镇江).XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/184 - 江苏王斌 (胜) 邮电李家华 (1999.4.21于漳州).XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/197 - 江苏王斌 (负) 广东宗永生 (1997.5.12于上海松江县).XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/204 - 上海孙勇征 (负) 江苏王斌 (1997.10.12于漳州).XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/209 - 江苏王斌 (胜) 四川曾东平 (1996.5.23于成都).XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/228 - 江苏王斌 (胜) 黑龙江聂铁文 (1999.4.22于漳州).XQF
+attr:32 size:1848 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/231 - 江苏王斌 (胜) 河北张江 (1997.10.13于漳州).XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/279 - 湖北李智平 (胜) 江苏王斌 (1999.4.23于漳州).XQF
+attr:32 size:24995 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/8-1.jpg
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A046南京王斌 (和) 陕西张惠明 (1993.4.21于南京).XQF
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A077南京王斌 (胜) 上海林宏敏 (1992年11月2日于北京).XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A102湖北柳大华 (胜) 南京王斌 (1992年10月28日于北京).XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A104贵州高明海 (和) 南京王斌 (1993.4.22于南京).XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A173南京王斌 (胜) 湖南肖革联 (1993.4.23于南京).XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A221南京王斌 (和) 上海胡荣华 (1993.4.24于南京).XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A321南京王斌 (和) 浙江于幼华 (1993.4.27于南京).XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A399广西黄世清 (胜) 南京王斌 (1993.4.28于南京).XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A433南京王斌 (负) 哈尔滨朱贵森 (1993.4.29于南京).XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A533南京王斌 (和) 广州汤卓光 (1993.4.30于南京).XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A573安徽蒋志梁 (胜) 南京王斌 (1993.5.1于南京).XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/A597福建王晓华 (和) 南京王斌 (1993.5.2于南京).XQF
+attr:34 size:266 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/desktop.ini
+attr:34 size:11541 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/FOLDER.HTT
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/万春林先胜王斌.XQF
+attr:32 size:1377 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/上海胡荣华  红先和  江苏王斌.XQF
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/吉林洪智（先胜）江苏王斌.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/吕钦先胜王斌.XQF
+attr:32 size:1692 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/吕钦（先和）王斌.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/孙勇征先和王斌.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/广东宗永生  红先胜  江苏王斌.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/李雪松先负王斌.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/李雪松先负王斌2.XQF
+attr:32 size:1882 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌  红先和  广东宗永生.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌  红先胜  江苏徐天红.XQF
+attr:32 size:1350 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌  红先负  上海胡荣华.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌先和广东吕钦.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌先负广东吕钦加赛快棋.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌（先和）新疆付光明.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/江苏王斌（先负）上海孙勇征.XQF
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/湖南肖革联（先和）江苏王斌.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/澳门李锦欢（先负）江苏王斌.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先和张申宏.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先和王晓华.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先和黄海林.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先胜尚威.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先胜阎文清.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先负许银川.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌先负金波.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先和）于幼华.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先和）孙勇征.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先和）徐天红.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先和）洪智.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先胜）徐健秒.XQF
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/王斌（先胜）黄海林.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第1轮 胡荣华　先和　王斌.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第一轮 天津 徐健秒 先和 江苏 王斌.XQF
+attr:32 size:1473 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第一轮 江苏 王 斌 先负 黑龙江 聂铁文.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第一轮 江苏 王斌 先胜 天津 徐健秒.XQF
+attr:32 size:1362 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第一轮 黑龙江 聂铁文 先和 江苏 王 斌.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第一轮加赛 江苏 王 斌 先胜 黑龙江 聂铁文.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第三轮 江苏 王斌 先胜 黑龙江 聂铁文.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第三轮 黑龙江 聂铁文 先和 江苏 王斌.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第二轮 江苏 王 斌 先负 广东 吕 钦.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第二轮 江苏 王斌 先胜 河北 刘殿中.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第二轮 河北 刘殿中 先和 江苏 王斌.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第五轮 吉林 陶汉明 先和 江苏 王斌.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第五轮 江苏 王斌 先胜 吉林 陶汉明.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第四轮 广东 吕钦 先和 江苏 王斌.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第四轮 江苏 王斌 先和 广东 吕钦.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第四轮加赛快棋（1） 江苏 王斌 先和 广东 吕钦.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/第四轮加赛快棋（2） 广东 吕钦 先负 江苏 王斌.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/聂铁文（先负）王斌.XQF
+attr:32 size:317 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/致言.txt
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/许银川（先和）王斌.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/金波（先负）王斌.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/王斌专集/王斌专集/陶汉明（先和）王斌.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/- 上海胡荣华 (胜) 山东王秉国 (1982年12月5日于成都).XQF
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A007湖北柳大华 (胜) 山东王秉国 (1986年11月23日于湘潭).XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A019火车头王秉国 (胜) 辽宁尚威 (1991.5.17于无锡).XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A027山东王秉国 (负) 黑龙江赵国荣 (1986年9月28日于杭州).XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A031火车头王秉国 (胜) 湖北熊学元 (1991.5.18于无锡).XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A051火车头王秉国 (和) 湖北李望祥 (1992.5.23于抚州).XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A052内蒙古李日纯 (负) 山东王秉国 (1986年4月21日于邯郸).XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A066火车头王秉国 (胜) 上海邬正伟 (1992.5.19于抚州).XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A072安徽许波 (胜) 山东王秉国 (1986年11月12日于湘潭).XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A094火车头王秉国 (和) 厦门郭福人 (1991.5.26于无锡).XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A097湖南马有共 (和) 火车头王秉国 (1991.5.12于无锡).XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A109河北刘殿中 (胜) 火车头王秉国 (1992.5.24于抚州).XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A119广东许银川 (胜) 火车头王秉国 (1991.5.13于无锡).XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A163火车头王秉国 (胜) 大连王典松 (1991.5.14于无锡).XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A289火车头王秉国 (和) 上海林宏敏 (1991.5.22于无锡).XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/A321四川蒋全胜 (胜) 火车头王秉国 (1991.5.22于无锡).XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F111-1.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F119-1.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F131-3.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F135-1.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F153-1.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F158-1.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F19-1.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F30-1.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F37-1.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F58-2.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F77-3.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F88-1.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/F92-2.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/王秉国专集/五七炮进三兵对反宫马飞左象.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海八建胡荣华 (和) 中国邮电潘振波 (1996.5.16于成都).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海八建胡荣华 (和) 北京张强 (1996.5.20于成都).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海八建胡荣华 (胜) 成都袁世桥 (1996.5.17于成都).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海徐天利 (胜) 上海胡荣华 (1984年2月25日于昆山).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海林宏敏 (和) 上海胡荣华 (1990年10月22日于杭州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海林宏敏 (和) 上海胡荣华 (1990年5月9日于泰州).xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海林宏敏 (和) 上海胡荣华 (1997.10.14于漳州).xqf
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海汪士龙 (负) 上海胡荣华 (1991年8月16日于上海).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 上海万春林 (1990年10月21日于杭州).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 上海浦东葛维蒲 (1999.4.24于漳州).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 农协郑乃东 (1993.4.30于南京).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 冶金尚威 (1998.4.2于昆明).xqf
+attr:32 size:1864 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 北京张强 (1998.12.8于深圳).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 南方棋院宗永生 (1998.12.15于深圳).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 南方棋院宗永生 (1999.4.18于漳州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 吉林陶汉明 (1991.5.17于无锡).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 吉林陶汉明 (1991年5月16日于无锡).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 吉林陶汉明 (1998.1.10于广州).xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 四川李艾东 (1998.3.26于昆明).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 安徽蒋志梁 (1996.5.22于成都).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1981年5月4日于肇庆).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1981年7月26日于承德).xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1983年6月3日于哈尔滨).xqf
+attr:32 size:1546 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985.1.11于广州).xqf
+attr:32 size:2178 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985.1.13于广州).xqf
+attr:32 size:1514 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985年1月13日于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985年1月于广州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985年4月16日于西安).xqf
+attr:32 size:1635 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1985年4月于西安).xqf
+attr:32 size:2311 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1987.1.3于广州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1987年1月1日于广州).xqf
+attr:32 size:1558 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1987年1月于广州).xqf
+attr:32 size:2058 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1988.1.14于广州).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1988年1月14日于广州).xqf
+attr:32 size:2340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1989.1.18于广州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1989年5月23日于济南).xqf
+attr:32 size:1751 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1990.1.7于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1990年10月18日于杭州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1990年1月7日于广州).xqf
+attr:32 size:1896 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1990年6月15日于邯郸).xqf
+attr:32 size:2119 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1991.1.4于广州).xqf
+attr:32 size:4218 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1993.7.5于广州).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1995.1.13于广州).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1995.4.10于桂林).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1995.7.18于广州).xqf
+attr:32 size:2531 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1995.7.18于广州)1.xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1995年1月19日于顺德).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1996.6.12于上海嘉丰).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东吕钦 (1998年8月18日于太原).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官磷 (1987年11月21日于番禺).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官辚 (1962年11月24日于合肥).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官辚 (1965年5月16日于温州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官辚 (1982年10月10日于上海).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官辚 (1982年12月20日于成都).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东杨官辚 (1987年11月21日于番禺).xqf
+attr:32 size:1756 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东汤卓光 (1992年10月29日于北京).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东蔡福如 (1981年7月23日于承德).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东蔡福如 (1984年5月20日于武汉).xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东许银川 (1997.10.16于漳州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广东许银川 (1999.4.19于漳州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 广州蔡福如 (1963年12月21日于广州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 武汉熊学元 (1990年6月14日于邯郸).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1986年11月15日于湖南湘潭).xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1986年4月26日于邯郸).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1988年4月11日于孝感).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1988年9月10日于呼和浩特).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1990年1月5日于第10届五羊杯).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1991年7月1日于烟台).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1995.5.8于四川).xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1996.4于桂林).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 江苏徐天红 (1998.1.12于广州).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 河北刘殿中 (1986年5月11日于太原).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 河北李来群 (1980年9月1日于乐山).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 河北李来群 (1990年1月13日于广州).xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 浙江于幼华 (1982年12月15日于成都).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 浙江于幼华 (1990年5月13日于泰州).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 深圳汤卓光 (1998.4.3于昆明).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 湖北李智屏 (1996.10.26于宁波).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 湖北李望祥 (1986年11月12日于湘潭).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 湖北柳大华 (1985年1月4日于广州).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 湖北柳大华 (1991年6月4日于桂林).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 火车头杨德琪 (1997.10.12于漳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 甘肃钱洪发 (1982年12月13日于成都).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 纺织王鑫海 (1995.5.7于四川).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 辽宁卜风波 (1992.5.23于抚州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江王嘉良 (1980年9月4日于乐山).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1980年1月17日于蚌埠).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1982年12月18日于成都).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1987年11月23日于番禺).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1987年4月7日于福州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1988年10月14日于大庆).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1988年12月4日于天津).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1989年4月26日于常州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1993.4.28于南京).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (和) 黑龙江赵国荣 (1999.1.11于广州).xqf
+attr:32 size:2093 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (对) 广东吕钦 (1989.1.20于广州).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (对) 江苏徐天红 (1995.4.8于桂林).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 上海朱祖勤 (1991年8月18日于上海).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 上海胡荣华 (1995.4.6于桂林).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 云南何连生 (1986年11月24日于湘潭).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 云南邓新年 (1996.10.25于宁波).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 内蒙孙启忠 (1992年10月20日于北京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 北京傅光明 (1981年9月14日于温州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 北京傅光明 (1985年4月9日于西安).xqf
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 北京喻之青 (1987年5月7日于北京).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 北京靳玉砚 (1998.12.13于深圳).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 厦门蔡忠诚 (1991.5.14于无锡).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 厦门郑乃东 (1997.10.6于漳州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 台北吴贵临 (1990年5月8日于泰州).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 吉林曹霖 (1988年9月3日于呼和浩特).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 吉林陶汉明 (1993.4.21于南京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 四川曾东平 (1989年10月17日于重庆).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 四川李艾东 (1988年4月13日于孝感).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 四川李艾东 (1992年11月1日于北京).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 四川蒋全胜 (1982年12月6日于成都).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 安徽张元启 (1962年11月12日于合肥).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 安徽许波 (1988年4月3日于孝感).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 山东王秉国 (1982年12月5日于成都).xqf
+attr:32 size:2512 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1986.1.12于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1986年1月12日于广州).xqf
+attr:32 size:3316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1993.7.6于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1996年2月15日于上海).xqf
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1997.10.7于漳州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东吕钦 (1999.1.9于广州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东庄玉腾 (1989年10月18日于重庆).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东庄玉腾 (1995.7.20于广州).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东庄玉腾 (1995年7月20日于广州).xqf
+attr:32 size:1872 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东杨官辚 (1964年12月30日于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东杨官辚 (1981年1月17日于广州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东杨官辚 (1982年2月17日于北京).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东蔡福如 (1964年12月26日于广州).xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东许银川 (1992年11月4日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广东黄景贤 (1986年11月19日于湘潭).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广州蔡福如 (1960年12月25日于广州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 广州陈柏祥 (1963年12月29日于广州).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 新加坡黄德兴 (1985年12月10日于新加坡).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 机电李鹏 (1999.4.17于漳州).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1984年11月29日于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1985年10月于南京).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1988年5月19日于扬州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1989年4月24日于常州).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1991.5.23于无锡).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1991年1月12日于广州).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1991年5月23日于无锡).xqf
+attr:32 size:1856 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1992年12月21日于广州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏徐天红 (1998.3.31于昆明).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 江苏言穆江 (1980年8月30日于乐山).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北刘殿中 (1981年9月10日于温州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1981年7月19日于承德).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1982年2月19日于北京).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1983年1月21日于广州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1984年1月12日于广州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1984年5月23日于武汉).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1986年 10月29日于厦门).xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1986年12月27日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1986年1月16日于广州).xqf
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1986年1月18日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1988年12月5日于天津).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1988年3月6日于江阴).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1989年10月24日于重庆).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1991年6月1日于桂林).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 河北李来群 (1999.1.14于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江于幼华 (1983年6月11日于哈尔滨).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江于幼华 (1984年2月28日于昆山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江于幼华 (1986年9月22日于杭州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江于幼华 (1990年10月25日于杭州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江于幼华 (1990年10月25日于杭州钢铁厂).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江刘忆慈 (1962年11月10日于合肥).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江陈孝坤 (1984年2月23日于昆山).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江陈孝坤 (1987年11月4日于成都).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 浙江陈孝坤 (1999.4.25于漳州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 海南张宝珊 (1990年10月11日于杭州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1981年5月5日于肇庆).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1982年10月20日于上海).xqf
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1983年11月16日于昆明).xqf
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1984年5月17日于武汉).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1992年10月26日于北京).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1994.4.20于桂林).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1995.5.9于四川).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1995.6.12于上海嘉定).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1996.4.18于桂林).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 湖北柳大华 (1999.1.22于荥阳).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 火车头崔岩 (1991年5月21日于无锡).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 物资宋克军 (1992.5.11于抚州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 甘肃钱洪发 (1982年10月12日于上海).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 辽宁卜凤波 (1995.5.13于四川).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 辽宁卜风波 (1987年11月27日于番禺).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 辽宁卜风波 (1987年4月12日于福州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 重庆许文学 (1997.10.10于漳州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 陕西张惠民 (1992年8月23日于华阴).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 陕西王洪禄 (1983年11月15日于昆明).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 青岛刘凤君 (1993.4.23于南京).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 青岛张广增 (1990年10月12日于杭州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 青海徐永嘉 (1983年6月1日于哈尔滨).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 香港翁德强 (1991年7月29日于山打根).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 香港赵汝权 (1982年3月19日于香港).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 香港郑守贤 (1982年4月9日于杭州).xqf
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江王嘉良 (1965年11月13日于银川).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江赵国荣 (1982年10月1日于哈尔滨).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江赵国荣 (1983年11月27日于昆明).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江赵国荣 (1984年12月2日于广州).xqf
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江赵国荣 (1984年2月27日于昆山).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (胜) 黑龙江赵国荣 (1985年11月15日于淄博).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 兰州田长兴 (1992.5.13于抚州).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 内蒙古李日纯 (1984年4月23日于合肥).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 吉林陶汉明 (1997.5.14于上海松江县).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 四川蒋全胜 (1993.4.25于南京).xqf
+attr:32 size:1823 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广东吕钦 (1985年10月于上海).xqf
+attr:32 size:2306 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广东吕钦 (1986.1.10于广州).xqf
+attr:32 size:1705 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广东吕钦 (1986年1月于广州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广东吕钦 (1989年1月9日于广州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广东许银川 (1997.5.7于上海松江县).xqf
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 广州蔡福如 (1960年6月18日于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 江苏徐天红 (1991年3月5日于常州).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 江苏徐天红 (1995.12.26于广州).xqf
+attr:32 size:1732 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 河北李来群 (1980年4月29日于福州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 河北李来群 (1983年1月23日于广州).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 河北李来群 (1989年9月3日于北京).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 河北李来群 (1989年9月4日于北京).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 河北李来群 (1992.5.13于抚州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 浙江陈孝坤 (1982年9月25日于哈尔滨).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 深圳卜风波 (1998.12.10于深圳).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 湖北柳大华 (1981年1月10日于广州).xqf
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 湖北柳大华 (1982年1月2日于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 湖北柳大华 (1985年5月26日于北京).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 湖北柳大华 (1998.1.14于广州).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 火车头于幼华 (1997.5.13于上海松江县).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 辽宁卜风波 (1991.5.12于无锡).xqf
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 香港赵汝权 (1996.4于桂林).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 黑龙江王嘉良 (1960年10月29日于北京).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 黑龙江赵国荣 (1990年10月19日于杭州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 黑龙江赵国荣 (1992.5.18于抚州).xqf
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 上海胡荣华 (负) 黑龙江赵国荣 (1997.5.9于上海松江县).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 东北王嘉良 (负) 上海胡荣华 (1962年7月7日于上海).xqf
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (和) 中国吕钦 (1990年4月5日于新加坡).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (和) 菲律宾蔡文钩 (1982年4月14日于杭州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 东马黄聪武 (1980年12月2日于澳门).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 中华台北马仲威 (1988年12月15日于新加坡).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 新加坡陈有福 (1984年9月6日于马尼拉).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 泰国谢盖洲 (1982年4月11日于杭州).xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 澳门郭裕隆 (1984年12月16日于肇庆).xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 美东象棋会陈志 (1984年12月17日于肇庆).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 西马何荣耀 (1984年9月3日于马尼拉).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 中国胡荣华 (胜) 越南张仲保 (1966年1月23日于河内).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 云南何连生 (负) 上海胡荣华 (1991.5.18于无锡).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 云南陈信安 (胜) 上海胡荣华 (1997.5.6于上海松江县).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 内蒙孙启忠 (负) 上海胡荣华 (1991.5.11于无锡).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 冶金尚威 (负) 上海胡荣华 (1995.5.8于四川).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京傅光明 (胜) 上海胡荣华 (1982年10月23日于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京张强 (和) 上海胡荣华 (1993.4.27于南京).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京张强 (负) 上海胡荣华 (1995.6.7于上海嘉定).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京张强 (负) 上海胡荣华 (1996.10.28于宁波).xqf
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京臧如意 (负) 上海胡荣华 (1983年6月13日于哈尔滨).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北京藏如意 (和) 上海胡荣华 (1981年9月11日于温州).xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北方李来群 (负) 南方胡荣华 (1990年9月3日于大连).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北方赵国荣 (负) 南方胡荣华 (1990年9月2日于大连).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 北方队赵国荣 (胜) 南方队胡荣华 (1987年1月11日于上海).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 南京王斌 (和) 上海胡荣华 (1993.4.24于南京).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 南方胡荣华 (胜) 北方卜风波 (1987年 1月10日于上海).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 南方队胡荣华 (胜) 北方队赵国荣 (1990年9月1日于大连).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 印尼余仲明 (和) 中国胡荣华 (1990年4月5日于新加坡).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 厦门蔡忠诚 (负) 上海胡荣华 (1998.12.13于深圳).xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 厦门郑乃东 (胜) 上海胡荣华 (1998.12.11于深圳).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 台北吴贵临 (和) 上海胡荣华 (1994.4.26于桂林).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 台北吴贵临 (和) 上海胡荣华 (1994年4月26日于桂林).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 台北马仲威 (负) 上海胡荣华 (1991年8月1日于山打根).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (和) 上海胡荣华 (1995.5.6于四川).xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (和) 上海胡荣华 (1999.1.10于广州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (胜) 上海胡荣华 (1995.4.7于桂林).xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (胜) 上海胡荣华 (1999.4.22于漳州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (负) 上海胡荣华 (1996.6.7于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (负) 上海胡荣华 (1996年6月7日于上海).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 吉林陶汉明 (负) 上海胡荣华 (1997.10.7于漳州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 四川曾东平 (和) 上海胡荣华 (1990年10月16日于杭州).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 四川李艾东 (和) 上海胡荣华 (1997.10.6于漳州).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 四川李艾东 (负) 上海胡荣华 (1990年5月8日于邯郸).xqf
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 四川李艾东 (负) 上海胡荣华 (1991.5.15于无锡).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 四川蒋全胜 (和) 上海胡荣华 (1992.5.16于抚州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 大学石刚 (和) 上海胡荣华 (1993.4.20于南京).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 宁夏任占国 (负) 上海胡荣华 (1988年4月1日于孝感).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 宁夏王贵福 (负) 上海胡荣华 (1981年5月9日于肇庆).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 安徽蒋志梁 (负) 上海胡荣华 (1992年10月31日于北京).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 山东刘凤君 (负) 上海胡荣华 (1988年9月2日于呼和浩特).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 山东刘毅 (和) 上海胡荣华 (1997.5.11于上海松江县).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1982年12月17日于成都).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1984年4月22日于合肥).xqf
+attr:32 size:3121 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1985.1.12于广州).xqf
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1985年8月22日于兰州).xqf
+attr:32 size:1962 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1988.1.13于广州).xqf
+attr:32 size:2208 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1988.1.15于广州).xqf
+attr:32 size:2088 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1990.1.12于广州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1990年1月12日于广州).xqf
+attr:32 size:1874 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1991.1.9于广州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1992.5.17于抚州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1993.4.22于南京).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (和) 上海胡荣华 (1995.5.6于四川).xqf
+attr:32 size:1804 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1980年8月于乐山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1986年4月25日于邯郸).xqf
+attr:32 size:1526 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1986年4月于邯郸).xqf
+attr:32 size:3673 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1989.1.19于广州).xqf
+attr:32 size:2849 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1989.1.21于广州).xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1991.5.12于无锡).xqf
+attr:32 size:2600 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1992.12.20于广州).xqf
+attr:32 size:2652 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1993.7.3于广州).xqf
+attr:32 size:2567 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1993.7.5于广州).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (胜) 上海胡荣华 (1998.1.8于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1984年5月22日于武汉).xqf
+attr:32 size:1767 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1984年5月于武汉).xqf
+attr:32 size:3063 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1985.1.10于广州).xqf
+attr:32 size:2424 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1986.1.11于广州).xqf
+attr:32 size:2332 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1986.1.13于广州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1986年 1月13日于广州).xqf
+attr:32 size:1586 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1986年1月于广州).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1986年5月15日于太原).xqf
+attr:32 size:2275 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1987.1.4于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1987年1月2日于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1987年1月2日于广州)1.xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1987年1月于广州).xqf
+attr:32 size:1618 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1987年1月于广州)1.xqf
+attr:32 size:2246 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1988.1.16于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1988年1月15日于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1988年1月16日于广州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1994年7月30日于上海).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东吕钦 (负) 上海胡荣华 (1995年12月24日于顺德).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东宗永生 (和) 上海胡荣华 (1999.1.21于荥阳).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东庄玉腾 (负) 上海胡荣华 (1995.8.14于青岛).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东杨官辚 (和) 上海胡荣华 (1962年3月14日于上海).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东杨官辚 (和) 上海胡荣华 (1974年7月18日于成都).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东杨官辚 (胜) 上海胡荣华 (1964年12月25日于广州).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东杨官辚 (负) 上海胡荣华 (1982年1月1日于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东杨官辚 (负) 上海胡荣华 (1982年5月6日于武汉).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东许银川 (和) 上海胡荣华 (1994.7.31于上海).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东许银川 (和) 上海胡荣华 (1998.1.13于广州).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东许银川 (和) 上海胡荣华 (1999.1.8于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东许银川 (胜) 上海胡荣华 (1995.7.19于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广东许银川 (胜) 上海胡荣华 (1998.4.4于昆明).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广州杨官辚 (和) 上海胡荣华 (1963年12月28日于广州).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广州蔡福如 (负) 上海胡荣华 (1960年6月23日于广州).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 广州蔡福如 (负) 上海胡荣华 (1963年12月25日于广州).xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 新加坡郑海文 (负) 中国胡荣华 (1990年4月3日于新加坡).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏季本涵 (负) 上海胡荣华 (1962年11月14日于合肥).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏季本涵 (负) 上海胡荣华 (1964年12月11日于温州).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐健秒 (和) 上海胡荣华 (1999.1.23于荥阳).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1985年8月16日于兰州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1987年4月1日于福州).xqf
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1989年10月25日于重庆).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1990年5月10日于泰州).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1991年6月4日于桂林).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1992年11月2日于北京).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1992年12月16日于广州).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1995.12.22于广州).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1999.1.12于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (和) 上海胡荣华 (1999.4.19于漳州).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1980年5月24日于沙州).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1985年8月22日于兰州).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1987年元月20日于江苏昆山).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1990年6月13日于邯郸).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1991年1月7日于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1993年6月5日于广西桂林).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (胜) 上海胡荣华 (1995.1.12于广州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (负) 上海胡荣华 (1987年11月29日于番禺).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (负) 上海胡荣华 (1990年10月23日于杭州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (负) 上海胡荣华 (1990年10月24日于杭州).xqf
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐天红 (负) 上海胡荣华 (1990年1月10日于广州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏徐建秒 (负) 上海胡荣华 (1988年9月17日于呼和浩特).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏戴荣光 (和) 上海胡荣华 (1981年9月23日于温州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (和) 上海胡荣华 (1982年12月12日于成都).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (和) 上海胡荣华 (1984年5月19日于武汉).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (负) 上海胡荣华 (1981年5月24日于金坛).xqf
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (负) 上海胡荣华 (1982年5月13日于武汉).xqf
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (负) 上海胡荣华 (1984年2月21日于无锡).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (负) 上海胡荣华 (1984年4月25日于合肥).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 江苏言穆江 (负) 上海胡荣华 (1986年5月7日于太原).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 沈阳赵庆阁 (负) 上海胡荣华 (1990年6月7日于邯郸).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (和) 上海胡荣华 (1982年10月19日于上海).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (胜) 上海胡荣华 (1998.4.1于昆明).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (负) 上海胡荣华 (1975年9月26日于北京).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (负) 上海胡荣华 (1982年12月16日于成都).xqf
+attr:32 size:1764 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (负) 上海胡荣华 (1988年5月17日于扬州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北刘殿中 (负) 上海胡荣华 (1995.10.14于吴县市).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (和) 上海胡荣华 (1983年1月22日于广州).xqf
+attr:32 size:1712 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (和) 上海胡荣华 (1983年6月4于哈尔滨).xqf
+attr:32 size:1996 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (和) 上海胡荣华 (1986年4月21日于邯郸).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (和) 上海胡荣华 (1993年5月15日于青岛).xqf
+attr:32 size:2224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (胜) 上海胡荣华 (1984年1月13日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (胜) 上海胡荣华 (1989年9月2日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (胜) 上海胡荣华 (1989年9月7日于北京).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1982年10月14日于上海).xqf
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1983年1月20日于广州).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1986年1月17日于广州).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1989年9月4日于北京).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1993.4.29于南京).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1993年12月30日于顺德).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北李来群 (负) 上海胡荣华 (1993年4月29日于南京).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北柳大华 (和) 上海胡荣华 (1993.5.1于南京).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北闫文清 (胜) 上海胡荣华 (1996.10.27于宁波).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北闫文清 (负) 上海胡荣华 (1992年10月23日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北阎文清 (胜) 上海胡荣华 (1990年10月13日于杭州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北阎文清 (胜) 上海胡荣华 (1990年10月13日于杭州钢铁厂).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 河北黄勇 (负) 上海胡荣华 (1984年5月18日于武汉).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 泰国谢盖洲 (负) 中国胡荣华 (1984年9月4日于马尼拉).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江于幼华 (胜) 上海胡荣华 (1987年4月8日于福州).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江于幼华 (胜) 上海胡荣华 (1992.5.24于抚州).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江于幼华 (负) 上海胡荣华 (1982年9月29日于哈尔滨).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江于幼华 (负) 上海胡荣华 (1986年11月16日于湘潭).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江于幼华 (负) 上海胡荣华 (1987年12月2日于番禺).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江刘忆慈 (负) 上海胡荣华 (1960年10月20日于北京).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江刘忆慈 (负) 上海胡荣华 (1960年11月3日于北京).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江陈孝坤 (和) 上海胡荣华 (1989年10月16日于重庆).xqf
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江陈孝坤 (负) 上海胡荣华 (1982年10月9日于上海).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江陈孝坤 (负) 上海胡荣华 (1982年12月10日于成都).xqf
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浙江陈孝坤 (负) 上海胡荣华 (1982年5月16日于武汉).xqf
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 浦东徐健秒 (和) 上海胡荣华 (1998.12.9于深圳).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 深圳刘星 (和) 上海胡荣华 (1993.5.4于南京).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 港马联队赵汝权 (负) 中国胡荣华 (1977年2月7日于宿务).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北李义庭 (和) 上海胡荣华 (1965年11月22日于银川).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1980年8月25日于乐山).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1982年1月6日于广州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1991年1月6日于广州).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1993年5月1日于南京).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1995.12.19于广州).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1997.5.8于上海松江县).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (和) 上海胡荣华 (1999.1.13于广州).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1981年7月18日于承德).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1985年10月29日于上海).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1988年3月3日于常州).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1989年4月23日于常州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1991.5.13于无锡).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1991年5月13日于无锡).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (胜) 上海胡荣华 (1992.5.21于抚州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海八建胡荣华 (1996.5.17于成都).xqf
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1981年1月15日于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1982年1月11日于广州).xqf
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1982年5月19日于武汉).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1985年5月26日于北京).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1989年5月22日于济南).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1990年2月11日于上海).xqf
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1993年5月18日于青岛).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北柳大华 (负) 上海胡荣华 (1996年6月11日于上海).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖北胡远茂 (负) 上海胡荣华 (1981年7月16日于承德).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 湖南韦问阳 (负) 上海胡荣华 (1994年10月6日于湖南郴州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 澳门李锦欢 (负) 中国胡荣华 (1984年8月30日于马尼拉).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 澳门郭裕隆 (负) 中国胡荣华 (1984年12月16日于肇庆).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头于幼华 (和) 上海胡荣华 (1998.3.27于昆明).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头于幼华 (胜) 上海胡荣华 (1995.8.17于青岛).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头于幼华 (负) 上海胡荣华 (1995.5.13于四川).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头于幼华 (负) 上海胡荣华 (1997.10.12于漳州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头傅光明 (和) 上海胡荣华 (1987年11月25日于番禺).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头傅光明 (负) 上海胡荣华 (1986年9月23日于杭州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头宋国强 (和) 上海胡荣华 (1992年10月21日于北京).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头宋国强 (负) 上海胡荣华 (1999.1.20于荥阳).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头崔岩 (和) 上海胡荣华 (1992.5.19于抚州).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头梁文斌 (负) 上海胡荣华 (1982年12月8日于成都).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头郭长顺 (负) 上海胡荣华 (1983年11月27日于昆明).xqf
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头郭长顺 (负) 上海胡荣华 (1983年6月9日于哈尔滨).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头郭长顺 (负) 上海胡荣华 (1985年4月19日于西安).xqf
+attr:32 size:1844 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 火车头郭长顺 (负) 上海胡荣华 (1986年4月30日于邯郸).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 甘肃钱洪发 (和) 上海胡荣华 (1988年4月4日于孝感).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 甘肃钱洪发 (负) 上海胡荣华 (1984年12月3日于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 福建熊学元 (胜) 上海胡荣华 (1999.4.23于漳州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 福建王荣塔 (负) 上海胡荣华 (1981年5月6日于肇庆).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 纺织王鑫海 (负) 上海胡荣华 (1994年10月10日于湖南郴州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 联邦德国许普纳 (负) 中国胡荣华 (1987年7月3日于西柏林).xqf
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 菲律宾蔡文钩 (负) 中国胡荣华 (1982年4月14日于杭州).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 越南张仲保 (和) 中国胡荣华 (1966年1月21日于河内).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 越南阮得丁 (负) 中国胡荣华 (1966年1月23日于河内).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁尚威 (负) 上海胡荣华 (1990年10月20日于杭州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁尚威 (负) 上海胡荣华 (1990年10月20日于杭州钢铁厂).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁苗永鹏 (胜) 上海胡荣华 (1995.10.7于吴县市).xqf
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁赵庆阁 (负) 上海胡荣华 (1983年6月10日于哈尔滨).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁赵庆阁 (负) 上海胡荣华 (1986年11月22日于湘潭).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 辽宁赵庆阁 (负) 上海胡荣华 (1986年4月24日于邯郸).xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 邮电许波 (和) 上海胡荣华 (1997.5.12于上海松江县).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 重庆许文学 (和) 上海胡荣华 (1999.4.16于漳州).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 香港徐耀荣 (负) 中国胡荣华 (1984年9月5日于马尼拉).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 香港李旭英 (负) 上海胡荣华 (1981年12月18日于曼谷).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 香港梁达民 (和) 上海胡荣华 (1998.12.7于深圳).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江刘殿中 (和) 上海胡荣华 (1965年11月15日于银川).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江张影富 (负) 上海胡荣华 (1990年10月15日于杭州).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江张影富 (负) 上海胡荣华 (1990年10月15日于杭州钢铁厂).xqf
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (和) 上海胡荣华 (1982年5月21日于武汉).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (胜) 上海胡荣华 (1964年5月9日于杭州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (胜) 上海胡荣华 (1974年7月27日于成都).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (负) 上海胡荣华 (1981年4月29日于肇庆).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (负) 上海胡荣华 (1982年10月25日于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江王嘉良 (负) 上海胡荣华 (1982年5月8日于武汉).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (和) 上海胡荣华 (1986年11月13日于湘潭).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (和) 上海胡荣华 (1988年9月12日于呼和浩特).xqf
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (和) 上海胡荣华 (1990年5月7日于泰州).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (和) 上海胡荣华 (1998.1.11于广州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1984年5月24日于武汉).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1985年10月9日于南京).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1987年1月11日于上海).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1987年1月18日于昆山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1989年10月22日于重庆).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (胜) 上海胡荣华 (1990年6月10日于邯郸).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (负) 上海八建胡荣华 (1996.5.23于成都).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (负) 上海胡荣华 (1983年6月6日于哈尔滨).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (负) 上海胡荣华 (1985年10月22日于上海).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/- 黑龙江赵国荣 (负) 上海胡荣华 (1996年5月3日于成都).xqf
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马2.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马3.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马4.XQF
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马5.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马6.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马7.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮七路马对屏风马8.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮对先锋马.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮对屏风马.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮对屏风马2.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮巡河炮对右炮寻河.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮巡河炮对象位车.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮巡河炮对象位车2.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮巡河炮进七兵对反宫马飞左象.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮横车对反宫马.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮横车对反宫马2.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮盘头马对屏风马.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马2.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马3.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马4.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马5.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马平炮兑车4.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对屏风马平炮兑车5.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对左马盘河 2.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对左马盘河.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对左马盘河3.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对左马盘河4.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮过河车对左马盘河5.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进七兵对反宫马飞右象.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进七兵对反宫马飞右象2.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进中兵对反宫马.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进中兵对反宫马2.XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进中兵对反宫马3.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮进中兵对反宫马4.XQF
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮高左炮对左马盘河 3.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/中炮高左炮对左马盘河.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五七炮对屏风马.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五七炮对屏风马2.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五七炮对屏风马3.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五八炮对屏风马.XQF
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五八炮对屏风马2.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/五八炮对屏风马3.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/仙人指路对过宫炮.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/仙人指路对过宫炮2.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/仙人指路对过宫炮3.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/过宫炮对仙人指路.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/顺炮横车对直车.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/顺炮横车对直车2.XQF
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对仙人指路.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对右中炮.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对右过宫炮.XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对左中炮.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对起马局.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第一卷/飞相局对边马局.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对三步虎.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对单提马.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对反宫马.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对屏风马.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对屏风马2.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮对龟背炮.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮巡河炮对反宫马.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮巡河炮对反宫马2.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮巡河炮对反宫马3.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮巡河炮对右炮寻河.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮横车对反宫马.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮直车压马对反宫马.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮过河车对屏风马.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/中炮进中兵对反宫马.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五七炮对反宫马.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五七炮进七兵对反宫马飞左象.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五七炮进三兵对反宫马飞左象.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五九炮进七兵对反宫马飞左象.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五六炮对反宫马.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五六炮对反宫马2.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五六炮进三兵对反宫马飞左象.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五六炮进三兵对反宫马飞左象2.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/五六炮进三兵对反宫马飞左象3.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/仙人指路.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/仙人指路转中炮对卒底炮2.XQF
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/仙人指路转中炮对卒底炮3.XQF
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/仙人指路转中炮对卒底炮4.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/后补列炮.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/起马局.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/过宫炮对中炮局.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/过宫炮对中炮局2.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮两头蛇对双横车.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮局.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮局2.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮直车对横车.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮直车对横车2.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/顺炮直车对横车3.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对仙人指路.XQF
+attr:32 size:1752 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对右中炮.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对士角炮.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左中炮.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左中炮2.XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左中炮3.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左中炮4.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左过宫炮.XQF
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对左过宫炮2.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对起马局.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对起马局2.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第三卷/飞相局对起马局3.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮七路马对屏风马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对三步虎.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对三步虎2.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对三步虎3.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对三步虎4.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对单提马.XQF
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对双炮过河.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对屏风马.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对屏风马2.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对左炮封车转后补列炮2.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对龟背炮 2.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮对龟背炮.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮巡河炮对屏风马.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮横车对反宫马.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮横车对反宫马2.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮横车对反宫马3.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对屏风马.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对屏风马2.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对屏风马3.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮过河车对左马盘河.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮进七兵对反宫马.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/中炮进七兵对反宫马2.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五七炮进三兵对反宫马飞右象.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五七炮进三兵对反宫马飞右象2.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五九炮对屏风马.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五九炮对屏风马2.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五九炮进七兵对反宫马.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五九炮进七兵对反宫马飞右象.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五八炮对屏风马.XQF
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五八炮进三兵对反宫马.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/五八炮进三兵对反宫马飞右象.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/仙人指路对中炮.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/仙人指路对卒底炮.XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/仙人指路对卒底炮2.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/仙人指路转中炮.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/仙人指路转中炮2.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/列手炮.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/列手炮2.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/后补列炮.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/后补列炮2.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/起马局.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/边马局.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/过宫炮对中炮局.XQF
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/过宫炮对单提马.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/过宫炮对横车局.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮横车对直车4.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮横车对直车5.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮横车对直车6.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮直车对横车 3.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮直车对横车.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮直车对横车2.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/顺炮直车对横车4.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/飞相局对右中炮.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/飞相局对左中炮.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/飞相局对左中炮2.XQF
+attr:32 size:1788 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/飞相局对左中炮3.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第二卷/飞相局对左过宫炮.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮七路马对屏风马.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮七路马对屏风马2.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮七路马对屏风马3.XQF
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮七路马对屏风马4.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对三步虎.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对三步虎2.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对三步虎3.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对三步虎4.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对三步虎5.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对单提马.XQF
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对屏风马.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮对鸳鸯炮.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮巡河炮对屏风马.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮巡河炮对屏风马2.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮巡河车对屏风马.XQF
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮横车对反宫马.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮过河车对屏风马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮过河车对屏风马平炮兑车3.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/中炮过河车对屏风马平炮兑车4.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马2.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马3.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马4.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马5.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮对屏风马6.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五七炮进三兵对反宫马飞右象.XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五六炮进七兵对反宫马.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/五六炮进七兵对反宫马2.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路对卒底炮.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路对卒底炮2.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路对飞象局.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路转中炮对卒底炮2.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/仙人指路转中炮对卒底炮3.XQF
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/后补列炮.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/后补列炮2.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/后补列炮3.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/后补列炮4.XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/起马局.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/起马局2.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/起马局3.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/边马局.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/边马局2.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局 2.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局3.XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局4.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局5.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局6.XQF
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/顺炮局7.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对仙人指路.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对右过宫炮.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对士角炮.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对士角炮2.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对左中炮.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对起马局.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第五卷/飞相局对飞象.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/中炮对反宫马.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/中炮对屏风马.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/中炮对屏风马2.XQF
+attr:32 size:1435 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/中炮屏风马.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/五七炮对屏风马.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/五七炮对巡河炮.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指跑对起马局.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对列手炮2.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对卒底炮.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对卒底炮2.XQF
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对卒底炮3.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对卒底炮4.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路对卒底炮6.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/仙人指路转列手炮.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/士角炮对过宫炮.XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/对兵局.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/对兵局2.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/飞相局对士角炮.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/飞相局对士角炮2.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/飞相局对士角炮3.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第六卷/飞相局对士角炮4.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎2.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎3.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎4.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎5.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎6.XQF
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对三步虎7.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对单提马.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对反宫马.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对屏风马.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对屏风马2.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对屏风马3.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对屏风马4.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对屏风马5.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对左炮封车转后补列炮.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮对左炮封车转后补列炮2.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮巡河炮对单提马.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮巡河炮对反宫马.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮巡河炮对屏风马.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮盘头马对屏风马.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮过河车对屏风马.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮过河车对屏风马2.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮过河车对屏风马3.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮过河车对屏风马平炮兑车2.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮进三兵对反宫马.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/中炮进中兵对反宫马.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮对屏风马.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮对屏风马2.XQF
+attr:32 size:1844 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮对屏风马3.XQF
+attr:32 size:1928 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮对屏风马4.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮进七兵对反宫马飞右象.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五七炮进三兵对反宫马飞右象.XQF
+attr:32 size:1732 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五九炮对屏风马.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮对屏风马.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马2.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马飞左象.XQF
+attr:32 size:1712 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马飞左象2.XQF
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马飞左象3.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进七兵对反宫马飞左象4.XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进三兵对反宫马左象.XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进三兵对反宫马飞左象.XQF
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进三兵对反宫马飞左象2.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进三兵对反宫马飞左象3.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/五六炮进三兵对反宫马飞左象4.XQF
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/仙人指路对起马局.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1996 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/仙人指路转中炮对卒底炮2.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/后补列炮.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/过宫炮对三步虎.XQF
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/顺炮局.XQF
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/顺炮局2.XQF
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/顺炮局3.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/顺炮局4.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/飞相局.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/飞相局对右过宫炮.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/大师专集/胡荣华集/胡荣华集第四卷/飞相局对左过宫炮.XQF
+attr:32 size:4446 chessManual/中国象棋棋谱大全.xqf/大师专集/許.xqn
+attr:32 size:55471 chessManual/中国象棋棋谱大全.xqf/大师专集/许银川专集.CBL
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/万春林先和阎文清.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/万春林先和阎文清2.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/上海万春林 (和) 河北阎文清 (1998.12.16于深圳).XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/五八炮对屏风马.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/仙人指路对卒底炮.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/仙人指路对卒底炮转顺炮.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/仙人指路转中炮对卒底炮.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/农协郑乃东 (胜) 河北阎文清 (1995.10.7于吴县市).XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/卜凤波先胜阎文清.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/卜凤波先胜阎文清2.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/厦门郑一泓 (和) 河北阎文清 (1998.12.8于深圳).XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/吕钦先负阎文清.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/吕钦先负阎文清2.XQF
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/吕钦先负阎文清3.XQF
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/吕钦先负阎文清4.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/广东宗永生 (负) 河北阎文清 (1998.12.10于深圳).XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/广东许银川 (胜) 河北阎文清 (1998.12.18于深圳).XQF
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/广州韩松龄 (和) 河北阎文清 (1996.5.19于成都).XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北李来群 (和) 河北阎文清 (1998.12.13于深圳).XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (和) 四川蒋全胜 (1998.12.9于深圳).XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (和) 火车头杨德琪 (1998.12.15于深圳).XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (对) 湖北柳大华 (1995.6.8于上海嘉定).XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (胜) 北京靳玉砚 (1998.12.7于深圳).XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (胜) 火车头于幼华 (1998.12.11于深圳).XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (胜) 火车头杨德琪 (1998.3.31于昆明).XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (胜) 黑龙江赵国荣 (1998.12.17于深圳).XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (负) 火车头崔岩 (1997.10.6于漳州).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/河北阎文清 (负) 辽宁卜凤波 (1995.5.22于兰州).XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/洪智先负阎文清.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/洪智先负阎文清2.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/深圳卜风波 (和) 河北阎文清 (1998.3.29于昆明).XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/火车头于幼华 (和) 河北阎文清 (1995.5.8于四川).XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/火车头金波 (负) 河北阎文清 (1998.12.13于深圳).XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/王斌先胜阎文清.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/王斌先胜阎文清2.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/赵国荣  先 和   阎文清.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清  先 负  赵国荣.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先和许银川.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先胜尚威.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先胜尚威2.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先胜汤卓光.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先胜汤卓光2.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先负卜凤波.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/阎文清先负吕钦.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/大师专集/阎文清专集/黑龙江张晓平 (负) 河北阎文清 (1996.5.16于成都).XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 上海万春林 (和) 江苏徐天红 (1990年10月22日于杭州).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 上海万春林 (和) 江苏徐天红 (1999.1.22于荥阳).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/- 上海八建胡荣华 (和) 中国邮电潘振波 (1996.5.16于成都).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海八建胡荣华 (和) 北京张强 (1996.5.20于成都).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 上海八建胡荣华 (胜) 成都袁世桥 (1996.5.17于成都).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 上海徐天利 (胜) 上海胡荣华 (1984年2月25日于昆山).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海林宏敏 (和) 上海胡荣华 (1990年10月22日于杭州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 上海林宏敏 (和) 上海胡荣华 (1990年5月9日于泰州).xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/- 上海林宏敏 (和) 上海胡荣华 (1997.10.14于漳州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 上海林宏敏 (负) 吉林陶汉明 (1999.1.20于荥阳).xqf
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/对局/- 上海汪士龙 (负) 上海胡荣华 (1991年8月16日于上海).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 上海万春林 (1990年10月21日于杭州).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 上海浦东葛维蒲 (1999.4.24于漳州).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 农协郑乃东 (1993.4.30于南京).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 冶金尚威 (1998.4.2于昆明).xqf
+attr:32 size:1864 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 北京张强 (1998.12.8于深圳).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 南方棋院宗永生 (1998.12.15于深圳).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 南方棋院宗永生 (1999.4.18于漳州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 吉林陶汉明 (1991.5.17于无锡).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 吉林陶汉明 (1991年5月16日于无锡).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 吉林陶汉明 (1998.1.10于广州).xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 四川李艾东 (1998.3.26于昆明).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 安徽蒋志梁 (1996.5.22于成都).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1981年5月4日于肇庆).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1981年7月26日于承德).xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1983年6月3日于哈尔滨).xqf
+attr:32 size:1546 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985.1.11于广州).xqf
+attr:32 size:2178 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985.1.13于广州).xqf
+attr:32 size:1514 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985年1月13日于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985年1月于广州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985年4月16日于西安).xqf
+attr:32 size:1635 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1985年4月于西安).xqf
+attr:32 size:2311 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1987.1.3于广州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1987年1月1日于广州).xqf
+attr:32 size:1558 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1987年1月于广州).xqf
+attr:32 size:2058 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1988.1.14于广州).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1988年1月14日于广州).xqf
+attr:32 size:2340 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1989.1.18于广州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1989年5月23日于济南).xqf
+attr:32 size:1751 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1990.1.7于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1990年10月18日于杭州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1990年1月7日于广州).xqf
+attr:32 size:1896 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1990年6月15日于邯郸).xqf
+attr:32 size:2119 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1991.1.4于广州).xqf
+attr:32 size:4218 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1993.7.5于广州).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1995.1.13于广州).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1995.4.10于桂林).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1995.7.18于广州).xqf
+attr:32 size:2531 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1995.7.18于广州)1.xqf
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1995年1月19日于顺德).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1996.6.12于上海嘉丰).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东吕钦 (1998年8月18日于太原).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官磷 (1987年11月21日于番禺).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官辚 (1962年11月24日于合肥).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官辚 (1965年5月16日于温州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官辚 (1982年10月10日于上海).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官辚 (1982年12月20日于成都).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东杨官辚 (1987年11月21日于番禺).xqf
+attr:32 size:1756 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东汤卓光 (1992年10月29日于北京).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东蔡福如 (1981年7月23日于承德).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东蔡福如 (1984年5月20日于武汉).xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东许银川 (1997.10.16于漳州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广东许银川 (1999.4.19于漳州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 广州蔡福如 (1963年12月21日于广州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 武汉熊学元 (1990年6月14日于邯郸).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1986年11月15日于湖南湘潭).xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1986年4月26日于邯郸).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1988年4月11日于孝感).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1988年9月10日于呼和浩特).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1990年1月5日于第10届五羊杯).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1991年7月1日于烟台).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1995.5.8于四川).xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1996.4于桂林).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 江苏徐天红 (1998.1.12于广州).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 河北刘殿中 (1986年5月11日于太原).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 河北李来群 (1980年9月1日于乐山).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 河北李来群 (1990年1月13日于广州).xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 浙江于幼华 (1982年12月15日于成都).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 浙江于幼华 (1990年5月13日于泰州).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 深圳汤卓光 (1998.4.3于昆明).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 湖北李智屏 (1996.10.26于宁波).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 湖北李望祥 (1986年11月12日于湘潭).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 湖北柳大华 (1985年1月4日于广州).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 湖北柳大华 (1991年6月4日于桂林).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 火车头杨德琪 (1997.10.12于漳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 甘肃钱洪发 (1982年12月13日于成都).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 纺织王鑫海 (1995.5.7于四川).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 辽宁卜风波 (1992.5.23于抚州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江王嘉良 (1980年9月4日于乐山).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1980年1月17日于蚌埠).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1982年12月18日于成都).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1987年11月23日于番禺).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1987年4月7日于福州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1988年10月14日于大庆).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1988年12月4日于天津).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1989年4月26日于常州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1993.4.28于南京).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (和) 黑龙江赵国荣 (1999.1.11于广州).xqf
+attr:32 size:2093 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (对) 广东吕钦 (1989.1.20于广州).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (对) 江苏徐天红 (1995.4.8于桂林).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 上海朱祖勤 (1991年8月18日于上海).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 上海胡荣华 (1995.4.6于桂林).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 云南何连生 (1986年11月24日于湘潭).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 云南邓新年 (1996.10.25于宁波).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 内蒙孙启忠 (1992年10月20日于北京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 北京傅光明 (1981年9月14日于温州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 北京傅光明 (1985年4月9日于西安).xqf
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 北京喻之青 (1987年5月7日于北京).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 北京靳玉砚 (1998.12.13于深圳).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 厦门蔡忠诚 (1991.5.14于无锡).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 厦门郑乃东 (1997.10.6于漳州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 台北吴贵临 (1990年5月8日于泰州).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 吉林曹霖 (1988年9月3日于呼和浩特).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 吉林陶汉明 (1993.4.21于南京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 四川曾东平 (1989年10月17日于重庆).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 四川李艾东 (1988年4月13日于孝感).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 四川李艾东 (1992年11月1日于北京).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 四川蒋全胜 (1982年12月6日于成都).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 安徽张元启 (1962年11月12日于合肥).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 安徽许波 (1988年4月3日于孝感).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 山东王秉国 (1982年12月5日于成都).xqf
+attr:32 size:2512 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1986.1.12于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1986年1月12日于广州).xqf
+attr:32 size:3316 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1993.7.6于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1996年2月15日于上海).xqf
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1997.10.7于漳州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东吕钦 (1999.1.9于广州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东庄玉腾 (1989年10月18日于重庆).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东庄玉腾 (1995.7.20于广州).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东庄玉腾 (1995年7月20日于广州).xqf
+attr:32 size:1872 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东杨官辚 (1964年12月30日于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东杨官辚 (1981年1月17日于广州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东杨官辚 (1982年2月17日于北京).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东蔡福如 (1964年12月26日于广州).xqf
+attr:32 size:2024 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东许银川 (1992年11月4日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广东黄景贤 (1986年11月19日于湘潭).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广州蔡福如 (1960年12月25日于广州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 广州陈柏祥 (1963年12月29日于广州).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 新加坡黄德兴 (1985年12月10日于新加坡).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 机电李鹏 (1999.4.17于漳州).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1978年1月15日于广州).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1984年11月29日于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1985年10月于南京).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1988年5月19日于扬州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1989年4月24日于常州).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1991.5.23于无锡).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1991年1月12日于广州).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1991年5月23日于无锡).xqf
+attr:32 size:1856 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1992年12月21日于广州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏徐天红 (1998.3.31于昆明).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 江苏言穆江 (1980年8月30日于乐山).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北刘殿中 (1981年9月10日于温州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1981年7月19日于承德).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1982年2月19日于北京).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1983年1月21日于广州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1984年1月12日于广州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1984年5月23日于武汉).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1986年 10月29日于厦门).xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1986年12月27日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1986年1月16日于广州).xqf
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1986年1月18日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1988年12月5日于天津).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1988年3月6日于江阴).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1989年10月24日于重庆).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1991年6月1日于桂林).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 河北李来群 (1999.1.14于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江于幼华 (1983年6月11日于哈尔滨).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江于幼华 (1984年2月28日于昆山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江于幼华 (1986年9月22日于杭州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江于幼华 (1990年10月25日于杭州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江于幼华 (1990年10月25日于杭州钢铁厂).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江刘忆慈 (1962年11月10日于合肥).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江陈孝坤 (1984年2月23日于昆山).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江陈孝坤 (1987年11月4日于成都).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 浙江陈孝坤 (1999.4.25于漳州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 海南张宝珊 (1990年10月11日于杭州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1981年5月5日于肇庆).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1982年10月20日于上海).xqf
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1983年11月16日于昆明).xqf
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1984年5月17日于武汉).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1992年10月26日于北京).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1994.4.20于桂林).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1995.5.9于四川).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1995.6.12于上海嘉定).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1996.4.18于桂林).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 湖北柳大华 (1999.1.22于荥阳).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 火车头崔岩 (1991年5月21日于无锡).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 物资宋克军 (1992.5.11于抚州).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 甘肃钱洪发 (1982年10月12日于上海).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 辽宁卜凤波 (1995.5.13于四川).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 辽宁卜风波 (1987年11月27日于番禺).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 辽宁卜风波 (1987年4月12日于福州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 重庆许文学 (1997.10.10于漳州).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 陕西张惠民 (1992年8月23日于华阴).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 陕西王洪禄 (1983年11月15日于昆明).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 青岛刘凤君 (1993.4.23于南京).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 青岛张广增 (1990年10月12日于杭州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 青海徐永嘉 (1983年6月1日于哈尔滨).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 香港翁德强 (1991年7月29日于山打根).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 香港赵汝权 (1982年3月19日于香港).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 香港郑守贤 (1982年4月9日于杭州).xqf
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江王嘉良 (1965年11月13日于银川).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江赵国荣 (1982年10月1日于哈尔滨).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江赵国荣 (1983年11月27日于昆明).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江赵国荣 (1984年12月2日于广州).xqf
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江赵国荣 (1984年2月27日于昆山).xqf
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (胜) 黑龙江赵国荣 (1985年11月15日于淄博).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 兰州田长兴 (1992.5.13于抚州).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 内蒙古李日纯 (1984年4月23日于合肥).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 吉林陶汉明 (1997.5.14于上海松江县).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 四川蒋全胜 (1993.4.25于南京).xqf
+attr:32 size:1823 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广东吕钦 (1985年10月于上海).xqf
+attr:32 size:2306 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广东吕钦 (1986.1.10于广州).xqf
+attr:32 size:1705 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广东吕钦 (1986年1月于广州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广东吕钦 (1989年1月9日于广州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广东许银川 (1997.5.7于上海松江县).xqf
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 广州蔡福如 (1960年6月18日于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 江苏徐天红 (1991年3月5日于常州).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 江苏徐天红 (1995.12.26于广州).xqf
+attr:32 size:1732 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 河北李来群 (1980年4月29日于福州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 河北李来群 (1983年1月23日于广州).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 河北李来群 (1989年9月3日于北京).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 河北李来群 (1989年9月4日于北京).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 河北李来群 (1992.5.13于抚州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 浙江陈孝坤 (1982年9月25日于哈尔滨).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 深圳卜风波 (1998.12.10于深圳).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 湖北柳大华 (1981年1月10日于广州).xqf
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 湖北柳大华 (1982年1月2日于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 湖北柳大华 (1985年5月26日于北京).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 湖北柳大华 (1998.1.14于广州).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 火车头于幼华 (1997.5.13于上海松江县).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 辽宁卜风波 (1991.5.12于无锡).xqf
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 香港赵汝权 (1996.4于桂林).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 黑龙江王嘉良 (1960年10月29日于北京).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 黑龙江赵国荣 (1990年10月19日于杭州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 黑龙江赵国荣 (1992.5.18于抚州).xqf
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/- 上海胡荣华 (负) 黑龙江赵国荣 (1997.5.9于上海松江县).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 东北王嘉良 (负) 上海胡荣华 (1962年7月7日于上海).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 中华台北吴贵临 (胜) 中国陶汉明 (1995.9.5于新加坡).xqf
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (和) 中国吕钦 (1990年4月5日于新加坡).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (和) 菲律宾蔡文钩 (1982年4月14日于杭州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 东马黄聪武 (1980年12月2日于澳门).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 中华台北马仲威 (1988年12月15日于新加坡).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 新加坡陈有福 (1984年9月6日于马尼拉).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 泰国谢盖洲 (1982年4月11日于杭州).xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 澳门郭裕隆 (1984年12月16日于肇庆).xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 美东象棋会陈志 (1984年12月17日于肇庆).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 西马何荣耀 (1984年9月3日于马尼拉).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 中国胡荣华 (胜) 越南张仲保 (1966年1月23日于河内).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 中国陶汉明 (胜) 西马陈捷裕 (1995.9.1于新加坡).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/- 云南何连生 (负) 上海胡荣华 (1991.5.18于无锡).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 云南何连生 (负) 大连陶汉明 (1988年4月6日于孝感).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 云南郑兴年 (胜) 江苏徐天红 (1995.10.13于吴县市).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 云南陈信安 (胜) 上海胡荣华 (1997.5.6于上海松江县).xqf
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/对局/- 内蒙孙启忠 (和) 江苏徐天红 (1992.5.11于抚州).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 内蒙孙启忠 (负) 上海胡荣华 (1991.5.11于无锡).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 农体李林 (负) 大连陶汉明 (1990年10月21日于杭州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 农民体协洪智 (负) 吉林陶汉明 (1996.10.23于宁波).xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/- 冶金尚威 (和) 吉林陶汉明 (1997.10.6于漳州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 冶金尚威 (负) 上海胡荣华 (1995.5.8于四川).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 北京傅光明 (胜) 上海胡荣华 (1982年10月23日于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 北京张强 (和) 上海胡荣华 (1993.4.27于南京).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 北京张强 (和) 吉林陶汉明 (1997.10.10于漳州).xqf
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/- 北京张强 (和) 吉林陶汉明 (1997.5.6于上海松江县).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 北京张强 (负) 上海胡荣华 (1995.6.7于上海嘉定).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 北京张强 (负) 上海胡荣华 (1996.10.28于宁波).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 北京臧如意 (胜) 江苏徐天红 (1995.10.8于吴县市).xqf
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/对局/- 北京臧如意 (负) 上海胡荣华 (1983年6月13日于哈尔滨).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 北京藏如意 (和) 上海胡荣华 (1981年9月11日于温州).xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/- 北方李来群 (负) 南方胡荣华 (1990年9月3日于大连).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 北方赵国荣 (负) 南方胡荣华 (1990年9月2日于大连).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 北方队赵国荣 (胜) 南方队胡荣华 (1987年1月11日于上海).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 南京王斌 (和) 上海胡荣华 (1993.4.24于南京).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 南方棋院黄仕清 (和) 江苏徐天红 (1997.5.14于上海松江县).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 南方棋院黄海林 (和) 江苏徐天红 (1998.4.3于昆明).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 南方胡荣华 (胜) 北方卜风波 (1987年 1月10日于上海).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/对局/- 南方队胡荣华 (胜) 北方队赵国荣 (1990年9月1日于大连).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/- 印尼余仲明 (和) 中国胡荣华 (1990年4月5日于新加坡).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 厦门蔡忠诚 (和) 江苏徐天红 (1991.5.17于无锡).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 厦门蔡忠诚 (负) 上海胡荣华 (1998.12.13于深圳).xqf
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/对局/- 厦门郑一泓 (负) 江苏徐天红 (1997.10.14于漳州).xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/对局/- 厦门郑乃东 (胜) 上海胡荣华 (1998.12.11于深圳).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 台北吴贵临 (和) 上海胡荣华 (1994.4.26于桂林).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 台北吴贵临 (和) 上海胡荣华 (1994年4月26日于桂林).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 台北吴贵临 (和) 吉林陶汉明 (1997.4于桂林).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 台北吴贵临 (负) 吉林陶汉明 (1995.4.10于桂林).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 台北马仲威 (负) 上海胡荣华 (1991年8月1日于山打根).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 上海万春林 (1998.12.17于深圳).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 上海胡荣华 (1995.5.6于四川).xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 上海胡荣华 (1999.1.10于广州).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 南方棋院黄仕清 (1999.1.23于荥阳).xqf
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 南方棋院黄海林 (1997.10.12于漳州).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 厦门郑一泓 (1998.12.15于深圳).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 台北吴贵临 (1997.4于桂林).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广东吕钦 (1997.4于桂林).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广东吕钦 (1998.1.9于广州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广东汤卓光 (1995.8.15于青岛).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广东许银川 (1998.4.1于昆明).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广东许银川 (1999.1.12于广州).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 广西冯明光 (1991.5.22于无锡).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 江苏徐天红 (1995.1.11于广州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 江苏徐天红 (1995.12.18于广州).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 江苏徐天红 (1995.5.12于四川).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 河北刘殿中 (1996.10.26于宁波).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 河北李来群 (1997.10.9于漳州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 浦东葛维蒲 (1998.12.7于深圳).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 湖北柳大华 (1999.1.14于广州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 火车头于幼华 (1998.12.9于深圳).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 火车头于幼华 (1998.3.28于昆明).xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 火车头金波 (1997.10.14于漳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 重庆许文学 (1993.4.24于南京).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 黑龙江张晓平 (1999.4.16于漳州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 黑龙江赵国荣 (1998.1.12于广州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (和) 黑龙江赵国荣 (1999.1.8于广州).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (对) 邮电许波 (1997.10.6于漳州).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 上海林宏敏 (1994年10月8日于湖南郴州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 上海胡荣华 (1995.4.7于桂林).xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 上海胡荣华 (1999.4.22于漳州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 农协赵新笑 (1998.4.4于昆明).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 南方棋院黄仕清 (1997.5.15于上海松江县).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 厦门蔡忠诚 (1991.5.18于无锡).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 四川李艾东 (1998.3.29于昆明).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 四川蒋全胜 (1998.12.11于深圳).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 天津陆玉江 (1993.4.30于南京).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 宁波王志安 (1993.4.20于南京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 山东刘毅 (1996.5.23于成都).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 武汉万跃民 (1992.5.23于抚州).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 河北刘殿中 (1999.4.24于漳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 浙江陈孝坤 (1997.5.9于上海松江县).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 浦东新区葛维蒲 (1995.5.8于四川).xqf
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 深圳刘星 (1995.6.8于上海嘉定).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 深圳汤卓光 (1997.5.13于上海松江县).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 火车头于幼华 (1997.5.12于上海松江县).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 火车头崔岩 (1992.5.18于抚州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 火车头金波 (1995.10.17于吴县市).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 解放军杨永明 (1993.4.27于南京).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 轻工于红木 (1996.5.19于成都).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 黑龙江张影富 (1995.3.14于长春).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 黑龙江张晓平 (1995.11于上海).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (胜) 黑龙江张晓平 (1995.3.15于长春).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 上海胡荣华 (1996.6.7于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 上海胡荣华 (1996年6月7日于上海).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 上海胡荣华 (1997.10.7于漳州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 台北吴贵临 (1997.4于桂林).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 四川李艾东 (1991.5.12于无锡).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 广东许银川 (1995.5.19于兰州).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 广东许银川 (1995.6.20于温州平阳县).xqf
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 广东许银川 (1998.1.14于广州).xqf
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 河北刘殿中 (1995.8.17于青岛).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 湖北柳大华 (1999.4.19于漳州).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 吉林陶汉明 (负) 邮电李家华 (1999.1.21于荥阳).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/- 哈尔滨朱贵森 (负) 江苏徐天红 (1993.4.30于南京).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 四川曾东平 (和) 上海胡荣华 (1990年10月16日于杭州).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/- 四川李艾东 (和) 上海胡荣华 (1997.10.6于漳州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 四川李艾东 (和) 江苏徐天红 (1992年10月26日于北京).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/- 四川李艾东 (负) 上海胡荣华 (1990年5月8日于邯郸).xqf
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/对局/- 四川李艾东 (负) 上海胡荣华 (1991.5.15于无锡).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 四川蒋全胜 (和) 上海胡荣华 (1992.5.16于抚州).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 四川蒋全胜 (和) 江苏徐天红 (1996.5.23于成都).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 四川蒋全胜 (负) 吉林陶汉明 (1995.5.9于四川).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 大学石刚 (和) 上海胡荣华 (1993.4.20于南京).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 大连卜风波 (胜) 吉林陶汉明 (1996.6.9于上海嘉丰).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 大连陶汉明 (和) 石化刘忠来 (1990年10月15日于杭州).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 大连陶汉明 (和) 辽宁卜风波 (1990年10月12日于杭州).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 大连陶汉明 (负) 广东宗永生 (1990年10月11日于杭州).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 宁夏任占国 (负) 上海胡荣华 (1988年4月1日于孝感).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 宁夏王贵福 (负) 上海胡荣华 (1981年5月9日于肇庆).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 宁夏王贵福 (负) 吉林陶汉明 (1991.5.11于无锡).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 宁波陈建伟 (和) 吉林陶汉明 (1996.5.20于成都).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 安徽蒋志梁 (胜) 江苏徐天红 (1988年9月24日于太原).xqf
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/- 安徽蒋志梁 (负) 上海胡荣华 (1992年10月31日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 安薇蒋志梁 (胜) 吉林陶汉明 (1993.4.23于南京).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 山东刘凤君 (负) 上海胡荣华 (1988年9月2日于呼和浩特).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 山东刘毅 (和) 上海胡荣华 (1997.5.11于上海松江县).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 山东刘毅 (负) 江苏徐天红 (1997.5.8于上海松江县).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 山西张致忠 (负) 江苏徐天红 (1989年10月17日于重庆).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1982年12月17日于成都).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1984年4月22日于合肥).xqf
+attr:32 size:3121 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1985.1.12于广州).xqf
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1985年8月22日于兰州).xqf
+attr:32 size:1962 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1988.1.13于广州).xqf
+attr:32 size:2208 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1988.1.15于广州).xqf
+attr:32 size:2088 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1990.1.12于广州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1990年1月12日于广州).xqf
+attr:32 size:1874 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1991.1.9于广州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1992.5.17于抚州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1993.4.22于南京).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 上海胡荣华 (1995.5.6于四川).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 吉林陶汉明 (1993.5.4于南京).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 吉林陶汉明 (1996.10.27于宁波).xqf
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 吉林陶汉明 (1999.1.13于广州).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1984年11月27日于广州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1987年2月8日于北京).xqf
+attr:32 size:1696 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1988年9月13日于呼和浩特).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1989年5月10日于安徽泾县).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1989年5月10日于泾县).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1992年1月10日于广州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1992年9月11日于四川泸州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1992年元月8日于广州).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1993年6月6日于桂林).xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1996.5.18于成都).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (和) 江苏徐天红 (1998.12.10于深圳).xqf
+attr:32 size:1804 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1980年8月于乐山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1986年4月25日于邯郸).xqf
+attr:32 size:1526 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1986年4月于邯郸).xqf
+attr:32 size:3673 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1989.1.19于广州).xqf
+attr:32 size:2849 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1989.1.21于广州).xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1991.5.12于无锡).xqf
+attr:32 size:2600 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1992.12.20于广州).xqf
+attr:32 size:2652 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1993.7.3于广州).xqf
+attr:32 size:2567 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1993.7.5于广州).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 上海胡荣华 (1998.1.8于广州).xqf
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 吉林陶汉明 (1995.12.19于广州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 吉林陶汉明 (1995.4.11于桂林).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 吉林陶汉明 (1997.4于桂林).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1988年4月4日于孝感).xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1989年6月9日于柳州).xqf
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1990年5月8日于泰州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1992.5.23于抚州).xqf
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1992年5月8日于江西抚州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (胜) 江苏徐天红 (1999.1.8于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1984年5月22日于武汉).xqf
+attr:32 size:1767 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1984年5月于武汉).xqf
+attr:32 size:3063 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1985.1.10于广州).xqf
+attr:32 size:2424 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1986.1.11于广州).xqf
+attr:32 size:2332 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1986.1.13于广州).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1986年 1月13日于广州).xqf
+attr:32 size:1586 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1986年1月于广州).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1986年5月15日于太原).xqf
+attr:32 size:2275 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1987.1.4于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1987年1月2日于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1987年1月2日于广州)1.xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1987年1月于广州).xqf
+attr:32 size:1618 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1987年1月于广州)1.xqf
+attr:32 size:2246 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1988.1.16于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1988年1月15日于广州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1988年1月16日于广州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1994年7月30日于上海).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 上海胡荣华 (1995年12月24日于顺德).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 江苏徐天红 (1983年6月9日于哈尔滨).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 广东吕钦 (负) 江苏徐天红 (1989年10月27日于重庆).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 广东宗永生 (和) 上海胡荣华 (1999.1.21于荥阳).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 广东庄玉腾 (负) 上海胡荣华 (1995.8.14于青岛).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (和) 上海胡荣华 (1962年3月14日于上海).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (和) 上海胡荣华 (1974年7月18日于成都).xqf
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (胜) 上海胡荣华 (1964年12月25日于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (胜) 江苏徐天红 (1983年11月17日于昆明).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (负) 上海胡荣华 (1982年1月1日于广州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 广东杨官辚 (负) 上海胡荣华 (1982年5月6日于武汉).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 上海胡荣华 (1994.7.31于上海).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 上海胡荣华 (1998.1.13于广州).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 上海胡荣华 (1999.1.8于广州).xqf
+attr:32 size:1768 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 吉林陶汉明 (1996.10.26于宁波).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 吉林陶汉明 (1998.12.13于深圳).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 吉林陶汉明 (1999.4.23于漳州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 江苏徐天红 (1992年10月30日于北京).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (和) 江苏徐天红 (1994年12月于江苏棋院).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 上海胡荣华 (1995.7.19于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 上海胡荣华 (1998.4.4于昆明).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 吉林陶汉明 (1995.6.7于上海嘉定).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 吉林陶汉明 (1997.5.8于上海松江县).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 江苏徐天红 (1992年6月30日于烟台).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 江苏徐天红 (1995.1.13于广州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (胜) 江苏徐天红 (1995.4.10于桂林).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 广东许银川 (负) 江苏徐天红 (1997.5.12于上海松江县).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 广州杨官辚 (和) 上海胡荣华 (1963年12月28日于广州).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 广州汤卓光 (和) 江苏徐天红 (1993.4.25于南京).xqf
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/对局/- 广州汤卓光 (负) 吉林陶汉明 (1994年10月15日于湖南郴州).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 广州蔡福如 (负) 上海胡荣华 (1960年6月23日于广州).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/对局/- 广州蔡福如 (负) 上海胡荣华 (1963年12月25日于广州).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 成都甘小晋 (负) 吉林陶汉明 (1993.4.28于南京).xqf
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/- 新加坡郑海文 (负) 中国胡荣华 (1990年4月3日于新加坡).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 武汉万跃明 (负) 江苏徐天红 (1991.5.18于无锡).xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/- 武汉王斌 (和) 江苏徐天红 (1993.5.1于南京).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/- 武汉王斌 (负) 吉林陶汉明 (1993.4.29于南京).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏季本涵 (负) 上海胡荣华 (1962年11月14日于合肥).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏季本涵 (负) 上海胡荣华 (1964年12月11日于温州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏廖二平 (负) 吉林陶汉明 (1995.10.12于吴县市).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐健秒 (和) 上海胡荣华 (1999.1.23于荥阳).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐健秒 (和) 江苏徐天红 (1990年10月12日于杭州).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1985年8月16日于兰州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1987年4月1日于福州).xqf
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1989年10月25日于重庆).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1990年5月10日于泰州).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1991年6月4日于桂林).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1992年11月2日于北京).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1992年12月16日于广州).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1995.12.22于广州).xqf
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1999.1.12于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 上海胡荣华 (1999.4.19于漳州).xqf
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 北京张强 (1994.10.7于湖南郴州).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 北京张强 (1997.10.12于漳州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 台北吴贵临 (1994.4.8于苏州).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 台北吴贵临 (1997.4于桂林).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 吉林陶汉明 (1995.5.20于兰州).xqf
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 四川蒋全胜 (1992.5.21于抚州).xqf
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 山西任建平 (1993.4.27于南京).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1985年4月9日于西安).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1986年11月24日于湘潭).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1986年9月23日于杭州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1987年6月26日于蚌埠).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1990年1月13日于广州).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1991年10月28日于大连).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1991年6月1日于桂林).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1995.12.20于广州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1997.4于桂林).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (1998.1.11于广州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东吕钦 (19991年3月6日于常州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东杨官磷 (1987年11月23日于番禺).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东杨官磷 (1987年4月6日于福州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东许银川 (1991年10月26日于大连).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 广东许银川 (1999.1.14于广州).xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 林业曾启全 (1993.4.29于南京).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 林业曾启泉 (1992.5.12于抚州).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 林业曾启泉 (1998.4.1于昆明).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北刘殿中 (1999.1.24于荥阳).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1983年6月8日于哈尔滨).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1987年4月12日于福州).xqf
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1988年3月6日于常州).xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1988年4月3日于湖北孝感).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1988年9月7日于呼和浩特).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1991年10月27日于大连).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1991年1月10日于广州).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1999.1.25于荥阳).xqf
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北李来群 (1999.1.26于荥阳).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 河北阎文清 (1994年10月12日于湖南郴州).xqf
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 深圳刘星 (1992.5.19于抚州).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 深圳刘星 (1995.10.9于吴县市).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1986年4月25日于邯郸).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1989年5月8日于安徽泾县).xqf
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1990年1月7日于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1992.5.17于抚州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1992年5月15日于江西抚州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1993年2月8日于常州).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 湖北柳大华 (1994年5月22日于石家庄正定县).xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头于幼华 (1997.5.9于上海松江县).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头傅光明 (1992年10月21日于北京).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头宋国强 (1992年10月23日于北京).xqf
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头杨德棋 (1997.10.7于漳州).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头杨德琪 (1998.12.9于深圳).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 火车头金波 (1998.12.7于深圳).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 甘肃李家华 (1992.5.24于抚州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1980年1月18日于蚌埠).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1982年5月12日于武汉).xqf
+attr:32 size:1684 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1987年2月12日于北京).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1988年4月8日于全国团体赛).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1988年9月15日于呼和浩特).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1989年5月12日于安徽径县).xqf
+attr:32 size:1692 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1990年10月21日于杭州).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1992年10月31日于北京).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1992年12月20日于广州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (和) 黑龙江赵国荣 (1997.5.15于上海松江县).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海林宏敏 (1994年10月10日于湖南郴州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海林宏敏 (1995.6.6于上海嘉定).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1980年5月24日于沙州).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1985年8月22日于兰州).xqf
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1987年元月20日于江苏昆山).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1990年6月13日于邯郸).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1991年1月7日于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1993年6月5日于广西桂林).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 上海胡荣华 (1995.1.12于广州).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 北京张强 (1999.4.16于漳州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 南方棋院宗永生 (1999.4.25于漳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 南方棋院黄仕清 (1999.1.27于荥阳).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 台北吴贵临 (1997.4于桂林).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 台湾吴贵临 (1996.4.17于桂林).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 吉林陶汉明 (1998.1.13于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 哈尔滨李洪滨 (1989年10月17日于重庆).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 四川蒋全胜 (1997.5.11于上海松江县).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 大学生胡玉山 (1995.10.7于吴县市).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 大连卜风波 (1992.5.14于抚州).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 大连卜风波 (1992年10月27日于北京).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 天津袁洪梁 (1991.5.24于无锡).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 山东朱锡实 (1991.5.16于无锡).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东宗永生 (1990年10月13日于杭州).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东宗永生 (1990年10月13日于杭州钢铁厂).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东庄玉腾 (1996.6.9于上海).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东蔡福如 (1989年6月8日于柳州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东许银川 (1990年10月19日于杭州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东许银川 (1990年10月19日于杭州钢铁厂).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广东邓颂宏 (1986年11月11日于湘潭).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广州庄玉腾 (1992年11月4日于北京).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广西冯明光 (1989年10月16日于重庆).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 广西冯明光 (1991.5.19于无锡).xqf
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北刘殿中 (1987年9月29日于天津).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北刘殿中 (1990年10月25日于杭州).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北刘殿中 (1990年10月25日于杭州钢铁厂).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1984年8月1日于承德).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1985年9月29日于南京).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1986年11月23日于湖南湘潭).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1989年4月21日于常州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1989年5月21日于常州).xqf
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1989年5月8日于安徽泾县).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1990年6月18日于邯郸).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1990年元月4日于广州).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 河北李来群 (1992年1月14日于广州).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 浙江于幼华 (1990年5月9日于泰州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 浙江于幼华 (1995.5.8于四川).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 浦东蒋志梁 (1998.3.28于昆明).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 深圳汤卓光 (1998.4.4于昆明).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1984年12月7日于广州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1985年11月11日于山东淄博).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1991年3月4日于常州).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1992年12月14日于广州).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1997.5.7于上海松江县).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1998.3.26于无锡).xqf
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖北柳大华 (1999.4.23于漳州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖南张申宏 (1998.12.18于深圳).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 湖南肖革联 (1993.5.2于南京).xqf
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 火车头于幼华 (1999.4.17于漳州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 煤矿王大明 (1994年5月20日于石家庄正定县).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 福建王晓华 (1997.10.6于漳州).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 福建郭福人 (1987年4月8日于福州).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 贵州高明海 (1990年10月11日于杭州).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 轻工于红木 (1995.5.7于四川).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 轻工邬正伟 (1997.5.13于上海松江县).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 辽宁赵庆阁 (1987年5月5日于北京).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 重庆许文学 (1999.1.21于荥阳).xqf
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 香港赵汝权 (1998.12.11于深圳).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 黑龙江赵国荣 (1986年11月20日于湘潭).xqf
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 黑龙江赵国荣 (1986年11月21日于湘潭).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (胜) 黑龙江赵国荣 (1989年7月1日于哈尔滨).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 上海胡荣华 (1987年11月29日于番禺).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 上海胡荣华 (1990年10月23日于杭州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 上海胡荣华 (1990年10月24日于杭州).xqf
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 上海胡荣华 (1990年1月10日于广州).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 台湾吴贵临 (1995.5.20于广州).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 吉林陶汉明 (1999.1.9于广州).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 四川李艾东 (1997.10.9于漳州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广东吕钦 (1991年1月13日于广州).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广东吕钦 (1992年1月7日于广州).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广东吕钦 (1994.4.20于桂林).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广东吕钦 (1994.6.21于上海).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广东许银川 (1998.1.9于广州).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 广州汤卓光 (1996.6.10于上海).xqf
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 河北李来群 (1985年4月10日于西安).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 河北李来群 (1987年11月21日于广东番禺).xqf
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 河北李来群 (1987年11月21日于番禺).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 河北李来群 (1998.12.13于深圳).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 湖北柳大华 (1992年9月9日于沪州).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 湖北柳大华 (1997.4于桂林).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 辽宁卜凤波 (1995.6.12于上海嘉定).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐天红 (负) 黑龙江赵国荣 (1987年1月13日于上海).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏徐建秒 (负) 上海胡荣华 (1988年9月17日于呼和浩特).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏戴荣光 (和) 上海胡荣华 (1981年9月23日于温州).xqf
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (和) 上海胡荣华 (1982年12月12日于成都).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (和) 上海胡荣华 (1984年5月19日于武汉).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 上海胡荣华 (1981年5月24日于金坛).xqf
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 上海胡荣华 (1982年5月13日于武汉).xqf
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 上海胡荣华 (1984年2月21日于无锡).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 上海胡荣华 (1984年4月25日于合肥).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 上海胡荣华 (1986年5月7日于太原).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 江苏言穆江 (负) 吉林陶汉明 (1999.1.20于荥阳).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 沈阳赵庆阁 (负) 上海胡荣华 (1990年6月7日于邯郸).xqf
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (和) 上海胡荣华 (1982年10月19日于上海).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (和) 江苏徐天红 (1998.12.15于深圳).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 上海胡荣华 (1998.4.1于昆明).xqf
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 吉林陶汉明 (1995.5.22于兰州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 吉林陶汉明 (1998.3.27于昆明).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 江苏徐天红 (1987年7月19日于兰州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 江苏徐天红 (1989年6月7日于柳州).xqf
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 江苏徐天红 (1999.1.24于荥阳).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (胜) 江苏徐天红 (1999.4.18于漳州).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (负) 上海胡荣华 (1975年9月26日于北京).xqf
+attr:32 size:1708 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (负) 上海胡荣华 (1982年12月16日于成都).xqf
+attr:32 size:1764 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (负) 上海胡荣华 (1988年5月17日于扬州).xqf
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/- 河北刘殿中 (负) 上海胡荣华 (1995.10.14于吴县市).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 上海胡荣华 (1983年1月22日于广州).xqf
+attr:32 size:1712 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 上海胡荣华 (1983年6月4于哈尔滨).xqf
+attr:32 size:1996 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 上海胡荣华 (1986年4月21日于邯郸).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 上海胡荣华 (1993年5月15日于青岛).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 吉林陶汉明 (1997.4于桂林).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 吉林陶汉明 (1999.1.11于广州).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 江苏徐天红 (1990年10月12日于杭州).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 江苏徐天红 (1990年10月14日于杭州).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (和) 江苏徐天红 (1999.1.25于荥阳).xqf
+attr:32 size:2224 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 上海胡荣华 (1984年1月13日于广州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 上海胡荣华 (1989年9月2日于北京).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 上海胡荣华 (1989年9月7日于北京).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1982年7月30日于河北承德).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1984年12月8日于广州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1987年1月19日于江苏昆山).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1987年9月30日于天津).xqf
+attr:32 size:1736 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1989年7月6日于哈尔滨).xqf
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1991.5.11于无锡).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1997.4于桂林).xqf
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1999.1.13于广州).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (胜) 江苏徐天红 (1999.1.26于荥阳).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1982年10月14日于上海).xqf
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1983年1月20日于广州).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1986年1月17日于广州).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1989年9月4日于北京).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1993.4.29于南京).xqf
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1993年12月30日于顺德).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 上海胡荣华 (1993年4月29日于南京).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 吉林陶汉明 (1997.4于桂林).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 江苏徐天红 (1988年4月17日于扬州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 江苏徐天红 (1992年10月27日于北京).xqf
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 江苏徐天红 (1992年10月28日于北京).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 河北李来群 (负) 江苏徐天红 (1992年1月13日于广州).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 河北柳大华 (和) 上海胡荣华 (1993.5.1于南京).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 河北闫文清 (胜) 上海胡荣华 (1996.10.27于宁波).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/- 河北闫文清 (负) 上海胡荣华 (1992年10月23日于北京).xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/- 河北阎文清 (和) 江苏徐天红 (1990年10月18日于杭州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 河北阎文清 (胜) 上海胡荣华 (1990年10月13日于杭州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 河北阎文清 (胜) 上海胡荣华 (1990年10月13日于杭州钢铁厂).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 河北黄勇 (负) 上海胡荣华 (1984年5月18日于武汉).xqf
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/- 泰国谢盖洲 (负) 中国胡荣华 (1984年9月4日于马尼拉).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (和) 江苏徐天红 (1994年5月19日于石家庄正定县).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (胜) 上海胡荣华 (1987年4月8日于福州).xqf
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (胜) 上海胡荣华 (1992.5.24于抚州).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (负) 上海胡荣华 (1982年9月29日于哈尔滨).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (负) 上海胡荣华 (1986年11月16日于湘潭).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (负) 上海胡荣华 (1987年12月2日于番禺).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江于幼华 (负) 江苏徐天红 (1990年6月7日于邯郸).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江刘忆慈 (负) 上海胡荣华 (1960年10月20日于北京).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江刘忆慈 (负) 上海胡荣华 (1960年11月3日于北京).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江陈孝坤 (和) 上海胡荣华 (1989年10月16日于重庆).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江陈孝坤 (和) 江苏徐天红 (1997.5.6于上海松江县).xqf
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江陈孝坤 (负) 上海胡荣华 (1982年10月9日于上海).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江陈孝坤 (负) 上海胡荣华 (1982年12月10日于成都).xqf
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/- 浙江陈孝坤 (负) 上海胡荣华 (1982年5月16日于武汉).xqf
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/- 浦东徐健秒 (和) 上海胡荣华 (1998.12.9于深圳).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 浦东葛维蒲 (负) 江苏徐天红 (1997.10.12于漳州).xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/- 深圳刘星 (和) 上海胡荣华 (1993.5.4于南京).xqf
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/- 深圳刘星 (和) 江苏徐天红 (1990年6月16日于邯郸).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 深圳刘星 (和) 江苏徐天红 (1993.4.28于南京).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 深圳卜风波 (胜) 江苏徐天红 (1998.12.13于深圳).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 港马联队赵汝权 (负) 中国胡荣华 (1977年2月7日于宿务).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北李义庭 (和) 上海胡荣华 (1965年11月22日于银川).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北李智屏 (和) 吉林陶汉明 (1997.10.7于漳州).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北李雪松 (和) 吉林陶汉明 (1997.10.12于漳州).xqf
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1980年8月25日于乐山).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1982年1月6日于广州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1991年1月6日于广州).xqf
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1993年5月1日于南京).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1995.12.19于广州).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1997.5.8于上海松江县).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 上海胡荣华 (1999.1.13于广州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 吉林陶汉明 (1998.12.8于深圳).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1983年6月4日于哈尔滨).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1985年4月11日于西安).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1988年4月23日于广西柳州).xqf
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1990年1月12日于广州).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1991年6月2日于桂林).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (和) 江苏徐天红 (1993年8月6日于青岛).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1981年7月18日于承德).xqf
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1985年10月29日于上海).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1988年3月3日于常州).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1989年4月23日于常州).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1991.5.13于无锡).xqf
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1991年5月13日于无锡).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 上海胡荣华 (1992.5.21于抚州).xqf
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 吉林陶汉明 (1994年5月20日于石家庄正定县).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 吉林陶汉明 (1996.4于桂林).xqf
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 吉林陶汉明 (1997.4于桂林).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 吉林陶汉明 (1998.1.8于广州).xqf
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1989年4月27日于常州).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1990年5月13日于泰州).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1990年5月27日于柳州).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1991年1月9日于广州).xqf
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1995.5.22于兰州).xqf
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1996.6.6于上海).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (胜) 江苏徐天红 (1998.1.10于广州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海八建胡荣华 (1996.5.17于成都).xqf
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1981年1月15日于广州).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1982年1月11日于广州).xqf
+attr:32 size:1532 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1982年5月19日于武汉).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1985年5月26日于北京).xqf
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1989年5月22日于济南).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1990年2月11日于上海).xqf
+attr:32 size:1636 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1993年5月18日于青岛).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 上海胡荣华 (1996年6月11日于上海).xqf
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 江苏徐天红 (1990年6月14日于邯郸).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北柳大华 (负) 江苏徐天红 (1999.1.11于广州).xqf
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北洪智 (胜) 吉林陶汉明 (1995.10.14于吴县市).xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北胡远茂 (负) 上海胡荣华 (1981年7月16日于承德).xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/- 湖北苗永鹏 (负) 江苏徐天红 (1998.12.8于深圳).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 湖南朱贵友 (负) 江苏徐天红 (1992.5.14于抚州).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 湖南肖革联 (负) 江苏徐天红 (1991.5.22于无锡).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 湖南韦问阳 (负) 上海胡荣华 (1994年10月6日于湖南郴州).xqf
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/- 澳门李锦欢 (负) 中国胡荣华 (1984年8月30日于马尼拉).xqf
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/- 澳门郭裕隆 (负) 中国胡荣华 (1984年12月16日于肇庆).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (和) 上海胡荣华 (1998.3.27于昆明).xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (和) 吉林陶汉明 (1999.4.18于漳州).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (胜) 上海胡荣华 (1995.8.17于青岛).xqf
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (胜) 吉林陶汉明 (1999.1.21于荥阳).xqf
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (负) 上海胡荣华 (1995.5.13于四川).xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头于幼华 (负) 上海胡荣华 (1997.10.12于漳州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头傅光明 (和) 上海胡荣华 (1987年11月25日于番禺).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头傅光明 (负) 上海胡荣华 (1986年9月23日于杭州).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头宋国强 (和) 上海胡荣华 (1992年10月21日于北京).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头宋国强 (负) 上海胡荣华 (1999.1.20于荥阳).xqf
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头崔岩 (和) 上海胡荣华 (1992.5.19于抚州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头杨德琪 (负) 吉林陶汉明 (1998.12.16于深圳).xqf
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头梁文斌 (负) 上海胡荣华 (1982年12月8日于成都).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头郭长顺 (负) 上海胡荣华 (1983年11月27日于昆明).xqf
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头郭长顺 (负) 上海胡荣华 (1983年6月9日于哈尔滨).xqf
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头郭长顺 (负) 上海胡荣华 (1985年4月19日于西安).xqf
+attr:32 size:1844 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头郭长顺 (负) 上海胡荣华 (1986年4月30日于邯郸).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 火车头金波 (和) 吉林陶汉明 (1998.12.18于深圳).xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/对局/- 煤矿孙树成 (和) 大连陶汉明 (1990年10月20日于杭州).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 煤矿孙树成 (和) 江苏徐天红 (1992.5.13于抚州).xqf
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/- 煤矿孙树成 (胜) 吉林陶汉明 (1995.5.13于四川).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 煤矿孙树成 (负) 江苏徐天红 (1993.4.21于南京).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 甘肃钱洪发 (和) 上海胡荣华 (1988年4月4日于孝感).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 甘肃钱洪发 (负) 上海胡荣华 (1984年12月3日于广州).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 福建熊学元 (胜) 上海胡荣华 (1999.4.23于漳州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 福建熊学元 (负) 江苏徐天红 (1999.4.24于漳州).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 福建王荣塔 (负) 上海胡荣华 (1981年5月6日于肇庆).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 纺织王鑫海 (和) 江苏徐天红 (1996.5.16于成都).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 纺织王鑫海 (负) 上海胡荣华 (1994年10月10日于湖南郴州).xqf
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/- 联邦德国许普纳 (负) 中国胡荣华 (1987年7月3日于西柏林).xqf
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/对局/- 菲律宾蔡文钩 (负) 中国胡荣华 (1982年4月14日于杭州).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 越南张亚明 (负) 中国陶汉明 (1995.9于新加坡).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 越南张仲保 (和) 中国胡荣华 (1966年1月21日于河内).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 越南阮得丁 (负) 中国胡荣华 (1966年1月23日于河内).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 轻工邬正伟 (和) 江苏徐天红 (197.10.6于漳州).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 轻工邬正伟 (胜) 吉林陶汉明 (1998.4.3于昆明).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁卜凤波 (和) 江苏徐天红 (1995.5.13于四川).xqf
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁卜风波 (胜) 吉林陶汉明 (1991.5.24于无锡).xqf
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁卜风波 (胜) 江苏徐天红 (1987年1月14日于上海).xqf
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁卜风波 (胜) 江苏徐天红 (1987年7月21日于兰州).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁卜风波 (胜) 江苏徐天红 (1991.5.14于无锡).xqf
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁尚威 (和) 江苏徐天红 (1990年10月16日于杭州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁尚威 (负) 上海胡荣华 (1990年10月20日于杭州).xqf
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁尚威 (负) 上海胡荣华 (1990年10月20日于杭州钢铁厂).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁苗永鹏 (胜) 上海胡荣华 (1995.10.7于吴县市).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁赵庆阁 (和) 吉林陶汉明 (1992.5.13于抚州).xqf
+attr:32 size:1812 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁赵庆阁 (负) 上海胡荣华 (1983年6月10日于哈尔滨).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁赵庆阁 (负) 上海胡荣华 (1986年11月22日于湘潭).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 辽宁赵庆阁 (负) 上海胡荣华 (1986年4月24日于邯郸).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 邮电潘振波 (和) 江苏徐天红 (1994.10.10于湖南郴州).xqf
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/对局/- 邮电潘振波 (胜) 江苏徐天红 (1999.4.21于漳州).xqf
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/- 邮电许波 (和) 上海胡荣华 (1997.5.12于上海松江县).xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/对局/- 邮电许波 (和) 江苏徐天红 (1990年10月20日于杭州).xqf
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/- 重庆许文学 (和) 上海胡荣华 (1999.4.16于漳州).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 重庆许文学 (和) 吉林陶汉明 (1999.4.19于漳州).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 重庆许文学 (负) 江苏徐天红 (1997.10.7于漳州).xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/- 陕西张惠民 (负) 吉林陶汉明 (1991.5.13于无锡).xqf
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/- 青海张录 (负) 江苏徐天红 (1998.3.27于昆明).xqf
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/- 香港吴可乐 (和) 江苏徐天红 (1994.4.6于苏州).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/- 香港徐耀荣 (负) 中国胡荣华 (1984年9月5日于马尼拉).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 香港李旭英 (负) 上海胡荣华 (1981年12月18日于曼谷).xqf
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/- 香港梁达民 (和) 上海胡荣华 (1998.12.7于深圳).xqf
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/- 香港陈德泰 (负) 江苏徐天红 (1994.4.8于苏州).xqf
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江刘殿中 (和) 上海胡荣华 (1965年11月15日于银川).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江张影富 (负) 上海胡荣华 (1990年10月15日于杭州).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江张影富 (负) 上海胡荣华 (1990年10月15日于杭州钢铁厂).xqf
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江张晓平 (胜) 吉林陶汉明 (1996.6.8于上海).xqf
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江张晓平 (胜) 大连陶汉明 (1990年10月23日于杭州).xqf
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江张晓平 (负) 江苏徐天红 (1999.4.22于漳州).xqf
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (和) 上海胡荣华 (1982年5月21日于武汉).xqf
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (胜) 上海胡荣华 (1964年5月9日于杭州).xqf
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (胜) 上海胡荣华 (1974年7月27日于成都).xqf
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (负) 上海胡荣华 (1981年4月29日于肇庆).xqf
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (负) 上海胡荣华 (1982年10月25日于上海).xqf
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江王嘉良 (负) 上海胡荣华 (1982年5月8日于武汉).xqf
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 上海胡荣华 (1986年11月13日于湘潭).xqf
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 上海胡荣华 (1988年9月12日于呼和浩特).xqf
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 上海胡荣华 (1990年5月7日于泰州).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 上海胡荣华 (1998.1.11于广州).xqf
+attr:32 size:1616 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1985年10月4日于南京).xqf
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1989年10月19日于重庆).xqf
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1989年4月22日于常州).xqf
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1990年6月8日于邯郸).xqf
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1992.5.22于抚州).xqf
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1992年5月25日于江西抚州).xqf
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1994年5月21日于石家庄正定县).xqf
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1998.1.14于广州).xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (和) 江苏徐天红 (1998.3.29于昆明).xqf
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1984年5月24日于武汉).xqf
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1985年10月9日于南京).xqf
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1987年1月11日于上海).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1987年1月18日于昆山).xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1989年10月22日于重庆).xqf
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 上海胡荣华 (1990年6月10日于邯郸).xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 吉林陶汉明 (1995.10.9于吴县市).xqf
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 江苏徐天红 (1983年6月14日于哈尔滨).xqf
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 江苏徐天红 (1990年5月10日于泰州).xqf
+attr:32 size:1848 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 江苏徐天红 (1992年5月3日于桂林).xqf
+attr:32 size:1600 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (胜) 江苏徐天红 (1999.1.10于广州).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (负) 上海八建胡荣华 (1996.5.23于成都).xqf
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (负) 上海胡荣华 (1983年6月6日于哈尔滨).xqf
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (负) 上海胡荣华 (1985年10月22日于上海).xqf
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (负) 上海胡荣华 (1996年5月3日于成都).xqf
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/- 黑龙江赵国荣 (负) 江苏徐天红 (1992年12月15日于广州).xqf
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/北京 张申宏 先胜 黑龙江 张晓平.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/北京 蒋川 先和 江苏 王斌.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/北京 靳玉砚 先胜 沈阳 金波.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/吉林 陶汉明 先胜 开滦 景学义.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/广东 李鸿嘉 先和 湖北 汪洋.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/广东 许银川 先和 广东 吕钦.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/河北 申鹏 先和 湖北 李雪松.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/甘肃 潘振波 先胜 江苏 徐天红.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/黑龙江 于幼华 先胜 浦东 葛维蒲.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第10轮/黑龙江 谢岿 先胜 云南 郑新年.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/上海 万春林 先和 黑龙江 赵国荣.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/云南 郑新年 先负 浦东 葛维蒲.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/北京 张申宏 先负 广东 许银川.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/吉林 洪智 先负 河北 刘殿中.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/广东 李鸿嘉 先负 北京 蒋川.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/江苏 徐天红 先负 北京 靳玉砚.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/江苏 王斌 先和 黑龙江 聂铁文.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/沈阳 金波 先负 农协 程进超.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/河北 闫文清 先胜 黑龙江 谢岿.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/湖北 汪洋 先和 河北 苗利明.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第11轮/黑龙江 张晓平 先负 吉林 王跃飞.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/2004个人赛甲组第1轮 北京 靳玉砚 先负 广东 吕钦.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/2004个人赛第1轮 黑龙江 赵国荣 先胜 北京 张申宏.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/上海 林宏敏 先和 湖北 汪洋.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/农协 程进超 先胜 江苏 徐天红.XQF
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/吉林 陶汉明 先和 黑龙江 于幼华.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/广东 宗永生 先胜 沈阳 卜凤波.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/广东 许银川 先和 黑龙江 谢岿.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/广东 陈富杰 先胜 云南 郑新年.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/沈阳 金波 先和 北京 蒋川.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/湖北 李智屏 先负 上海 胡荣华.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/湖北 柳大华 先和 黑龙江 张晓平.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第1轮/甘肃 潘振波 先和 沈阳 苗永鹏.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/上海 胡荣华 先负 农协 程进超.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/云南 郑新年 先负 北京 张申宏.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/北京 蒋川 先负 上海 孙勇征.XQF
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/广东 吕钦 先胜 广东 宗永生.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/沈阳 卜凤波 先胜 北京 靳玉砚.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/沈阳 苗永鹏 先和 广东 许银川.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/河北 刘殿中 先和 厦门 郑一泓.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/河北 张江 先和 湖北 柳大华.XQF
+attr:32 size:1652 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/河北 申鹏 先和 江苏 王斌.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/河北 苗利明 先胜 沈阳 金波.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/湖北 汪洋 先和 吉林 陶汉明.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/黑龙江 张晓平 先胜 上海 万春林.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/黑龙江 聂铁文 先胜 浦东 葛维蒲.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第2轮/黑龙江 谢岿 先负 甘肃 潘振波.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/上海 万春林 先胜 北京 蒋川.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/上海 林宏敏 先胜 河北 张江.XQF
+attr:32 size:2096 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/北京 靳玉砚 先胜 云南 郑新年.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/厦门 郑一泓 先胜 河北 申鹏.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/广东 宗永生 先负 吉林 洪智.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/广东 许银川 先胜 沈阳 卜凤波.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/开滦 景学义 先负 河北 刘殿中.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/江苏 王斌 先胜 上海 胡荣华.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/沈阳 金波 先和 江苏 徐天红.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/湖北 李智屏 先胜 沈阳 苗永鹏.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/湖北 柳大华 先和 黑龙江 于幼华.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/程进超  先负 广东 吕钦.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第3轮/黑龙江 赵国荣 先负 河北 苗利明.XQF
+attr:32 size:1688 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/上海 胡荣华 先和 河北 申鹏.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/云南 郑新年 先负 北京 蒋川.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/北京 张申宏 先胜 湖北 柳大华.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/厦门 郑一泓 先负 江苏 王斌.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/吉林 洪智 先和 广东 许银川.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/广东 吕钦 先胜 河北 苗利明.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/广东 李鸿嘉 先胜 吉林 陶汉明.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/广东 陈富杰 先和 上海 林宏敏.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/江苏 徐天红 先和 开滦 景学义.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/沈阳 苗永鹏 先胜 广东 宗永生.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/沈阳卜凤波 先和 浦东 葛维蒲.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/河北 刘殿中 先和 上海 孙勇征.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/河北 张江 先和 北京 靳玉砚.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/湖北 汪洋 先和 上海 万春林.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/黑龙江 于幼华 先胜 河北 阎文清.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/黑龙江 张晓平 先胜 农协 程进超.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/黑龙江 聂铁文 先和 甘肃 潘振波.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第4轮/黑龙江 谢岿 先和 沈阳 金波.XQF
+attr:32 size:1972 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/上海 万春林 先和 吉林 王跃飞.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/上海 林宏敏 先负 北京 张申宏.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/农协 程进超 先负 厦门 郑一泓.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/北京 蒋川 先和 上海 胡荣华.XQF
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/吉林 洪智 先胜 黑龙江 于幼华.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/广东 宗永生 先胜 云南 郑新年.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/广东 许银川 先胜 广东 陈富杰.XQF
+attr:32 size:2112 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/江苏 王斌 先和 广东 吕钦.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/沈阳 金波 先和 湖北 柳大华.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/河北 申鹏 先和 江苏 徐天红.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/河北 苗利明 先胜 黑龙江 张晓平.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第5轮/黑龙江 赵国荣 先和 湖北 李雪松.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/上海 胡荣华 先胜 开滦 景学义.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/北京 张申宏 先胜 江苏 王斌.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/北京 蒋川 先胜 北京 靳玉砚.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/广东 吕钦 先胜 吉林 洪智.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/广东 李鸿嘉 先和 甘肃 潘振波.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/江苏 徐天红 先胜 吉林 陶汉明.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/河北 刘殿中 先胜 沈阳 苗永鹏.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/河北 张江 先和 浦东 葛维蒲.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/河北 苗利明 先和 广东 许银川.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/湖北 柳大华 先胜 广东 宗永生.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/黑龙江 聂铁文 先胜 上海 孙勇征.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第6轮/黑龙江 谢岿 先胜 农协 程进超.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/上海 万春林 先胜 江苏 徐天红.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/上海浦东 葛维蒲 先和 沈阳 苗永鹏.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/吉林 洪智 先和 甘肃 潘振波.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/广东 吕钦 先胜 北京 张申宏.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/广东 宗永生 先和 吉林 陶汉明.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/广东 许银川 先负 河北 刘殿中.XQF
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/江苏 王斌 先和 黑龙江 张晓平.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/沈阳 卜凤波 先胜 河北 阎文清.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/沈阳 金波 先负 河北 张江.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/河北 申鹏 先胜 黑龙江 谢岿.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/黑龙江 聂铁文 先和 河北 苗利明.XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第7轮/黑龙江 赵国荣 先和 上海 胡荣华.XQF
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/上海 万春林 先和 江苏 王斌.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/上海 胡荣华 先和 湖北 李雪松.XQF
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/北京 蒋 川 先胜 上海 林宏敏.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/北京 靳玉砚 先负 河北 阎文清.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/吉林 洪智 先胜 厦门 郑一泓.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/河北 刘殿中 先和 广东 吕钦.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第8轮/黑龙江 于幼华 先和 广东 宗永生.XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/广东 吕钦 先和 黑龙江 聂铁文.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/广东 宗永生 先负 北京 靳玉砚.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/广东 许银川 先胜 上海 万春林.XQF
+attr:32 size:1728 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/开滦 景学义 先胜 农协 程进超.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/沈阳 金波 先胜 云南 郑新年.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/河北 阎文清 先和 吉林 陶汉明.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/2004将军杯象棋甲级联赛  1.0/第9轮/湖北 汪洋 先和 北京 蒋川.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/上海 欧阳琦琳 先和 成都 黄  薇.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/云南 党国蕾 先胜 四川 何  静.XQF
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/农民 李淑英 先负 江苏 伍  霞.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/北京 史思旋 先和 广东 文  静.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/南方 陈幸琳 先负 哈药总厂 郭莉萍.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/哈药总厂 王琳娜  先胜 南方 欧阳婵娟.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/四川 冯晓曦 先负 云南 赵冠芳.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/安徽 梅  娜 先和 河北 尤颖钦.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/广东 陈丽淳 先胜 北京 刘  君.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/成都 郭瑞霞 先负 上海 郑轶莹.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/江苏 张国凤 先胜 农民 毕彬彬.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/河北 胡  明 先和 安徽 赵  寅.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/浙江 金海英 先胜 绵阳 曾文静.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/湖南 姚  倩 先负 火车头 刚秋英.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/火车头 韩  冰 先胜 湖南 于  丹.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第一轮/绵阳 黄  敏 先和 浙江 励  娴.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/上海 郑轶莹 先负 四川 何静.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/云南 党国蕾 先和 广东 文静.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/农协 李淑英 先负 北京 史思旋.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/北京 刘君 先负 农协 毕彬彬.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/南方 陈幸琳 先负 河北 尤颖钦.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/四川 冯晓曦 先负 上海 欧阳琦琳.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/安徽 梅娜 先胜 绵阳 黄敏.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/广东 陈丽淳 先胜 云南 赵冠芳.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/成都 郭瑞霞 先和 火车头 韩冰.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/江苏 张国凤 先胜 黑龙江 王琳娜.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/河北 胡明 先胜 南方 欧阳婵娟.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/浙江 励娴 先胜 湖南 方舟.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/湖南 姚倩 先负 浙江 金海英.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/火车头 刚秋英 先和 成都 黄薇.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/绵阳 曾文静 先和 安徽 赵寅.XQF
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第七轮/黑龙江 郭莉萍 先和 江苏 伍霞.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/上海  欧阳琦琳 先胜 北京 刘君.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/云南 党国蕾 先胜 河北 尤颖钦.XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/农协 毕彬彬 先负 南方 欧阳婵娟.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/北京 史思旋 先负 上海 郑轶莹.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/南方 陈幸琳 先胜 农协 李淑英.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/四川 冯晓曦 先负 安徽 赵寅.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/安徽 梅娜 先和 四川 何静.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/广东 文静 先和 黑龙江 郭莉萍.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/成都 郭瑞霞 先胜 浙江  励娴.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/江苏 张国凤 先胜 火车头 刚秋英.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/河北 胡明 先和 云南 赵冠芳.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/浙江 金海英 先和 成都 黄薇.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/湖南 姚倩 先胜 绵阳 曾文静.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/火车头 韩冰 先和 江苏 伍霞.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/绵阳 黄敏 先和 湖南 于舟.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第三轮/黑龙江 王琳娜 先和 广东 陈丽淳.XQF
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/上海 郑轶莹 先负 农协 李淑英.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/云南 党国蕾 先胜 湖南 于舟.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/农协 毕彬彬 先和 上海　欧阳琦琳.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/北京 刘君 先负 南方 欧阳婵娟.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/南方 陈幸琳 先负 北京 史思旋.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/四川 何静 先和 广东 文静.XQF
+attr:32 size:1076 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/安徽 赵寅 先和 江苏 张国凤.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/广东 陈丽淳 先胜 四川 冯晓曦.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/成都 黄薇 先和 黑龙江　王琳娜.XQF
+attr:32 size:1076 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/江苏 伍霞 先和 安徽 梅娜.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/河北 尤颖钦 先胜 浙江 励娴.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/浙江 金海英 先和 河北 胡明.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/湖南 姚倩 先负 云南 赵冠芳.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/火车头 刚秋英 先胜 绵阳 曾文静.XQF
+attr:32 size:1520 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/绵阳 黄敏 先和 火车头 韩冰.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第九轮/黑龙江 郭莉萍 先胜 成都 郭瑞霞.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/上海 郑轶莹 先负 云南 党国蕾.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/云南 赵冠芳 先胜 上海 欧阳琦琳.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/农协 李淑英 先负 成都 郭瑞霞.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/北京 刘君 先胜 湖南 姚倩.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/南方 欧阳婵娟 先和 四川 冯晓曦.XQF
+attr:32 size:1688 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/四川 何静 先和 南方 陈幸琳.XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/安徽 赵寅 先和 黑龙江 王琳娜.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/广东 陈丽淳 先负 江苏 张国凤.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/成都 黄薇 先胜 农协 毕彬彬.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/江苏 伍霞 先胜 广东 文静.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/河北 尤颖钦 先胜 绵阳 黄敏.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/浙江 励娴 先负 火车头 韩冰.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/湖南 于舟 先和 北京 史思旋.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/火车头 刚秋英 先胜 浙江 金海英.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/绵阳 曾文静 先负 河北 胡明.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第二轮/黑龙江 郭莉萍 先和 安徽 梅娜.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/上海 郑轶莹 先负 江苏 伍霞.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/云南 赵冠芳 先负 成都 黄薇.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/农协 毕彬彬 先胜 湖南 姚倩.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/北京 史思旋 先胜 绵阳 黄敏.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/南方 欧阳婵娟 先胜 安徽 赵寅.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/四川 冯晓曦 先和 河北 胡明.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/安徽 梅娜 先胜 广东 陈幸琳.XQF
+attr:32 size:1438 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/广东 文静 先和 火车头 韩冰.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/成都 郭瑞霞 先胜 云南 党国蕾.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/江苏 张国凤 先胜 上海 欧阳琦琳.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/河北 尤颖钦 先和 四川 何静.XQF
+attr:32 size:1700 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/浙江 金海英 先和 黑龙江 王琳娜.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/湖南 于舟 先和 农协 李淑英.XQF
+attr:32 size:1964 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/火车头 刚秋英 先和 广东 陈丽淳.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/绵阳 曾文静 先和 北京 刘君.XQF
+attr:32 size:1970 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第五轮/黑龙江 郭莉萍 先和 浙江 励娴.XQF
+attr:32 size:1600 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/1 江苏 张国凤    先胜    河北 胡明.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/10 浙江 励娴    先负    云南 党国蕾.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/11 安徽 赵寅    先和    北京 刘君.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/12 北京 史思旋    先负    安徽 梅娜.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/13 四川 冯晓曦     先胜    绵阳 曾文静.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/14 绵阳 黄敏    先负    四川 何静.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/15 南方 欧阳婵娟    先胜    湖南 姚倩.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/16 湖南 于舟    先负    南方 陈幸琳.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/2 河北 尤颖钦    先胜    江苏 伍霞.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/3 成都 黄薇    先和    广东 陈丽淳.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/4 广东 文静    先和    成都 郭瑞霞.XQF
+attr:32 size:1536 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/5 上海 欧阳琦琳    先胜    火车头 刚秋英.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/6 火车头 韩冰    先和    上海 郑轶莹.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/7 黑龙江 王琳娜    先胜    农协 毕彬彬.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/8 农协 李淑英    先负    黑龙江 郭莉萍.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第八轮/9 云南 赵冠芳    先胜    浙江 金海英.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/16 绵阳 黄敏    先负    南方 陈幸琳.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/上海 欧阳琦琳 先负 广东 陈丽淳.XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/云南 党国蕾 先负 黑龙江 郭莉萍.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/农协 毕彬彬 先胜 浙江 金海英.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/北京 刘君 先负 四川 冯晓曦.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/南方 欧阳婵娟 先胜 绵阳 曾文静.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/四川 何静 先胜 北京 史思旋.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/安徽 赵寅 先和 火车头 刚秋英.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/广东 文静 先胜 上海 郑轶莹.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/成都 黄薇 先和 江苏 张国凤.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/江苏 伍霞 先和  成都 郭瑞霞.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/河北 胡明 先胜 湖南 姚倩.XQF
+attr:32 size:1570 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/浙江 励娴 先和 农协 李淑英.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/湖南 于舟 先负 河北 尤颖钦.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/火车头 韩冰 先胜 安徽 梅娜.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第六轮/黑龙江 王琳娜 先胜 云南 赵冠芳.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/上海 郑轶莹 先和 安徽 梅娜.XQF
+attr:32 size:1576 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/云南 赵国芳 先胜 江苏 张国凤.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/农协 李淑英 先胜 绵阳 黄敏.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/北京 刘君 先负 浙江 金海英.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/南方 陈幸琳 先负 成都 郭瑞霞.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/四川 何静 先胜 湖南 于舟.XQF
+attr:32 size:1572 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/安徽 赵寅 先负 上海 欧阳琦琳.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/广东 陈丽淳 先胜 河北 胡明.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/成都 黄薇 先和 南方 欧阳婵娟.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/江苏 伍霞 先胜 云南 党国蕾.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/河北 尤颖钦 先和 广东 文静.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/浙江 励娴 先胜 北京 史思旋.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/湖南 姚倩 先和 四川 冯晓曦.XQF
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/火车头 刚秋英 先负 黑龙江 王琳娜.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/绵阳 曾文静 先负 农协 毕彬彬.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/女子组/女子第四轮/黑龙江 郭莉萍 先负 火车头 韩冰.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/云南 赵建 先负 农协 柯善林.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/云南 郑新年 先和 农协 任  健.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/农协 俞云涛 先和 云南 陈翀.XQF
+attr:32 size:1250 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/农协 程进超 先胜 云南 陈信安.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/厦门 郑一泓 先和 浙江 崔  岩.XQF
+attr:32 size:1406 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/厦门 郑乃东 先胜 浙江 熊学元.XQF
+attr:32 size:1554 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/四川 吴贵临 先胜 林业 曾启泉.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/四川 朱琮思 先胜 林业 张明忠.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/山东 张志国 先和 山西 刘晋玉.XQF
+attr:32 size:1178 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/山东 迟新德 先胜 山西 郭东文.XQF
+attr:32 size:1234 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/山西 崔羡勇 先胜 山东 徐  彬.XQF
+attr:32 size:1306 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/山西 牛保明 先胜 山东 侯召忠.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/成都 李艾东 先和 河南 李  林.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/成都 陆峥嵘 先胜 河南 颜成龙.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/杭州 冯光明 先胜 澳门 黄冠伦.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/杭州 朱龙奎 先和 澳门 徐浩华.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/林业 甘奕祜 先和 四川 谢卓淼.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/林业 赵利琴 先和 四川 汤卓光.XQF
+attr:32 size:1856 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/河南 姚兴宏 先和 四川 蒋全胜.XQF
+attr:32 size:1490 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/河南 赵力 先胜 四川 王晟强.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/浙江 潘土强 先和 厦门 林文限.XQF
+attr:32 size:1486 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/浙江 王晓华 先负 厦门 郭福人.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/湖南 陆伟滔 先和 重庆 车兴国.XQF
+attr:32 size:1442 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/湖南 黎德志 先胜 重庆 杨  剑.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/澳门 余锦炎 先和 杭州 盖明强.XQF
+attr:32 size:1286 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/澳门 杜光伟 先负 杭州 张培俊.XQF
+attr:32 size:1502 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/重庆 吕道民 先负 湖南 黄仕清.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第一轮/重庆 许文学 先胜 湖南 谢业枧.XQF
+attr:32 size:2084 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/云南 赵剑 先和 湖南 陆伟涛.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/云南 郑新年 先和 湖南 黎德志.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/农协 任健 先胜 重庆 扬建.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/农协 柯善林 先胜 重庆车兴国.XQF
+attr:32 size:1350 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/厦门 林文限 先胜 林业 甘奕祜.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/厦门 郭福人 先负 林业 赵丽琴.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/四川 汤卓光 先和 河南 姚宏新.XQF
+attr:32 size:1378 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/四川 谢卓淼 先胜 河南 赵力.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/宋城 张培俊 先和 成都 蒋全胜.XQF
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/宋城 盖明强 先负 成都 王晟强.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/山东 侯召忠 先和 浙江 王晓华.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/山东 徐彬 先和 浙江 潘士强.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/山西 刘晋玉 先胜 澳门 徐浩华.XQF
+attr:32 size:1162 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/山西 郭东文 先胜 澳门 黄冠伦.XQF
+attr:32 size:1354 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/成都 李艾东 先胜 宋城 冯光明.XQF
+attr:32 size:1490 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/成都 陆峥嵘 先胜 宋城 朱龙奎.XQF
+attr:32 size:1198 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/林业 张明忠 先负 厦门 郑乃东.XQF
+attr:32 size:1234 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/林业 曾启泉 先负 厦门 郑一泓.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/河南 李林 先负 四川 吴贵临.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/河南 颜成龙 先和 四川 朱琮思.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/浙江 崔岩 先和 山东 迟新德.XQF
+attr:32 size:1644 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/浙江 熊学元 先和 山东 张治国.XQF
+attr:32 size:1390 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/湖南 谢业枧 先负 云南 陈信安.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/湖南 黄世清 先负 云南 陈翀.XQF
+attr:32 size:1382 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/澳门 佘锦炎 先负 山西 霍羡勇.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/澳门 杜光伟 先负 山西 牛保明.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/重庆 吕道民 先和 农协 俞云涛.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第七轮/重庆 许文学 先和 农协 程进超.XQF
+attr:32 size:1434 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/云南 赵剑 先负 浙江 潘士强.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/云南 郑新年 先胜 浙江 王晓华.XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/农协 任健 先和 四川 汤卓光.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/农协 柯善林 先负 四川 谢卓淼.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/厦门 郑一泓 先胜 河南 李林.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/厦门 郑乃东 先和 河南 颜成龙.XQF
+attr:32 size:1518 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/四川 吴贵临 先负 农协 程进超.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/四川 朱琮思 先和 农协 俞云涛.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/宋城 冯光明 先胜 山西 郭东文.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/宋城 朱龙奎 先和 山西 刘晋玉.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/山东 张志国 先胜 林业 张明忠.XQF
+attr:32 size:1334 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/山东 迟新德 先负 林业 曾启泉.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/山西 朱保民 先胜 宋城 张培俊.XQF
+attr:32 size:1314 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/山西 霍羡勇 先胜 宋城 盖明强.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/成都 李艾东 先和 湖南 谢业枧.XQF
+attr:32 size:1438 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/成都 陆峥嵘 先负 湖南 黄士清.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/林业 甘奕祜 先胜 山东 徐彬.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/林业 赵丽琴 先和 山东 侯召忠.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/河南 姚宏新 先负 厦门 郭福人.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/河南 赵力 先负 厦门 林文限.XQF
+attr:32 size:1394 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/浙江 崔岩 先胜 云南 陈信安.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/浙江 熊学元 先和 云南 陈翀.XQF
+attr:32 size:1758 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/湖南 陆伟滔 先负 成都 王晟强.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/湖南 黎德志 先和 成都 蒋全胜.XQF
+attr:32 size:1214 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/澳门 徐浩华 先负 重庆 吕道民.XQF
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/澳门 黄冠伦 先和 重庆 许文学.XQF
+attr:32 size:1310 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/重庆 杨剑 先负 澳门 杜光伟.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第三轮/重庆 车兴国 先胜 澳门 佘锦华.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/云南 赵剑 先胜 澳门 佘锦炎.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/云南 郑新年 先和 澳门 杜光伟.XQF
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/农协 任健 先和 成都 蒋全胜.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/农协 柯善林 先和 成都 王晟强.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/厦门 郑一泓 先胜 山西 郭东文.XQF
+attr:32 size:1178 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/厦门 郑乃东 先胜 山西 刘晋玉.XQF
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/四川 吴贵临 先胜 重庆 许文学.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/四川 朱宗思 先胜  重庆 吕道明.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/宋城 冯光明  先负 浙江 崔岩.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/宋城 朱龙奎 先和 浙江 熊学元.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/山东 张治国 先胜 湖南 黄世清.XQF
+attr:32 size:1334 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/山东 迟新德 先负 湖南 谢业枧.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/山西 牛保明 先和 厦门 郭福人.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/山西 霍羡勇 先胜 厦门 林文限.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/成都 李艾东 先和 农协 程进超.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/成都 陆峥嵘 先和 农协 俞云涛.XQF
+attr:32 size:1542 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/林业 甘奕祜 先负 河南 赵力.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/林业 赵丽琴 先和 河南 姚宏新.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/河南 李林 先和 林业 曾启泉.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/河南 颜成龙 先胜 林业 张明忠.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/浙江 潘士强 先和 杭州  盖明强.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/浙江 王晓华  先和  宋城 张培俊.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/湖南 陆伟涛 先胜 山东 徐彬.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/湖南 黎德志 先和 山东 侯召忠.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/澳门 徐浩华 先和 云南 陈翀.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/澳门 黄冠伦 先和 云南 陈信安.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/重庆 杨建 先和 四川 汤卓光.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第九轮/重庆 车兴国 先负 四川 谢卓淼.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/云南 陈信安 先和 山东 迟新德.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/云南 陈翀 先和 山东 张志国.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/农协 俞云涛 先和 宋城 朱龙奎.XQF
+attr:32 size:1342 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/农协 程进超 先胜 宋城 冯光明.XQF
+attr:32 size:1550 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/厦门 林文限 先负 湖南 陆伟滔.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/厦门 郭福人 先和 湖南 黎德志.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/四川 汤卓光 先和 山西 牛保民.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/四川 谢卓淼 先和 山西 霍羡勇.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/宋城 张培俊 先和 农协 任健.XQF
+attr:32 size:1374 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/宋城 盖明强 先负 农协 柯善林.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/山东 侯召忠 先负 云南 郑新年.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/山东 徐彬 先和 云南 赵剑.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/山西 刘晋玉 先负 四川 朱琮思.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/山西 郭东文 先和 四川 吴贵临.XQF
+attr:32 size:1490 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/成都 王晟强 先胜 林业 甘奕祜.XQF
+attr:32 size:1908 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/成都 蒋全胜 先和 林业 赵利琴.XQF
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/林业 张明中 先负 成都 陆峥嵘.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/林业 曾启泉 先和 成都 李艾东.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/河南 李林 先和 重庆 许文学.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/河南 颜成龙 先胜 重庆 吕道民.XQF
+attr:32 size:1394 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/浙江 崔岩 先胜 澳门 黄冠伦.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/浙江 熊学元 先胜 澳门 徐志华.XQF
+attr:32 size:1502 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/湖南 谢业枧 先胜 厦门 郑一泓.XQF
+attr:32 size:1602 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/湖南 黄世清 先胜 厦门 郑乃东.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/澳门 佘锦炎 先负 浙江 潘士强.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/澳门 杜光伟 先和 浙江 王晓华.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/重庆 杨剑 先和 河南 姚宏新.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第二轮/重庆 车兴国 先胜 河南 赵力.XQF
+attr:32 size:1314 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/云南 陈信安 先胜 河南 李林.XQF
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/云南 陈翀 先和 河南 颜成龙.XQF
+attr:32 size:1710 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/农协 俞云涛 先和 湖南 黄世清.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/农协 程进超 先胜 湖南 谢业枧.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/厦门 林文限 先和 四川 谢卓淼.XQF
+attr:32 size:1398 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/厦门 郭福人 先负 四川 汤卓光.XQF
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/四川 吴贵临 先和 厦门 郑一泓.XQF
+attr:32 size:1370 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/四川 朱琮思 先胜 厦门 郑乃东.XQF
+attr:32 size:1366 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/宋城 冯光明 先和 山东 迟新德.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/宋城 朱龙奎 先胜 山东 张治国.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/山东 侯召忠 先胜 宋城 张培俊.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/山东 徐彬 先胜 宋城 盖明强.XQF
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/山西 牛保明 先和 浙江 王晓华.XQF
+attr:32 size:1250 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/山西 霍羡勇 先和 浙江 潘士强.XQF
+attr:32 size:1302 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/成都 李艾东 先和 重庆 许文学.XQF
+attr:32 size:1510 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/成都 陆峥嵘 先负 重庆 吕道民.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/林业 张明忠 先胜 澳门 徐浩华.XQF
+attr:32 size:1666 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/林业 曾启泉 先胜 澳门 黄冠伦.XQF
+attr:32 size:1202 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/河南 姚宏新 先和 云南 郑新年.XQF
+attr:32 size:1290 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/河南 赵力 先和 云南 赵剑.XQF
+attr:32 size:1398 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/浙江 崔岩 先负 山西 郭东文.XQF
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/浙江 熊学元 先胜 山西 刘晋玉.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/湖南 陆伟涛 先胜 农协 柯善林.XQF
+attr:32 size:1242 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/湖南 黎德志 先胜 农协 任健.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/澳门 佘锦炎 先负 林业 甘奕祜.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/澳门 杜光伟 先负 林业 赵丽琴.XQF
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/重庆 扬建 先胜 成都 蒋全胜.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第五轮/重庆 车兴国 先和 成都 王晟强.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/DeXQF2004-4-20.xqf
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/云南 陈信安 先和 宋城 冯光明.XQF
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/云南 陈翀 先负 宋城 朱龙奎.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/农协 俞云涛 先和 浙江 熊学元.XQF
+attr:32 size:1688 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/农协 程进超 先胜 浙江崔岩.XQF
+attr:32 size:1506 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/厦门  郭福人 先胜 澳门  杜光伟.XQF
+attr:32 size:1230 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/厦门 林文限 先负 澳门 佘锦炎.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/四川 吴贵临 先和 成都 李艾东.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/四川 朱琮思 先和 成都 陆峥嵘.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/宋城 张培俊 先胜 云南 郑新年.XQF
+attr:32 size:1294 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/宋城 盖明强 先负 云南 赵剑.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/山东 张治国 先和 河南 颜成龙.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/山东 迟新德 先和 河南 李林.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/山西 牛保明 先和 湖南 黎德志.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/山西 霍羡勇 先胜 湖南 陆伟韬.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/成都 王晟强 先负 四川 谢卓淼.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/成都 蒋全胜 先和 四川 汤卓光.XQF
+attr:32 size:1486 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/林业 甘奕祜 先负 重庆 车兴国.XQF
+attr:32 size:1246 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/林业 赵丽琴 先胜 重庆 队扬建.XQF
+attr:32 size:1194 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/河南 姚宏新 先负 山东 侯召忠.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/河南 赵力 先和 山东 徐彬.XQF
+attr:32 size:1150 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/浙江 潘士强 先胜 农协 柯善林.XQF
+attr:32 size:1366 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/浙江 王晓华 先负 农协 任健.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/湖南 谢业枧 先胜 山西 郭东文.XQF
+attr:32 size:1510 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/湖南 黄世清 先负 山西 刘晋玉.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/澳门 徐浩华 先和 厦门 郑乃东.XQF
+attr:32 size:1158 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/澳门 黄冠伦 先负 厦门 郑一泓.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/重庆 吕道民 先和 林业 张明忠.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第八轮/重庆 许文学 先胜 林业 曾启泉.XQF
+attr:32 size:1358 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/云南 郑新年 先和 四川 汤卓光.XQF
+attr:32 size:1446 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/云南 陈信安 先负 四川 吴贵临.XQF
+attr:32 size:1362 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/云南 陈翀 先胜 四川 朱琮思.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/农协 任健 先负 厦门 郭福人.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/农协 柯善林 先胜 厦门 林文限.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/厦门 郑一泓 先和 农协 程进超.XQF
+attr:32 size:1270 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/厦门 郑乃东 先负 农协 俞云涛.XQF
+attr:32 size:1390 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/四川 谢卓淼 先和 云南 赵剑.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/宋城 冯光明 先负 林业 曾启泉.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/宋城 朱龙奎 先和 林业 张明忠.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/山东 张治国 对 成都 陆峥嵘.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/山东 迟新德 先和 成都 李艾东.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/山西 刘晋玉 先和 重庆 吕道民.XQF
+attr:32 size:1142 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/山西 郭东文 先和 重庆 许文学.XQF
+attr:32 size:1386 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/成都 王晟强 先胜 山东 徐彬.XQF
+attr:32 size:1514 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/成都 蒋全胜 先胜 山东 侯召忠.XQF
+attr:32 size:1434 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/林业 甘奕祜 先胜 宋城 盖明强.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/林业 赵丽琴 先和 宋城 张培俊.XQF
+attr:32 size:1318 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/河南 姚宏新 先胜 澳门 杜光伟.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/河南 赵力 先和 澳门 佘锦炎.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/浙江 潘士强 先和 湖南 陆伟涛.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/浙江 王晓华 先和 湖南 黎德志.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/湖南 谢业枧 先生 浙江 崔岩.XQF
+attr:32 size:1578 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/湖南 黄世清 先胜 浙江 熊学元.XQF
+attr:32 size:1326 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/澳门 徐浩华 先负 河南 颜成龙.XQF
+attr:32 size:1286 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/澳门 黄冠伦 先负 河南 队李林.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/重庆 扬建 先和 山西 牛保明.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第六轮/重庆 车兴国 先和 山西 霍羡勇.XQF
+attr:32 size:1334 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/中国 张明忠 先负 云南 陈翀.XQF
+attr:32 size:1498 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/云南 赵剑 先胜 林业 甘奕祜.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/云南 郑新年 先胜 林业 赵利琴.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/农协 任健 先和 山西 牛保明.XQF
+attr:32 size:1518 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/农协 柯善林 先负 山西 霍羡勇.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/厦门 郑一泓 先和 成都 李艾东.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/厦门 郑乃东 先和 成都 陆峥嵘.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/四川 汤卓光 先和 湖南 黎德志.XQF
+attr:32 size:1290 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/四川 谢卓淼 先胜 湖南 陆伟滔.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/宋城 张培俊 先和 河南 姚宏新.XQF
+attr:32 size:1382 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/宋城 盖明强 先负 河南 赵力.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/山东 侯召忠 先和 澳门 杜光伟.XQF
+attr:32 size:1234 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/山东 徐彬 先负 澳门 佘锦炎.XQF
+attr:32 size:1634 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/山西 刘晋玉 先负 农协 俞云涛.XQF
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/山西 郭东文 先负 农协 程进超.XQF
+attr:32 size:1958 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/成都 王晟强 先负 厦门 林文限.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/成都 蒋全胜 先和 厦门 郭福人.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/林业 曾启泉 先和 云南 陈信安.XQF
+attr:32 size:1342 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/河南 李林 先胜 宋城 冯光明.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/河南 颜成龙 先和 宋城 朱龙奎.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/浙江 潘士强 先和 重庆 车兴国.XQF
+attr:32 size:1494 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/浙江 王晓华 先负 重庆 杨剑.XQF
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/湖南 谢业枧 先和 四川 吴贵临.XQF
+attr:32 size:1722 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/湖南 黄士清 先胜 四川 朱琮思.XQF
+attr:32 size:1446 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/澳门 徐浩华 先负 山东 张志国.XQF
+attr:32 size:1182 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/澳门 黄冠伦 先负 山东 迟新德.XQF
+attr:32 size:1318 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/重庆 吕道民 先负 浙江 熊学元.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/2004年全国团体赛/男子组/男子第四轮/重庆 许文学 先和 浙江 崔岩.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/上海 林宏敏 先和 湖北 汪洋.SG
+attr:32 size:2746 chessManual/中国象棋棋谱大全.xqf/对局/上海 林宏敏 先和 湖北 汪洋.XQF
+attr:32 size:21710 chessManual/中国象棋棋谱大全.xqf/对局/全国象棋个人锦标赛对局精选.CBL
+attr:32 size:37873 chessManual/中国象棋棋谱大全.xqf/对局/全国象棋团体锦标赛对局精选.CBL
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/农协 柯善林 先胜 厦门 郑乃东.SG
+attr:32 size:2606 chessManual/中国象棋棋谱大全.xqf/对局/农协 柯善林 先胜 厦门 郑乃东.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/农协 程俊超 先负 广东 吕钦.SG
+attr:32 size:3173 chessManual/中国象棋棋谱大全.xqf/对局/农协 程俊超 先负 广东 吕钦.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/农协 程进超 先胜 江苏 徐天红.SG
+attr:32 size:2136 chessManual/中国象棋棋谱大全.xqf/对局/农协 程进超 先胜 江苏 徐天红.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/北京 张 强 先胜 重庆 路 耿.SG
+attr:32 size:1543 chessManual/中国象棋棋谱大全.xqf/对局/北京 张 强 先胜 重庆 路 耿.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/北京 张申宏 先负 广东 许银川.SG
+attr:32 size:2987 chessManual/中国象棋棋谱大全.xqf/对局/北京 张申宏 先负 广东 许银川.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/北京 靳玉砚 先负 广东 吕钦.SG
+attr:32 size:2980 chessManual/中国象棋棋谱大全.xqf/对局/北京 靳玉砚 先负 广东 吕钦.XQF
+attr:32 size:1908 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/airchina(日帅)-负-李谧(天帝).XQF
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/classic(天帝)-负-李谧(至尊).XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/东山一朱(日帅)-负-李谧(至尊).XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/丰田佳美(人王)-负-李谧(至尊).XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/亭亭(月将)-负-李谧(至尊).XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/人士(月将)-负-李谧(至尊).XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/傻女(天帝)-负-李谧(人王).XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/凌未风(天帝)-负-李谧(至尊).XQF
+attr:32 size:1360 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/劈雳火巨明(天帝)-负-李谧(至尊).XQF
+attr:32 size:1716 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/南疆少女(天帝)-负-李谧(天帝).XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/含笑(至尊)-负-李谧(至尊).XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/吾乃孤独(至尊) -和-李谧(至尊).XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/吾乃孤独(至尊)-负-李谧(至尊).XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/妖精之王(天帝)-负-李谧(天帝).XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/宇宙盟主(天帝)-负-李谧(天帝).XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/悟弈(月将)-负-李谧(至尊).XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/无夕棋王(日帅)-负-李谧(至尊).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/朝晖(人王)-负-李谧(天帝).XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(人王)-胜-蒋萍(至尊).XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(天帝) 胜 十六颗星(天帝).XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(天帝)-胜-孤独求胜(至尊).XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(天帝)-胜-桂系总司令(至尊).XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(天帝)-胜-牛克振(天帝).XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊) 胜 涵弈(至尊).XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-和-过儿(９段).XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-一品梅(天帝).XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-南门公子(人王).XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-含笑(至尊).XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-坏掉一颗牙(人王).XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-学棋不好(日帅).XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-宇宙无上(人王).XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-智慧(日帅).XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-梁山黑旋风(月将).XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-江胡客(日帅).XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-流云追月(天帝).XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/李谧(至尊)-胜-随风轻狂(天帝).XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/梦幻蝴蝶(月将)-负-李谧(至尊).XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/江胡客(日帅)-负-李谧(至尊).XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/淘气(至尊)-和-李谧(至尊).XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/淘气(至尊)-负-李谧(至尊).XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/渌与红(至尊)-负-李谧(至尊).XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/猪头求败(人王)-负-李谧(至尊).XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/笑傲江湖刀(月将)-负-李谧(至尊).XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/笨小孩(天帝)-负-李谧(至尊).XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/耍耍(日帅)-负-李谧(至尊).XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/蒋萍(至尊)-负-李谧(至尊).XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/辽阳范思远(人王)-负-李谧(至尊).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/邢李强(天帝)-负-李谧(至尊).XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/陪你玩玩(人王)-负-李谧(至尊).XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/华山对局棋谱/鱼鱼鱼(人王)-负-李谧(天帝).XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/吉林 洪智 先和 广东 许银川.SG
+attr:32 size:3557 chessManual/中国象棋棋谱大全.xqf/对局/吉林 洪智 先和 广东 许银川.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/吉林 陶汉明 先和 黑龙江 于幼华.SG
+attr:32 size:4351 chessManual/中国象棋棋谱大全.xqf/对局/吉林 陶汉明 先和 黑龙江 于幼华.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先和 黑龙江 聂铁文.SG
+attr:32 size:2931 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先和 黑龙江 聂铁文.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 北京 张申宏.SG
+attr:32 size:2871 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 北京 张申宏.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 吉林 洪智.SG
+attr:32 size:3385 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 吉林 洪智.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 广东 宗永生.SG
+attr:32 size:4421 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 广东 宗永生.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 河北 苗利明.SG
+attr:32 size:2447 chessManual/中国象棋棋谱大全.xqf/对局/广东 吕钦 先胜 河北 苗利明.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 宗永生 先胜 沈阳 卜凤波.SG
+attr:32 size:2895 chessManual/中国象棋棋谱大全.xqf/对局/广东 宗永生 先胜 沈阳 卜凤波.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 张学潮 先胜 河南 李 林.SG
+attr:32 size:2810 chessManual/中国象棋棋谱大全.xqf/对局/广东 张学潮 先胜 河南 李 林.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先和 广东 吕钦.SG
+attr:32 size:2452 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先和 广东 吕钦.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先和 黑龙江 谢岿.SG
+attr:32 size:2697 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先和 黑龙江 谢岿.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 上海 万春林.SG
+attr:32 size:2508 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 上海 万春林.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 广东 陈富杰.SG
+attr:32 size:3001 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 广东 陈富杰.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 沈阳 卜凤波.SG
+attr:32 size:3531 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先胜 沈阳 卜凤波.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先负 河北 刘殿中.SG
+attr:32 size:3173 chessManual/中国象棋棋谱大全.xqf/对局/广东 许银川 先负 河北 刘殿中.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 陈富杰 先胜 云南 郑新年.SG
+attr:32 size:2395 chessManual/中国象棋棋谱大全.xqf/对局/广东 陈富杰 先胜 云南 郑新年.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东 黄海林 先胜 开滦 庄玉庭.SG
+attr:32 size:1515 chessManual/中国象棋棋谱大全.xqf/对局/广东 黄海林 先胜 开滦 庄玉庭.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/广东李鸿嘉 先负 北京蒋川.SG
+attr:32 size:3912 chessManual/中国象棋棋谱大全.xqf/对局/广东李鸿嘉 先负 北京蒋川.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/江苏 王斌 先和 广东 吕钦.SG
+attr:32 size:2360 chessManual/中国象棋棋谱大全.xqf/对局/江苏 王斌 先和 广东 吕钦.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/沈阳 金波 先和 北京 蒋川.SG
+attr:32 size:3047 chessManual/中国象棋棋谱大全.xqf/对局/沈阳 金波 先和 北京 蒋川.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/河北 刘殿中 先和 广东 吕钦.SG
+attr:32 size:1983 chessManual/中国象棋棋谱大全.xqf/对局/河北 刘殿中 先和 广东 吕钦.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/河北 苗利明 先和 广东 许银川.SG
+attr:32 size:2797 chessManual/中国象棋棋谱大全.xqf/对局/河北 苗利明 先和 广东 许银川.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/河北 闫文清 先胜 黑龙江 谢岿.SG
+attr:32 size:2986 chessManual/中国象棋棋谱大全.xqf/对局/河北 闫文清 先胜 黑龙江 谢岿.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/河南 黄 华 先胜 火车头 付光明.SG
+attr:32 size:2566 chessManual/中国象棋棋谱大全.xqf/对局/河南 黄 华 先胜 火车头 付光明.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/湖北 李智屏 先负 上海 胡荣华.SG
+attr:32 size:3241 chessManual/中国象棋棋谱大全.xqf/对局/湖北 李智屏 先负 上海 胡荣华.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/湖北 柳大华 先和 黑龙江 张晓平.SG
+attr:32 size:2232 chessManual/中国象棋棋谱大全.xqf/对局/湖北 柳大华 先和 黑龙江 张晓平.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/湖北 汪洋 先和 河北 苗利明.SG
+attr:32 size:1538 chessManual/中国象棋棋谱大全.xqf/对局/湖北 汪洋 先和 河北 苗利明.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/湖南 黎德志 先胜 江苏 秦 荣.SG
+attr:32 size:2256 chessManual/中国象棋棋谱大全.xqf/对局/湖南 黎德志 先胜 江苏 秦 荣.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/火车头 宋国强 先胜 湖南 谢业枧.SG
+attr:32 size:2268 chessManual/中国象棋棋谱大全.xqf/对局/火车头 宋国强 先胜 湖南 谢业枧.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/甘肃 潘振波 先和 沈阳 苗永鹏.SG
+attr:32 size:3522 chessManual/中国象棋棋谱大全.xqf/对局/甘肃 潘振波 先和 沈阳 苗永鹏.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/上海万春林（红先和）广东黄海林.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/上海胡荣华（红先和）广东许银川.XQF
+attr:32 size:1612 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/北京张　强（红先负）吉林胡庆阳 .XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/北京杨德琪（红先和）吉林王跃飞.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/吉林洪　智（红先和）北京张申宏.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/吉林陶汉明（红先和）北京蒋　川.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/广东吕　钦（红先胜）上海孙勇征.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/广东李鸿嘉（红先胜）上海谢　靖.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/开滦宋国强（红先和）黑龙江聂铁文.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/开滦庄玉庭（红先和）黑龙江谢岿.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/江苏徐　超（红先和）湖北柳大华.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/江苏李　群（红先和）湖北汪　洋.XQF
+attr:32 size:1190 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/沈阳尚　威（红先和）甘肃潘振波.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/沈阳苗永鹏（红先胜）甘肃焦明理.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/河北张　江（红先和）浙江邱　东.XQF
+attr:32 size:1944 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/河北苗利明（红先和）浙江陈寒峰.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/浙江赵鑫鑫（红先负）河北刘殿中.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/浙江陈建国（红先和）河北阎文清.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/湖北李智屏（红先和）江苏徐天红.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/湖北李望祥（红先和）江苏王　斌.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/甘肃李家华（红先负）沈阳卜凤波.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/甘肃梁　军（红先和）沈阳金　波.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/黑龙江于幼华（红先胜）开滦孙庆利.XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第01轮/黑龙江赵国荣（红先和）开滦景学义.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/上海孙勇征（红先和）黑龙江赵国荣.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/上海谢 靖（红先负）黑龙江于幼华.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/北京 杨德琪 先和 沈阳 金松.XQF
+attr:32 size:1860 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/北京 蒋川 先负 沈阳 苗永鹏.XQF
+attr:32 size:1562 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/吉林 权德利 先和 江苏 徐超.xqf
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/吉林 胡庆阳 先和 江苏 李群.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/广东 李鸿嘉 先胜 河北 苗利明.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/广东 许银川 先和 河北 阎文清.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/开滦景学义（红先负）湖北李智平.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/江苏 徐天红 先和 吉林 洪智.XQF
+attr:32 size:1394 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/江苏 王斌 先和 吉林 陶汉明.xqf
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/沈阳 金波 先和 北京 张强.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/沈阳卜凤波（红先和）北京张申宏.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/河北 刘殿中 先和 广东 吕钦.XQF
+attr:32 size:1939 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/河北 申鹏 先和 广东 黄海林.XQF
+attr:32 size:1896 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/浙江 邱东 先和 甘肃 焦明理.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/浙江 陈孝堃 先胜 甘肃 梁军.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/湖北 汪洋 先和 煤矿 庄玉庭.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/湖北柳大华（红先和）开滦宋国.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/煤矿 蒋凤山 先负 湖北 李雪松.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/甘肃 李家华 先胜 浙江 陈寒峰.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/甘肃 潘振波 先负 浙江 赵鑫鑫.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/黑龙江 聂铁文 先和 上海 万春林.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第02轮/黑龙江谢 岿（红先和）上海胡荣华.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/上海 万春林 先和 湖北 柳大华.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/上海 孙勇征 先和 湖北 汪洋.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/北京 蒋 川 先负 江苏 徐天红.XQF
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/北京张申宏先负江苏徐超.XQF
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/吉林 王跃飞 先负 开滦 庄玉庭.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/吉林 胡庆阳 先和 开滦 景学义.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/广东 吕 钦 和 甘肃 李家华.XQF
+attr:32 size:2096 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/广东 许银川 先胜 甘肃何.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/开滦 孙庆利 先和 吉林 洪智.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/开滦 宋国强 先负 吉林 陶汉明.XQF
+attr:32 size:2280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/江苏 廖二平 先负 北京 张强 .XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/江苏 王斌 先胜 北京 杨德琪.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/沈阳 卜凤波 先和 浙江 邱东.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/沈阳 金松 先胜 浙江 陈建国.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/河北 刘殿中 先负 黑龙江 赵国荣.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/河北申鹏先和黑龙江于幼华.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/浙江 赵鑫鑫 先负 沈阳 苗永鹏.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/浙江 陈寒峰 先和 沈阳 尚威.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/湖北 李智平 先和 上海 胡荣华.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/湖北 李望祥 先和 上海 谢靖.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/甘肃 梁 军 先和 广东 陈富杰.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/甘肃 焦明理 先和 广东 李鸿嘉.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/黑龙江 谢岿 先和 河北 阎文清.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第03轮/黑龙江聂铁文先和河北张江.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/上海 胡荣华 先胜 吉林 王跃飞.XQF
+attr:32 size:1638 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/上海谢靖先和吉林胡庆阳.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/北京 张 强 和 浙江 赵鑫鑫.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/北京 杨德琪 和 浙江 陈寒峰.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/吉林 陶汉明 先胜 上海 万春林.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/吉林洪智先和上海孙勇征.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/广东 李鸿嘉 先和 沈阳 卜凤波.XQF
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/广东 许银川 先胜 沈阳 金 松.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/江苏 廖二平 先和 煤矿 庄玉庭.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/江苏 王斌 先和 煤矿 景学义.XQF
+attr:32 size:1964 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/沈阳 苗永鹏 先和 广东 黄海林.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/沈阳 金波 先负 广东 吕钦.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/河北 苗利明 先和 湖北 柳大华.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/河北 阎文清 先和 湖北 李智平.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/浙江 邱东 先负 北京 张申宏.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/浙江 陈孝堃 先负 北京 靳玉砚.XQF
+attr:32 size:2162 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/湖北 李雪松 先胜 河北 张江.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/湖北 汪洋 先和 河北 刘殿中.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/煤矿 宋国强 先和 江苏 徐天红.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/煤矿 蒋凤山 先和 江苏 徐超.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/甘肃 梁军 先和 黑龙江 张晓平.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/甘肃 潘振波 先和 黑龙江 聂铁文.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/黑龙江 于幼华 先和 甘肃 李家华.XQF
+attr:32 size:1526 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第04轮/黑龙江 赵国荣 先和 甘肃 何刚.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/上海 孙勇征 先和 江苏 李群.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/上海　万春林　先负　江苏　王　斌.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/北京 张强 先和 开滦 宋国强.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/北京 靳玉砚 先胜 开滦 蒋凤山.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/吉林 王跃飞 先和 河北 阎文清.XQF
+attr:32 size:1940 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/吉林 胡庆阳 先和 河北 苗利明.XQF
+attr:32 size:2099 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/广东 吕钦 先胜 浙江 邱东.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/广东 陈富杰 先负 浙江 陈寒峰.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/开滦 庄玉庭 先负 北京 杨德琪.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/开滦 景学义 先胜 北京 张申宏.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/江苏 徐天红 先和 上海 胡荣华.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/江苏 徐超 先和 上海 谢靖.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/沈阳 苗永鹏 先和 黑龙江 聂铁文.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/沈阳 金松 先和 黑龙江 于幼华.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/河北 刘殿中 先和 吉林 洪智.XQF
+attr:32 size:1488 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/河北 张江 先和 吉林 陶汉明.XQF
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/浙江 赵鑫鑫 先负 广东 李鸿嘉.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/浙江 陈孝堃 先负 广东 许银川.XQF
+attr:32 size:1317 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/湖北 李望祥 先和 甘肃 李家华.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/湖北 柳大华 先胜 甘肃 何　刚.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/甘肃 梁军 先负 湖北 汪洋.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/甘肃 潘振波 先和 湖北 李智屏.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/黑龙江 谢岿 先和 沈阳 金波.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第05轮/黑龙江 赵国荣 先胜 沈阳 卜风波.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/上海 胡荣华 先胜 开滦 景学义.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/上海 谢靖 先和 开滦 宋国强.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/北京 蒋 川 先负 广东 吕 钦.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/北京 靳玉砚 先和 广东 李鸿嘉.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/吉林 洪智 先胜 甘肃 梁军.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/吉林 陶汉明 先和 甘肃 李家华.XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/广东 许银川 先胜 北京 杨德琪.XQF
+attr:32 size:1836 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/广东 陈富杰 先负 北京 张 强.XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/开滦 庄玉庭 先和 上海 孙勇征.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/开滦 蒋凤山 先和 上海 万春林.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/江苏 徐超 先和 河北 刘殿中.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/江苏 李群 先和 河北 申鹏.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/沈阳 卜凤波 先和 湖北 汪洋.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/沈阳 尚威 先和 湖北 李雪松.XQF
+attr:32 size:1472 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/河北 苗利明 先胜 江苏 徐天红.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/河北 阎文清 先和 江苏 王斌.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/浙江 陈寒峰 先和 黑龙江 谢岿.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/浙江 陈建国 先和 黑龙江 聂铁文.XQF
+attr:32 size:1542 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/湖北 李智平 先和 沈阳 金波.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/湖北 柳大华 先胜 沈阳 苗永鹏.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/甘肃 潘振波 先负 吉林 王跃飞.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/甘肃何刚先和吉林胡庆阳.XQF
+attr:32 size:1900 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/黑龙江 于幼华 先负 浙江 赵鑫鑫.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第06轮/黑龙江 赵国荣 先和 浙江 邱东.XQF
+attr:32 size:1381 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/上海 万春林 先和 北京 蒋川.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/上海 孙勇征 先胜 北京 张强.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/北京 张申宏 先和 上海 胡荣华.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/北京 靳玉砚 先和 上海 谢靖.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/吉林 王跃飞 先和 沈阳 金波.XQF
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/吉林 胡庆阳 先胜 沈阳 尚威.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/广东 吕钦 先和 黑龙江 聂铁文.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/广东 黄海林 先胜 黑龙江 于幼华.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/开滦 孙庆利 先和 河北 苗利明.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/开滦 景学义 先胜 河北 阎文清.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/江苏 徐天红 先和 甘肃 潘振波.XQF
+attr:32 size:1548 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/江苏 王斌 先负 甘肃 梁军.XQF
+attr:32 size:1725 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/沈阳 卜凤波 先和 吉林 陶汉明.XQF
+attr:32 size:1941 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/沈阳 苗永鹏 先和 吉林 洪智.XQF
+attr:32 size:1706 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/河北 刘殿中 先负 开滦 庄玉庭.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/河北 张江 先负 开滦 宋国强.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/浙江 邱东 先负 湖北 汪洋.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/浙江 陈孝堃 先和 湖北 李雪松.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/湖北 李望祥 先和 浙江 赵鑫鑫.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/湖北 柳大华 先和 浙江 陈寒峰.XQF
+attr:32 size:2028 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/甘肃 何刚 先负 江苏 徐超.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/甘肃 李家华 先和 江苏 李群.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/黑龙江 谢岿 先和 广东 许银川.XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第07轮/黑龙江 赵国荣 先和 广东 李鸿嘉.XQF
+attr:32 size:1746 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/上海 孙勇征 先和 河北 申鹏.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/上海胡荣华和河北阎文清.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/北京 张申宏 先和 黑龙江 谢  岿.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/北京 靳玉砚 先胜 黑龙江 赵国荣.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/吉林 洪智 先胜 浙江 邱东.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/吉林 陶汉明 先胜 浙江 赵鑫鑫.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/广东 李鸿嘉 先胜  湖北 柳大华.XQF
+attr:32 size:1799 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/广东 许银川 先和 湖北 汪洋.XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/开滦 宋国强 先和 甘肃 潘振波.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/开滦 庄玉庭 先和 甘肃 李家华.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/江苏 徐天红 先胜 沈阳 金松.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/江苏 徐超 先负 沈阳 金波.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/沈阳 卜凤波 先负 江苏 李群.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/沈阳 苗永鹏 先胜 江苏 王斌.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/河北 苗利明 先和 上海 谢靖.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/河北刘殿中和上海万春林.XQF
+attr:32 size:1602 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/浙江 陈孝堃 先负 吉林 胡庆阳.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/浙江 陈建国 先和 吉林 王跃飞.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/湖北 李智屏 先胜 广东 吕钦.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/湖北 李雪松 先负 广东 黄海林.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/甘肃 梁军 先和  开滦 孙庆利.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/甘肃 焦明理  先负  开滦  景学义.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/黑龙江 于幼华 先和 北京 蒋  川.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第08轮/黑龙江 聂铁文 先和 北京 张  强.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/上海 万春林 先和 甘肃 焦明理.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/上海 谢　靖 先和 甘肃 梁　军.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/北京 张  强 先和 河北 刘殿中.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/北京 靳玉砚 先和 河北 申  鹏.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/吉林 王跃飞 先胜 广东 黄海林.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/吉林 胡庆阳 先负 广东 许银川.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/广东 吕 钦 先胜 吉林 洪 智.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/广东 李鸿嘉 胜 吉林 陶汉明.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/开滦 庄玉庭 先和 沈阳 卜凤波.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/开滦 景学义 先和 沈阳 尚　威.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/江苏 徐天红 和 浙江 陈寒峰 .XQF
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/沈阳 苗永鹏 先胜 开滦 蒋凤山.XQF
+attr:32 size:1660 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/沈阳金　波 先和 开滦 宋国强.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/河北 苗利明 先和 北京 蒋  川.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/河北 阎文清 先负 北京 张申宏.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/浙江 赵鑫鑫 和 江苏 李 群.XQF
+attr:32 size:1680 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/浙江 陈建国 胜 江苏 徐  超.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/湖北 李望祥 先和 黑龙江 赵国荣.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/湖北汪洋-黑龙江谢岿.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/王  斌 和 浙江 陈孝坤.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/甘肃 李家华 先和 上海 胡荣华.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/甘肃 潘振波 先和 上海 孙勇征.XQF
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/黑龙江 于幼华 先和 湖北 李雪松.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第09轮/黑龙江 聂铁文 先和 湖北 柳大华.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/上海 胡荣华 先和 沈阳 卜凤波.XQF
+attr:32 size:2008 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/上海 谢靖 先和 沈阳 金波.XQF
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/北京 张申宏 先胜 湖北 汪洋.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/北京 靳玉砚 先和 湖北 李雪松.xqf
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/吉林 洪智 先和 黑龙江 于幼华.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/吉林 陶汉明 先和 黑龙江 赵国荣.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/广东 许银川 先和 江苏 王斌.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/广东 黄海林 先和 江苏 徐超.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/开滦 孙庆利 先负 浙江 赵鑫鑫.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/开滦 宋国强 先胜 浙江 陈寒峰.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/江苏 徐天红 先和 广东 吕钦.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/江苏 李群 先胜 广东 李鸿嘉.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/沈阳 尚威 先和 上海 万春林.XQF
+attr:32 size:1628 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/沈阳 苗永鹏 先和 上海 孙勇征.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/河北 申  鹏 先胜 甘肃 李家华.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/河北 苗利明 先和 甘肃 焦明理.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/浙江 邱东 先胜 开滦 景学义.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/浙江 陈建国 先负 开滦 庄玉庭.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/湖北 李望祥 先和 北京 张强.XQF
+attr:32 size:1724 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/湖北 柳大华 先负 北京 蒋川.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/甘肃 梁军 先和 河北 刘殿中.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/甘肃 潘振波 先和 河北 张江.XQF
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/黑龙江 聂铁文 先胜 吉林 胡庆阳.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第10轮/黑龙江 谢岿 先和 吉林 王跃飞.xqf
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/上海 孙勇征 先和 浙江 邱东.XQF
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/上海 谢靖 先和 浙江 陈寒峰.XQF
+attr:32 size:1952 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/北京 张强 先胜 甘肃 潘振波.XQF
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/北京 蒋川 先和 甘肃 梁军.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/吉林 李轩 先和 湖北 李雪松.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/吉林 胡庆阳 先负 湖北 李智屏(快棋).XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/广东 吕钦 先胜 开滦 宋国强.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/广东 李鸿嘉 先和 开滦 景学义.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/开滦 孙庆利 先和 广东 黄海林 .XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/开滦 蒋凤山 先负 广东 许银川.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/江苏 徐超 先和 黑龙江 谢岿.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/江苏 王斌 先和 黑龙江 于幼华.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/沈阳 卜凤波 先和 河北 张江.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/沈阳 金波 先胜 河北 苗利明.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/河北 刘殿中 先和 沈阳 苗永鹏.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/河北 申鹏 先和 沈阳 金松.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/浙江 赵鑫鑫 先胜 上海 万春林.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/浙江 陈孝堃 先和 上海 胡荣华.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/湖北 汪洋 先和 吉林 陶汉明.XQF
+attr:32 size:1792 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/湖北　柳大华先和　吉林洪智.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/甘肃 李家华 先负 北京 张申宏.XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/甘肃 焦明理 先和 北京 靳玉砚.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/黑龙江 聂铁文 先和 江苏 李群 .XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛1-11轮/第11轮/黑龙江 赵国荣先和 江苏 徐天红 .XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/上海 孙勇征 先和 浙江 赵鑫鑫.XQF
+attr:32 size:1524 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/上海 林宏敏 先负 浙江 陈寒峰.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/北京 张强 先负 甘肃 潘振波 .XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/北京 张申宏 先和 甘肃 何刚.XQF
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/吉林 李轩先和湖北 李雪松.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/吉林 洪智先胜湖北 李望祥.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/广东 吕钦 先和 开滦 蒋凤山.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/广东 陈富杰 先和 开滦 孙庆利.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/开滦 宋国强 VS 广东 黄海林.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/开滦 景学义 VS 广东 许银川.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/江苏 李群 先和 黑龙江 赵国荣.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/江苏 王斌 先和 黑龙江 聂铁文.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/沈阳 尚威 先和 河北 刘殿中.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/沈阳苗永鹏 先负 河北金环钢构 张江.XQF
+attr:32 size:1656 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/河北 申鹏 先胜 沈阳 金松.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/河北 阎文清 对 沈阳 卜凤波.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/浙江 邱东 先胜 上海 胡荣华.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/浙江 陈建国 先胜 上海 谢靖.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/湖北 柳大华先胜吉林 胡庆阳.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/湖北 汪洋先和吉林 陶汉明.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/甘肃 李家华 先和 北京 靳玉砚.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/甘肃 梁军 先和 北京 蒋川.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/黑龙江 于幼华 先和 江苏 徐超.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第12轮/黑龙江 谢岿 先负 江苏 徐天红.XQF
+attr:32 size:1240 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/上海 胡荣华 先和 黑龙江 于幼华.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/上海 谢靖 先胜 黑龙江 谢岿.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/北京 张申宏  先负 沈阳 苗永鹏.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/北京 靳玉砚 先和 沈阳 尚威.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/吉林 权德利 先和 江苏 王斌 .XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/吉林 洪智 先胜 江苏 徐超.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/广东 吕钦 先胜 河北 苗利明.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/广东 李鸿嘉 先和 河北 申鹏.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/开滦 宋国强 先胜 湖北 汪　洋.XQF
+attr:32 size:1461 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/开滦 景学义 先和 湖北 李智屏.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/江苏 徐天红 先和 吉林 胡庆阳.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/江苏 李群 先和 吉林 陶汉明.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/沈阳 卜凤波 先和 北京 张强.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/沈阳 金波 先胜 北京 蒋川.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/河北 张江 先和 广东 许银川.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/河北 阎文清 先和 广东 黄海林.XQF
+attr:32 size:1660 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/浙江 陈建国 先胜 甘肃 焦明理.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/浙江都绅赵鑫鑫 先和 甘肃移动李家华
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/湖北 李望祥 先胜 开滦 蒋凤山.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/湖北 柳大华 先和 开滦 庄玉庭.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/甘肃  梁军 先负  浙江 陈寒峰.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/甘肃移动何刚 先负 浙江都绅邱东.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/黑龙江 聂铁文 先和 上海 林宏敏.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第13轮/黑龙江 赵国荣 先胜 上海 孙勇征 .XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/上海 林宏敏 先和 湖北 李雪松.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/上海 谢靖 先胜 湖北 柳大华.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/北京 杨德琪先 负 江苏 徐天红.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/北京 靳玉砚先和 江苏 李群.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/吉林 权德利先和开滦  景学义.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/吉林 洪智先和开滦 宋国强.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/广东 许银川 先胜 甘肃 梁军.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/广东 黄海林 先和 甘肃 何刚.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/开滦 庄玉庭先胜吉林 胡庆阳.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/开滦 蒋凤山先负吉林 陶汉明.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/江苏 徐超先和北京 张强.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/江苏 王斌先和 北京 蒋川.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/沈阳 卜凤波 先负 浙江 赵鑫鑫.XQF
+attr:32 size:1924 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/沈阳 金波 先负 浙江 陈寒峰.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/河北 苗利明 先胜 黑龙江 于幼华.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/河北 阎文清 先和 黑龙江 谢岿.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/浙江 邱东 先胜 沈阳 尚威.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/浙江 陈建国 先胜 沈阳 苗永鹏.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/湖北 李智屏 先和 上海 万春林.XQF
+attr:32 size:1288 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/湖北 李望祥 先和 上海 胡荣华.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/甘肃 李家华 先负 广东 李鸿嘉.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/甘肃 焦明理 先负 广东 吕钦.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/黑龙江 聂铁文 先负 河北 申鹏.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第14轮/黑龙江 赵国荣 先胜 河北 张江.XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/上海 万春林 先和 吉林 洪智.XQF
+attr:32 size:1756 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/上海 谢靖 先负 吉林 陶汉明.XQF
+attr:32 size:1424 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/北京 张强 先和 浙江 陈寒峰.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/北京 蒋川 先胜 浙江 邱东.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/吉林 权德利 先负 上海 胡荣华.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/吉林 胡庆阳 先和 上海 孙勇征.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/广东 吕钦 先胜 沈阳 金波.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/广东 李鸿嘉 先胜 沈阳 卜风波.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/开滦 宋国强 先和 江苏王　斌.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/开滦 蒋凤山 先和 江苏 徐　超.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/江苏 徐天红 先和 开滦 庄玉庭.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/江苏 李　群 先和 开滦 景学义.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/沈阳 金松 先和 广东 黄海林.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/沈阳对广东 苗永鹏 先和 许银川.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/河北 刘殿中 先负 湖北 汪洋.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/河北 阎文清 先负 湖北 李智屏.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/浙江 赵鑫鑫 先负 北京 张申宏.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/浙江 陈建国 先和 北京 靳玉砚.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/湖北 李望祥 先和 河北 苗利明.XQF
+attr:32 size:1784 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/湖北 柳大华 先胜 河北 申鹏.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/甘肃 何刚 先和 黑龙江 聂铁文.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/甘肃 梁军 先负 黑龙江 于幼华.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/黑龙江 谢岿 先和 甘肃 李家华.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第15轮/黑龙江　赵国荣　先胜　甘肃　焦明理.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/上海 孙勇征 先和 江苏 徐超.XQF
+attr:32 size:1492 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/上海 胡荣华 先负 江苏 李群.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/北京 张强 先和 开滦 宋国强.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/北京 靳玉砚 先和 开滦 景学义 .XQF
+attr:32 size:1300 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/吉林 权德利 先和 河北 张江（第三台，.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/吉林 胡庆阳 先负 河北 刘殿中（第一台.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/广东 许银川 先和 浙江 陈寒锋.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/广东 黄海林 先和 浙江 赵鑫鑫.XQF
+attr:32 size:1476 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/开滦 孙庆利 先负 北京 蒋川 .XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/开滦 庄玉庭 先和 北京 张申宏 .XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/江苏 徐天红 先和 上海 谢靖.XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/江苏 王斌 先和 上海 万春林.XQF
+attr:32 size:1627 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/沈阳 卜凤波 先胜 黑龙江 谢岿.XQF
+attr:32 size:1495 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/沈阳 金波 先和 黑龙江 聂铁文.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/河北 申鹏 先和 吉林 陶汉明（第四台）.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/河北 苗利明 先负 吉林 洪智（第二台）.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/浙江 陈孝堃 先和 广东 吕钦.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/浙江 陈建国 先和 广东 李鸿嘉.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/湖北 李雪松 先胜 甘肃 梁军.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/湖北 柳大华 先和 甘肃 何刚.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/甘肃 李家华 先和  湖北 李智平.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/甘肃 焦明理  先负 湖北 汪洋.XQF
+attr:32 size:1275 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/黑龙江 张晓平 先和 沈阳 尚威.XQF
+attr:32 size:1781 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第16轮/黑龙江 赵国荣 先胜 沈阳 苗永鹏.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/上海 胡荣华 先胜 开滦 景学义.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/上海 谢靖 先和 开滦 庄玉庭.XQF
+attr:32 size:1584 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/北京 张申宏 先和 广东 许银川.XQF
+attr:32 size:2184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/北京 靳玉砚 先胜 广东 李鸿嘉.XQF
+attr:32 size:1416 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/吉林 洪智 先和 甘肃 焦明理.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/吉林 陶汉明 先和 甘肃 李家华.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/广东 吕钦 先和 北京 蒋川.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/广东 黄海林 先胜 北京 张强.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/开滦 宋国强 先和 上海 万春林.XQF
+attr:32 size:1320 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/开滦 蒋凤山 先和 上海 孙勇征 .XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/江苏 徐天红 先负 河北 申鹏.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/江苏 徐超 先胜 河北 阎文清.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/沈阳 尚威 先和 湖北 柳大华.XQF
+attr:32 size:1460 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/沈阳 苗永鹏 先负 湖北 汪洋.XQF
+attr:32 size:1392 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/河北 刘殿中 先和 江苏 李群.XQF
+attr:32 size:1808 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/河北 张江 先胜 江苏 王斌.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/浙江 邱东 先胜 黑龙江 谢岿.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/浙江 陈建国 先和 黑龙江 聂铁文.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/湖北 李智屏 先和 沈阳 卜凤波.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/湖北 李望祥 先和 金松.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/甘肃 何刚 先负 吉林 胡庆阳.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/甘肃 梁军 先和 吉林 权德利.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/黑龙江 于幼华 先胜 浙江陈寒峰.XQF
+attr:32 size:1452 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第17轮/黑龙江 赵国荣 先和 浙江 赵鑫鑫.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/上海 万春林 先和 北京 蒋川.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/上海 孙勇征 先和 北京 张强.XQF
+attr:32 size:1564 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/北京 张申宏 先和 上海 胡荣华.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/北京 靳玉砚 先和 上海 谢靖.XQF
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/吉林权德利先胜沈阳金波（第一台）.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/吉林胡庆阳先和沈阳苗永鹏（第三台.XQF
+attr:32 size:1384 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/广东  吕钦 先胜 黑龙江 聂铁文 .XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/广东 李鸿嘉 先和 黑龙江 赵国荣（快棋）.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/开滦 宋国强 先和 河北 刘殿中.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/开滦 景学义 先和 河北 申鹏.XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/江苏 王斌 先和 甘肃 梁军.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/江苏徐超 先胜 甘肃 何刚.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/沈阳 卜凤波 先胜 吉林 陶汉明 .XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/沈阳 金松 先和 吉林 洪智.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/河北 张江先胜 开滦 蒋凤山（二台）.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/河北 闫文清VS 开滦 庄玉庭（四台）.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/浙江 赵鑫鑫 先胜 湖北 柳大华.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/浙江 陈建国 先和 湖北 李智屏.XQF
+attr:32 size:1568 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/湖北 李雪松 先胜 陈寒锋.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/湖北 汪洋 先胜 浙江 邱东.XQF
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/甘肃 李家华 先和 江苏 李群.XQF
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/甘肃 焦明理先和 江苏 徐天红.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/黑龙江 于幼华  先和 广东 黄海林.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第18轮/黑龙江 张晓平 先和 广东 许银川（三台）.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/上海 万春林 先和 河北 阎文清.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/上海 谢靖 先和 河北 刘殿中.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/北京 张申宏 先和 黑龙江 张晓平.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/北京 靳玉砚 先和 黑龙江 于幼华.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/吉林 洪智 先胜 浙江 赵鑫鑫.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/吉林 陶汉明 先和 浙江 陈寒峰 .XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/广东 吕钦 先和 湖北 汪洋.XQF
+attr:32 size:2184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/广东 李鸿嘉 先和 湖北 李雪松 .XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/江苏 徐天红 先和 沈阳 金 松  .XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/江苏 王　斌 先和 沈阳 尚　威.XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/沈阳 卜凤波 先和 江苏 李群 .XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/沈阳 苗永鹏 先和 江苏 徐超 .XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/河北 张江 先和 上海 胡荣华.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/河北 苗利明 先和 上海 孙勇征.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/浙江 邱东 先胜 吉林 权德利.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/浙江 陈建国 先和 吉林 胡庆阳.XQF
+attr:32 size:1504 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/湖北 李智平 先胜 广东 黄海林.XQF
+attr:32 size:1848 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/湖北 柳大华 先和 广东 许银川.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/煤矿 庄玉庭 先和 甘肃 李家华 .XQF
+attr:32 size:1620 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/煤矿 景学义 先负 甘肃 焦明理 .XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/甘肃 何刚 先和 煤矿 宋国强.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/甘肃 梁 军 先和 煤矿 孙庆利 .XQF
+attr:32 size:1436 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/黑龙江 聂铁文 先和 北京 蒋川.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第19轮/黑龙江 赵国荣 先胜 北京 张强.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/上海 胡荣华 先胜 甘肃 梁军.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/上海 谢靖 先胜 甘肃 何刚.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/北京 张强 先和 河北 阎文清.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/北京 蒋川 先和 河北 刘殿中.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/吉林 权德利先和广东 吕钦.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/吉林 胡庆阳先和广东李鸿嘉.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/广东许银川先和吉林陶汉明.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/广东陈富杰先和吉林洪智.XQF
+attr:32 size:1660 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/开滦 庄玉庭 先负 沈阳 卜凤波.XQF
+attr:32 size:1556 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/开滦 景学义 先负 沈阳 苗永鹏.XQF
+attr:32 size:1516 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/江苏 徐超 先和 浙江 陈寒蜂.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/江苏 王斌 先和 浙江 邱东.XQF
+attr:32 size:1096 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/沈阳 尚威 先和 开滦 孙庆利.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/沈阳 金松 先胜 开滦 宋国强.XQF
+attr:32 size:1212 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/河北 张江 先和 北京 张申宏.XQF
+attr:32 size:1196 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/河北 申鹏 先和北京 靳玉砚.XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/浙江 赵鑫鑫 先和 江苏 徐天红.XQF
+attr:32 size:1276 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/浙江 陈孝坤 先和 江苏 李群.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/湖北 汪洋 先胜 黑龙江 张晓平.XQF
+attr:32 size:1580 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/湖北对黑龙江1台.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/甘肃 李家华 先和 上海 孙勇征.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/甘肃 焦明理 先和 上海 万春林.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/黑龙江 聂铁文 先胜 湖北 柳大华.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第20轮/黑龙江 赵国荣 先胜 湖北 李雪松(2t台）.XQF
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/上海 胡荣华 先和 沈阳 尚威.XQF
+attr:32 size:1700 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/上海 谢靖 先和 沈阳 金松.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/北京 张强 先和 湖北 汪洋.XQF
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/北京蒋川VS湖北李智平.XQF
+attr:32 size:1444 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/吉林权德利 先负.黑龙江聂铁文 XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/吉林洪智先胜黑龙江于幼华 .XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/广东 李鸿嘉先和江苏 徐天红
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/广东 许银川先和江苏 王斌
+attr:32 size:1692 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/广东 陈富杰先胜 江苏 徐超.XQF
+attr:32 size:1988 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/开滦 景学义先负浙江 陈寒峰  .XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/开滦宋国强先胜浙江赵鑫鑫.XQF
+attr:32 size:1324 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/江苏 李群先胜广东 黄海林.XQF
+attr:32 size:1868 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/沈阳 卜凤波先和 上海 万春林.XQF
+attr:32 size:1604 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/沈阳 苗永鹏 先负 上海 孙勇征.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/河北 刘殿中先胜甘肃 李家华.XQF
+attr:32 size:1420 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/河北 申鹏先胜甘肃 焦明理.XQF
+attr:32 size:1676 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/浙江 陈建国 先负 开滦庄玉庭.XQF
+attr:32 size:1528 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/浙江邱东先胜开滦 蒋凤山 .XQF
+attr:32 size:1596 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/湖北 李雪松先和北京 靳玉砚.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/湖北 柳大华先和北京 张申宏.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/甘肃 何刚先和河北 闫文清.XQF
+attr:32 size:1244 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/甘肃 梁军先和河北 张江.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/黑龙江 张晓平和 吉林陶汉明.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第21轮/黑龙江赵国荣  胜吉林胡庆阳.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第22轮/吉林　洪　智　先负　北京　张申宏.XQF
+attr:32 size:1272 chessManual/中国象棋棋谱大全.xqf/对局/象甲联赛12-24轮/第22轮/广东　李鸿嘉　先胜　上海　谢　靖.XQF
+attr:32 size:1981 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/上海站/越南  郑亚生   先负  上海 胡荣华.XQF
+attr:32 size:1559 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/作者自介.txt
+attr:32 size:2428 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/南京站/越南  郑亚生   先负  江苏 徐超.XQF
+attr:32 size:2179 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/广州站/广东  宗永生  先胜  越南  张亚明.XQF
+attr:32 size:2534 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/广州站/广东  许银川  先胜  越南 郑亚生.XQF
+attr:32 size:2916 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/广州站/越南  梅青明   先和  广东  庄玉庭.XQF
+attr:32 size:2270 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/广州站/越南  范启源   先负  广东  黄海林.XQF
+attr:32 size:1848 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/石家庄站/河北 李来群  先胜 越南  郑亚生.XQF
+attr:32 size:2494 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/石家庄站/河北 申鹏  先胜 越南  梅青明.XQF
+attr:32 size:2976 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/石家庄站/越南  梅青明   先负  河北 张江.XQF
+attr:32 size:812 chessManual/中国象棋棋谱大全.xqf/对局/越南队访华实录/赛事简述.txt
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/阳 苗永鹏 先和 广东 许银川.SG
+attr:32 size:3834 chessManual/中国象棋棋谱大全.xqf/对局/阳 苗永鹏 先和 广东 许银川.XQF
+attr:32 size:426736 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/2003千年銀荔杯象棋甲級聯賽.SG
+attr:32 size:171648 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/2004年全国团体赛女子组.SG
+attr:32 size:301576 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/2004年全国团体赛男子组.SG
+attr:32 size:78672 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/中国汤沟杯对局.SG
+attr:32 size:40528 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/安庆开发区杯特级大师赛.SG
+attr:32 size:54832 chessManual/中国象棋棋谱大全.xqf/对局/雷霆最新五大赛棋谱/第14届银荔杯.SG
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/黑龙江 张晓平 先负 吉林 王跃飞.SG
+attr:32 size:2352 chessManual/中国象棋棋谱大全.xqf/对局/黑龙江 张晓平 先负 吉林 王跃飞.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/对局/黑龙江 赵国荣 先胜 北京 张申宏.SG
+attr:32 size:3055 chessManual/中国象棋棋谱大全.xqf/对局/黑龙江 赵国荣 先胜 北京 张申宏.XQF
+attr:32 size:721235 chessManual/中国象棋棋谱大全.xqf/局库/10377(高级版)解破.rar
+attr:32 size:949848 chessManual/中国象棋棋谱大全.xqf/局库/book(15Ln4w70).rar
+attr:32 size:5555840 chessManual/中国象棋棋谱大全.xqf/局库/世家開局庫z_default.SGM
+attr:32 size:1782180 chessManual/中国象棋棋谱大全.xqf/局库/发布的测试版(高级版).rar
+attr:32 size:77480 chessManual/中国象棋棋谱大全.xqf/局库/孤独求胜专集.SG
+attr:32 size:7020862 chessManual/中国象棋棋谱大全.xqf/局库/棋海格式開局庫 風澤飄QHWY1.0.rar
+attr:32 size:1662210 chessManual/中国象棋棋谱大全.xqf/局库/棋海格式開局庫 風澤飄QHWY1.01.rar
+attr:32 size:1663917 chessManual/中国象棋棋谱大全.xqf/局库/棋海格式開局庫 風澤飄QHWY1.02.rar
+attr:32 size:1671725 chessManual/中国象棋棋谱大全.xqf/局库/棋海格式開局庫 風澤飄QHWY1.03.rar
+attr:32 size:38144 chessManual/中国象棋棋谱大全.xqf/局库/第25屆五羊杯.SG
+attr:32 size:0 chessManual/中国象棋棋谱大全.xqf/局库/覆蓋原程式 .txt
+attr:32 size:12980408 chessManual/中国象棋棋谱大全.xqf/局库/象棋奇兵开局库rsjy.net/bookc.bin
+attr:32 size:1043240 chessManual/中国象棋棋谱大全.xqf/局库/象棋奇兵开局库rsjy.net/books.bin
+attr:32 size:45 chessManual/中国象棋棋谱大全.xqf/局库/象棋奇兵开局库rsjy.net/中国象棋爱好者的家园.txt
+attr:32 size:96 chessManual/中国象棋棋谱大全.xqf/局库/象棋奇兵开局库rsjy.net/简介.txt
+attr:32 size:3433248 chessManual/中国象棋棋谱大全.xqf/局库/風林火山1.01/book.bin
+attr:32 size:1043240 chessManual/中国象棋棋谱大全.xqf/局库/風林火山1.01/books.bin
+attr:32 size:366 chessManual/中国象棋棋谱大全.xqf/局库/風林火山1.01/風林火山1.01.txt
+attr:32 size:46580 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/fx.XQF
+attr:32 size:36432 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/hlh.XQF
+attr:32 size:66480 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/jp.XQF
+attr:32 size:12160 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/pp.XQF
+attr:32 size:12468 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/qm.XQF
+attr:32 size:23176 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/sp.XQF
+attr:32 size:36828 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/zpym.XQF
+attr:32 size:29836 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/zpzm.XQF
+attr:32 size:32196 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/zpzm2.XQF
+attr:32 size:43248 chessManual/中国象棋棋谱大全.xqf/布局/bj5000zy/zpzm3.XQF
+attr:32 size:3569 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/01屏风马向当头炮挑战.XQF
+attr:32 size:3840 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/02弃马陷车局之谜.XQF
+attr:32 size:3014 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/03高右炮的圈套.XQF
+attr:32 size:1854 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/04五七炮应运而生.XQF
+attr:32 size:1998 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/05卒林车坚守法.XQF
+attr:32 size:5211 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/06先挺三兵的新发展.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/07七路马攻挺七卒.XQF
+attr:32 size:4071 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/07五八炮的演变.XQF
+attr:32 size:3338 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/08现代跳正马攻法.XQF
+attr:32 size:1286 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/10巡河炮的兴起.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/11别出心裁象位车.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/12双炮过河反击.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/13缓车再现巡河炮.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/14弃马抢攻源古谱.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/15左马盘河弹力强.XQF
+attr:32 size:5760 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/16高左炮在逆境中崛起.XQF
+attr:32 size:6319 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/17平炮兑车棉里藏针.XQF
+attr:32 size:4625 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/18盘河马对骑河车.XQF
+attr:32 size:4741 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/19右炮过河未奏效.XQF
+attr:32 size:6301 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/20跳外马全力抢攻.XQF
+attr:32 size:8045 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/21肋车捉炮风险多.XQF
+attr:32 size:6321 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/22双车压境各攻一翼.XQF
+attr:32 size:5631 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/23横车移左强对攻.XQF
+attr:32 size:6011 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/24高车保马伺机反击.XQF
+attr:32 size:8459 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/25四兵相见新战术.XQF
+attr:32 size:4745 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/26五六炮过河车新变.xqf
+attr:32 size:4534 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/27屈头屏风马阵式.XQF
+attr:32 size:6710 chessManual/中国象棋棋谱大全.xqf/布局/《马炮争雄》/28横车右肋的攻法.XQF
+attr:32 size:27470 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【炮2平5】.XQF
+attr:32 size:401109 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【炮8平5】.XQF
+attr:32 size:3404 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【炮8进1】.XQF
+attr:32 size:1490 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【象3进5】.XQF
+attr:32 size:536502 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【马2进3】.XQF
+attr:32 size:1101322 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮【马8进7】.XQF
+attr:32 size:3520 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马.XQF
+attr:32 size:59589 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车全集扩充版.XQF
+attr:32 size:2595 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/1红七兵正马黑摆7路炮.XQF
+attr:32 size:1566 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/2红七兵五七炮黑摆7路炮.XQF
+attr:32 size:1674 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/3红七兵五八炮黑摆7路炮.XQF
+attr:32 size:1700 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/4红七兵进车捉炮黑摆7路炮.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/5红七兵黑平6路车.XQF
+attr:32 size:1592 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/6红七兵黑平6路炮.XQF
+attr:32 size:1525 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/7红正马不挺兵黑平6路炮.XQF
+attr:32 size:751 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对单提马横车研究/雪若云的信箱与QQ.txt
+attr:32 size:18665 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对反宫马(五七炮弃双兵).XQF
+attr:32 size:19456 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/00 - 朋友你好.doc
+attr:32 size:1937 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/五九炮边炮打卒 黑进7卒.xqf
+attr:32 size:2383 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红七马盘河 黑上右象.xqf
+attr:32 size:2360 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红七马盘河 黑上左象.XQF
+attr:32 size:1675 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红七马盘河 黑进7卒邀兑.XQF
+attr:32 size:1824 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五九炮右马退窝心 黑进7卒.xqf
+attr:32 size:1931 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五九炮左车过河  黑进7卒.xqf
+attr:32 size:3691 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五九炮炮打中卒 黑7路炮打兵或弃7卒.xqf
+attr:32 size:3684 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五九炮进肋车捉炮  黑7路炮打兵.xqf
+attr:32 size:5121 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五九炮进肋车捉炮 黑退右炮打车.XQF
+attr:32 size:1835 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红五六炮 黑左车骑河.XQF
+attr:32 size:1700 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红卸中炮.XQF
+attr:32 size:2026 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红左马屯边 黑左车骑河.xqf
+attr:32 size:2166 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红平七路炮  黑右马退窝心.xqf
+attr:32 size:3537 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红急进中兵  黑弃7路卒.xqf
+attr:32 size:1990 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/红进中兵平七炮.xqf
+attr:32 size:3345 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/黑右横车.xqf
+attr:32 size:1826 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/黑高车保马 红七路马盘河.XQF
+attr:32 size:2068 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/黑高车保马 红出左横车.XQF
+attr:32 size:1761 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮对屏风马平炮兑车/黑高车保马 红平七路炮.XQF
+attr:32 size:1832 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮巡河车对屏风马/中炮巡河车邀兑七兵 黑屏风马进7卒.XQF
+attr:32 size:2349 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮巡河车对屏风马/红邀兑七兵 黑退右炮.XQF
+attr:32 size:1552 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮巡河车对屏风马/黑进7卒 红巡河车.XQF
+attr:32 size:234959 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮布局.XQF
+attr:32 size:7093 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮横车七路马对屏风马.XQF
+attr:32 size:13509 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮盘头马横车对屏风马.XQF
+attr:32 size:8910 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮直横车对屏风马两头蛇.XQF
+attr:32 size:5080 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮直车七路马对屏风马双炮过河.XQF
+attr:32 size:42796 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马7卒新编.XQF
+attr:32 size:5256 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马两头蛇.XQF
+attr:32 size:2473 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马先上右士/红平七路炮 黑上右象.XQF
+attr:32 size:2201 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马先上右士/红平七路炮 黑左马盘河.XQF
+attr:32 size:3221 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马先上右士/红进七路马 黑上右象.XQF
+attr:32 size:4024 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车对屏风马横车.XQF
+attr:32 size:1622 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车急进中兵对屏风马/中炮过河车急进中兵对屏风马.XQF
+attr:32 size:223 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车急进中兵对屏风马/前言.txt
+attr:32 size:2773 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车边马对屏风马.XQF
+attr:32 size:2483 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮过河车进中兵对屏风马.XQF
+attr:32 size:1738 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example01.XQF
+attr:32 size:2312 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example02.XQF
+attr:32 size:2408 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example03.XQF
+attr:32 size:2198 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example04.XQF
+attr:32 size:1864 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example05.XQF
+attr:32 size:1696 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example06.XQF
+attr:32 size:2484 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example07.XQF
+attr:32 size:1464 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example08.XQF
+attr:32 size:1480 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example09.XQF
+attr:32 size:1918 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example10.XQF
+attr:32 size:1624 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example11.XQF
+attr:32 size:1632 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/Example12.XQF
+attr:32 size:6585 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(1)红盘河马.XQF
+attr:32 size:2809 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(2)红左横车.XQF
+attr:32 size:1885 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(3)红右横车.XQF
+attr:32 size:6785 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(4)红开边炮.XQF
+attr:32 size:5995 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(5)炮击底马.XQF
+attr:32 size:7832 chessManual/中国象棋棋谱大全.xqf/布局/中炮/中炮进七兵对左炮封车进７卒补象/中炮进七兵对左炮封车进7卒补象(6)升炮巡河.XQF
+attr:32 size:2446 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第1局 实战对局评注（1）.XQF
+attr:32 size:2198 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第1局 实战对局评注（2）.XQF
+attr:32 size:5470 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第1局 红急进中兵.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（1）.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（2）.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（3）.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（4）.XQF
+attr:32 size:5978 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第2局 红七路马.XQF
+attr:32 size:3586 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第3局 红跳边马.XQF
+attr:32 size:4104 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第1种、进车捉炮变例.XQF
+attr:32 size:3304 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第2种、红左车过河变例.XQF
+attr:32 size:3383 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第3种、红炮击边卒变例.XQF
+attr:32 size:2122 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第4种、红炮击中卒变例.XQF
+attr:32 size:2732 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第5局 红五六炮正马对屏风马、第1种、黑炮2平1亮车变例.XQF
+attr:32 size:1971 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第01章 中炮过河车对屏风马平炮兑车/第5局 红五六炮正马对屏风马、第2种、黑马7进8变例.XQF
+attr:32 size:2988 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第02章 中炮直横车双正马对屏风马两头蛇/屏风马两头蛇.XQF
+attr:32 size:2312 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第1种、黑补右士变例.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第2种、黑补左士变例.XQF
+attr:32 size:2041 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第1种、黑退马变例.XQF
+attr:32 size:2184 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第2种、黑马吃兵先弃后取变例.XQF
+attr:32 size:3889 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第04章 中炮横车七路马对屏风马/第1局 中炮横车七路马对屏风马下右象.XQF
+attr:32 size:4388 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第04章 中炮横车七路马对屏风马/第2局 中炮横车七路马对屏风马上左象.XQF
+attr:32 size:2900 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第04章 中炮横车七路马对屏风马/第2局 实战对局（1）.XQF
+attr:32 size:3349 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第05章 中炮七路马对屏风马双炮过河/第1局 黑先飞象.XQF
+attr:32 size:3082 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第05章 中炮七路马对屏风马双炮过河/第2局 黑右车过河.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第05章 中炮七路马对屏风马双炮过河/第3局 实战（1）.XQF
+attr:32 size:4923 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第05章 中炮七路马对屏风马双炮过河/第3局 黑右炮左移(最重要）.XQF
+attr:32 size:2443 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第06章 五七炮对屏风马进3卒/第1局 红横车平六.XQF
+attr:32 size:9893 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第06章 五七炮对屏风马进3卒/第2局 红横车平四.XQF
+attr:32 size:6733 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第06章 五七炮对屏风马进3卒/第3局 黑不兑边卒飞右象.XQF
+attr:32 size:2929 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第07章 中炮进三兵对屏风马其他变例/第1局  中炮进三兵对屏风马飞左象（1）.XQF
+attr:32 size:5729 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第07章 中炮进三兵对屏风马其他变例/第2局  中炮进三兵对屏风马飞左象（2）.XQF
+attr:32 size:1077 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第00局 结论.XQF
+attr:32 size:5732 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第01局 五六炮正马对反宫马左横车型.XQF
+attr:32 size:4275 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第02局 五六炮正马对反宫马平边炮（1）.XQF
+attr:32 size:3189 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第03局 五六炮正马对反宫马平边炮（2）、第1种、红右车过河变例.XQF
+attr:32 size:2264 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第03局 五六炮正马对反宫马平边炮（2）、第2种、红车九进二变例.XQF
+attr:32 size:3222 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第04局 五六炮正马对反宫马平边炮（3）、第1种、红右车过河变例.XQF
+attr:32 size:2922 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第04局 五六炮正马对反宫马平边炮（3）、第2种、红车九进二变例.XQF
+attr:32 size:4135 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第05局 五七炮两头蛇对反宫马（1）.XQF
+attr:32 size:5281 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第06局 五七炮两头蛇对反宫马（2）.XQF
+attr:32 size:2905 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第07局 五七炮缓出车对反宫马左象.XQF
+attr:32 size:3007 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第08局 五七炮进三兵对反宫马飞右象.XQF
+attr:32 size:4518 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第09局 五七炮跳边马对反宫马进7卒.XQF
+attr:32 size:3146 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第10局 中炮横车进三兵对反宫马.XQF
+attr:32 size:4977 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第08章 中炮对反宫马/第11局 中炮横车七路马对反宫马.XQF
+attr:32 size:1762 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（1）.XQF
+attr:32 size:2412 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（2）.XQF
+attr:32 size:1914 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（3）.XQF
+attr:32 size:2716 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（4）.XQF
+attr:32 size:2489 chessManual/中国象棋棋谱大全.xqf/布局/中炮/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（5）.XQF
+attr:32 size:2312 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第1种、黑补右士变例.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第2种、黑补左士变例.XQF
+attr:32 size:2041 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第1种、黑退马变例.XQF
+attr:32 size:2184 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第2种、黑马吃兵先弃后取变例.XQF
+attr:32 size:2443 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第06章 五七炮对屏风马进3卒/第1局 红横车平六.XQF
+attr:32 size:9893 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第06章 五七炮对屏风马进3卒/第2局 红横车平四.XQF
+attr:32 size:6733 chessManual/中国象棋棋谱大全.xqf/布局/五七炮/第06章 五七炮对屏风马进3卒/第3局 黑不兑边卒飞右象.XQF
+attr:32 size:13358 chessManual/中国象棋棋谱大全.xqf/布局/五七炮对屏风马.XQF
+attr:32 size:299888 chessManual/中国象棋棋谱大全.xqf/布局/五六炮对反宫马/五六炮对反宫马.XQF
+attr:32 size:3382 chessManual/中国象棋棋谱大全.xqf/布局/五六炮对反宫马/关于《五六炮对反宫马》的录入感言.txt
+attr:32 size:6173 chessManual/中国象棋棋谱大全.xqf/布局/五六炮对屏风马.XQF
+attr:32 size:4270 chessManual/中国象棋棋谱大全.xqf/布局/仕角炮对右中炮.XQF
+attr:32 size:72502 chessManual/中国象棋棋谱大全.xqf/布局/仙人指路布局667作/仙人指路布局.XQF
+attr:32 size:4189 chessManual/中国象棋棋谱大全.xqf/布局/仙人指路布局667作/吕钦 红先胜 郑伙添.XQF
+attr:32 size:1878 chessManual/中国象棋棋谱大全.xqf/布局/仙人指路布局667作/柳大华 红先胜 杨官璘.XQF
+attr:32 size:1582 chessManual/中国象棋棋谱大全.xqf/布局/仙人指路布局667作/陶汉明 红先胜 胡荣华.XQF
+attr:32 size:24064 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/一些不该说的话.doc
+attr:32 size:3407 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/会珍阁.XQF
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/和合二炮.XQF
+attr:32 size:2808 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/绿榕桥之一：屏风马抵当头炮直车着法.XQF
+attr:32 size:2296 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/绿榕桥之三：屏风马抵当头炮进三路兵（卒）着法.XQF
+attr:32 size:2304 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/绿榕桥之二：屏风马抵当头炮进中兵（卒）着法.XQF
+attr:32 size:2892 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/绿榕桥之五：屏风马抵当头炮进马着法.XQF
+attr:32 size:2112 chessManual/中国象棋棋谱大全.xqf/布局/会珍阁－绿榕桥/绿榕桥之四：屏风马抵当头炮进七路兵（卒）着法.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/hwldg 先和 风云连风(半决赛第一局.XQF
+attr:32 size:1368 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/hwldg 先胜 象棋向你学两招(季军决赛第二局).XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/hwldg 先负 风云连风(半决赛第三局.XQF
+attr:32 size:1280 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/华夏英姿 先和 风云连风(冠军决赛第二局).XQF
+attr:32 size:1304 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/华夏英姿 先胜 象棋向你学两着(半决赛第一局).XQF
+attr:32 size:1548 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/华夏英姿 先负 风云连风(冠军决赛第四局).XQF
+attr:32 size:1252 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/象棋向你学两招 先负 hwldg(季军决赛第一局).XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/象棋向你学两着 先胜 华夏英姿(半决赛第二局).XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/风云连风 先和 华夏英姿(冠军决赛第一局).XQF
+attr:32 size:1340 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/风云连风 先和 华夏英姿(冠军决赛第三局).XQF
+attr:32 size:1456 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/风云连风 先胜 hwldg(半决赛第四局.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/互联星空杯电子竞技大会象棋赛/风云连风 先负 hwldg(半决赛第二局.XQF
+attr:32 size:754 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/反宫马的骗招.xqn
+attr:32 size:617 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/起马局红应对黑右边马.xqn
+attr:32 size:1081 chessManual/中国象棋棋谱大全.xqf/布局/其他布局/金钩炮破飞相局.xqn
+attr:32 size:2027 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红平边炮局(1).xqf
+attr:32 size:2280 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红平边炮局(2).xqf
+attr:32 size:3506 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红起横车局(1).xqf
+attr:32 size:3642 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红起横车局(2).xqf
+attr:32 size:3313 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红起横车局(3).xqf
+attr:32 size:3346 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红起横车局(4).xqf
+attr:32 size:3054 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 互进七兵(卒) 红起横车局(5).xqf
+attr:32 size:2625 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 红七路快马局(2).xqf
+attr:32 size:2723 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 红先进七兵 红七路快马局(1).xqf
+attr:32 size:2952 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 红先进七兵 红直横车局(1).xqf
+attr:32 size:2457 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 红先进七兵 红直横车局(2).xqf
+attr:32 size:2235 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮 黑骑河车捉兵局.xqf
+attr:32 size:2017 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(1).xqf
+attr:32 size:3640 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(10).xqf
+attr:32 size:2885 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(11).xqf
+attr:32 size:2355 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(12).xqf
+attr:32 size:2387 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(13).xqf
+attr:32 size:2174 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(14).xqf
+attr:32 size:4245 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(15).xqf
+attr:32 size:3161 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(2).xqf
+attr:32 size:2311 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(3).xqf
+attr:32 size:2708 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(4).xqf
+attr:32 size:2260 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(5).xqf
+attr:32 size:2888 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(6).xqf
+attr:32 size:2291 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(7).xqf
+attr:32 size:3521 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(8).xqf
+attr:32 size:1672 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对三步虎转列炮局(一)红先进三兵(9).xqf
+attr:32 size:2779 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(1).xqf
+attr:32 size:2425 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(10).xqf
+attr:32 size:2014 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(11).xqf
+attr:32 size:2303 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(12).xqf
+attr:32 size:1903 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(13).xqf
+attr:32 size:1816 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(14).xqf
+attr:32 size:2387 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(15).xqf
+attr:32 size:1923 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(16).xqf
+attr:32 size:2209 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(17).xqf
+attr:32 size:2779 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(18).xqf
+attr:32 size:2015 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(19).xqf
+attr:32 size:2111 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(2).xqf
+attr:32 size:1903 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(20).xqf
+attr:32 size:1962 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(21).xqf
+attr:32 size:2625 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(22).xqf
+attr:32 size:2934 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(3).xqf
+attr:32 size:1866 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(4).xqf
+attr:32 size:1849 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(5).xqf
+attr:32 size:3465 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(6).xqf
+attr:32 size:1875 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(8).xqf
+attr:32 size:1775 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(一）红过河车对黑平炮兑车(9).xqf
+attr:32 size:1953 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(三)红进三兵 黑右正马横车局(1).xqf
+attr:32 size:2974 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(三)红进三兵 黑右正马横车局(2).xqf
+attr:32 size:2516 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(三)红进三兵 黑右正马横车局(3).xqf
+attr:32 size:1648 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(三)红进三兵 黑右正马直车局(1).xqf
+attr:32 size:1978 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(三)红进三兵 黑右正马直车局(2).xqf
+attr:32 size:1771 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(二)红士角炮 黑左炮封车局(1).xqf
+attr:32 size:2356 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(二)红士角炮 黑左炮封车局(2).xqf
+attr:32 size:1839 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(二)红士角炮 黑进右正马局(1).xqf
+attr:32 size:2073 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(二)红士角炮 黑进右正马局(2).xqf
+attr:32 size:1910 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(二)红士角炮 黑高右车局.xqf
+attr:32 size:2128 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马 黑左炮封车局.xqf
+attr:32 size:1956 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马 黑高右车局.xqf
+attr:32 size:1843 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马(1).xqf
+attr:32 size:1864 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马(2).xqf
+attr:32 size:1845 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马(3).xqf
+attr:32 size:2246 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(五)红进左正马(4).xqf
+attr:32 size:1981 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(1).xqf
+attr:32 size:2682 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(2).xqf
+attr:32 size:2736 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(3).xqf
+attr:32 size:2171 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(4).xqf
+attr:32 size:1817 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(5).xqf
+attr:32 size:2600 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(6).xqf
+attr:32 size:2544 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(7).xqf
+attr:32 size:2312 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(8).xqf
+attr:32 size:2872 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/中炮对后补列炮(四)互进七兵(卒)(9).xqf
+attr:32 size:2544 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑起横车局.xqf
+attr:32 size:2180 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑车巡河局(1).xqf
+attr:32 size:3385 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑车巡河局(2).xqf
+attr:32 size:2639 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑车巡河局(3).xqf
+attr:32 size:2516 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑车巡河局(4).xqf
+attr:32 size:2003 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红两头蛇对黑车过河局.xqf
+attr:32 size:2700 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红伸炮攻马兑中炮对黑飞右象局.xqf
+attr:32 size:2070 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红伸炮攻马兑中炮对黑飞左象局(二).xqf
+attr:32 size:2010 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马冲三兵对黑上正马局.xqf
+attr:32 size:2331 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马对黑起横车局.xqf
+attr:32 size:1765 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马对黑退炮河口局.xqf
+attr:32 size:3122 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马过河对黑上正马出车捉炮局(1).xqf
+attr:32 size:2140 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马过河对黑上正马出车捉炮局(2).xqf
+attr:32 size:2534 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红急进右马过河对黑上正马出车捉炮局(3).xqf
+attr:32 size:3597 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马对黑起横车局(二).xqf
+attr:32 size:3833 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口对黑上正马挺3卒局(六).xqf
+attr:32 size:3128 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口马对黑上正马挺3卒局(一).xqf
+attr:32 size:3873 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口马对黑上正马挺3卒局(三).xqf
+attr:32 size:4052 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口马对黑上正马挺3卒局(二).xqf
+attr:32 size:3296 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口马对黑上正马挺3卒局(五).xqf
+attr:32 size:3986 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马河口马对黑上正马挺3卒局(四).xqf
+attr:32 size:3171 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(一).xqf
+attr:32 size:3389 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(三).xqf
+attr:32 size:3855 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(二).xqf
+attr:32 size:2829 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(五).xqf
+attr:32 size:2829 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(六).xqf
+attr:32 size:3227 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红正马过河炮对黑上正马挺3卒局(四).xqf
+attr:32 size:2177 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红边马两头蛇对黑上正马局(1).xqf
+attr:32 size:1948 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红边马两头蛇对黑上正马局(3).xqf
+attr:32 size:2661 chessManual/中国象棋棋谱大全.xqf/布局/列手炮布局/红进边马对黑起右横车局.xqf
+attr:32 size:5591 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/1.古谱的启示.XQF
+attr:32 size:7890 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/10.横车移左.XQF
+attr:32 size:2452 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/11.横车右肋.XQF
+attr:32 size:7882 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/12.挺3卒反对称型.XQF
+attr:32 size:6275 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/13.右马盘河.XQF
+attr:32 size:6772 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/14.急进右马.XQF
+attr:32 size:3582 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/15.兑炮跃马.XQF
+attr:32 size:3763 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/16.互挺七兵.XQF
+attr:32 size:2324 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/17.弃兵抢先.XQF
+attr:32 size:10754 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/18.三步虎转列炮.XQF
+attr:32 size:6161 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/19.小列手炮.XQF
+attr:32 size:4126 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/2.近代名局的较量.XQF
+attr:32 size:5066 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/20.列炮窝心马.XQF
+attr:32 size:4225 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/3.跳正马的新攻法.XQF
+attr:32 size:3023 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/4.打入冷宫.XQF
+attr:32 size:3984 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/5.半途列炮的兴起.XQF
+attr:32 size:8190 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/6.现代列炮的局型.XQF
+attr:32 size:3919 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/7.各攻一翼.XQF
+attr:32 size:5323 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/8.卸炮联象.XQF
+attr:32 size:3332 chessManual/中国象棋棋谱大全.xqf/布局/列炮纵横谈 黄少龙/9.右车过河.XQF
+attr:32 size:3488 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第01局 单提马横车过宫应五七炮/第01局 单提马横车过宫应五七炮.XQF
+attr:32 size:2652 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第02局 单提马横车过宫应中炮盘头马/第02局 单提马横车过宫应中炮盘头马.XQF
+attr:32 size:4142 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第03局 单提马横车过宫应中炮巡河炮/第03局 单提马横车过宫应中炮巡河炮.XQF
+attr:32 size:2788 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第04局 单提马横车过宫应中炮巡河车/第04局 单提马横车过宫应中炮巡河车.XQF
+attr:32 size:3020 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第05局 单提马横车过宫应五八炮/第05局 单提马横车过宫应五八炮.XQF
+attr:32 size:5150 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第06局 单提马横车过宫应中炮两头蛇/第06局 单提马横车过宫应中炮两头蛇.XQF
+attr:32 size:4542 chessManual/中国象棋棋谱大全.xqf/布局/单提马横车过宫专辑/第07局 单提马横车过宫应五九炮/第07局 单提马横车过宫应五九炮.XQF
+attr:32 size:3226 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局01]旧式双炮过河.XQF
+attr:32 size:1664 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局02]旧式双炮过河（红弃双兵）.XQF
+attr:32 size:3128 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局03]旧式双炮过河（左肋车对外肋马）.XQF
+attr:32 size:2037 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局04]左横车对右炮攻相(红右肋车）.XQF
+attr:32 size:3062 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局05]左横车对右炮攻相(黑弃炮）.XQF
+attr:32 size:2118 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局06]红上左士对黑弃马陷车.XQF
+attr:32 size:1756 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局07]红上右士对黑弃马陷车1.XQF
+attr:32 size:1608 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局08]红上右士对黑弃马陷车2.XQF
+attr:32 size:1540 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局09]右炮左移（实战例1）.XQF
+attr:32 size:1750 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局09]左横车对右炮左移(红弃三兵）.XQF
+attr:32 size:1906 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局10]左横车对右炮左移(红弃左车）.XQF
+attr:32 size:1814 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局11]红吃弃马对肋炮串打（卒吃中兵）.XQF
+attr:32 size:1450 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[局12]红吃弃马对肋炮串打（黑补左士）.XQF
+attr:32 size:1920 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[战例1]红吃弃马对退炮骑河.XQF
+attr:32 size:1776 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[战例1]红外肋马.XQF
+attr:32 size:1720 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[战例2]红吃弃马对退炮骑河.XQF
+attr:32 size:1978 chessManual/中国象棋棋谱大全.xqf/布局/双炮过河/[战例3]红进车捉马对先上象.XQF
+attr:32 size:1772 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/原序.txt
+attr:32 size:2116 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/上海胡荣华先胜湖北黄学荣.XQF
+attr:32 size:2800 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/宁夏王贵福先负上海胡荣华.XQF
+attr:32 size:3459 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/江苏季本涵先负上海胡荣华.XQF
+attr:32 size:2825 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/江苏徐乃基先负上海胡荣华.XQF
+attr:32 size:4107 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/江苏言穆江先负上海胡荣华.XQF
+attr:32 size:3854 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/河北刘殿中先和上海胡荣华.XQF
+attr:32 size:2966 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/湖北李义庭先和上海胡荣华.XQF
+attr:32 size:3209 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/湖北胡远茂先负上海胡荣华.XQF
+attr:32 size:2870 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/甘肃钱洪发先负上海胡荣华.XQF
+attr:32 size:2894 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/福建王荣塔先负上海胡荣华.XQF
+attr:32 size:3625 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/辽宁赵庆阁先负上海胡荣华.XQF
+attr:32 size:2658 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/辽宁郭长顺先负上海胡荣华.XQF
+attr:32 size:4341 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/实战对局选评/黑龙江王嘉良先负上海胡荣华.XQF
+attr:32 size:774 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/录入者感想.txt
+attr:32 size:1640 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第一章 老式反宫马的衰落/第一局  急进中兵破反宫马先进七路卒.XQF
+attr:32 size:1410 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第一章 老式反宫马的衰落/第三局  五九炮两头蛇破反宫马.XQF
+attr:32 size:1642 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第一章 老式反宫马的衰落/第二局  当头炮进三路兵五八炮破反宫马.XQF
+attr:32 size:2652 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第七章 当头炮横车七路马对反宫马/第一局 巡河炮型.XQF
+attr:32 size:2362 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第七章 当头炮横车七路马对反宫马/第三局 进中兵型.XQF
+attr:32 size:3338 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第七章 当头炮横车七路马对反宫马/第二局 双横车型.XQF
+attr:32 size:2409 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第七章 当头炮横车七路马对反宫马/第五局 进七路兵型.XQF
+attr:32 size:1660 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第七章 当头炮横车七路马对反宫马/第四局 五九炮型.XQF
+attr:32 size:2788 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第三章 当头炮进三路兵对反宫马飞右象/第一局 五七炮型.XQF
+attr:32 size:2697 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第三章 当头炮进三路兵对反宫马飞右象/第三局 直横车型.XQF
+attr:32 size:2248 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第三章 当头炮进三路兵对反宫马飞右象/第二局 五八炮型.XQF
+attr:32 size:2420 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第九章 当头炮对反宫马先进七路卒/第一局 急进中兵型.XQF
+attr:32 size:2597 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第九章 当头炮对反宫马先进七路卒/第三局 五七炮型.XQF
+attr:32 size:2600 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第九章 当头炮对反宫马先进七路卒/第二局 进车压马型.XQF
+attr:32 size:2870 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第二章 当头炮直车弃炮对反宫马/当头炮直车弃炮对反宫马.XQF
+attr:32 size:2912 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第五章 当头炮进三路兵对反宫马左象/第一局 五六炮型.XQF
+attr:32 size:2459 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第五章 当头炮进三路兵对反宫马左象/第三局 五八炮型.XQF
+attr:32 size:2494 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第五章 当头炮进三路兵对反宫马左象/第二局 五七炮型.XQF
+attr:32 size:1952 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第五章 当头炮进三路兵对反宫马左象/第五局 先锋马型.XQF
+attr:32 size:1590 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第五章 当头炮进三路兵对反宫马左象/第四局 直横车型.XQF
+attr:32 size:2766 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第八章 当头炮正马五六炮对反宫马/第一局 左横车型.XQF
+attr:32 size:3380 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第八章 当头炮正马五六炮对反宫马/第三局 卒7进1.XQF
+attr:32 size:3408 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第八章 当头炮正马五六炮对反宫马/第二局 右横车型.XQF
+attr:32 size:4140 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第八章 当头炮正马五六炮对反宫马/第四局 平炮亮车型.XQF
+attr:32 size:1884 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第六章 当头炮进三路兵对反宫马横车/第一局 左炮过河型.XQF
+attr:32 size:1582 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第六章 当头炮进三路兵对反宫马横车/第三局 车二进六型.XQF
+attr:32 size:3202 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第六章 当头炮进三路兵对反宫马横车/第二局 两头蛇型.XQF
+attr:32 size:1606 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第六章 当头炮进三路兵对反宫马横车/第五局 右横车型.XQF
+attr:32 size:2038 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第六章 当头炮进三路兵对反宫马横车/第四局 先锋马型.XQF
+attr:32 size:1835 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十一章 当头炮进七路兵过河车对反宫马/第一局 平车兑车型.XQF
+attr:32 size:2698 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十一章 当头炮进七路兵过河车对反宫马/第三局 右横车型.XQF
+attr:32 size:1900 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十一章 当头炮进七路兵过河车对反宫马/第二局 象3进5型.XQF
+attr:32 size:3680 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十一章 当头炮进七路兵过河车对反宫马/第五局 士4进5型.XQF
+attr:32 size:3396 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十一章 当头炮进七路兵过河车对反宫马/第四局 升车保马型.XQF
+attr:32 size:2868 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十章 当头炮进七路兵对反宫马/第一局 左炮过河型.XQF
+attr:32 size:2434 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十章 当头炮进七路兵对反宫马/第三局 巡河炮型.XQF
+attr:32 size:2930 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第十章 当头炮进七路兵对反宫马/第二局 五九炮型.XQF
+attr:32 size:2675 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第四章 五六炮进三路兵对反宫马飞右象/第一局 巡河车型.XQF
+attr:32 size:3834 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第四章 五六炮进三路兵对反宫马飞右象/第三局 兵五进一型.XQF
+attr:32 size:1892 chessManual/中国象棋棋谱大全.xqf/布局/反宫马专集/夹炮屏风——反宫马布局研究/第四章 五六炮进三路兵对反宫马飞右象/第二局 过河车型.XQF
+attr:32 size:1447 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/中炮对反宫马.XQF
+attr:32 size:1844 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/中炮过河车对屏风马.XQF
+attr:32 size:1544 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/中炮进三兵对屏风马进3卒.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/五七炮对屏风马.XQF
+attr:32 size:1358 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/五八炮对屏风马.XQF
+attr:32 size:1434 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/仙人指路对中炮.XQF
+attr:32 size:1525 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/仙人指路对卒底炮.XQF
+attr:32 size:1510 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/仙人指路对起马局.XQF
+attr:32 size:1407 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/仙人指路对进卒.XQF
+attr:32 size:1422 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/仙人指路对金钩炮.XQF
+attr:32 size:1526 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/炮横车正马对巡河车炮.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/过宫炮对中炮.XQF
+attr:32 size:1859 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/顺炮横车对直车（红七路炮）.XQF
+attr:32 size:1910 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/顺炮横车对直车（红进正马）.XQF
+attr:32 size:1478 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/顺炮直车对横车.XQF
+attr:32 size:1363 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/顺炮直车对缓开车.XQF
+attr:32 size:1954 chessManual/中国象棋棋谱大全.xqf/布局/后手布局应对方略/顺炮直车对缓开（左横车对右炮过河）.XQF
+attr:32 size:14372 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【卒7进1】.xqf
+attr:32 size:24561 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【炮2平5】.xqf
+attr:32 size:3874 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【炮2平6】.xqf
+attr:32 size:1242 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【炮2平7】.xqf
+attr:32 size:12405 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【炮8平3】.xqf
+attr:32 size:2001 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【炮8平5】.xqf
+attr:32 size:2355 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【象3进5】.xqf
+attr:32 size:1500 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【象7进5】.xqf
+attr:32 size:3514 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【车9进1】.xqf
+attr:32 size:6312 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【马8进7】.xqf
+attr:32 size:2400 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮【马8进9】.xqf
+attr:32 size:242 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮布局总结.txt
+attr:32 size:2351 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/士角炮胜顺中炮软件9层对战.xqn
+attr:32 size:485 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/红士角炮过河车.xqn
+attr:32 size:902 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/红士角炮进炮之黑巡河车变例.xqn
+attr:32 size:823 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/进7卒对红士角炮.xqn
+attr:32 size:718 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/黑应对红士角炮进炮封车.xqn
+attr:32 size:909 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局/黑方应对红士角炮进炮.xqn
+attr:32 size:17069 chessManual/中国象棋棋谱大全.xqf/布局/士角炮布局.xqf
+attr:32 size:1468 chessManual/中国象棋棋谱大全.xqf/布局/将族反宫马.XQF
+attr:32 size:1722 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--列手炮.XQF
+attr:32 size:2200 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--后补列炮.XQF
+attr:32 size:1312 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--士角炮对右中炮.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--士角炮对左中炮.XQF
+attr:32 size:1414 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--士角炮对左横车.XQF
+attr:32 size:1367 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--士角炮对过宫炮.XQF
+attr:32 size:1336 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--对兵局.XQF
+attr:32 size:1484 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--过宫炮对中炮局.XQF
+attr:32 size:1361 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--过宫炮对挺卒局.XQF
+attr:32 size:3990 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--顺炮两头蛇对横车.XQF
+attr:32 size:3770 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--顺炮横车对直车.XQF
+attr:32 size:1895 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--顺炮直车边马对横车.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对仙人指路.XQF
+attr:32 size:1560 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对右过宫炮.XQF
+attr:32 size:1292 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对左中炮.XQF
+attr:32 size:1412 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对左炮过宫.XQF
+attr:32 size:1328 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对金钩炮.XQF
+attr:32 size:1418 chessManual/中国象棋棋谱大全.xqf/布局/布局研究/布局研究--飞相局对飞象局.XQF
+attr:32 size:1378 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屈头屏风马（一）.XQF
+attr:32 size:2106 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屈头屏风马（三）.XQF
+attr:32 size:1393 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屈头屏风马（二）.XQF
+attr:32 size:2337 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屈头屏风马（五）.XQF
+attr:32 size:2693 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屈头屏风马（四）.XQF
+attr:32 size:3254 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮对屏风马之运炮如神.XQF
+attr:32 size:2616 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/中炮过河车对屏风马进7卒.XQF
+attr:32 size:1365 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮七路马对屏风马.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮冲中兵对屏风马.XQF
+attr:32 size:1170 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮对三步虎.XQF
+attr:32 size:2028 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮对单提马.XQF
+attr:32 size:1185 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮对反宫马.XQF
+attr:32 size:1171 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮对拐角马.XQF
+attr:32 size:1411 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮巡河炮对屏风马.XQF
+attr:32 size:1138 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮巡河车对屏风马.XQF
+attr:32 size:1339 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮过河车对屏风马平炮兑车.XQF
+attr:32 size:1430 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--中炮过河车对左马盘河.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--五七炮对屏风马.XQF
+attr:32 size:1296 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--五六炮对屏风马.XQF
+attr:32 size:1170 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--仙人指路对起马局.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--仙人指路对过宫炮.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--列手炮.XQF
+attr:32 size:1369 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--起马局(捉车）.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--起马局对中炮.XQF
+attr:32 size:1597 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--顺炮横车对直车.XQF
+attr:32 size:1432 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--顺炮直车对横车.XQF
+attr:32 size:1179 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--顺炮缓开车对直车.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/布局陷阱--飞相局对金钩炮.XQF
+attr:32 size:2893 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/弃“空头炮”中炮对屏风马（一）.XQF
+attr:32 size:3593 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/弃“空头炮”仙人指路对挺卒.XQF
+attr:32 size:2794 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/弃子布局出新着之中炮进七兵横车对屏风马进7卒.XQF
+attr:32 size:1505 chessManual/中国象棋棋谱大全.xqf/布局/布局陷井/弃马局中炮对屏风马（一）.XQF
+attr:32 size:2962 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/“右中炮”抗衡“士角炮”.xqf
+attr:32 size:2020 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮对三步虎局.xqf
+attr:32 size:3816 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮对左炮封车转列炮局.xqf
+attr:32 size:3445 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮巡河炮对屏风马.xqf
+attr:32 size:1687 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮横车七路马对反宫马式.xqf
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮进七兵对左三步虎式.xqf
+attr:32 size:1961 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮进三兵对左三步虎式.xqf
+attr:32 size:1770 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/中炮进中兵对反宫马式.xqf
+attr:32 size:3316 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五七炮弃双兵对反宫马左象式.xqf
+attr:32 size:2307 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五七炮进三兵对反宫马左横车式.xqf
+attr:32 size:3599 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五七炮进三兵对屏风马.xqf
+attr:32 size:2132 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五八炮进正马对屏风马.xqf
+attr:32 size:2488 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五六炮正马对反宫马平炮亮车式(2).xqf
+attr:32 size:1901 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五六炮边马对反宫马进7卒式.xqf
+attr:32 size:2989 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五六炮进三兵对反宫马左象式.xqf
+attr:32 size:2716 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五六炮进正马对屏风马先进7卒局.xqf
+attr:32 size:2094 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/五四炮攻法.xqf
+attr:32 size:2685 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/仙人指路 对兵局转兵底炮式.xqf
+attr:32 size:2474 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/仙人指路对金钩炮式.xqf
+attr:32 size:2695 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/仙人指路对飞右象式.xqf
+attr:32 size:2421 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/六炮过河车式.xqf
+attr:32 size:2452 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/士角炮局类.xqf
+attr:32 size:1931 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/王嘉良试用“士角炮”布局见闻.xqf
+attr:32 size:2231 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/红横车占右肋对黑飞右象左炮巡河式.xqf
+attr:32 size:3256 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/红横车占右肋对黑飞右象补右士式.xqf
+attr:32 size:2133 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/红横车对黑起右横车式.xqf
+attr:32 size:3080 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/顺炮先进三兵对直车式.xqf
+attr:32 size:2238 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/顺炮横车正马对直车巡河式.xqf
+attr:32 size:2367 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/顺炮直车正马进三兵对横车式.xqf
+attr:32 size:2465 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对右中炮式.xqf
+attr:32 size:2895 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对右士角炮式.xqf
+attr:32 size:3163 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对右过宫炮式.xqf
+attr:32 size:3543 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对左中炮式.xqf
+attr:32 size:4540 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对左士角炮式.xqf
+attr:32 size:2506 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对左过宫炮式.xqf
+attr:32 size:2848 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对进边马式.xqf
+attr:32 size:2305 chessManual/中国象棋棋谱大全.xqf/布局/特级大师布局精华/飞相局对金钩炮式.xqf
+attr:32 size:1534 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮不挺兵对屏风马进七卒(吕钦先手布局).XQF
+attr:32 size:1754 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮不挺兵对屏风马进７卒（李来群先手布局）.XQF
+attr:32 size:13358 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮对屏风马.XQF
+attr:32 size:63371 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮对屏风马最新版.XQF
+attr:32 size:1673 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(一)赵国荣先手布局.XQF
+attr:32 size:1625 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(二)许银川先手布局.XQF
+attr:32 size:1761 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(二)赵国荣先手布局.XQF
+attr:32 size:1861 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(吕钦先手布局).XQF
+attr:32 size:1808 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(柳大华先手布局一).XQF
+attr:32 size:1509 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马(陶汉明先手布局).XQF
+attr:32 size:1722 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马（一）许银川先手布局.XQF
+attr:32 size:1800 chessManual/中国象棋棋谱大全.xqf/布局/特级大师的五七炮对屏风马布局/五七炮进三兵对屏风马（柳大华先手布局二）.XQF
+attr:32 size:2002 chessManual/中国象棋棋谱大全.xqf/布局/玉门7关弃马胜59炮.xqn
+attr:32 size:2787 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮巡河炮对屏风马------黑方外助马封车.xqf
+attr:32 size:2873 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮巡河炮对屏风马------黑方高横车.xqf
+attr:32 size:2079 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮横车七路马对屏风马-----黑方左炮巡河.xqf
+attr:32 size:2222 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮横车对反宫马-----红方进三兵.xqf
+attr:32 size:2256 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮横车对反宫马-----黑方出左直车.xqf
+attr:32 size:1914 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/中炮横车对反宫马-----黑方进炮串打.xqf
+attr:32 size:1992 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方右炮封车.xqf
+attr:32 size:3466 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方右炮巡河(一).xqf
+attr:32 size:2425 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方右炮巡河(六).xqf
+attr:32 size:2255 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方炮巡河(五).xqf
+attr:32 size:2218 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方顺炮巡河(三).xqf
+attr:32 size:4710 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方顺炮巡河(二).xqf
+attr:32 size:2824 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮不挺兵对屏风马-----黑方顺炮巡河(四).xqf
+attr:32 size:2320 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----两头蛇对巡河车(一).xqf
+attr:32 size:2147 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----两头蛇对巡河车(二).xqf
+attr:32 size:2142 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----两头蛇对飞右象(一).xqf
+attr:32 size:1806 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----两头蛇对飞右象(二).xqf
+attr:32 size:1745 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----直横车对飞左象(一).xqf
+attr:32 size:1668 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----直横车对飞左象(三).xqf
+attr:32 size:1901 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----直横车对飞左象(二).xqf
+attr:32 size:2307 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----缓开车对横车(一).xqf
+attr:32 size:2017 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮对反宫马-----缓开车对横车(二).xqf
+attr:32 size:3689 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮进三兵对屏风马-----黑方飞右象.xqf
+attr:32 size:3421 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五七炮进三兵对屏风马-----黑方飞左象.xqf
+attr:32 size:2661 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五六炮对反宫马-----进边马对先挺7卒(一).xqf
+attr:32 size:2612 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五六炮对反宫马-----进边马对先挺7卒(二).xqf
+attr:32 size:2941 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/五六炮对反宫马-----黑方右三步虎上左士.xqf
+attr:32 size:2187 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(一).xqf
+attr:32 size:3117 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(三).xqf
+attr:32 size:1495 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(二).xqf
+attr:32 size:1825 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(五).xqf
+attr:32 size:2732 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(六).xqf
+attr:32 size:2463 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对卒底炮-----黑方卒底炮(四).xqf
+attr:32 size:2468 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/仙人指路对还中炮-----黑方还中炮.xqf
+attr:32 size:1829 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/四、中炮七路马对屏风马双炮过河-----红方补士.xqf
+attr:32 size:2890 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/四、中炮七路马对屏风马双炮过河-----黑方平中炮.xqf
+attr:32 size:2879 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/四、中炮七路马对屏风马双炮过河-----黑方平肋炮.xqf
+attr:32 size:2709 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车两头蛇对双横车.xqf
+attr:32 size:2160 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车士角炮对横车.xqf
+attr:32 size:2493 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车对右横车.xqf
+attr:32 size:3002 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车边马对缓开车(一).xqf
+attr:32 size:2554 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车边马对缓开车(二).xqf
+attr:32 size:2236 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车进七兵对横车边马.xqf
+attr:32 size:1991 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----直车进三兵对横车边马.xqf
+attr:32 size:2443 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----黑方缓开右横车.xqf
+attr:32 size:3933 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对横车-----黑方缓开车右炮过河(二).xqf
+attr:32 size:2353 chessManual/中国象棋棋谱大全.xqf/布局/现代布局精要/顺炮直车对缓开车-----黑方缓开车右炮过河(一).xqf
+attr:32 size:182139 chessManual/中国象棋棋谱大全.xqf/布局/现代顺炮专集.XQF
+attr:32 size:2446 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第1局 实战对局评注（1）.XQF
+attr:32 size:2198 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第1局 实战对局评注（2）.XQF
+attr:32 size:5470 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第1局 红急进中兵.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（1）.XQF
+attr:32 size:1408 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（2）.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（3）.XQF
+attr:32 size:1400 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第2局 实战对局评注（4）.XQF
+attr:32 size:5978 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第2局 红七路马.XQF
+attr:32 size:3586 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第3局 红跳边马.XQF
+attr:32 size:4104 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第1种、进车捉炮变例.XQF
+attr:32 size:3304 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第2种、红左车过河变例.XQF
+attr:32 size:3383 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第3种、红炮击边卒变例.XQF
+attr:32 size:2122 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第4局 红五九炮、第4种、红炮击中卒变例.XQF
+attr:32 size:2732 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第5局 红五六炮正马对屏风马、第1种、黑炮2平1亮车变例.XQF
+attr:32 size:1971 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第01章 中炮过河车对屏风马平炮兑车/第5局 红五六炮正马对屏风马、第2种、黑马7进8变例.XQF
+attr:32 size:2988 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第02章 中炮直横车双正马对屏风马两头蛇/屏风马两头蛇.XQF
+attr:32 size:2312 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第1种、黑补右士变例.XQF
+attr:32 size:1474 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第03章 五七炮对屏风马进7卒/第1局 红退车河头、第2种、黑补左士变例.XQF
+attr:32 size:2041 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第1种、黑退马变例.XQF
+attr:32 size:2184 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第03章 五七炮对屏风马进7卒/第2局 红退车兵林、第2种、黑马吃兵先弃后取变例.XQF
+attr:32 size:3889 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第04章 中炮横车七路马对屏风马/第1局 中炮横车七路马对屏风马下右象.XQF
+attr:32 size:4388 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第04章 中炮横车七路马对屏风马/第2局 中炮横车七路马对屏风马上左象.XQF
+attr:32 size:2900 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第04章 中炮横车七路马对屏风马/第2局 实战对局（1）.XQF
+attr:32 size:3349 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第05章 中炮七路马对屏风马双炮过河/第1局 黑先飞象.XQF
+attr:32 size:3082 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第05章 中炮七路马对屏风马双炮过河/第2局 黑右车过河.XQF
+attr:32 size:1352 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第05章 中炮七路马对屏风马双炮过河/第3局 实战（1）.XQF
+attr:32 size:4923 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第05章 中炮七路马对屏风马双炮过河/第3局 黑右炮左移(最重要）.XQF
+attr:32 size:2443 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第06章 五七炮对屏风马进3卒/第1局 红横车平六.XQF
+attr:32 size:9893 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第06章 五七炮对屏风马进3卒/第2局 红横车平四.XQF
+attr:32 size:6733 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第06章 五七炮对屏风马进3卒/第3局 黑不兑边卒飞右象.XQF
+attr:32 size:2929 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第07章 中炮进三兵对屏风马其他变例/第1局  中炮进三兵对屏风马飞左象（1）.XQF
+attr:32 size:5729 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第07章 中炮进三兵对屏风马其他变例/第2局  中炮进三兵对屏风马飞左象（2）.XQF
+attr:32 size:1077 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第00局 结论.XQF
+attr:32 size:5732 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第01局 五六炮正马对反宫马左横车型.XQF
+attr:32 size:4275 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第02局 五六炮正马对反宫马平边炮（1）.XQF
+attr:32 size:3189 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第03局 五六炮正马对反宫马平边炮（2）、第1种、红右车过河变例.XQF
+attr:32 size:2264 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第03局 五六炮正马对反宫马平边炮（2）、第2种、红车九进二变例.XQF
+attr:32 size:3222 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第04局 五六炮正马对反宫马平边炮（3）、第1种、红右车过河变例.XQF
+attr:32 size:2922 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第04局 五六炮正马对反宫马平边炮（3）、第2种、红车九进二变例.XQF
+attr:32 size:4135 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第05局 五七炮两头蛇对反宫马（1）.XQF
+attr:32 size:5281 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第06局 五七炮两头蛇对反宫马（2）.XQF
+attr:32 size:2905 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第07局 五七炮缓出车对反宫马左象.XQF
+attr:32 size:3007 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第08局 五七炮进三兵对反宫马飞右象.XQF
+attr:32 size:4518 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第09局 五七炮跳边马对反宫马进7卒.XQF
+attr:32 size:3146 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第10局 中炮横车进三兵对反宫马.XQF
+attr:32 size:4977 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第08章 中炮对反宫马/第11局 中炮横车七路马对反宫马.XQF
+attr:32 size:3900 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第1局 顺炮直车对缓出车、第1种、黑右炮过河变例.XQF
+attr:32 size:1978 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第1局 顺炮直车对缓出车、第2种、红跳边马形成“五、七炮”变例.XQF
+attr:32 size:2412 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第1局 顺炮直车对缓出车、第3种、红跳边马后黑抬左横车变例.XQF
+attr:32 size:2089 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第1局 顺炮直车对缓出车、第4种、红跳边马后黑挺边卒制马变例.XQF
+attr:32 size:2747 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第2局 顺炮直车对横车、第1种、黑抬左横车变例.XQF
+attr:32 size:4328 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第2局 顺炮直车对横车、第2种、黑抬右横车变例.XQF
+attr:32 size:2371 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第3局 顺炮两头蛇对直横车、第1种、黑直车巡河变例.XQF
+attr:32 size:2004 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第3局 顺炮两头蛇对直横车、第2种、黑横车占肋变例.XQF
+attr:32 size:1836 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第3局 顺炮两头蛇对直横车、第3种、红平边炮亮车变例.XQF
+attr:32 size:1804 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第09章 顺炮/第4局 顺炮横车两头蛇对双直车.XQF
+attr:32 size:1762 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（1）.XQF
+attr:32 size:2412 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（2）.XQF
+attr:32 size:1914 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（3）.XQF
+attr:32 size:2716 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（4）.XQF
+attr:32 size:2489 chessManual/中国象棋棋谱大全.xqf/布局/第2本 流行布局新变探索/第10章 中炮进三兵对后补列炮/中炮进三兵对后补列炮（5）.XQF
+attr:32 size:4805 chessManual/中国象棋棋谱大全.xqf/布局/自出洞来无敌手.CBL
+attr:32 size:38892 chessManual/中国象棋棋谱大全.xqf/布局/角包.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00001.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00002.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00003.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00004.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00005.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00006.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00007.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00008.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00009.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00010.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00011.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00012.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00013.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00014.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00015.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00016.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00017.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00018.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00019.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00020.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00021.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00022.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00023.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00024.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00025.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00026.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00027.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00028.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00029.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00030.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00031.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00032.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00033.xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00034.xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00035.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00036.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00037.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00038.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00039.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00040.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00041.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00042.xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00043.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00044.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00045.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00046.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对三步虎及列炮】/00047.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/001.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/002.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/003.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/004.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/005.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/006.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/007.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/008.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/009.XQF
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/010.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/011.XQF
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/012.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/013.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/014.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/015.XQF
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/016.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/017.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/018.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/019.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/020.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/021.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/022.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/023.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/024.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/025.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/026.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/027.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/028.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/029.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/030.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/031.XQF
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/032.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/033.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/034.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/035.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/036.XQF
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/037.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/038.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/039.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/040.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/041.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/043.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/044.XQF
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/045.XQF
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/046.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/047.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/048.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/049.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/050.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/051.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/052.XQF
+attr:32 size:1092 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/053.XQF
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/054.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/055.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/056.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/057.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/058.XQF
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/060.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/062.XQF
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/063.XQF
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/064.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/065.XQF
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/066.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/067.XQF
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/068.XQF
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/069.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对反宫马】/070.XQF
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00001.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00002.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00003.xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00004.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00005.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00006.xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00007.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00008.xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00009.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00010.xqf
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00011.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00012.xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00013.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00014.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00015.xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00016.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00017.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00018.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00019.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00020.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00021.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00022.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00023.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00024.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00025.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00026.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00027.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00028.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00029.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00030.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00031.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00032.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00033.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00034.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00035.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00036.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00037.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00038.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00039.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00040.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00041.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00042.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00043.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00044.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00045.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00046.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00047.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00048.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00049.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00050.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00051.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00052.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00053.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00054.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00055.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00056.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00057.XQF
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00058.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00059.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00060.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00061.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00062.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00063.xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00064.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00065.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00066.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00067.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00068.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00069.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00070.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00071.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00072.xqf
+attr:32 size:1172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00073.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00074.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00075.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00076.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00077.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00078.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00079.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00080.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00081.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00082.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00083.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00084.xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00085.xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00086.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00087.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00088.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00089.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00090.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00091.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00092.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00093.xqf
+attr:32 size:1084 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00094.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00095.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00096.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00097.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00098.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00099.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00100.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00101.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00102.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00103.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00104.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00105.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00106.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00107.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00108.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00109.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00110.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00111.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00112.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00113.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00114.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00115.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00116.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00117.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00118.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00119.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00120.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00121.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00122.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【中炮对屏风马】/00123.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/001.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/002.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/003.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/004.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/005.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/006.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/007.xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/008.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/009.xqf
+attr:32 size:1188 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/010.xqf
+attr:32 size:1092 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/011.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/012.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/013.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/014.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/015.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/016.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/017.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/018.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/019.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/020.xqf
+attr:32 size:1176 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/021.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/022.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/023.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/024.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/025.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/026.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/027.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/028.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/029.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/030.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/031.xqf
+attr:32 size:1180 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/032.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/033.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/034.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/035.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/036.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/037.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/038.xqf
+attr:32 size:1092 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/039.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/040.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/041.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/042.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/043.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/044.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/045.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/046.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/047.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/048.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/049.xqf
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/050.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/051.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/052.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/053.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/054.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/055.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/056.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/057.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/058.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/059.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/060.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/061.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/062.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/063.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/064.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/065.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/066.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【仙人指路】/067.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/001.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/002.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/003.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/004.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/005.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/006.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/007.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/008.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/009.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/010.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/011.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/012.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/013.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/014.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/015.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/016.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/017.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/018.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/019.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/020.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/021.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/022.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/023.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【其他布局】/024.xqf
+attr:32 size:550 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/001.TXT
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/001.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/002.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/003.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/004.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/005.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/006.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/007.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/008.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/009.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/010.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/011.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/012.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/013.xqf
+attr:32 size:1156 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/014.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/015.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/016.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/017.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/018.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/019.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/020.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/021.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/022.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/023.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/024.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/025.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/026.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/027.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/028.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/029.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/030.xqf
+attr:32 size:1168 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/031.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/032.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/033.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/034.xqf
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/035.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/036.xqf
+attr:32 size:1160 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/037.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/038.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/039.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/040.xqf
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/041.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/042.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【顺炮局】/043.xqf
+attr:32 size:1104 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/001.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/002.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/003.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/004.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/005.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/006.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/007.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/008.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/009.xqf
+attr:32 size:1144 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/010.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/011.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/012.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/013.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/014.xqf
+attr:32 size:1112 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/015.XQF
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/016.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/017.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/018.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/019.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/020.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/021.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/022.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/023.xqf
+attr:32 size:1124 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/024.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/025.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/026.xqf
+attr:32 size:1100 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/027.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/028.xqf
+attr:32 size:1152 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/029.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/030.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/031.xqf
+attr:32 size:1140 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/032.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/033.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/034.xqf
+attr:32 size:1132 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/035.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/036.xqf
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/037.xqf
+attr:32 size:1128 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/038.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/039.xqf
+attr:32 size:1120 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/040.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/041.xqf
+attr:32 size:1116 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/042.xqf
+attr:32 size:1108 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理/【飞相局】/043.xqf
+attr:32 size:2825 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮横车对直车--正马对垒型之红双横车式.XQF
+attr:32 size:2561 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮横车对直车--正马对垒型之红巡河炮式.XQF
+attr:32 size:2483 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮横车对直车--正马对垒型之红肋车过河式.XQF
+attr:32 size:2646 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮横车对直车--黑左士正马红三兵双横车型之黑平边炮式.XQF
+attr:32 size:2476 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮横车对直车--黑左士正马红三兵双横车型之黑挺3卒式.XQF
+attr:32 size:2982 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红两头蛇对黑双横车之红飞相通车式.XQF
+attr:32 size:2476 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红两头蛇补仕黑双横车式.XQF
+attr:32 size:2377 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红两头蛇跃河口马对黑双横车.XQF
+attr:32 size:2172 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红其它变例之红正马五六炮式.XQF
+attr:32 size:2209 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红其它变例之红正马巡河车式.XQF
+attr:32 size:2912 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红正马进三兵对黑右马屯边.XQF
+attr:32 size:2106 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对横车--红正马进三兵对黑进3卒.XQF
+attr:32 size:2520 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红左马屯边黑右正马式.XQF
+attr:32 size:2587 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红正马横车黑平炮通车式.XQF
+attr:32 size:2669 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红正马进七兵对黑右横车型之红巡河炮式.XQF
+attr:32 size:2322 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红正马进七兵黑右横车型之红高左炮式.XQF
+attr:32 size:2865 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红进七兵对黑过河炮型之红外马封车式.XQF
+attr:32 size:2486 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮直车对缓开车--红进七兵对黑过河炮型之红跃河口马式.XQF
+attr:32 size:2383 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮缓开车对直车--黑右正马红两头蛇型之黑平边炮式.XQF
+attr:32 size:2675 chessManual/中国象棋棋谱大全.xqf/布局/象棋定式与战理［顺炮部分］/顺炮缓开车对直车--黑右正马红两头蛇型之黑直横车式.XQF
+attr:32 size:863 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/xc.txt
+attr:32 size:1613 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/“仙人指路”对卒底炮红巡河炮破黑进3卒.XQF
+attr:32 size:1743 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/“仙人指路”对卒底炮（黑先进7卒）.XQF
+attr:32 size:1709 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马右士象（1）.XQF
+attr:32 size:1851 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马右士象（2）.XQF
+attr:32 size:2515 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红七马盘河型).XQF
+attr:32 size:2341 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红五九炮型中炮打卒).XQF
+attr:32 size:1833 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红五九炮型右马归心).XQF
+attr:32 size:2291 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红五九炮型左车过河).XQF
+attr:32 size:2084 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红五九炮型肋车捉炮).XQF
+attr:32 size:2395 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红五九炮型边炮打卒).XQF
+attr:32 size:1866 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(红兑车型).XQF
+attr:32 size:2628 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七兵过河车对屏风马平炮兑车(黑高车保马型).XQF
+attr:32 size:1692 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮七路马对屏风马.XQF
+attr:32 size:2526 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对列手炮.XQF
+attr:32 size:2594 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对单提马(艺高胆大).XQF
+attr:32 size:1921 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对反宫马(弃马速胜局).XQF
+attr:32 size:1846 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对反宫马（红弃双兵黑平炮捉相）.XQF
+attr:32 size:2393 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对屏风马(打通卒林).XQF
+attr:32 size:1972 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对屏风马“两头蛇”局.XQF
+attr:32 size:2080 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对屏风马左炮巡河(弃卒困车).XQF
+attr:32 size:2592 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮对屏风马进3卒.XQF
+attr:32 size:1787 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮屈头马破屏风马两头蛇新变.XQF
+attr:32 size:1754 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮巡河炮对屏风马外马封车.XQF
+attr:32 size:2029 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮直横车进中兵对屏风马两头蛇.XQF
+attr:32 size:2100 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮过河车对屏风对进7卒(二).XQF
+attr:32 size:2370 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮过河车对屏风马平炮兑车(红五九炮,炮击中卒式).XQF
+attr:32 size:2544 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮过河车对屏风马平炮兑车(红急进中兵).XQF
+attr:32 size:2505 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮过河车对屏风马进7卒(一).XQF
+attr:32 size:2151 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮进七兵对屏风马右炮过河(红跃马河口式).XQF
+attr:32 size:2515 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮进七兵对屏风马左炮封车.XQF
+attr:32 size:1898 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮进七兵巡河炮对屏风马.XQF
+attr:32 size:1754 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/中炮进三路兵对屏风马进边卒(黑车1进3).XQF
+attr:32 size:2665 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/五七炮对屏风马(中路危机).XQF
+attr:32 size:2040 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/五七炮对屏风马左炮封车.XQF
+attr:32 size:2301 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/五七炮巡河车对屏风马左炮封车.XQF
+attr:32 size:1874 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/五七炮进三路兵对屏风马进3路卒（红炮五平二）.XQF
+attr:32 size:2693 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/仙人指路对卒底炮(真伪莫辨).XQF
+attr:32 size:2233 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/仙人指路对卒底炮(红右正马黑冲3卒).XQF
+attr:32 size:2225 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/仙人指路对卒底炮(黑进边马式).XQF
+attr:32 size:2075 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/仙人指路对卒底炮（黑进车邀免式）.XQF
+attr:32 size:2200 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/仙人指路对起马局新着反击术.XQF
+attr:32 size:1724 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/何国强（先对）柳大华.XQF
+attr:32 size:3135 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/列炮(弃象陷车).XQF
+attr:32 size:2159 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/列炮(铁门栓妙杀).XQF
+attr:32 size:2161 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/弃双马双车炮卒攻杀局.XQF
+attr:32 size:1679 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮双横车对直车巡河.XQF
+attr:32 size:2598 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮横车对直车(红双横车式).XQF
+attr:32 size:2364 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮横车对直车(红肋车过河式).XQF
+attr:32 size:2703 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮横车对直车(进退有方).XQF
+attr:32 size:1829 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮横车攻直车不食弃马局.XQF
+attr:32 size:1853 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车两头蛇对双横车.XQF
+attr:32 size:2086 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(三子归边妙杀).XQF
+attr:32 size:1744 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(弃车陷阱局).XQF
+attr:32 size:1949 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(红五六炮).XQF
+attr:32 size:2056 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(红正马巡河车式).XQF
+attr:32 size:2458 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(红正马横车黑平炮通车式).XQF
+attr:32 size:2105 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车(黑挺3卒式).XQF
+attr:32 size:2045 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对横车（红过河车）.XQF
+attr:32 size:3084 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/顺炮直车对缓开车(盘旋出击).XQF
+attr:32 size:2414 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相对左中炮(黑挺7卒式).XQF
+attr:32 size:1833 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对中炮.XQF
+attr:32 size:1855 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对右中炮——红屏风马阵式.XQF
+attr:32 size:1796 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对右炮过宫——红起左横车过宫式.XQF
+attr:32 size:1633 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红三步虎阵式.XQF
+attr:32 size:1752 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红屏风马阵式（一）.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红屏风马阵式（二）.XQF
+attr:32 size:1405 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红屏风马阵式（五）.XQF
+attr:32 size:1633 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红屏风马阵式（六）.XQF
+attr:32 size:1356 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左中炮——红屏风马阵式（四）.XQF
+attr:32 size:3151 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左炮过宫 ——红进右正马出直车式.XQF
+attr:32 size:2145 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左炮过宫.XQF
+attr:32 size:2269 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左炮过宫——红右炮平三路打卒式.XQF
+attr:32 size:2058 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对左炮过宫——红进三兵式.XQF
+attr:32 size:1820 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局基本战术/飞相局对挺7卒——红进七兵式.XQF
+attr:32 size:26458 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjxygj9.CBL
+attr:32 size:27829 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj2.CBL
+attr:32 size:8086 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj3.CBL
+attr:32 size:14634 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj4.CBL
+attr:32 size:11011 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj5.CBL
+attr:32 size:10730 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj6.CBL
+attr:32 size:11730 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj7.CBL
+attr:32 size:5478 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/bjyxgj8.CBL
+attr:32 size:526 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/readme.txt
+attr:32 size:19213 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局疑形攻击/当头棒喝.CBL
+attr:32 size:1178 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/01列手炮攻大列手炮局.XQF
+attr:32 size:1178 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/02先手屏风马对中炮局.XQF
+attr:32 size:1208 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/03中炮过河车对屏风马局.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/04五六炮对反宫马.XQF
+attr:32 size:1186 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/05顺炮直车攻横车骑河拦炮.XQF
+attr:32 size:1148 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/06中炮弃车攻列手炮.XQF
+attr:32 size:1318 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/07列手炮破中炮槽头牵马.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/08中炮抢中兵攻列手炮.XQF
+attr:32 size:1354 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/09顺炮横车弃马攻直车.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/10中炮骑河车攻单提马.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/11三步虎攻中炮.XQF
+attr:32 size:1428 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/12起马对中炮巡河车.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/13五八炮直车弃马攻单提马.XQF
+attr:32 size:1282 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/14屏风马弃马破中炮巡河车.XQF
+attr:32 size:1194 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/15屏风马破中炮过河车.XQF
+attr:32 size:1164 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/16小列手炮弃象陷车局.XQF
+attr:32 size:1192 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/17顺炮横车对直车.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/18顺炮横车对直车.XQF
+attr:32 size:1402 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/19顺炮横车对直车.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/20大列手炮.XQF
+attr:32 size:1202 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/21大列手炮.XQF
+attr:32 size:1220 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/22五七炮对单提马.XQF
+attr:32 size:1308 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/23五七炮对单提马.XQF
+attr:32 size:1364 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/24中炮对屏风马双炮过河.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/25中炮过河车对屏风马左马盘河.XQF
+attr:32 size:1404 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/26中炮弃子夺势对屏风马右炮过河.XQF
+attr:32 size:1302 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/27顺炮弃马破单边封锁局.XQF
+attr:32 size:1204 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/28顺炮攻车扩先夺势局.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/29中炮弃马对反宫马.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/30中炮弃马对反宫马.XQF
+attr:32 size:1722 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/31仙人指路对弃卒局.XQF
+attr:32 size:1521 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/32先马后炮弃马夺势局.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/33中炮过河车对屏风马右横车.XQF
+attr:32 size:1430 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/34仙人指路对卒底炮.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/35仙人指路对卒底炮.XQF
+attr:32 size:1802 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/36过宫炮巡河车对中炮横车.XQF
+attr:32 size:1366 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/37飞象局穿宫马对中炮.XQF
+attr:32 size:1518 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/38飞象局穿宫马对中炮.XQF
+attr:32 size:1386 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/39过宫炮巡河车破中炮过河炮.XQF
+attr:32 size:1948 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/40屏风马退炮攻中炮局.XQF
+attr:32 size:1588 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/41过宫炮对中炮横车.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/42顺炮横车攻先补士角炮局.XQF
+attr:32 size:1406 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/43中炮巡河车攻鸳鸯炮.XQF
+attr:32 size:1498 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/44顺炮直车弃马攻横车.XQF
+attr:32 size:1426 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/45屏风马弃马陷车破中炮局.XQF
+attr:32 size:1569 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/46顺炮直车用马局.XQF
+attr:32 size:1338 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/47列炮破敛炮局.XQF
+attr:32 size:1692 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/48列炮破补士角炮局.XQF
+attr:32 size:1332 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/49顺炮横车攻直车不食弃马局.XQF
+attr:32 size:1512 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/一.布局陷阱选例/50左叠炮破中炮横车局.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/01绝妙的陷子局.XQF
+attr:32 size:1380 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/02马入归心，化凶为吉.XQF
+attr:32 size:1250 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/03虎口逞强勇闯关.XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/04弃车杀手出神招.XQF
+attr:32 size:1394 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/05诱斗布局，胸有成竹.XQF
+attr:32 size:1326 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/06石破天惊的弃子斗法.XQF
+attr:32 size:1278 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/07杀招狂风扫落叶.XQF
+attr:32 size:1388 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/08左右呼应神招现.XQF
+attr:32 size:1454 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/09冒险进袭入罗网.XQF
+attr:32 size:1316 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/10投鞭断流，抢出杀手.XQF
+attr:32 size:1376 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/11螳螂捕蝉，黄雀在后.XQF
+attr:32 size:1440 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/12奇阵怪招斗高低.XQF
+attr:32 size:1228 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/13三子归边杀势浓.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/14贪子失误败局定.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/15集中兵力，声东击西.XQF
+attr:32 size:1262 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/16全局在胸，稳中求胜.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/17调虎离山，乘虚而入.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/18轻举妄动入陷阱.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/19贪卒失相，后患无穷.XQF
+attr:32 size:1287 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/20边路联炮八卦阵.XQF
+attr:32 size:1248 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/21张网以待,中计败北.XQF
+attr:32 size:1226 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/22巧施诱着，打乱敌阵.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/23布局不当，入网失城.XQF
+attr:32 size:1184 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/24妙着连珠，直捣黄龙.XQF
+attr:32 size:1218 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/25躁进急攻，授人以隙.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/26弄巧成拙，溃不成军.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/27一着不慎满盘误.XQF
+attr:32 size:1268 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/28惊险弃车，妙手强攻.XQF
+attr:32 size:1284 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/29刚柔相济，随机应变.XQF
+attr:32 size:1238 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/30攻如闪电气势雄.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/31布疑阵诱敌深入.XQF
+attr:32 size:1264 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/32暗藏杀机，战火四起.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/33巧施妙计，石破天惊.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/34奇局奇阵奇观.XQF
+attr:32 size:1226 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/35抓弱点中路突破.XQF
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/36灵活多变，虎口拔牙.XQF
+attr:32 size:1216 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/37玄机奥妙新招术.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/38中“飞刀“九宫垂危.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/39识破圈套，静观其变.XQF
+attr:32 size:1200 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/40决策失误，一败涂地.XQF
+attr:32 size:1186 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/41以退为进，先守后攻.XQF
+attr:32 size:1224 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/42明不贪子，暗藏杀机.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/43虎口献车成绝杀.XQF
+attr:32 size:1236 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/44巧布陷阱，出奇制胜.XQF
+attr:32 size:1348 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/45针锋相对，妙手取胜.XQF
+attr:32 size:1232 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/46弃车取势，空炮镇中.XQF
+attr:32 size:1274 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/47挥卒反击，弃车杀马.XQF
+attr:32 size:1260 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/48摧毁防线，威逼九宫.XQF
+attr:32 size:1334 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/49贪子失势遭进攻.XQF
+attr:32 size:1256 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/二.名手实战典型对局选例/50妙手陷车奠胜基.XQF
+attr:32 size:743 chessManual/中国象棋棋谱大全.xqf/布局/象棋布局陷阱100局/几点说明.txt
+attr:32 size:12750 chessManual/中国象棋棋谱大全.xqf/布局/边马局.XQF
+attr:32 size:43990 chessManual/中国象棋棋谱大全.xqf/布局/过宫包.XQF
+attr:32 size:1872 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【卒3进1】.XQF
+attr:32 size:3307 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【卒7进1】.XQF
+attr:32 size:1410 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【炮8平3】.XQF
+attr:32 size:32112 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【炮8平5】.XQF
+attr:32 size:3354 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【象3进5】.XQF
+attr:32 size:5366 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【车9进1】.XQF
+attr:32 size:16612 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【马8进7】.XQF
+attr:32 size:1750 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮/过宫炮【马8进9】.XQF
+attr:32 size:4792 chessManual/中国象棋棋谱大全.xqf/布局/过宫炮对左中炮.XQF
+attr:32 size:15428 chessManual/中国象棋棋谱大全.xqf/布局/静弈斋象棋谱 - 布局系列 - 中炮对右三步虎.XQF
+attr:32 size:3900 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第1局 顺炮直车对缓出车、第1种、黑右炮过河变例.XQF
+attr:32 size:1978 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第1局 顺炮直车对缓出车、第2种、红跳边马形成“五、七炮”变例.XQF
+attr:32 size:2412 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第1局 顺炮直车对缓出车、第3种、红跳边马后黑抬左横车变例.XQF
+attr:32 size:2089 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第1局 顺炮直车对缓出车、第4种、红跳边马后黑挺边卒制马变例.XQF
+attr:32 size:2747 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第2局 顺炮直车对横车、第1种、黑抬左横车变例.XQF
+attr:32 size:4328 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第2局 顺炮直车对横车、第2种、黑抬右横车变例.XQF
+attr:32 size:2371 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第3局 顺炮两头蛇对直横车、第1种、黑直车巡河变例.XQF
+attr:32 size:2004 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第3局 顺炮两头蛇对直横车、第2种、黑横车占肋变例.XQF
+attr:32 size:1836 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第3局 顺炮两头蛇对直横车、第3种、红平边炮亮车变例.XQF
+attr:32 size:1804 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/第09章 顺炮/第4局 顺炮横车两头蛇对双直车.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/一天七元多(日帅)-和-冀中小仙凤(月将) 03-01-24.XQF
+attr:32 size:1126 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/一天七元多(日帅)-负-晋都棋牌周(9段) 02-11-27.XQF
+attr:32 size:1342 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/一盘棋(9段)-负-方小舟(月将) 02-09-21.XQF
+attr:32 size:1496 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/三疯(9段)-胜-暗夜奔雷(7段) 02-08-12.XQF
+attr:32 size:1402 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/三袁里之星(6段)-和-男你家(7段) 02-10-27.XQF
+attr:32 size:1136 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/与棋无争(月将)-负-象棋世家(8段) 02-09-18.XQF
+attr:32 size:1396 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/世家7d胜1p.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象宾客王(9级)-胜-丧门神鲍旭(2段) 02-10-13.XQF
+attr:32 size:1418 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象宾客王(9级)-胜-流星堂龙爷(9段) 02-10-27.XQF
+attr:32 size:1454 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象宾客王(9级)-负-龙腾战旗(天帝).XQF
+attr:32 size:1646 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象梦之王(2段)-负-顾哥(日帅) 02-09-22.XQF
+attr:32 size:1350 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象牛牛(月将)-负-风之父(人王) 03-06-17.XQF
+attr:32 size:1642 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象玫瑰王(1段)-和-春花秋月(月将) 02-09-22.XQF
+attr:32 size:1510 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象英特王(9舵)-负-椅子(9级) 02-04-14.XQF
+attr:32 size:1234 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象龙之王(3级)-胜-剑月轩剑绅(7级) 02-04-13.XQF
+attr:32 size:1642 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/中象龙之王(3级)-胜-北京好女孩(4级) 02-04-07.XQF
+attr:32 size:2234 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/为棋走天涯(日帅)-和-军王(月将) 02-12-02.XQF
+attr:32 size:1622 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/亚非兄(9段)-负-暗夜奔雷(月将) 02-11-18.XQF
+attr:32 size:1266 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/人头猪脑(1段)-胜-走神帮先锋(3级) 02-04-20.XQF
+attr:32 size:1334 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/侠女陈丽淳(日帅)-负-蒋萍(至尊) 03-11-11.XQF
+attr:32 size:2186 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/侠女陈丽淳(月将)-胜-二脚趾头短(月将) 03-06-28.XQF
+attr:32 size:1780 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/内蒙古武立军先负湖南谭才文.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/再回首(日帅)-和-凌未风(天帝) 03-07-19.XQF
+attr:32 size:1286 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/劈雳火巨明(8段)-负-顾哥(日帅) 02-10-15.XQF
+attr:32 size:1406 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/千山玉佛(天帝)-负-雅趣居士(月将) 03-03-01.XQF
+attr:32 size:1206 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南云狂客(月将)-和-弈天大师傅(月将) 03-02-14.XQF
+attr:32 size:1378 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南充罗建林(4段)-胜-梦幻联队鼓(6舵) 02-09-29.XQF
+attr:32 size:1222 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南国一支花(日帅)-负-KAYW(天帝) 03-03-09.XQF
+attr:32 size:1950 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南国一支花(月将)-负-晋都棋牌周(9段) 02-11-27.XQF
+attr:32 size:1372 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南方棋院 陈丽淳（红先和）江苏张国凤.XQF
+attr:32 size:1458 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南疆少女(天帝)-胜-将族(月将) 03-10-02.XQF
+attr:32 size:1446 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南疆少女(天帝)-负-鹏城狂刀(月将) 03-05-15.XQF
+attr:32 size:1290 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/南疆少女(月将)-胜-豪气冲天(日帅) 02-10-15.XQF
+attr:32 size:1448 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/双子座撒加(1弦)-胜-我分特(1弦) 2003年5月21日 16点14分.XQF
+attr:32 size:1498 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/听风的歌(2段)-胜-梦幻联队冰(7级) 02-04-06.XQF
+attr:32 size:1254 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/吴川快刀(月将)-负-大圆(月将) 02-12-01.XQF
+attr:32 size:1346 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/周不错(7段)-和-男你家(7段) 02-10-26.XQF
+attr:32 size:1214 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/喜欢静(4段)-负-阳春棋王(月将).XQF
+attr:32 size:1344 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/四川七曲山 章文彤 (红先胜) 安徽 梅娜.XQF
+attr:32 size:1508 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/四川七曲山 郭瑞霞 (红先和) 山西 董波.XQF
+attr:32 size:1258 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/圆月(3段)-胜-暗黑棋院箭(3段) 02-04-13.XQF
+attr:32 size:1314 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/墨香居士(月将)-胜-雄霸中国(月将) 03-09-29.XQF
+attr:32 size:1314 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/天兵神将(2段)-胜-徐健秒(4舵) 02-10-27.XQF
+attr:32 size:1298 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/天兵神将(2段)-胜-梦幻联队升(8舵) 02-09-29.XQF
+attr:32 size:1330 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/天才宝宝(4弦)-胜-男你家(4弦) 02-10-14.XQF
+attr:32 size:1210 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/天翼(月将)-和-全家冠军(月将) 03-11-06.XQF
+attr:32 size:1810 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/网络顺炮集1/太虚幻境(7级)-和-醒灵(2段) 02-04-13.XQF
+attr:32 size:672 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之王嘉良帅门车破红补士过河车.xqn
+attr:32 size:643 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之避免天马行空红抢到先手.xqn
+attr:32 size:702 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之黑天马行空对红过河车直攻.xqn
+attr:32 size:774 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之黑方孟氏进正马破57炮.xqn
+attr:32 size:773 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之黑方孟氏进正马破57炮之应红平车反弃炮.xqn
+attr:32 size:879 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮之黑方孟氏进正马破57炮之应红进7兵.xqn
+attr:32 size:245 chessManual/中国象棋棋谱大全.xqf/布局/顺炮全集/顺炮全集总结.txt
+attr:32 size:283463 chessManual/中国象棋棋谱大全.xqf/布局/飞相全集.XQF
+attr:32 size:5047 chessManual/中国象棋棋谱大全.xqf/布局/飞相局对右士角炮.XQF
+attr:32 size:69616 chessManual/中国象棋棋谱大全.xqf/布局/马类布局大全2003版.XQF
+chessManual/中国象棋棋谱大全 包含: 5790个文件。
+
+总共包括:5949个文件。

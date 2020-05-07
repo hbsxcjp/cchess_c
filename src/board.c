@@ -73,9 +73,10 @@ bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowC
 inline Seat getSeat_rc(Board board, int row, int col)
 {
     //*
-    if (!(row >= 0 && row < BOARDROW && col >= 0 && col < BOARDCOL)) {
+    if (!(isValidRow__(row) && isValidCol__(col))) {
         wchar_t wstr[2 * WIDEWCHARSIZE];
-        wprintf(L"%srow:%d col:%d\n", getBoardString(wstr, board), row, col);
+        wprintf(L"\n%srow:%d col:%d\n", getBoardString(wstr, board), row, col);
+        fflush(stdout);
     }
     //*/
     assert(isValidRow__(row) && isValidCol__(col));

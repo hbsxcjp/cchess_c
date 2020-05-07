@@ -15,7 +15,8 @@ void delAspects(Aspects aspects);
 
 void setAspects_m(Move move, void* aspects, void* board);
 Aspects getAspects_bm(Board board, Move rootMove);
-Aspects getAspects_fin(const char* fileName);
+Aspects getAspects_fs(const char* fileName);
+Aspects getAspects_fb(const char* fileName);
 
 int getAspects_length(Aspects aspects);
 // 取得局面的最近的着法记录

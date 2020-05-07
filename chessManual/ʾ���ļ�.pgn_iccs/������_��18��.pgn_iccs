@@ -12,10 +12,7 @@
 [Result "红胜"]
 [Version "18"]
 
- 
-{　　这局棋，因马与卒的距离较远，捕捉下来并不轻松。应认真体会各个步骤的思路。
-}
- 1. c2d4  d8d9 (1. ... d8d7 (1. ... g6g5 2. d4c6  d8d9 3. c6e5  d9e9 4. e0d0  e9e8 5. d0d1  e8f8 6. e5g6  f8e8 7. g6i5  e8e9 8. d1d2  e9e8 9. i5h7  g5g4 10. h7f6  e8e9 11. f6g4 )2. d4e6  d7e7 3. e0d0  e7f7 (3. ... e7e8 4. e6g7  e8e9 5. g7i6  e9e8 )4. e6f4  g6g5 5. f4g6  g5g4 6. g6e5 )2. d4e6  
+1. c2d4  d8d9 (1. ... d8d7 (1. ... g6g5 2. d4c6  d8d9 3. c6e5  d9e9 4. e0d0  e9e8 5. d0d1  e8f8 6. e5g6  f8e8 7. g6i5  e8e9 8. d1d2  e9e8 9. i5h7  g5g4 10. h7f6  e8e9 11. f6g4 )2. d4e6  d7e7 3. e0d0  e7f7 (3. ... e7e8 4. e6g7  e8e9 5. g7i6  e9e8 )4. e6f4  g6g5 5. f4g6  g5g4 6. g6e5 )2. d4e6  
 {　　控制卒将，是必走的一步棋。
 }
   d9e9 3. e0d0  
