@@ -7,6 +7,7 @@
 Pieces newPieces(void);
 // 释放一副棋子
 void delPieces(Pieces pieces);
+
 // 遍历每个棋子
 void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr);
 

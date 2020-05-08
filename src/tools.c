@@ -45,7 +45,7 @@ int getPrime(int size)
     return primes[i];
 }
 
-// BKDR Hash Function
+/*/ BKDR Hash Function
 unsigned int BKDRHash(const wchar_t* wstr)
 {
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
@@ -54,6 +54,30 @@ unsigned int BKDRHash(const wchar_t* wstr)
     while (*wstr) {
         hash = hash * seed + (*wstr++);
     }
+
+    return (hash & 0x7FFFFFFF);
+}
+//*/
+
+unsigned int BKDRHash(const void* aspSource, SourceType st)
+{
+    unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+
+    unsigned char *src, len;
+    switch (st) {
+    case FEN_MRStr: {
+        wchar_t* wstr = (wchar_t*)aspSource;
+        len = wcslen(wstr);
+        wcstombs(src, wstr, len);
+    } break;
+    case MD5_MRValue: {
+        src = (unsigned char*)aspSource;
+        len = MD5LEN;
+    } break;
+    }
+    for (int i = 0; i < len; ++i)
+        hash = hash * seed + src[i];
 
     return (hash & 0x7FFFFFFF);
 }

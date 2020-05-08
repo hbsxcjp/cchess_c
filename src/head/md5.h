@@ -6,6 +6,6 @@
 void getMD5(unsigned char* digest, char* source);
 
 // 比较MD5值数组是否相等
-bool isSame(unsigned char* src, unsigned char* des);
+bool MD5IsSame(unsigned char* src, unsigned char* des);
 
 #endif

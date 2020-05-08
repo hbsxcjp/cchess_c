@@ -85,6 +85,8 @@ typedef const struct Board* CBoard;
 //=================================================================
 //棋局相关的类型
 //=================================================================
+#define MD5LEN 16
+
 // 棋局存储类型
 typedef enum {
     XQF,
@@ -95,6 +97,13 @@ typedef enum {
     PGN_CC,
     NOTFMT
 } RecFormat;
+
+// 局面存储类型
+typedef enum {
+    FEN_MovePtr,
+    FEN_MRStr,
+    MD5_MRValue
+} SourceType;
 
 // 着法类型
 typedef struct Move* Move;

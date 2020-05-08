@@ -20,7 +20,7 @@ Aspects getAspects_fb(const char* fileName);
 
 int getAspects_length(Aspects aspects);
 // 取得局面的最近的着法记录
-MoveRec getAspect(CAspects aspects, const wchar_t* FEN);
+MoveRec getAspect(CAspects aspects, const void* aspSource, SourceType st);
 // 删除某局面下的某着法，如果局面下已没有着法则删除局面
 //bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move);
 
