@@ -13,8 +13,8 @@ int getPrimes(int* primes, int bitCount);
 int getPrime(int size);
 
 // 哈希函数
-//unsigned int BKDRHash(const wchar_t* wstr);
-unsigned int BKDRHash(const void* aspSource, SourceType st);
+unsigned int BKDRHash_c(unsigned char* src, int size);
+unsigned int BKDRHash_s(const wchar_t* wstr);
 unsigned int DJBHash(const wchar_t* wstr);
 unsigned int SDBMHash(const wchar_t* wstr);
 

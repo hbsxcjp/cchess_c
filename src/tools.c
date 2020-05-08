@@ -45,9 +45,29 @@ int getPrime(int size)
     return primes[i];
 }
 
-/*/ BKDR Hash Function
-unsigned int BKDRHash(const wchar_t* wstr)
+// BKDR Hash Function
+
+unsigned int BKDRHash_c(unsigned char* src, int size)
 {
+    unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
+    unsigned int hash = 0;
+
+    for (int i = 0; i < size; ++i)
+        hash = hash * seed + src[i];
+
+    return (hash & 0x7FFFFFFF);
+}
+
+unsigned int BKDRHash_s(const wchar_t* wstr)
+{
+    //*
+    int len = wcslen(wstr) * 2;
+    char str[len + 1];
+    wcstombs(str, wstr, len);
+    return BKDRHash_c((unsigned char*)str, strlen(str));
+    //*/
+
+    /*
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
 
@@ -56,30 +76,7 @@ unsigned int BKDRHash(const wchar_t* wstr)
     }
 
     return (hash & 0x7FFFFFFF);
-}
-//*/
-
-unsigned int BKDRHash(const void* aspSource, SourceType st)
-{
-    unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
-    unsigned int hash = 0;
-
-    unsigned char *src, len;
-    switch (st) {
-    case FEN_MRStr: {
-        wchar_t* wstr = (wchar_t*)aspSource;
-        len = wcslen(wstr);
-        wcstombs(src, wstr, len);
-    } break;
-    case MD5_MRValue: {
-        src = (unsigned char*)aspSource;
-        len = MD5LEN;
-    } break;
-    }
-    for (int i = 0; i < len; ++i)
-        hash = hash * seed + src[i];
-
-    return (hash & 0x7FFFFFFF);
+    //*/
 }
 
 unsigned int DJBHash(const wchar_t* wstr)

@@ -220,7 +220,7 @@ void getMD5(unsigned char* digest, char* source)
 
 bool MD5IsSame(unsigned char* src, unsigned char* des)
 {
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < MD5LEN; ++i)
         if (src[i] != des[i])
             return false;
     return true;

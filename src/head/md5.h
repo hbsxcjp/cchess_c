@@ -2,6 +2,8 @@
 #define MD5_H
 #include <stdbool.h>
 
+#define MD5LEN 16
+
 // 取得字符串的MD5值数组[16]
 void getMD5(unsigned char* digest, char* source);
 

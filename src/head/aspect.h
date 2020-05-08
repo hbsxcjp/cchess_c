@@ -25,7 +25,7 @@ MoveRec getAspect(CAspects aspects, const void* aspSource, SourceType st);
 //bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move);
 
 // 取得局面循环着法的距离
-int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
+//int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
 
 // 遍历每个局面
 void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
