@@ -389,7 +389,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -693,18 +693,20 @@ static void transFile__(FileInfo fileInfo, void* ptr)
         return;
     //printf("%d: %s\n", __LINE__, fileName);
     //fflush(stdout);
-    OperateDirData odata = ptr;
+    OperateDirData odata = (OperateDirData)ptr;
     ChessManual cm = newChessManual(fileName);
 
-    char toFileName[FILENAME_MAX], toDirName[FILENAME_MAX];
-    snprintf(toDirName, FILENAME_MAX, "%s%s", odata->toDir, fileName); // + strlen(odata->fromDir)
+    char toDirName[FILENAME_MAX];
+    strcpy(toDirName, odata->toDir);
+    strcat(toDirName, fileName + strlen(odata->fromDir)); //替换源目录名
     getDirName(toDirName);
     if (strlen(toDirName) > 0 && access(toDirName, 0) != 0) {
         mkdir(toDirName);
-        //printf("%d: %s\n", __LINE__, toDirName);
+        //printf("%d: mkdir-> %s\n", __LINE__, toDirName);
         //fflush(stdout);
     }
 
+    char toFileName[FILENAME_MAX];
     transFileExtName(fileName, EXTNAMES[odata->tofmt]);
     snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
     //printf("%d: %s\n", __LINE__, toFileName);
@@ -770,7 +772,7 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     delAspects(aspects);
     fclose(fout);
 
-    fout = fopen("asp_1", "w");
+    fout = fopen("asp1", "w");
     aspects = getAspects_fs("asp");
     storeAspects(fout, aspects);
     analyzeAspects(fout, aspects);

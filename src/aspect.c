@@ -48,11 +48,12 @@ static MoveRec newMoveRec__(MoveRec pmr, const void* mrSource, SourceType st)
         mr->rowcols = getRowCols_m(mr->move);
         mr->number = 1;
         pmr = mr;
-        while ((pmr = pmr->preMoveRec) && pmr->number && (mr->rowcols == pmr->rowcols)) {
-            mr->number += pmr->number;
-            pmr->number = 0; // 标记重复
-            break; // 再往前推，如有重复在此之前也已被标记
-        }
+        while ((pmr = pmr->preMoveRec))
+            if (pmr->number && (mr->rowcols == pmr->rowcols)) {
+                mr->number += pmr->number;
+                pmr->number = 0; // 标记重复
+                break; // 再往前推，如有重复在此之前也已被标记
+            }
         mr->weight = 0; //待完善
     } break;
     case FEN_MRStr:
@@ -205,66 +206,52 @@ static unsigned int BKDRHash__(const void* aspSource, SourceType st)
     return st == MD5_MRValue ? BKDRHash_c((unsigned char*)aspSource, MD5LEN) : BKDRHash_s((const wchar_t*)aspSource);
 }
 
-// 取得局面哈希值取模后的数组序号值
-inline static int getAspectIndex__(const void* aspSource, SourceType st, int size)
-{
-    return BKDRHash__(aspSource, st) % size;
-}
-
 // 取得最后的局面记录指针
 inline static Aspect* getLastAspect__(CAspects aspects, const void* aspSource, SourceType st)
 {
-    return &aspects->lastAspects[getAspectIndex__(aspSource, st, aspects->size)];
-}
-
-// 判断给定源值是否与局面值相同
-inline static bool aspectValueIsSame__(Aspect asp, const void* aspSource, SourceType st)
-{
-    return (st <= FEN_MRStr ? wcscmp(asp->FEN, (wchar_t*)aspSource) == 0
-                            : MD5IsSame(asp->md5, (unsigned char*)aspSource)); // MD5_MRValue
+    return &aspects->lastAspects[BKDRHash__(aspSource, st) % aspects->size];
 }
 
 // 取得相同哈希值下某个局面的记录
 static Aspect getAspect__(Aspect asp, const void* aspSource, SourceType st)
 {
-    while (asp && !aspectValueIsSame__(asp, aspSource, st))
+    while (asp && !(st <= FEN_MRStr ? wcscmp(asp->FEN, (wchar_t*)aspSource) == 0 : MD5IsSame(asp->md5, (unsigned char*)aspSource)))
         asp = asp->preAspect;
     return asp;
 }
 
-MoveRec getAspect(CAspects aspects, const void* aspSource, SourceType st)
+/*
+static MoveRec getMoveRec__(CAspects aspects, const void* aspSource, SourceType st)
 {
     Aspect asp = getAspect__(*getLastAspect__(aspects, aspSource, st), aspSource, st);
     return asp ? asp->lastMoveRec : NULL;
 }
+//*/
 
 // 检查容量，如果超出装载因子则扩容, 原局面(指针数组下内容)全面迁移至新表
 static void checkAspectsCapacity__(Aspects aspects, SourceType st)
 {
     if (aspects->aspCount < aspects->size * aspects->loadfactor || aspects->size == INT_MAX)
         return;
-    int size = getPrime(aspects->size);
-    //printf("%d: %d\n", __LINE__, size);
-    //fflush(stdout);
 
     Aspect *oldLastAspects = aspects->lastAspects,
-           *newLastAspects = malloc(size * sizeof(Aspect*)),
            asp, preAsp, *pasp;
-    for (int i = 0; i < size; ++i)
-        newLastAspects[i] = NULL;
-    for (int i = 0; i < aspects->size; ++i) {
+    int oldSize = aspects->size;
+    aspects->size = getPrime(oldSize);
+    aspects->lastAspects = malloc(aspects->size * sizeof(Aspect*));
+    for (int i = 0; i < aspects->size; ++i)
+        aspects->lastAspects[i] = NULL;
+    for (int i = 0; i < oldSize; ++i) {
         asp = oldLastAspects[i];
         while (asp) {
             preAsp = asp->preAspect;
             const void* source = (st == MD5_MRValue ? (const void*)asp->md5 : (const void*)asp->FEN);
-            pasp = &newLastAspects[getAspectIndex__(source, st, size)];
+            pasp = getLastAspect__(aspects, source, st);
             asp->preAspect = *pasp;
             *pasp = asp;
             asp = preAsp;
         };
     }
-    aspects->size = size;
-    aspects->lastAspects = newLastAspects;
     free(oldLastAspects);
 }
 
@@ -325,7 +312,7 @@ bool removeAspect(Aspects aspects, const wchar_t* FEN, CMove move)
 int getLoopBoutCount(CAspects aspects, const wchar_t* FEN)
 {
     int boutCount = 0;
-    MoveRec lmr = getAspect(aspects, FEN, FEN_MovePtr), mr = lmr;
+    MoveRec lmr = getMoveRec__(aspects, FEN, FEN_MovePtr), mr = lmr;
     if (lmr && lmr->move)
         while ((mr = mr->preMoveRec))
             if (isSameMove(lmr->move, mr->move) && isConnected(lmr->move, mr->move)) {
@@ -342,12 +329,11 @@ static void moveRecLink__(MoveRec mr, void applyMr(MoveRec, void*), void* ptr)
     //    return;
     //applyMr(mr, ptr);
     //moveRecLink__(mr->preMoveRec, applyMr, ptr);//递归方式, 不能按顺序还原
-    int count = 0;
-    MoveRec mrs[FILENAME_MAX];
-    do
-        mrs[count++] = mr;
-    while ((mr = mr->preMoveRec));
-    for (int i = count - 1; i >= 0; --i)
+    int index = 0;
+    MoveRec mrs[FILENAME_MAX] = { mr };
+    while ((mr = mr->preMoveRec))
+        mrs[++index] = mr;
+    for (int i = index; i >= 0; --i)
         applyMr(mrs[i], ptr);
 }
 
