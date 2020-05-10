@@ -389,7 +389,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
         wcstombs(name, cm->info[i][0], WCHARSIZE);
         wcstombs(value, cm->info[i][1], WCHARSIZE);
         cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]){ name, value }, 2));
+            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -677,7 +677,7 @@ static void fileToAspects__(FileInfo fileInfo, void* aspects)
     if (!fileIsRight__(fileName))
         return;
     ChessManual cm = newChessManual(fileName);
-    moveMap(cm->rootMove, setAspects_m, (Aspects)aspects, cm->board);
+    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
     delChessManual(cm);
 }
 
@@ -752,7 +752,7 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
-    Aspects aspects = newAspects();
+    Aspects aspects = newAspects(FEN_MovePtr);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
@@ -768,17 +768,34 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     }
 
     FILE* fout = fopen("asp", "w");
-    storeAspects(fout, aspects);
-    delAspects(aspects);
-    fclose(fout);
-
-    fout = fopen("asp1", "w");
-    aspects = getAspects_fs("asp");
-    storeAspects(fout, aspects);
+    storeAspectStr(fout, aspects);
     analyzeAspects(fout, aspects);
-
     delAspects(aspects);
     fclose(fout);
+
+    //*
+    fout = fopen("asp1", "w");
+    aspects = newAspects(FEN_MRStr);
+    setAspects_fs("asp", aspects);
+    storeAspectStr(fout, aspects);
+    analyzeAspects(fout, aspects);
+    delAspects(aspects);
+    fclose(fout);
+    //*/
+
+    /*
+    fout = fopen("amd", "w");
+    storeAspectMD5(fout, aspects);
+    delAspects(aspects);
+    fclose(fout);
+
+    fout = fopen("amd1", "w");
+    aspects = getAspects_fb("amd");
+    storeAspectStr(fout, aspects);
+    analyzeAspects(fout, aspects);
+    delAspects(aspects);
+    fclose(fout);
+    //*/
 }
 
 // 测试本翻译单元各种对象、函数
@@ -823,15 +840,12 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    Aspects aspects = getAspects_bm(cm->board, cm->rootMove);
-    writeAspects(fout, aspects);
-    storeAspects(fout, aspects);
+    Aspects aspects = newAspects(FEN_MovePtr);
+    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
+    writeAspectStr(fout, aspects);
+    storeAspectStr(fout, aspects);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
-
-    //aspects = getAspects_fs("asp");
-    //delAspects(aspects);
-    //fclose(fout);
 
     delChessManual(cm);
 }
