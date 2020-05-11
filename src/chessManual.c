@@ -752,7 +752,8 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
-    Aspects aspects = newAspects(FEN_MovePtr);
+    //Aspects aspects = newAspects(FEN_MovePtr);
+    Aspects aspects = newAspects(MD5_MRValue);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };

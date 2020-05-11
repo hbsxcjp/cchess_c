@@ -29,7 +29,7 @@ PieChars:rnbakabnr__________c_____c_p_p_p_p_p__________________P_P_P_P_P_C_____C
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04
+board：@001A8D60 bottomColor:0 04红帅K@04
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 车━马━相━仕━帅━仕━相━马━车
@@ -53,7 +53,7 @@ board：@000000000016A030 bottomColor:0 04红帅K@04
 車━馬━象━士━将━士━象━馬━車
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000016A030 bottomColor:1 04黑将k@04 ct:0
+board：@001A8D60 bottomColor:1 04黑将k@04 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 車━馬━象━士━将━士━象━馬━車
@@ -77,7 +77,7 @@ board：@000000000016A030 bottomColor:1 04黑将k@04 ct:0
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 車━馬━象━士━将━士━象━馬━車
@@ -101,7 +101,7 @@ board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
 车━马━相━仕━帅━仕━相━马━车
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:2
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 94黑将k@94
 红：04红帅K@04 03红仕A@03 05红仕A@05 02红相B@02 06红相B@06 01红马N@01 07红马N@07 00红车R@00 08红车R@08 21红炮C@21 27红炮C@27 30红兵P@30 32红兵P@32 34红兵P@34 36红兵P@36 38红兵P@38 count:16
 黑：94黑将k@94 93黑士a@93 95黑士a@95 92黑象b@92 96黑象b@96 91黑馬n@91 97黑馬n@97 90黑車r@90 98黑車r@98 71黑砲c@71 77黑砲c@77 60黑卒p@60 62黑卒p@62 64黑卒p@64 66黑卒p@66 68黑卒p@68 count:16
@@ -166,7 +166,7 @@ PieChars:_____a_______ak__r______R__________p___________________________B____N__
 ┗━┷━┷━砲━┷━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 14红帅K@14
+board：@001A8D60 bottomColor:0 14红帅K@14
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━┯━┯━┯━仕━┯━┯━┓
@@ -190,7 +190,7 @@ board：@000000000016A030 bottomColor:0 14红帅K@14
 ┗━┷━┷━炮━┷━┷━┷━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000016A030 bottomColor:1 14黑将k@14 ct:0
+board：@001A8D60 bottomColor:1 14黑将k@14 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━┯━┯━炮━┯━┯━┓
@@ -214,7 +214,7 @@ board：@000000000016A030 bottomColor:1 14黑将k@14 ct:0
 ┗━┷━┷━仕━┷━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 13红帅K@13 ct:1
+board：@001A8D60 bottomColor:0 13红帅K@13 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━炮━┯━┯━┯━┯━┓
@@ -238,7 +238,7 @@ board：@000000000016A030 bottomColor:0 13红帅K@13 ct:1
 ┗━┷━┷━┷━┷━仕━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 15红帅K@15 ct:2
+board：@001A8D60 bottomColor:0 15红帅K@15 ct:2
 15红帅K@15 <==> 84黑将k@84
 红：15红帅K@15 05红仕A@05 14红仕A@14 18红车R@18 93红炮C@93 38红兵P@38 count:6
 黑：84黑将k@84 70黑象b@70 78黑象b@78 75黑馬n@75 26黑車r@26 count:5
@@ -282,7 +282,7 @@ PieChars:__b_kab______a________c_________________________R_______________C______
 ┗━┷━相━帅━┷━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 03红帅K@03
+board：@001A8D60 bottomColor:0 03红帅K@03
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━相━┯━帅━仕━相━┯━┓
@@ -306,7 +306,7 @@ board：@000000000016A030 bottomColor:0 03红帅K@03
 ┗━┷━象━将━┷━┷━象━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000016A030 bottomColor:1 03黑将k@03 ct:0
+board：@001A8D60 bottomColor:1 03黑将k@03 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━┯━┯━将━象━┯━┓
@@ -330,7 +330,7 @@ board：@000000000016A030 bottomColor:1 03黑将k@03 ct:0
 ┗━┷━相━仕━帅━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━将━┯━┯━象━┯━┓
@@ -354,7 +354,7 @@ board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
 ┗━┷━相━┷━帅━仕━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:2
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 93黑将k@93
 红：04红帅K@04 05红仕A@05 14红仕A@14 02红相B@02 06红相B@06 84红车R@84 24红炮C@24 count:7
 黑：93黑将k@93 92黑象b@92 96黑象b@96 53黑車r@53 71黑砲c@71 count:5
@@ -399,7 +399,7 @@ PieChars:____kab______a________b_______N__________________N________n________B___
 ┗━┷━┷━仕━帅━┷━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04
+board：@001A8D60 bottomColor:0 04红帅K@04
 　　　　　　　红　方　　　　　　　
 一　二　三　四　五　六　七　八　九
 ┏━┯━┯━┯━帅━仕━相━┯━┓
@@ -423,7 +423,7 @@ board：@000000000016A030 bottomColor:0 04红帅K@04
 ┗━┷━┷━士━将━┷━象━┷━┛
 ９　８　７　６　５　４　３　２　１
 　　　　　　　黑　方　　　　　　　
-board：@000000000016A030 bottomColor:1 04黑将k@04 ct:0
+board：@001A8D60 bottomColor:1 04黑将k@04 ct:0
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━象━┯━将━士━┯━┯━┓
@@ -447,7 +447,7 @@ board：@000000000016A030 bottomColor:1 04黑将k@04 ct:0
 ┗━┷━相━仕━帅━┷━┷━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:1
 　　　　　　　黑　方　　　　　　　
 １　２　３　４　５　６　７　８　９
 ┏━┯━┯━士━将━┯━象━┯━┓
@@ -471,7 +471,7 @@ board：@000000000016A030 bottomColor:0 04红帅K@04 ct:1
 ┗━┷━┷━┷━帅━仕━相━┷━┛
 九　八　七　六　五　四　三　二　一
 　　　　　　　红　方　　　　　　　
-board：@000000000016A030 bottomColor:0 04红帅K@04 ct:2
+board：@001A8D60 bottomColor:0 04红帅K@04 ct:2
 04红帅K@04 <==> 94黑将k@94
 红：04红帅K@04 05红仕A@05 14红仕A@14 06红相B@06 24红相B@24 64红马N@64 count:6
 黑：94黑将k@94 84黑士a@84 93黑士a@93 74黑象b@74 96黑象b@96 33黑馬n@33 54黑馬n@54 count:7
@@ -490,87 +490,87 @@ board：@000000000016A030 bottomColor:0 04红帅K@04 ct:2
 54黑馬n@54 >>【66空 35空 42空 46空 62空 】5 =【66空 35空 42空 46空 62空 】5 +【】0
 
 FEN:9/3k5/b7b/9/9/9/8P/6rn1/4AK1R1/4CA3
-	move@:000000000016C720 iccs:h1h2
+	move@:001AC058 iccs:h1h2
 FEN:9/3k5/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3
-	move@:000000000016C960 iccs:i1h1
+	move@:001AC018 iccs:i1h1
 FEN:9/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/3C1A3
-	move@:00000000006E0250 iccs:g5e4
+	move@:001ACB18 iccs:g5e4
 FEN:9/3k5/b7b/9/9/9/8r/5K3/4A4/3AC4
-	move@:00000000006E0790 iccs:i3f3
+	move@:001ABFD8 iccs:i3f3
 FEN:9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/3C1A3
-	move@:00000000006E0C10 iccs:d0e0
+	move@:001AC518 iccs:d0e0
 FEN:9/3k5/b7b/9/9/9/8P/9/5K1r1/3ACA3
-	move@:000000000016C840 iccs:f1f2
+	move@:001AC098 iccs:f1f2
 FEN:9/4k4/b7b/9/9/4n4/8P/6r2/4AK2R/4CA3
-	move@:00000000006E07F0 iccs:g2f2
+	move@:001AC758 iccs:g2f2
 FEN:9/3k5/b7b/9/9/9/5r3/5K3/4A4/3AC4
-	move@:00000000006E0670 iccs:f2e2
+	move@:001AC118 iccs:f2e2
 FEN:9/3k5/b7b/9/9/9/8P/5K3/7r1/3ACA3
-	move@:000000000016C9C0 iccs:h1h3
+	move@:001AC218 iccs:h1h3
 FEN:9/4k4/b7b/9/9/4n4/8P/5r3/4AK2R/4CA3
-	move@:00000000006E0A90 iccs:e1f2
+	move@:001AC898 iccs:e1f2
 FEN:9/3k5/b7b/9/9/9/5r2P/5K3/4A4/3AC4
-	move@:00000000006E0D90 iccs:f2e2
+	move@:001AC0D8 iccs:f2e2
 FEN:9/4k4/b7b/9/9/4n4/8P/5A3/5K2R/4CA3
-	move@:00000000006E0730 iccs:e4g3
+	move@:001ACA58 iccs:e4g3
 FEN:3C5/4k4/b7b/9/6n2/9/8P/6r2/4AK2R/5A3
-	move@:00000000006E06D0 iccs:i3i4
-	move@:00000000006E03D0 iccs:e1f2
-	move@:00000000006E0190 iccs:d9d2
-	move@:00000000006E0490 iccs:d9d0
+	move@:001AC498 iccs:i3i4
+	move@:001AC458 iccs:e1f2
+	move@:001AC3D8 iccs:d9d2
+	move@:001AC398 iccs:d9d0
 FEN:9/3k5/b7b/9/9/9/8P/6rR1/4AK3/4CA3
-	move@:000000000016C780 iccs:g2h2
+	move@:001ABE58 iccs:g2h2
 FEN:9/3k5/b7b/9/9/6n2/8P/6r2/4AK1R1/4CA3
-	move@:000000000016C4E0 iccs:g4h2
+	move@:001ABF58 iccs:g4h2
 FEN:9/3k5/b7b/9/9/9/8r/4K4/4A4/3AC4
-	move@:00000000006E0430 iccs:e2f2
+	move@:001ABF18 iccs:e2f2
 FEN:9/3k5/b7b/9/9/9/8P/7r1/5K3/3ACA3
-	move@:000000000016C7E0 iccs:h2h1
+	move@:001AC2D8 iccs:h2h1
 FEN:9/3k5/b7b/9/9/9/7rP/5K3/4A4/3AC4
-	move@:000000000016C480 iccs:h3f3
+	move@:001ABD98 iccs:h3f3
 FEN:3C5/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/5A3
-	move@:000000000016C6C0 iccs:d9d0
+	move@:001ABE18 iccs:d9d0
 FEN:9/4k4/b7b/9/9/4n4/8P/4C1r2/4AK2R/5A3
-	move@:00000000006E01F0 iccs:e4g3
+	move@:001ACC18 iccs:e4g3
 FEN:9/4k4/b7b/9/6n2/9/8P/3C2r2/4AK2R/5A3
-	move@:00000000006E0BB0 iccs:g5e4
+	move@:001AC858 iccs:g5e4
 FEN:3C5/4k4/b7b/9/9/4n3P/9/6r2/4AK2R/5A3
-	move@:00000000006E0130 iccs:i1i3
+	move@:001ABDD8 iccs:i1i3
 FEN:9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK1R1/5A3
-	move@:00000000006E0CD0 iccs:g2f2
+	move@:001ACC98 iccs:g2f2
 FEN:9/3k5/b7b/9/9/9/5r3/4K4/4A4/3AC4
-	move@:00000000006E0AF0 iccs:d8d9
+	move@:001AC318 iccs:d8d9
 FEN:9/3k5/b7b/9/9/9/7rP/5K3/9/3ACA3
-	move@:000000000016CAE0 iccs:f0e1
+	move@:001AC258 iccs:f0e1
 FEN:9/4k4/b7b/9/9/4n4/8P/3C2r2/4AK2R/5A3
-	move@:00000000006E09D0 iccs:i1h1
-	move@:00000000006E0910 iccs:d2e2
+	move@:001AC7D8 iccs:i1h1
+	move@:001AC558 iccs:d2e2
 FEN:9/3k5/b7b/9/9/9/5r2P/4K4/4A4/3AC4
-	move@:00000000006E0550 iccs:f3i3
+	move@:001ABD18 iccs:f3i3
 FEN:9/4k4/b7b/9/4n4/9/8P/6r2/4AK2R/3C1A3
-	move@:000000000016C660 iccs:e5g4
+	move@:001ABD58 iccs:e5g4
 FEN:9/4k4/b7b/9/9/4n4/8P/3C1r3/4AK1R1/5A3
-	move@:00000000006E0F70 iccs:e1f2
+	move@:001ACA18 iccs:e1f2
 FEN:3C5/4k4/b4n2b/9/9/9/8P/6r2/4AK2R/5A3
-	move@:000000000016C540 iccs:f7e5
-	move@:000000000016C600 iccs:f7g5
+	move@:001AC1D8 iccs:f7e5
+	move@:001ABF98 iccs:f7g5
 FEN:3C5/4k4/b7b/9/6n2/9/8P/5Ar2/5K2R/5A3
-	move@:00000000006E0970 iccs:g5h3
+	move@:001AC6D8 iccs:g5h3
 FEN:9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/4CA3
-	move@:000000000016CBA0 iccs:e8d8
+	move@:001AC298 iccs:e8d8
 FEN:9/4k4/b7b/9/9/4n4/8P/3C1A3/5K1R1/5A3
-	move@:00000000006E02B0 iccs:e4d2
-	move@:00000000006E0A30 iccs:e4g3
+	move@:001AC718 iccs:e4d2
+	move@:001AC8D8 iccs:e4g3
 FEN:3k5/9/b7b/9/9/9/5r3/4K4/4A4/3AC4
-	move@:00000000006E08B0 iccs:e0f0
+	move@:001AC358 iccs:e0f0
 FEN:3C5/4k4/b7b/9/6n2/8P/9/6r2/4AK2R/5A3
-	move@:00000000006E0850 iccs:g5e4
+	move@:001AC4D8 iccs:g5e4
 FEN:3C5/4k4/b7b/9/9/4n3P/8R/6r2/4AK3/5A3
-	move@:00000000006E0C70 iccs:g2g1
+	move@:001AC958 iccs:g2g1
 FEN:9/4k4/b7b/9/9/6n2/8P/6r2/4AK2R/3C1A3
-	move@:000000000016CA20 iccs:d0e0
+	move@:001ABED8 iccs:d0e0
 FEN:9/3k5/b7b/9/9/9/8P/7r1/4AK3/4CA3
-	move@:000000000016CA80 iccs:e1d0
+	move@:001ABE98 iccs:e1d0
 
 【数组 局面数(使用):38 着法数:44 大小:61 填充因子: 0.62】
 AspectLib
