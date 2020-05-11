@@ -46,11 +46,13 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 // 某着从头至尾的着法图示
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
+// 存储文件到局面记录库
+void setAspects_file(Aspects aspects, const char* fileName); // 使用void*参数，目的是使其可以作为operateDir调用的函数参数
 // 批量存储目录到局面记录库
-void dirToAspects(Aspects aspects, const char* dirName);
+void setAspects_dir(Aspects aspects, const char* dirName);
+
 // 批量转换棋局存储格式
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
-
 // 批量转换目录的存储格式
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd);
 

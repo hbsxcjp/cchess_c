@@ -14,8 +14,8 @@ Aspects newAspects(SourceType st);
 void delAspects(Aspects aspects);
 
 void setAspects_mb(Move move, void* aspects, void* board); // 使用void*参数，目的是使其可以作为moveMap调用的函数参数
-void setAspects_fs(const char* fileName, Aspects aspects);
-void setAspects_fb(const char* fileName, Aspects aspects);
+void setAspects_fs(Aspects aspects, const char* fileName);
+void setAspects_fb(Aspects aspects, const char* fileName);
 
 int getAspects_length(Aspects aspects);
 // 取得局面的最近的着法记录

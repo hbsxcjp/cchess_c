@@ -218,6 +218,13 @@ void getMD5(unsigned char* digest, char* source)
     free(context);
 }
 
+void getMD5_w(unsigned char* digest, wchar_t* source)
+{
+    char fen[wcslen(source) * 2 + 1];
+    wcstombs(fen, source, wcslen(source) * 2);
+    getMD5(digest, fen);
+}
+
 bool MD5IsSame(unsigned char* src, unsigned char* des)
 {
     for (int i = 0; i < MD5LEN; ++i)

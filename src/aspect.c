@@ -1,5 +1,6 @@
 #include "head/aspect.h"
 #include "head/board.h"
+#include "head/chessManual.h"
 #include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
@@ -95,9 +96,12 @@ static Aspect newAspect__(Aspect pasp, const void* aspSource, const void* mrSour
         wchar_t* FEN = (wchar_t*)aspSource;
         asp->FEN = malloc((wcslen(FEN) + 1) * sizeof(wchar_t));
         wcscpy(asp->FEN, FEN);
+        /*
         char fen[SEATNUM];
         wcstombs(fen, FEN, SEATNUM * 2);
         getMD5(asp->md5, fen);
+        //*/
+        getMD5_w(asp->md5, FEN);
     } break;
     case MD5_MRValue: {
         asp->FEN = NULL;
@@ -154,7 +158,7 @@ void setAspects_mb(Move move, void* aspects, void* board)
     putAspect__((Aspects)aspects, getFEN_board(FEN, (Board)board), move, FEN_MovePtr);
 }
 
-void setAspects_fs(const char* fileName, Aspects aspects)
+void setAspects_fs(Aspects aspects, const char* fileName)
 {
     FILE* fin = fopen(fileName, "r");
     wchar_t lineStr[FILENAME_MAX], FEN[SEATNUM], *sourceStr;
@@ -174,7 +178,7 @@ void setAspects_fs(const char* fileName, Aspects aspects)
     fclose(fin);
 }
 
-void setAspects_fb(const char* fileName, Aspects aspects)
+void setAspects_fb(Aspects aspects, const char* fileName)
 {
     assert(aspects->hst == MD5_MRValue);
     FILE* fin = fopen(fileName, "rb");
@@ -230,7 +234,7 @@ static MoveRec getMoveRec__(CAspects aspects, const void* aspSource, SourceType 
 //*/
 
 // 检查容量，如果超出装载因子则扩容, 原局面(指针数组下内容)全面迁移至新表
-static void checkAspectsCapacity__(Aspects aspects, SourceType st)
+static void checkAspectsCapacity__(Aspects aspects)
 {
     if (aspects->aspCount < aspects->size * aspects->loadfactor || aspects->size == INT_MAX)
         return;
@@ -247,7 +251,7 @@ static void checkAspectsCapacity__(Aspects aspects, SourceType st)
         while (asp) {
             preAsp = asp->preAspect;
             pasp = getLastAspect__(aspects,
-                (st == MD5_MRValue ? (const void*)asp->md5 : (const void*)asp->FEN));
+                (aspects->hst == MD5_MRValue ? (const void*)asp->md5 : (const void*)asp->FEN));
             asp->preAspect = *pasp;
             *pasp = asp;
             asp = preAsp;
@@ -258,8 +262,12 @@ static void checkAspectsCapacity__(Aspects aspects, SourceType st)
 
 static void putAspect__(Aspects aspects, const void* aspSource, const void* mrSource, SourceType st)
 {
-    checkAspectsCapacity__(aspects, st);
-    Aspect *pasp = getLastAspect__(aspects, aspSource), asp = getAspect__(*pasp, aspSource, aspects->hst);
+    checkAspectsCapacity__(aspects);
+    unsigned char as[MD5LEN];
+    if (st != MD5_MRValue)
+        getMD5_w(as, (wchar_t*)aspSource);
+    Aspect *pasp = getLastAspect__(aspects, st != MD5_MRValue ? as : aspSource),
+           asp = getAspect__(*pasp, st != MD5_MRValue ? as : aspSource, aspects->hst);
     // 排除重复局面
     if (asp)
         asp->lastMoveRec = newMoveRec__(asp->lastMoveRec, mrSource, st);
@@ -387,8 +395,8 @@ void writeAspectStr(FILE* fout, CAspects aspects)
 {
     assert(aspects);
     aspectsMap(aspects, writeAspect__, fout);
-    fwprintf(fout, L"\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f】\n",
-        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size);
+    fwprintf(fout, L"\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
+        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size, aspects->hst);
 }
 
 static void printfMoveRecLib__(MoveRec mr, void* ptr)
@@ -534,8 +542,8 @@ void analyzeAspects(FILE* fout, CAspects aspects)
         checkApendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
     }
     aspectsMap(aspects, analyzeAspect__, aa);
-    fwprintf(fout, L"\n\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f】\n",
-        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size);
+    fwprintf(fout, L"\n\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
+        aspects->aspCount, aspects->movCount, aspects->size, (double)aspects->aspCount / aspects->size, aspects->hst);
     calWriteCount__(fout, L"move", aa->mNumber, aa->mSize, aa->mCount);
     calWriteCount__(fout, L"moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
     calWriteCount__(fout, L"aspect", aa->laNumber, aa->laSize, aa->laCount);

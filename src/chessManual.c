@@ -671,21 +671,6 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
-static void fileToAspects__(FileInfo fileInfo, void* aspects)
-{
-    char* fileName = fileInfo->name;
-    if (!fileIsRight__(fileName))
-        return;
-    ChessManual cm = newChessManual(fileName);
-    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
-    delChessManual(cm);
-}
-
-void dirToAspects(Aspects aspects, const char* dirName)
-{
-    operateDir(dirName, fileToAspects__, aspects, true);
-}
-
 static void transFile__(FileInfo fileInfo, void* ptr)
 {
     char* fileName = fileInfo->name;
@@ -721,6 +706,25 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     delChessManual(cm);
 }
 
+void setAspects_file(Aspects aspects, const char* fileName)
+{
+    if (!fileIsRight__(fileName))
+        return;
+    ChessManual cm = newChessManual(fileName);
+    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
+    delChessManual(cm);
+}
+
+static void setAspects_fileInfo__(FileInfo fileInfo, void* aspects)
+{
+    setAspects_file((Aspects)aspects, fileInfo->name);
+}
+
+void setAspects_dir(Aspects aspects, const char* dirName)
+{
+    operateDir(dirName, setAspects_fileInfo__, aspects, true);
+}
+
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 {
     char fromDir[FILENAME_MAX], toDir[FILENAME_MAX]; //, curDir[FILENAME_MAX];
@@ -752,15 +756,15 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
-    //Aspects aspects = newAspects(FEN_MovePtr);
-    Aspects aspects = newAspects(MD5_MRValue);
+    Aspects aspects = newAspects(FEN_MovePtr);
+    //Aspects aspects = newAspects(MD5_MRValue);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < size && dir != toDir; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
-        dirToAspects(aspects, fromDir);
+        setAspects_dir(aspects, fromDir);
 
         for (int fromFmt = XQF; fromFmt < fmtEnd; ++fromFmt)
             for (int toFmt = BIN; toFmt < toFmtEnd; ++toFmt)
@@ -777,7 +781,7 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     //*
     fout = fopen("asp1", "w");
     aspects = newAspects(FEN_MRStr);
-    setAspects_fs("asp", aspects);
+    setAspects_fs(aspects, "asp");
     storeAspectStr(fout, aspects);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
