@@ -100,7 +100,7 @@ typedef enum {
 // 局面存储类型
 typedef enum {
     FEN_MovePtr,
-    FEN_MRStr,
+    FEN_MRValue,
     MD5_MRValue
 } SourceType;
 

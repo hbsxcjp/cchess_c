@@ -40,14 +40,14 @@ int getPrime(int size)
         131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
         67108859, 134217689, 268435399, 536870909, 1073741789, 2147483647, INT_MAX };
     int i = 0;
-    while (primes[i] <= size)
+    while (primes[i] < size)
         i++;
     return primes[i];
 }
 
 // BKDR Hash Function
 
-unsigned int BKDRHash_c(unsigned char* src, int size)
+unsigned int BKDRHash_c(char* src, int size)
 {
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
@@ -64,7 +64,7 @@ unsigned int BKDRHash_s(const wchar_t* wstr)
     int len = wcslen(wstr) * 2;
     char str[len + 1];
     wcstombs(str, wstr, len);
-    return BKDRHash_c((unsigned char*)str, strlen(str));
+    return BKDRHash_c(str, strlen(str));
     //*/
 
     /*

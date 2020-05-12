@@ -24,13 +24,13 @@ int main(int argc, char const* argv[])
         return -1;
     //fwprintf(fout, L"输出中文成功了！\n");
 
-    unsigned char digest[16];
-    getMD5(digest, "123.txt");
+    unsigned char* digest = getMD5("123.txt");
     printf("加密:123.txt 结果:");
     for (int i = 0; i < 16; i++) {
         printf("%02x", digest[i]);
     }
     printf("\n");
+    free(digest);
 
     testPiece(fout);
     testBoard(fout);

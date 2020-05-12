@@ -756,8 +756,8 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
-    Aspects aspects = newAspects(FEN_MovePtr);
-    //Aspects aspects = newAspects(MD5_MRValue);
+    Aspects aspects = newAspects(FEN_MovePtr, 0);
+    //Aspects aspects = newAspects(MD5_MRValue,0);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
@@ -773,34 +773,31 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     }
 
     FILE* fout = fopen("asp", "w");
-    storeAspectStr(fout, aspects);
+    storeAspectLib(fout, aspects);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
     fclose(fout);
 
     //*
     fout = fopen("asp1", "w");
-    aspects = newAspects(FEN_MRStr);
+    aspects = newAspects(FEN_MRValue, 0);
     setAspects_fs(aspects, "asp");
-    storeAspectStr(fout, aspects);
+    storeAspectLib(fout, aspects);
+    analyzeAspects(fout, aspects);
+
+    FILE* fout2 = fopen("amd", "wb");
+    transToMD5Aspects(aspects);
+    storeAspectMD5(fout2, aspects);
+    fclose(fout2);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
     fclose(fout);
-    //*/
 
-    /*
-    fout = fopen("amd", "w");
-    storeAspectMD5(fout, aspects);
-    delAspects(aspects);
-    fclose(fout);
-
-    fout = fopen("amd1", "w");
-    aspects = getAspects_fb("amd");
-    storeAspectStr(fout, aspects);
+    aspects = newAspects(MD5_MRValue, 0);
+    setAspects_fb(aspects, "amd");
     analyzeAspects(fout, aspects);
     delAspects(aspects);
     fclose(fout);
-    //*/
 }
 
 // 测试本翻译单元各种对象、函数
@@ -845,10 +842,10 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    Aspects aspects = newAspects(FEN_MovePtr);
+    Aspects aspects = newAspects(FEN_MovePtr, 0);
     moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
     writeAspectStr(fout, aspects);
-    storeAspectStr(fout, aspects);
+    storeAspectLib(fout, aspects);
     analyzeAspects(fout, aspects);
     delAspects(aspects);
 
