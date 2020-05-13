@@ -48,7 +48,7 @@ int main(int argc, char const* argv[])
     if (argc == 4)
         testTransDir(chessManualDirName, size, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
     else {
-        testTransDir(chessManualDirName, size, 2, 1, 2);
+        //testTransDir(chessManualDirName, size, 2, 1, 2);
         //testTransDir(chessManualDirName, size, 2, 6, 6);
     }
     //*/

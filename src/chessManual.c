@@ -778,9 +778,9 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     delAspects(asps);
     fclose(fout);
 
-    //*
     fout = fopen("asp1", "w");
     asps = newAspects(FEN_MRValue, 0);
+    analyzeAspects(fout, asps);
     setAspects_fs(asps, "asp");
     storeAspectLib(fout, asps);
     analyzeAspects(fout, asps);
@@ -790,13 +790,16 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     storeAspectMD5(fout2, asps);
     fclose(fout2);
     analyzeAspects(fout, asps);
+    //*
     delAspects(asps);
     //fclose(fout);
 
     asps = newAspects(MD5_MRValue, 0);
+    analyzeAspects(fout, asps);
     setAspects_fb(asps, "amd");
     
     analyzeAspects(fout, asps);
+    //*/
     delAspects(asps);
     fclose(fout);
 }
@@ -847,6 +850,12 @@ void testChessManual(FILE* fout)
     moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
     writeAspectStr(fout, asps);
     storeAspectLib(fout, asps);
+    analyzeAspects(fout, asps);
+    delAspects(asps);
+
+    asps = newAspects(MD5_MRValue, 0);
+    analyzeAspects(fout, asps);
+    setAspects_fb(asps, "amd");
     analyzeAspects(fout, asps);
     delAspects(asps);
 
