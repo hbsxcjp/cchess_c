@@ -706,23 +706,23 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     delChessManual(cm);
 }
 
-void setAspects_file(Aspects aspects, const char* fileName)
+void setAspects_file(Aspects asps, const char* fileName)
 {
     if (!fileIsRight__(fileName))
         return;
     ChessManual cm = newChessManual(fileName);
-    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
+    moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
     delChessManual(cm);
 }
 
-static void setAspects_fileInfo__(FileInfo fileInfo, void* aspects)
+static void setAspects_fileInfo__(FileInfo fileInfo, void* asps)
 {
-    setAspects_file((Aspects)aspects, fileInfo->name);
+    setAspects_file((Aspects)asps, fileInfo->name);
 }
 
-void setAspects_dir(Aspects aspects, const char* dirName)
+void setAspects_dir(Aspects asps, const char* dirName)
 {
-    operateDir(dirName, setAspects_fileInfo__, aspects, true);
+    operateDir(dirName, setAspects_fileInfo__, asps, true);
 }
 
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
@@ -756,15 +756,15 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
-    Aspects aspects = newAspects(FEN_MovePtr, 0);
-    //Aspects aspects = newAspects(MD5_MRValue,0);
+    Aspects asps = newAspects(FEN_MovePtr, 0);
+    //Aspects asps = newAspects(MD5_MRValue,0);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < size && dir != toDir; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
-        setAspects_dir(aspects, fromDir);
+        setAspects_dir(asps, fromDir);
 
         for (int fromFmt = XQF; fromFmt < fmtEnd; ++fromFmt)
             for (int toFmt = BIN; toFmt < toFmtEnd; ++toFmt)
@@ -773,30 +773,31 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     }
 
     FILE* fout = fopen("asp", "w");
-    storeAspectLib(fout, aspects);
-    analyzeAspects(fout, aspects);
-    delAspects(aspects);
+    storeAspectLib(fout, asps);
+    analyzeAspects(fout, asps);
+    delAspects(asps);
     fclose(fout);
 
     //*
     fout = fopen("asp1", "w");
-    aspects = newAspects(FEN_MRValue, 0);
-    setAspects_fs(aspects, "asp");
-    storeAspectLib(fout, aspects);
-    analyzeAspects(fout, aspects);
+    asps = newAspects(FEN_MRValue, 0);
+    setAspects_fs(asps, "asp");
+    storeAspectLib(fout, asps);
+    analyzeAspects(fout, asps);
 
     FILE* fout2 = fopen("amd", "wb");
-    transToMD5Aspects(aspects);
-    storeAspectMD5(fout2, aspects);
+    transToMD5Aspects(asps);
+    storeAspectMD5(fout2, asps);
     fclose(fout2);
-    analyzeAspects(fout, aspects);
-    delAspects(aspects);
-    fclose(fout);
+    analyzeAspects(fout, asps);
+    delAspects(asps);
+    //fclose(fout);
 
-    aspects = newAspects(MD5_MRValue, 0);
-    setAspects_fb(aspects, "amd");
-    analyzeAspects(fout, aspects);
-    delAspects(aspects);
+    asps = newAspects(MD5_MRValue, 0);
+    setAspects_fb(asps, "amd");
+    
+    analyzeAspects(fout, asps);
+    delAspects(asps);
     fclose(fout);
 }
 
@@ -842,12 +843,12 @@ void testChessManual(FILE* fout)
     }
     //*/
 
-    Aspects aspects = newAspects(FEN_MovePtr, 0);
-    moveMap(cm->rootMove, setAspects_mb, aspects, cm->board);
-    writeAspectStr(fout, aspects);
-    storeAspectLib(fout, aspects);
-    analyzeAspects(fout, aspects);
-    delAspects(aspects);
+    Aspects asps = newAspects(FEN_MovePtr, 0);
+    moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
+    writeAspectStr(fout, asps);
+    storeAspectLib(fout, asps);
+    analyzeAspects(fout, asps);
+    delAspects(asps);
 
     delChessManual(cm);
 }

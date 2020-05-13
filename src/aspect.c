@@ -126,10 +126,15 @@ void delAspects(Aspects asps)
     free(asps);
 }
 
+inline static int getLastIndex__(SourceType st, int size, char* aspSource)
+{
+    return BKDRHash_c(aspSource, st == MD5_MRValue ? MD5LEN : strlen(aspSource)) % size;
+}
+
 // 依据asps->hst, asps->size, aspSource 取得最后的局面记录指针
 inline static Aspect* getLastAspect__(CAspects asps, char* aspSource)
 {
-    return &asps->lastAspects[BKDRHash_c(aspSource, asps->hst == MD5_MRValue ? MD5LEN : strlen(aspSource)) % asps->size];
+    return &asps->lastAspects[getLastIndex__(asps->hst, asps->size, aspSource)];
 }
 
 // 取得相同哈希值下某个局面的记录
@@ -141,12 +146,72 @@ static Aspect getAspect__(Aspect asp, char* aspSource, SourceType hst)
     return asp;
 }
 
-// 源局面(指针数组下内容)全面迁移至新局面
-static void reloadLastAspects__(Aspects asps, int newSize)
+static void moveRecLink__(MoveRec mr, void applyMr(MoveRec, void*), void* ptr)
 {
+    if (mr == NULL)
+        return;
+    applyMr(mr, ptr);
+    moveRecLink__(mr->preMoveRec, applyMr, ptr); //递归方式
+}
+
+static void aspectLink__(Aspect asp, void applyAsp(Aspect, void*),
+    void moveRecLink(MoveRec, void(MoveRec, void*), void*), void applyMr(MoveRec, void*), void* ptr)
+{
+    if (asp == NULL)
+        return;
+    applyAsp(asp, ptr);
+    if (moveRecLink)
+        moveRecLink(asp->lastMoveRec, applyMr, ptr);
+    aspectLink__(asp->preAspect, applyAsp, moveRecLink, applyMr, ptr);
+}
+
+void aspectsMap(CAspects asps, void startAspectLink(Aspect, void*), void* ptr)
+{
+    assert(asps);
+    for (int i = 0; i < asps->size; ++i) {
+        Aspect lasp = asps->lastAspects[i];
+        if (lasp)
+            startAspectLink(lasp, ptr);
+    }
+}
+
+static void transToMD5__(Aspect asp, void* newAsps)
+{
+    char* oldExpress = asp->express;
+    asp->express = (char*)getMD5(oldExpress);
+    free(oldExpress);
+
+    Aspect preAsp, *pasp;
+    while (asp) {
+        preAsp = asp->preAspect;
+        pasp = getLastAspect__((Aspects)newAsps, asp->express);
+        asp->preAspect = *pasp;
+        *pasp = asp;
+        asp = preAsp;
+    };
+}
+
+static void transAspectMD5__(Aspect lasp, void* newAsps)
+{
+    aspectLink__(lasp, transToMD5__, NULL, NULL, newAsps);
+}
+
+// 源局面(指针数组下内容)全面迁移至新局面
+static void reloadLastAspects__(Aspects asps, SourceType newHst, int newSize)
+{
+    if (newHst == asps->hst && newSize == asps->size)
+        return;
+
+    asps->hst = newHst;
     int oldSize = asps->size;
     asps->size = newSize;
     assert(newSize >= oldSize);
+    Aspect* oldLastAspects = asps->lastAspects;
+    Aspects newAsps = newAspects(newHst, newSize);
+    aspectsMap(asps, transAspectMD5__, newAsps);
+    asps->lastAspects = newAsps->lastAspects;
+    free(newAsps);
+    /*
     Aspect *oldLastAspects = asps->lastAspects, asp, preAsp, *pasp;
     asps->lastAspects = malloc(newSize * sizeof(Aspect*));
     for (int i = 0; i < newSize; ++i)
@@ -155,12 +220,13 @@ static void reloadLastAspects__(Aspects asps, int newSize)
         asp = oldLastAspects[i];
         while (asp) {
             preAsp = asp->preAspect;
-            pasp = getLastAspect__(asps, asp->express); 
+            pasp = getLastAspect__(asps, asp->express);
             asp->preAspect = *pasp;
             *pasp = asp;
             asp = preAsp;
         };
     }
+    //*/
     free(oldLastAspects);
 }
 
@@ -170,7 +236,7 @@ static void checkAspectsCapacity__(Aspects asps)
     if (asps->aspCount < asps->size * asps->loadfactor || asps->size == INT_MAX)
         return;
 
-    reloadLastAspects__(asps, getPrime(asps->size + 1));
+    reloadLastAspects__(asps, asps->hst, getPrime(asps->size << 2));
 }
 
 static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, SourceType st)
@@ -198,8 +264,7 @@ static char* getfen_board__(wchar_t* FEN)
 
 void transToMD5Aspects(Aspects asps)
 {
-    asps->hst = MD5_MRValue;
-    reloadLastAspects__(asps, asps->size);
+    reloadLastAspects__(asps, MD5_MRValue, asps->size);
 }
 
 void setAspects_mb(Move move, void* asps, void* board)
@@ -274,34 +339,6 @@ int getLoopBoutCount(CAspects asps, const wchar_t* FEN)
     return boutCount;
 }
 //*/
-
-static void moveRecLink__(MoveRec mr, void applyMr(MoveRec, void*), void* ptr)
-{
-    if (mr == NULL)
-        return;
-    applyMr(mr, ptr);
-    moveRecLink__(mr->preMoveRec, applyMr, ptr); //递归方式
-}
-
-static void aspectLink__(Aspect asp, void applyAsp(Aspect, void*),
-    void moveRecLink(MoveRec, void(MoveRec, void*), void*), void applyMr(MoveRec, void*), void* ptr)
-{
-    if (asp == NULL)
-        return;
-    applyAsp(asp, ptr);
-    moveRecLink(asp->lastMoveRec, applyMr, ptr);
-    aspectLink__(asp->preAspect, applyAsp, moveRecLink__, applyMr, ptr);
-}
-
-void aspectsMap(CAspects asps, void aspectLink(Aspect, void*), void* ptr)
-{
-    assert(asps);
-    for (int i = 0; i < asps->size; ++i) {
-        Aspect lasp = asps->lastAspects[i];
-        if (lasp)
-            aspectLink(lasp, ptr);
-    }
-}
 
 static void printfMoveRec__(MoveRec mr, void* ptr)
 {
