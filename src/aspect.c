@@ -175,12 +175,8 @@ void aspectsMap(CAspects asps, void startAspectLink(Aspect, void*), void* ptr)
     }
 }
 
-static void transToMD5__(Aspect asp, void* newAsps)
+static void reloadAspect__(Aspect asp, void* newAsps)
 {
-    char* oldExpress = asp->express;
-    asp->express = (char*)getMD5(oldExpress);
-    free(oldExpress);
-
     Aspect preAsp, *pasp;
     while (asp) {
         preAsp = asp->preAspect;
@@ -191,9 +187,21 @@ static void transToMD5__(Aspect asp, void* newAsps)
     };
 }
 
-static void transAspectMD5__(Aspect lasp, void* newAsps)
+static void startReloadAspect__(Aspect lasp, void* newAsps)
 {
-    aspectLink__(lasp, transToMD5__, NULL, NULL, newAsps);
+    aspectLink__(lasp, reloadAspect__, NULL, NULL, newAsps);
+}
+
+static void transToMD5__(Aspect asp, void* ptr)
+{
+    char* oldExpress = asp->express;
+    asp->express = (char*)getMD5(oldExpress);
+    free(oldExpress);
+}
+
+static void transAspectMD5__(Aspect lasp, void* ptr)
+{
+    aspectLink__(lasp, transToMD5__, NULL, NULL, ptr);
 }
 
 // 源局面(指针数组下内容)全面迁移至新局面
@@ -208,7 +216,9 @@ static void reloadLastAspects__(Aspects asps, SourceType newHst, int newSize)
     assert(newSize >= oldSize);
     Aspect* oldLastAspects = asps->lastAspects;
     Aspects newAsps = newAspects(newHst, newSize);
-    aspectsMap(asps, transAspectMD5__, newAsps);
+    if (newHst == MD5_MRValue)
+        aspectsMap(asps, transAspectMD5__, NULL);
+    aspectsMap(asps, startReloadAspect__, newAsps);
     asps->lastAspects = newAsps->lastAspects;
     free(newAsps);
     /*
