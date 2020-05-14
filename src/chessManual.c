@@ -757,7 +757,6 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
 {
     Aspects asps = newAspects(FEN_MovePtr, 0);
-    //Aspects asps = newAspects(MD5_MRValue,0);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
@@ -772,36 +771,25 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
                     transDir(chessManualDirName[dir], fmts[fromFmt], fmts[toFmt]);
     }
 
-    FILE* fout = fopen("asp", "w");
-    storeAspectLib(fout, asps);
-    analyzeAspects(fout, asps);
+    storeAspectLib("libs", asps);
+    analyzeAspects("acm", asps);
     delAspects(asps);
-    fclose(fout);
 
-    fout = fopen("asp1", "w");
-    asps = newAspects(FEN_MRValue, 0);
-    analyzeAspects(fout, asps);
-    setAspects_fs(asps, "asp");
-    storeAspectLib(fout, asps);
-    analyzeAspects(fout, asps);
+    asps = getAspects_fs("libs");
+    storeAspectLib("libs1", asps);
+    analyzeAspects("afs", asps);
 
-    FILE* fout2 = fopen("amd", "wb");
-    transToMD5Aspects(asps);
-    storeAspectMD5(fout2, asps);
-    fclose(fout2);
-    analyzeAspects(fout, asps);
+    storeAspectMD5("md5", asps);
+    analyzeAspects("amdw", asps);
+    delAspects(asps);
     //*
-    delAspects(asps);
-    //fclose(fout);
 
-    asps = newAspects(MD5_MRValue, 0);
-    analyzeAspects(fout, asps);
-    setAspects_fb(asps, "amd");
-    
-    analyzeAspects(fout, asps);
+    asps = getAspects_fb("amd");
+    analyzeAspects("amdr", asps);
     //*/
     delAspects(asps);
-    fclose(fout);
+
+    checkAspectMD5("libs1", "md5");
 }
 
 // 测试本翻译单元各种对象、函数
@@ -848,24 +836,23 @@ void testChessManual(FILE* fout)
 
     Aspects asps = newAspects(FEN_MovePtr, 0);
     moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
-    writeAspectStr(fout, asps);
-    storeAspectLib(fout, asps);
-    analyzeAspects(fout, asps);
-    //delAspects(asps);
-    
-    FILE* fout2 = fopen("amd", "wb");
-    transToMD5Aspects(asps);
-    storeAspectMD5(fout2, asps);
-    fclose(fout2);
-    analyzeAspects(fout, asps);
-    //*
+    writeAspectStr("str", asps);
+    storeAspectLib("libs", asps);
+    analyzeAspects("acm", asps);
+
+    asps = getAspects_fs("libs");
+    storeAspectLib("libs1", asps);
+    analyzeAspects("afs", asps);
+
+    storeAspectMD5("md5", asps);
+    analyzeAspects("amdw", asps);
     delAspects(asps);
 
-    asps = newAspects(MD5_MRValue, 0);
-    analyzeAspects(fout, asps);
-    setAspects_fb(asps, "amd");
-    analyzeAspects(fout, asps);
+    asps = getAspects_fb("md5");
+    analyzeAspects("amdr", asps);
     delAspects(asps);
+
+    checkAspectMD5("libs1", "md5");
 
     delChessManual(cm);
 }

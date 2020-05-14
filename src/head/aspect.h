@@ -9,16 +9,16 @@ typedef struct MoveRec* MoveRec;
 typedef struct Aspect* Aspect;
 typedef struct AspectAnalysis* AspectAnalysis;
 
-// 新建、删除局面哈希表
+// 新建、删除局面类型
 Aspects newAspects(SourceType st, int size);
 void delAspects(Aspects aspects);
 
-// 非MD5格式局面数据转换成MD5格式局面数据
-void transToMD5Aspects(Aspects asps);
-
-void setAspects_mb(Move move, void* aspects, void* board); // 使用void*参数，目的是使其可以作为moveMap调用的函数参数
-void setAspects_fs(Aspects aspects, const char* fileName);
-void setAspects_fb(Aspects aspects, const char* fileName);
+// 使用void*参数，目的是使其可以作为moveMap调用的函数参数
+void setAspects_mb(Move move, void* aspects, void* board);
+// 读取局面数据文件加入局面类型
+Aspects getAspects_fs(const char* fileName);
+// 读取局面MD5数据文件加入局面类型
+Aspects getAspects_fb(const char* fileName);
 
 int getAspects_length(Aspects aspects);
 
@@ -28,14 +28,17 @@ int getAspects_length(Aspects aspects);
 // 遍历每个局面
 void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
 
-// 输出局面字符串，仅查看
-void writeAspectStr(FILE* fout, CAspects aspects);
+// 输出局面字符串，仅查看(应在Move对象的生命周期内调用)
+void writeAspectStr(char* fileName, CAspects aspects);
 // 存储局面数据，可查看可读取数据
-void storeAspectLib(FILE* fout, CAspects aspects);
+void storeAspectLib(char* fileName, CAspects aspects);
 // 存储局面MD5数据(二进制文件)，仅读取数据
-void storeAspectMD5(FILE* fout, CAspects aspects);
+void storeAspectMD5(char* fileName, Aspects aspects);
 
 // 分析局面库储存状况
-void analyzeAspects(FILE* fout, CAspects aspects);
+void analyzeAspects(char* fileName, CAspects aspects);
+
+// 检查局面MD5数据文件与局面文本数据文件是否完全一致
+void checkAspectMD5(char* libFileName, char* md5FileName);
 
 #endif
