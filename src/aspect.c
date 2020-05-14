@@ -128,7 +128,15 @@ void delAspects(Aspects asps)
 
 inline static int getLastIndex__(SourceType st, int size, char* aspSource)
 {
-    return BKDRHash_c(aspSource, st == MD5_MRValue ? MD5LEN : strlen(aspSource)) % size;
+    int index = BKDRHash_c(aspSource, st == MD5_MRValue ? MD5LEN : strlen(aspSource)) % size;
+    if (st == MD5_MRValue) {
+        printf("MD5:");
+        for (int i = 0; i < MD5LEN; i++)
+            printf("%02x", aspSource[i]);
+    } else
+        printf("FEN:%s", aspSource);
+    printf(" index:%d\n", index);
+    return index;
 }
 
 // 依据asps->hst, asps->size, aspSource 取得最后的局面记录指针
@@ -214,9 +222,10 @@ static void reloadLastAspects__(Aspects asps, int newSize)
 
 void transToMD5Aspects(Aspects asps)
 {
+    assert(asps);
     aspectsMap(asps, startTransAspectMD5__, NULL);
     asps->hst = MD5_MRValue; // 修改源格式
-    reloadLastAspects__(asps, asps->size - 1); // 尺寸保持不变
+    reloadLastAspects__(asps, asps->size); // 尺寸保持不变
 }
 
 static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, SourceType st)
@@ -278,10 +287,10 @@ void setAspects_fb(Aspects asps, const char* fileName)
     char* md5 = malloc(MD5LEN);
     int count = 0;
     while (fread(md5, MD5LEN, 1, fin) == 1) {
-        if (fread(&count, sizeof(int), 1, fin) != 1) 
+        if (fread(&count, sizeof(int), 1, fin) != 1)
             break;
         int mrValue[count];
-        if (fread(mrValue, sizeof(int), count, fin) != count) 
+        if (fread(mrValue, sizeof(int), count, fin) != count)
             break;
         for (int i = 0; i < count; ++i)
             putAspect__(asps, md5, &mrValue[i], MD5_MRValue);

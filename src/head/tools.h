@@ -9,7 +9,7 @@ typedef struct FileInfos* FileInfos;
 
 bool isPrime(int n);
 int getPrimes(int* primes, int bitCount);
-// 取得比size大的质数
+// 取得大于等于size的质数
 int getPrime(int size);
 
 // 哈希函数

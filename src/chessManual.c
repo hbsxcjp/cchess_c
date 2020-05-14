@@ -851,6 +851,14 @@ void testChessManual(FILE* fout)
     writeAspectStr(fout, asps);
     storeAspectLib(fout, asps);
     analyzeAspects(fout, asps);
+    //delAspects(asps);
+    
+    FILE* fout2 = fopen("amd", "wb");
+    transToMD5Aspects(asps);
+    storeAspectMD5(fout2, asps);
+    fclose(fout2);
+    analyzeAspects(fout, asps);
+    //*
     delAspects(asps);
 
     asps = newAspects(MD5_MRValue, 0);
