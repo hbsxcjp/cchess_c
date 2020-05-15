@@ -771,25 +771,7 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
                     transDir(chessManualDirName[dir], fmts[fromFmt], fmts[toFmt]);
     }
 
-    storeAspectLib("libs", asps);
-    analyzeAspects("ana", asps);
-    delAspects(asps);
-
-    asps = getAspects_fs("libs");
-    storeAspectLib("libs1", asps);
-    analyzeAspects("ana", asps);
-
-    storeAspectMD5("md5", asps);
-    analyzeAspects("ana", asps);
-    delAspects(asps);
-    //*
-
-    asps = getAspects_fb("md5");
-    analyzeAspects("ana", asps);
-    //*/
-    delAspects(asps);
-
-    checkAspectMD5("libs1", "md5");
+    testAspects(asps);
 }
 
 // 测试本翻译单元各种对象、函数
@@ -837,22 +819,7 @@ void testChessManual(FILE* fout)
     Aspects asps = newAspects(FEN_MovePtr, 0);
     moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
     writeAspectStr("str", asps);
-    storeAspectLib("libs", asps);
-    analyzeAspects("ana", asps);
-
-    asps = getAspects_fs("libs");
-    storeAspectLib("libs1", asps);
-    analyzeAspects("ana", asps);
-
-    storeAspectMD5("md5", asps);
-    analyzeAspects("ana", asps);
-    delAspects(asps);
-
-    asps = getAspects_fb("md5");
-    analyzeAspects("ana", asps);
-    delAspects(asps);
-
-    checkAspectMD5("libs1", "md5");
+    testAspects(asps);
 
     delChessManual(cm);
 }

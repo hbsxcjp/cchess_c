@@ -38,24 +38,16 @@ static int getCount__(int mrValue) { return (mrValue >> 8) & 0xFF; }
 static int getWeight__(int mrValue) { return mrValue & 0xFF; }
 static int getMRValue__(int rowcols, int number, int weight) { return (rowcols << 16) | (number << 8) | weight; }
 
-static MoveRec newMoveRec__(MoveRec pmr, const void* mrSource, SourceType st)
+static MoveRec newMoveRec__(const void* mrSource, SourceType st)
 {
     assert(mrSource);
     MoveRec mr = malloc(sizeof(struct MoveRec));
-    mr->preMoveRec = pmr;
+    mr->preMoveRec = NULL;
     switch (st) {
     case FEN_MovePtr: {
         mr->move = (CMove)mrSource;
         mr->rowcols = getRowCols_m(mr->move);
         mr->number = 1;
-        while (pmr) {
-            if (pmr->number && (mr->rowcols == pmr->rowcols)) {
-                mr->number += pmr->number;
-                pmr->number = 0; // 标记重复
-                break; // 再往前推，如有重复在此之前也已被标记
-            }
-            pmr = pmr->preMoveRec;
-        }
         mr->weight = 0; //待完善
     } break;
     case FEN_MRValue:
@@ -87,7 +79,7 @@ static Aspect newAspect__(char* aspSource, const void* mrSource, SourceType st)
     assert(mrSource);
     Aspect asp = malloc(sizeof(struct Aspect));
     asp->express = aspSource;
-    asp->lastMoveRec = newMoveRec__(NULL, mrSource, st);
+    asp->lastMoveRec = newMoveRec__(mrSource, st);
     asp->preAspect = NULL;
     return asp;
 }
@@ -220,10 +212,29 @@ static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, Sou
         reloadLastAspects__(asps, asps->size + 1);
 
     Aspect asp = getAspect__(asps, aspSource);
-    // 排除重复局面
-    if (asp)
-        asp->lastMoveRec = newMoveRec__(asp->lastMoveRec, mrSource, st);
-    else {
+
+    if (asp) { // 已有相同局面
+        MoveRec pmr = asp->lastMoveRec, mr = newMoveRec__(mrSource, st);
+        if (st == FEN_MovePtr) { 
+            // 寻找相同着法
+            while (pmr) {
+                if (pmr->number && (mr->rowcols == pmr->rowcols)) {
+                    mr->number += pmr->number;
+                    pmr->number = 0; // 标记重复
+                    break; // 再往前推，如有重复在此之前也已被标记
+                }
+                pmr = pmr->preMoveRec;
+            }
+            // 插入方式
+            mr->preMoveRec = asp->lastMoveRec;
+            asp->lastMoveRec = mr;
+        } else { 
+            // 追加方式
+            while (pmr->preMoveRec)
+                pmr = pmr->preMoveRec;
+            pmr->preMoveRec = mr;
+        }
+    } else {
         loadAspect__(newAspect__(aspSource, mrSource, st), asps);
         asps->aspCount++;
     }
@@ -507,8 +518,7 @@ void analyzeAspects(char* fileName, CAspects asps)
 static void aspectCmp__(Aspect asp, void* ptr)
 {
     printf("check:%s ", asp->express);
-    char* md5 = (char*)getMD5(asp->express);
-    Aspect oasp = getAspect__((Aspects)ptr, md5);
+    Aspect oasp = getAspect__((Aspects)ptr, (char*)getMD5(asp->express));
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
@@ -516,11 +526,10 @@ static void aspectCmp__(Aspect asp, void* ptr)
         int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
         assert(mrV == omrV);
         assert(mr->number > 0);
-        printf("0x%08x<->0x%08x ", mrV, omrV);
+        printf("0x%08x=0x%08x ", mrV, omrV);
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
     }
-    free(md5);
     printf("ok!\n");
 }
 
@@ -529,7 +538,8 @@ static void startAspectCmp__(Aspect lasp, void* ptr)
     aspectLink__(lasp, aspectCmp__, NULL, NULL, ptr);
 }
 
-void checkAspectMD5(char* libFileName, char* md5FileName)
+// 检查局面MD5数据文件与局面文本数据文件是否完全一致
+static void checkAspectMD5__(char* libFileName, char* md5FileName)
 {
     Aspects asps = getAspects_fs(libFileName),
             oasps = getAspects_fb(md5FileName);
@@ -539,4 +549,27 @@ void checkAspectMD5(char* libFileName, char* md5FileName)
 
     delAspects(asps);
     delAspects(oasps);
+}
+
+void testAspects(Aspects asps)
+{
+    char log[] = "ana", libs[] = "libs", md5[] = "md5";
+    analyzeAspects(log, asps);
+    storeAspectLib(libs, asps); 
+    delAspects(asps);
+
+    asps = getAspects_fs(libs);
+    analyzeAspects(log, asps);
+
+    storeAspectMD5(md5, asps);
+    analyzeAspects(log, asps);
+    delAspects(asps);
+
+    asps = getAspects_fb(md5);
+    analyzeAspects(log, asps);
+    delAspects(asps);
+
+    //*
+    checkAspectMD5__(libs, md5);
+    //*/
 }

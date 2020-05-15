@@ -38,7 +38,6 @@ void storeAspectMD5(char* fileName, Aspects aspects);
 // 分析局面库储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
 
-// 检查局面MD5数据文件与局面文本数据文件是否完全一致
-void checkAspectMD5(char* libFileName, char* md5FileName);
+void testAspects(Aspects asps);
 
 #endif
