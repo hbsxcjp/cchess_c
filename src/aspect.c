@@ -515,6 +515,7 @@ static void aspectCmp__(Aspect asp, void* ptr)
         assert(omr);
         int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
         assert(mrV == omrV);
+        assert(mr->number > 0);
         printf("0x%08x<->0x%08x ", mrV, omrV);
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
