@@ -481,7 +481,7 @@ static void calWriteCount__(FILE* fout, const char* entry, int* number, int size
 void analyzeAspects(char* fileName, CAspects asps)
 {
     assert(asps);
-    FILE* fout = fopen(fileName, "w");
+    FILE* fout = fopen(fileName, "a");
     AspectAnalysis aa = newAspectAnalysis__();
     for (int i = 0; i < asps->size; ++i) {
         Aspect asp = asps->lastAspects[i];
@@ -493,11 +493,12 @@ void analyzeAspects(char* fileName, CAspects asps)
         checkApendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
     }
     aspectsMap(asps, startAnalyzeAspect__, aa);
-    fprintf(fout, "\n\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
+    fprintf(fout, "【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
         asps->aspCount, asps->movCount, asps->size, (double)asps->aspCount / asps->size, asps->hst);
     calWriteCount__(fout, "move", aa->mNumber, aa->mSize, aa->mCount);
     calWriteCount__(fout, "moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
     calWriteCount__(fout, "aspect", aa->laNumber, aa->laSize, aa->laCount);
+    fprintf(fout, "\n");
 
     delAspectAnalysis__(aa);
     fclose(fout);
@@ -514,7 +515,7 @@ static void aspectCmp__(Aspect asp, void* ptr)
         assert(omr);
         int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
         assert(mrV == omrV);
-        printf("%d<->%d ", mrV, omrV);
+        printf("0x%08x<->0x%08x ", mrV, omrV);
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
     }

@@ -772,20 +772,20 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     }
 
     storeAspectLib("libs", asps);
-    analyzeAspects("acm", asps);
+    analyzeAspects("ana", asps);
     delAspects(asps);
 
     asps = getAspects_fs("libs");
     storeAspectLib("libs1", asps);
-    analyzeAspects("afs", asps);
+    analyzeAspects("ana", asps);
 
     storeAspectMD5("md5", asps);
-    analyzeAspects("amdw", asps);
+    analyzeAspects("ana", asps);
     delAspects(asps);
     //*
 
-    asps = getAspects_fb("amd");
-    analyzeAspects("amdr", asps);
+    asps = getAspects_fb("md5");
+    analyzeAspects("ana", asps);
     //*/
     delAspects(asps);
 
@@ -838,18 +838,18 @@ void testChessManual(FILE* fout)
     moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
     writeAspectStr("str", asps);
     storeAspectLib("libs", asps);
-    analyzeAspects("acm", asps);
+    analyzeAspects("ana", asps);
 
     asps = getAspects_fs("libs");
     storeAspectLib("libs1", asps);
-    analyzeAspects("afs", asps);
+    analyzeAspects("ana", asps);
 
     storeAspectMD5("md5", asps);
-    analyzeAspects("amdw", asps);
+    analyzeAspects("ana", asps);
     delAspects(asps);
 
     asps = getAspects_fb("md5");
-    analyzeAspects("amdr", asps);
+    analyzeAspects("ana", asps);
     delAspects(asps);
 
     checkAspectMD5("libs1", "md5");
