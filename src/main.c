@@ -24,14 +24,6 @@ int main(int argc, char const* argv[])
         return -1;
     //fwprintf(fout, L"输出中文成功了！\n");
 
-    unsigned char* digest = getMD5("123.txt");
-    printf("加密:123.txt 结果:");
-    for (int i = 0; i < 16; i++) {
-        printf("%02x", digest[i]);
-    }
-    printf("\n");
-    free(digest);
-
     testPiece(fout);
     testBoard(fout);
     testChessManual(fout);
@@ -44,11 +36,12 @@ int main(int argc, char const* argv[])
     };
     int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
     //testTools(fout, chessManualDirName, size, ".xqf");
+    
     //*
     if (argc == 4)
         testTransDir(chessManualDirName, size, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
-    else {
-        //testTransDir(chessManualDirName, size, 2, 1, 2);
+    else if (argc == 2) {
+        testTransDir(chessManualDirName, size, atoi(argv[1]), 1, 2);
         //testTransDir(chessManualDirName, size, 2, 6, 6);
     }
     //*/

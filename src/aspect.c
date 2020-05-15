@@ -120,22 +120,38 @@ void delAspects(Aspects asps)
 
 static void moveRecLink__(MoveRec mr, void applyMr(MoveRec, void*), void* ptr)
 {
+    /*
     if (mr == NULL)
         return;
     applyMr(mr, ptr);
-    moveRecLink__(mr->preMoveRec, applyMr, ptr); //递归方式
+    moveRecLink__(mr->preMoveRec, applyMr, ptr); // 尾递归方式
+    //*/
+    while (mr) {
+        MoveRec pmr = mr->preMoveRec;
+        applyMr(mr, ptr);
+        mr = pmr;
+    }
 }
 
 static void aspectLink__(Aspect asp, void applyAsp(Aspect, void*),
     void moveRecLink(MoveRec, void(MoveRec, void*), void*), void applyMr(MoveRec, void*), void* ptr)
 {
+    /*
     if (asp == NULL)
         return;
     Aspect preAsp = asp->preAspect;
     applyAsp(asp, ptr);
     if (moveRecLink)
         moveRecLink(asp->lastMoveRec, applyMr, ptr);
-    aspectLink__(preAsp, applyAsp, moveRecLink, applyMr, ptr);
+    aspectLink__(preAsp, applyAsp, moveRecLink, applyMr, ptr); // 尾递归方式
+    //*/
+    while (asp) {
+        Aspect preAsp = asp->preAspect;
+        applyAsp(asp, ptr);
+        if (moveRecLink)
+            moveRecLink(asp->lastMoveRec, applyMr, ptr);
+        asp = preAsp;
+    }
 }
 
 void aspectsMap(CAspects asps, void startAspectLink(Aspect, void*), void* ptr)
@@ -215,7 +231,7 @@ static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, Sou
 
     if (asp) { // 已有相同局面
         MoveRec pmr = asp->lastMoveRec, mr = newMoveRec__(mrSource, st);
-        if (st == FEN_MovePtr) { 
+        if (st == FEN_MovePtr) {
             // 寻找相同着法
             while (pmr) {
                 if (pmr->number && (mr->rowcols == pmr->rowcols)) {
@@ -228,7 +244,7 @@ static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, Sou
             // 插入方式
             mr->preMoveRec = asp->lastMoveRec;
             asp->lastMoveRec = mr;
-        } else { 
+        } else {
             // 追加方式
             while (pmr->preMoveRec)
                 pmr = pmr->preMoveRec;
@@ -336,8 +352,8 @@ void writeAspectStr(char* fileName, CAspects asps)
     assert(asps->hst == FEN_MovePtr);
     FILE* fout = fopen(fileName, "w");
     aspectsMap(asps, startWriteAspect__, fout);
-    fprintf(fout, "\n【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
-        asps->aspCount, asps->movCount, asps->size, (double)asps->aspCount / asps->size, asps->hst);
+    fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.2f SourceType:%d】\n",
+        asps->size, asps->aspCount, asps->movCount, (double)asps->aspCount / asps->size, asps->hst);
     fclose(fout);
 }
 
@@ -423,7 +439,7 @@ void storeAspectMD5(char* fileName, Aspects asps)
 static AspectAnalysis newAspectAnalysis__(void)
 {
     AspectAnalysis aa = malloc(sizeof(struct AspectAnalysis));
-    aa->mSize = aa->lmSize = aa->laSize = 256;
+    aa->mSize = aa->lmSize = aa->laSize = 2 << 9;
     aa->mCount = aa->lmCount = aa->laCount = 0;
     aa->mNumber = malloc(aa->mSize * sizeof(int));
     aa->lmNumber = malloc(aa->lmSize * sizeof(int));
@@ -448,13 +464,13 @@ static void checkApendArray__(int** array, int* size, int* count, int value)
     (*array)[(*count)++] = value;
 }
 
-static void calculateMoveRecLib__(MoveRec mr, void* ptr)
+static void calMoveNumber__(MoveRec mr, void* ptr)
 {
     AspectAnalysis aa = (AspectAnalysis)ptr;
     checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
-static void calculateAspectLib__(Aspect asp, void* ptr)
+static void calMoveRecLib__(Aspect asp, void* ptr)
 {
     AspectAnalysis aa = (AspectAnalysis)ptr;
     int mcount = 1;
@@ -464,12 +480,12 @@ static void calculateAspectLib__(Aspect asp, void* ptr)
     checkApendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, mcount);
 }
 
-static void startAnalyzeAspect__(Aspect lasp, void* ptr)
+static void analyzeAspect__(Aspect lasp, void* ptr)
 {
-    aspectLink__(lasp, calculateAspectLib__, moveRecLink__, calculateMoveRecLib__, ptr);
+    aspectLink__(lasp, calMoveRecLib__, moveRecLink__, calMoveNumber__, ptr);
 }
 
-static void calWriteCount__(FILE* fout, const char* entry, int* number, int size, int count)
+static void calWriteOut__(FILE* fout, const char* entry, int* number, int size, int count)
 {
     if (count <= 0 || size <= 0)
         return;
@@ -485,8 +501,8 @@ static void calWriteCount__(FILE* fout, const char* entry, int* number, int size
     }
     varinace /= count - 1;
     stdDiff = sqrt(varinace);
-    fprintf(fout, "分析%8s => 平均:%.2f 最大:%2d 总数:%d 方差:%.2f 标准差:%.2f 【数组 使用:%d 大小:%d 填充因子:%5.2f】\n",
-        entry, ave, imax, total, varinace, stdDiff, count, size, scale);
+    fprintf(fout, "分析%8s => total:%d max:%d ave:%.4f 方差:%.4f 标准差:%.4f 【数组 %d/%d=%.4f】\n",
+        entry, total, imax, ave, varinace, stdDiff, count, size, scale);
 }
 
 void analyzeAspects(char* fileName, CAspects asps)
@@ -503,12 +519,12 @@ void analyzeAspects(char* fileName, CAspects asps)
             count++;
         checkApendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
     }
-    aspectsMap(asps, startAnalyzeAspect__, aa);
-    fprintf(fout, "【数组 局面数(使用):%d 着法数:%d 大小:%d 填充因子:%5.2f SourceType:%d】\n",
-        asps->aspCount, asps->movCount, asps->size, (double)asps->aspCount / asps->size, asps->hst);
-    calWriteCount__(fout, "move", aa->mNumber, aa->mSize, aa->mCount);
-    calWriteCount__(fout, "moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
-    calWriteCount__(fout, "aspect", aa->laNumber, aa->laSize, aa->laCount);
+    aspectsMap(asps, analyzeAspect__, aa);
+    fprintf(fout, "分析 aspects => 局面:%d 着法:%d  SourceType:%d 【数组 %d/%d=%.4f】\n",
+        asps->aspCount, asps->movCount, asps->hst, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
+    calWriteOut__(fout, "move", aa->mNumber, aa->mSize, aa->mCount);
+    calWriteOut__(fout, "moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
+    calWriteOut__(fout, "aspect", aa->laNumber, aa->laSize, aa->laCount);
     fprintf(fout, "\n");
 
     delAspectAnalysis__(aa);
@@ -517,7 +533,7 @@ void analyzeAspects(char* fileName, CAspects asps)
 
 static void aspectCmp__(Aspect asp, void* ptr)
 {
-    printf("check:%s ", asp->express);
+    //printf("check:%s ", asp->express);
     Aspect oasp = getAspect__((Aspects)ptr, (char*)getMD5(asp->express));
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
@@ -526,11 +542,12 @@ static void aspectCmp__(Aspect asp, void* ptr)
         int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
         assert(mrV == omrV);
         assert(mr->number > 0);
-        printf("0x%08x=0x%08x ", mrV, omrV);
+        //printf("0x%08x=0x%08x ", mrV, omrV);
+
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
     }
-    printf("ok!\n");
+    //printf("ok!\n");
 }
 
 static void startAspectCmp__(Aspect lasp, void* ptr)
@@ -553,23 +570,21 @@ static void checkAspectMD5__(char* libFileName, char* md5FileName)
 
 void testAspects(Aspects asps)
 {
-    char log[] = "ana", libs[] = "libs", md5[] = "md5";
+    char log[] = "log", libs[] = "libs", md5[] = "md5";
     analyzeAspects(log, asps);
-    storeAspectLib(libs, asps); 
+    storeAspectLib(libs, asps);
     delAspects(asps);
 
     asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
+    /*
 
     storeAspectMD5(md5, asps);
-    analyzeAspects(log, asps);
     delAspects(asps);
-
     asps = getAspects_fb(md5);
     analyzeAspects(log, asps);
     delAspects(asps);
 
-    //*
     checkAspectMD5__(libs, md5);
     //*/
 }
