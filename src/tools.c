@@ -244,9 +244,10 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
             continue;
         snprintf(findName, FILENAME_MAX, "%s/%s", dirName, fileinfo.name);
         //如果是目录且要求递归，则递归调用
-        if (fileinfo.attrib & _A_SUBDIR && recursive)
-            operateDir(findName, operateFile, ptr, recursive);
-        else {
+        if (fileinfo.attrib & _A_SUBDIR) {
+            if (recursive)
+                operateDir(findName, operateFile, ptr, recursive);
+        } else {
             strcpy(fileinfo.name, findName);
             operateFile(&fileinfo, ptr);
         }

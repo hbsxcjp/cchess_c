@@ -7,7 +7,7 @@
 struct MoveRec {
     CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
-    int number; // 历史棋谱中某局面下该着法已发生的次数(0:表示后续有相同着法);本局面的重复次数
+    int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
     int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
@@ -33,34 +33,30 @@ struct AspectAnalysis {
 
 static const wchar_t ASPLIB_MARK[] = L"AspectLib\n";
 
-static int getRowCols__(int mrValue) { return mrValue >> 16; }
-static int getCount__(int mrValue) { return (mrValue >> 8) & 0xFF; }
-static int getWeight__(int mrValue) { return mrValue & 0xFF; }
-static int getMRValue__(int rowcols, int number, int weight) { return (rowcols << 16) | (number << 8) | weight; }
+static int getRowCols__(unsigned int mrValue) { return mrValue >> 16; }
+static int getCount__(unsigned int mrValue) { return (mrValue >> 8) & 0xFF; }
+static int getWeight__(unsigned int mrValue) { return mrValue & 0xFF; }
+static unsigned int getMRValue__(int rowcols, int number, int weight) { return (rowcols << 16) | (number << 8) | weight; }
 
-static MoveRec newMoveRec__(const void* mrSource, SourceType st)
+static MoveRec newMoveRec_MP__(CMove move)
 {
-    assert(mrSource);
     MoveRec mr = malloc(sizeof(struct MoveRec));
+    mr->move = move;
+    mr->rowcols = getRowCols_m(mr->move);
+    mr->number = 1;
+    mr->weight = 0; //待完善
     mr->preMoveRec = NULL;
-    switch (st) {
-    case FEN_MovePtr: {
-        mr->move = (CMove)mrSource;
-        mr->rowcols = getRowCols_m(mr->move);
-        mr->number = 1;
-        mr->weight = 0; //待完善
-    } break;
-    case FEN_MRValue:
-    case MD5_MRValue: {
-        mr->move = NULL;
-        int mrValue = *(int*)mrSource;
-        mr->rowcols = getRowCols__(mrValue);
-        mr->number = getCount__(mrValue);
-        mr->weight = getWeight__(mrValue);
-    } break;
-    default:
-        break;
-    }
+    return mr;
+}
+
+static MoveRec newMoveRec_MR__(unsigned int mrValue)
+{
+    MoveRec mr = malloc(sizeof(struct MoveRec));
+    mr->move = NULL;
+    mr->rowcols = getRowCols__(mrValue);
+    mr->number = getCount__(mrValue);
+    mr->weight = getWeight__(mrValue);
+    mr->preMoveRec = NULL;
     return mr;
 }
 
@@ -73,13 +69,12 @@ static void delMoveRec__(MoveRec mr)
     delMoveRec__(pmr);
 }
 
-static Aspect newAspect__(char* aspSource, const void* mrSource, SourceType st)
+static Aspect newAspect__(char* aspSource)
 {
     assert(aspSource);
-    assert(mrSource);
     Aspect asp = malloc(sizeof(struct Aspect));
     asp->express = aspSource;
-    asp->lastMoveRec = newMoveRec__(mrSource, st);
+    asp->lastMoveRec = NULL;
     asp->preAspect = NULL;
     return asp;
 }
@@ -164,9 +159,9 @@ void aspectsMap(CAspects asps, void startAspectLink(Aspect, void*), void* ptr)
     }
 }
 
+/*
 inline static int getLastIndex__(SourceType st, int size, char* aspSource)
 {
-    /*
     int index = BKDRHash_c(aspSource, st == MD5_MRValue ? MD5LEN : strlen(aspSource)) % size;
     if (st == MD5_MRValue) {
         unsigned char* md5 = (unsigned char*)aspSource;
@@ -176,14 +171,15 @@ inline static int getLastIndex__(SourceType st, int size, char* aspSource)
     } else
         printf("FEN:%s", aspSource);
     printf(" index:%d\n", index);
-    //*/
     return BKDRHash_c(aspSource, st == MD5_MRValue ? MD5LEN : strlen(aspSource)) % size;
 }
+    //*/
 
 // 依据aspSource取得最后的局面记录指针
 inline static Aspect* getLastAspect__(CAspects asps, char* aspSource)
 {
-    return &asps->lastAspects[getLastIndex__(asps->hst, asps->size, aspSource)];
+    //return &asps->lastAspects[getLastIndex__(asps->hst, asps->size, aspSource)];
+    return &asps->lastAspects[BKDRHash_c(aspSource, asps->hst == MD5_MRValue ? MD5LEN : strlen(aspSource)) % asps->size];
 }
 
 // 取得某个局面
@@ -196,9 +192,9 @@ static Aspect getAspect__(CAspects asps, char* aspSource)
     return asp;
 }
 
-static void loadAspect__(Aspect asp, void* newAsps)
+static void loadAspect__(Aspect asp, void* asps)
 {
-    Aspect* pasp = getLastAspect__((Aspects)newAsps, asp->express);
+    Aspect* pasp = getLastAspect__(asps, asp->express);
     asp->preAspect = *pasp;
     *pasp = asp;
 }
@@ -220,41 +216,46 @@ static void reloadLastAspects__(Aspects asps, int newSize)
     free(newAsps);
 }
 
-static void putAspect__(Aspects asps, char* aspSource, const void* mrSource, SourceType st)
+static void putMoveRec_MP__(Aspect asp, CMove move)
 {
-    assert(asps->hst == st);
+    MoveRec pmr = asp->lastMoveRec, mr = newMoveRec_MP__(move);
+    // 允许存在相同着法，需对number作出标记
+    while (pmr) {
+        if (mr->rowcols == pmr->rowcols) {
+            mr->number += pmr->number;
+            pmr->number = 0; // 标记重复，存储为FEN_MRValue, MD_MRValue格式时该mr被过滤
+            break; // 再往前推，如有重复在此之前也已被标记
+        }
+        pmr = pmr->preMoveRec;
+    }
+    // 插入方式
+    mr->preMoveRec = asp->lastMoveRec;
+    asp->lastMoveRec = mr;
+}
+
+static void putMoveRec_MR__(Aspect asp, unsigned int mrValue)
+{
+    MoveRec pmr = asp->lastMoveRec, mr = newMoveRec_MR__(mrValue);
+    // 追加方式
+    if (pmr) {
+        // 递进到最前着
+        while (pmr->preMoveRec)
+            pmr = pmr->preMoveRec;
+        pmr->preMoveRec = mr;
+    } else
+        asp->lastMoveRec = mr;
+}
+
+static Aspect putAspect__(Aspects asps, char* aspSource)
+{
     // 检查容量，如果超出装载因子则扩容
     if (asps->aspCount >= asps->size * asps->loadfactor && asps->size < INT_MAX)
         reloadLastAspects__(asps, asps->size + 1);
 
-    Aspect asp = getAspect__(asps, aspSource);
-
-    if (asp) { // 已有相同局面
-        MoveRec pmr = asp->lastMoveRec, mr = newMoveRec__(mrSource, st);
-        if (st == FEN_MovePtr) {
-            // 寻找相同着法
-            while (pmr) {
-                if (pmr->number && (mr->rowcols == pmr->rowcols)) {
-                    mr->number += pmr->number;
-                    pmr->number = 0; // 标记重复
-                    break; // 再往前推，如有重复在此之前也已被标记
-                }
-                pmr = pmr->preMoveRec;
-            }
-            // 插入方式
-            mr->preMoveRec = asp->lastMoveRec;
-            asp->lastMoveRec = mr;
-        } else {
-            // 追加方式
-            while (pmr->preMoveRec)
-                pmr = pmr->preMoveRec;
-            pmr->preMoveRec = mr;
-        }
-    } else {
-        loadAspect__(newAspect__(aspSource, mrSource, st), asps);
-        asps->aspCount++;
-    }
-    asps->movCount++;
+    Aspect asp = newAspect__(aspSource);
+    loadAspect__(asp, asps);
+    asps->aspCount++;
+    return asp;
 }
 
 static char* getfen_board__(wchar_t* FEN)
@@ -264,11 +265,18 @@ static char* getfen_board__(wchar_t* FEN)
     return fen;
 }
 
-void setAspects_mb(Move move, void* asps, void* board)
+void appendAspects_mb(Move move, void* asps, void* board)
 {
     wchar_t FEN[SEATNUM + 1];
     getFEN_board(FEN, board);
-    putAspect__((Aspects)asps, getfen_board__(FEN), move, FEN_MovePtr);
+    char* fen = getfen_board__(FEN);
+    Aspect asp = getAspect__(asps, fen);
+    if (asp)
+        free(fen);
+    else
+        asp = putAspect__(asps, fen);
+    putMoveRec_MP__(asp, move);
+    ((Aspects)asps)->movCount++;
 }
 
 Aspects getAspects_fs(const char* fileName)
@@ -284,8 +292,10 @@ Aspects getAspects_fs(const char* fileName)
         if (swscanf(lineStr, L"%s", FEN) != 1)
             continue;
         sourceStr = lineStr + wcslen(FEN);
+        Aspect asp = putAspect__(asps, getfen_board__(FEN));
         while (wcslen(sourceStr) > 10 && swscanf(sourceStr, L"%x", &mrValue) == 1) {
-            putAspect__(asps, getfen_board__(FEN), &mrValue, FEN_MRValue);
+            putMoveRec_MR__(asp, (unsigned int)mrValue);
+            asps->movCount++;
             sourceStr += 11; //source存储长度为11个字符:0x+8位数字+1个空格
         }
     }
@@ -302,14 +312,17 @@ Aspects getAspects_fb(const char* fileName)
     while (fread(md5, MD5LEN, 1, fin) == 1) {
         if (fread(&count, sizeof(int), 1, fin) != 1)
             break;
-        int mrValue[count];
+        unsigned int mrValue[count];
         if (fread(mrValue, sizeof(int), count, fin) != count)
             break;
-        for (int i = 0; i < count; ++i)
-            putAspect__(asps, md5, &mrValue[i], MD5_MRValue);
-
+        Aspect asp = putAspect__(asps, md5);
+        for (int i = 0; i < count; ++i) {
+            putMoveRec_MR__(asp, mrValue[i]);
+            asps->movCount++;
+        }
         md5 = malloc(MD5LEN);
     }
+    free(md5);
     fclose(fin);
     return asps;
 }
@@ -359,7 +372,7 @@ void writeAspectStr(char* fileName, CAspects asps)
 
 static void printfMoveRecLib__(MoveRec mr, void* ptr)
 {
-    if (mr->number > 0)
+    if (mr->number)
         fprintf((FILE*)ptr, "0x%08x ", getMRValue__(mr->rowcols, mr->number, mr->weight));
 }
 
@@ -382,32 +395,27 @@ void storeAspectLib(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void transToMD5__(Aspect asp, void* ptr)
+static void putAspectMD5__(Aspect asp, void* masps)
 {
-    char* oldExpress = asp->express;
-    asp->express = (char*)getMD5(oldExpress);
-    free(oldExpress);
+    Aspect masp = putAspect__((Aspects)masps, (char*)getMD5(asp->express));
+    MoveRec mr = asp->lastMoveRec, pmr;
+    while (mr) {
+        pmr = mr->preMoveRec;
+        putMoveRec_MR__(masp, getMRValue__(mr->rowcols, mr->number, mr->weight));
+        mr = pmr;
+    }
 }
 
-static void startTransAspectMD5__(Aspect lasp, void* ptr)
+static void startPutAspectMD5__(Aspect lasp, void* masps)
 {
-    aspectLink__(lasp, transToMD5__, NULL, NULL, ptr);
-}
-
-// 非MD5格式局面数据转换成MD5格式局面数据
-static void transToMD5Aspects__(Aspects asps)
-{
-    assert(asps);
-    aspectsMap(asps, startTransAspectMD5__, NULL);
-    asps->hst = MD5_MRValue; // 修改源格式
-    reloadLastAspects__(asps, asps->size); // 尺寸保持不变
+    aspectLink__(lasp, putAspectMD5__, NULL, NULL, masps);
 }
 
 static void writeMoveRecMD5__(MoveRec mr, void* ptr)
 {
     // 排除重复标记的着法
-    if (mr->number > 0) {
-        int mrValue = getMRValue__(mr->rowcols, mr->number, mr->weight);
+    if (mr->number) {
+        unsigned int mrValue = getMRValue__(mr->rowcols, mr->number, mr->weight);
         fwrite(&mrValue, sizeof(int), 1, (FILE*)ptr); // 4个字节
     }
 }
@@ -417,7 +425,7 @@ static void writeAspectMD5__(Aspect asp, void* ptr)
     fwrite(asp->express, MD5LEN, 1, (FILE*)ptr); // 16个字节
     int count = 1;
     MoveRec mr = asp->lastMoveRec;
-    while ((mr = mr->preMoveRec) && mr->number > 0)
+    while ((mr = mr->preMoveRec) && mr->number)
         count++;
     fwrite(&count, sizeof(int), 1, (FILE*)ptr); // 4个字节
 }
@@ -427,12 +435,13 @@ static void startStoreAspectMD5__(Aspect lasp, void* ptr)
     aspectLink__(lasp, writeAspectMD5__, moveRecLink__, writeMoveRecMD5__, ptr);
 }
 
-void storeAspectMD5(char* fileName, Aspects asps)
+void storeAspectMD5(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "wb");
-    transToMD5Aspects__(asps);
-    assert(asps->hst == MD5_MRValue);
-    aspectsMap(asps, startStoreAspectMD5__, fout);
+    Aspects masps = newAspects(MD5_MRValue, asps->size);
+    aspectsMap(asps, startPutAspectMD5__, masps); // 转换存储格式
+    aspectsMap(masps, startStoreAspectMD5__, fout);
+    delAspects(masps);
     fclose(fout);
 }
 
@@ -522,26 +531,26 @@ void analyzeAspects(char* fileName, CAspects asps)
     aspectsMap(asps, analyzeAspect__, aa);
     fprintf(fout, "分析 aspects => 局面:%d 着法:%d  SourceType:%d 【数组 %d/%d=%.4f】\n",
         asps->aspCount, asps->movCount, asps->hst, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
-    calWriteOut__(fout, "move", aa->mNumber, aa->mSize, aa->mCount);
-    calWriteOut__(fout, "moveRec", aa->lmNumber, aa->lmSize, aa->lmCount);
-    calWriteOut__(fout, "aspect", aa->laNumber, aa->laSize, aa->laCount);
+    calWriteOut__(fout, "moveNum", aa->mNumber, aa->mSize, aa->mCount);
+    calWriteOut__(fout, "mrNum", aa->lmNumber, aa->lmSize, aa->lmCount);
+    calWriteOut__(fout, "aspNum", aa->laNumber, aa->laSize, aa->laCount);
     fprintf(fout, "\n");
 
     delAspectAnalysis__(aa);
     fclose(fout);
 }
 
-static void aspectCmp__(Aspect asp, void* ptr)
+static void aspectCmp__(Aspect asp, void* asps)
 {
     //printf("check:%s ", asp->express);
-    Aspect oasp = getAspect__((Aspects)ptr, (char*)getMD5(asp->express));
+    Aspect oasp = getAspect__(asps, (char*)getMD5(asp->express));
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
         assert(omr);
         int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
         assert(mrV == omrV);
-        assert(mr->number > 0);
+        assert(mr->number);
         //printf("0x%08x=0x%08x ", mrV, omrV);
 
         mr = mr->preMoveRec;
@@ -577,14 +586,14 @@ void testAspects(Aspects asps)
 
     asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
-    /*
-
     storeAspectMD5(md5, asps);
     delAspects(asps);
+    //*
+
     asps = getAspects_fb(md5);
     analyzeAspects(log, asps);
-    delAspects(asps);
 
     checkAspectMD5__(libs, md5);
     //*/
+    delAspects(asps);
 }

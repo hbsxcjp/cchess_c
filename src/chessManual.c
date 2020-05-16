@@ -19,7 +19,7 @@ struct ChessManual {
 };
 
 typedef struct OperateDirData {
-    int fcount, dcount, movcount, remcount, remlenmax;
+    int fcount, dcount, movCount, remCount, remLenMax;
     const char *fromDir, *toDir;
     RecFormat fromfmt, tofmt;
 } * OperateDirData;
@@ -486,13 +486,16 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 
 void readChessManual__(ChessManual cm, const char* fileName)
 {
+    if (!fileIsRight__(fileName))
+        return;
     RecFormat fmt = getRecFormat__(getExtName(fileName));
+    /*
     if (fmt == NOTFMT) {
         wprintf(L"未实现的打开文件扩展名！");
         return;
     }
-    FILE* fin = fopen(fileName,
-        (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
+    //*/
+    FILE* fin = fopen(fileName, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
     if (fin == NULL)
         return;
     switch (fmt) {
@@ -528,11 +531,15 @@ void readChessManual__(ChessManual cm, const char* fileName)
 
 void writeChessManual(ChessManual cm, const char* fileName)
 {
+    if (!fileIsRight__(fileName))
+        return;
     RecFormat fmt = getRecFormat__(getExtName(fileName));
+    /*
     if (fmt == NOTFMT) {
         wprintf(L"未实现的写入文件扩展名！");
         return;
     }
+    //*/
     FILE* fout = fopen(fileName,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "wb" : "w");
     if (fout == NULL)
@@ -682,13 +689,23 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     ChessManual cm = newChessManual(fileName);
 
     char toDirName[FILENAME_MAX];
-    strcpy(toDirName, odata->toDir);
-    strcat(toDirName, fileName + strlen(odata->fromDir)); //替换源目录名
+    strcat(strcpy(toDirName, odata->toDir), fileName + strlen(odata->fromDir)); //替换源目录名
     getDirName(toDirName);
-    if (strlen(toDirName) > 0 && access(toDirName, 0) != 0) {
-        mkdir(toDirName);
-        //printf("%d: mkdir-> %s\n", __LINE__, toDirName);
-        //fflush(stdout);
+
+    // 检查并创建(多级)目录
+    char dirName[FILENAME_MAX], tmpDirName[FILENAME_MAX] = { 0 }, *dname, tokseps[] = "\\/";
+    strcpy(dirName, toDirName);
+    dname = strtok(dirName, tokseps);
+    while (dname) {
+        strcat(tmpDirName, dname);
+        if (access(tmpDirName, 0) != 0) {
+            mkdir(tmpDirName);
+            odata->dcount++;
+            //printf("%d: mkdir-> %s\n", __LINE__, toDirName);
+            //fflush(stdout);
+        }
+        strcat(tmpDirName, "/");
+        dname = strtok(NULL, tokseps);
     }
 
     char toFileName[FILENAME_MAX];
@@ -699,30 +716,11 @@ static void transFile__(FileInfo fileInfo, void* ptr)
 
     writeChessManual(cm, toFileName);
     ++odata->fcount;
-    odata->movcount += cm->movCount_;
-    odata->remcount += cm->remCount_;
-    if (odata->remlenmax < cm->maxRemLen_)
-        odata->remlenmax = cm->maxRemLen_;
+    odata->movCount += cm->movCount_;
+    odata->remCount += cm->remCount_;
+    if (odata->remLenMax < cm->maxRemLen_)
+        odata->remLenMax = cm->maxRemLen_;
     delChessManual(cm);
-}
-
-void setAspects_file(Aspects asps, const char* fileName)
-{
-    if (!fileIsRight__(fileName))
-        return;
-    ChessManual cm = newChessManual(fileName);
-    moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
-    delChessManual(cm);
-}
-
-static void setAspects_fileInfo__(FileInfo fileInfo, void* asps)
-{
-    setAspects_file((Aspects)asps, fileInfo->name);
-}
-
-void setAspects_dir(Aspects asps, const char* dirName)
-{
-    operateDir(dirName, setAspects_fileInfo__, asps, true);
 }
 
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
@@ -734,24 +732,43 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     //chdir(fromDir);
 
     OperateDirData odata = malloc(sizeof(struct OperateDirData));
-    odata->fcount = odata->dcount = odata->movcount = odata->remcount = odata->remlenmax = 0;
+    odata->fcount = odata->dcount = odata->movCount = odata->remCount = odata->remLenMax = 0;
     odata->fromDir = fromDir;
     odata->toDir = toDir;
     odata->fromfmt = fromfmt;
     odata->tofmt = tofmt;
     if (strlen(toDir) > 0 && access(toDir, 0) != 0) {
         mkdir(toDir);
-        printf("%d: %s\n", __LINE__, toDir);
-        fflush(stdout);
+        //printf("%d: %s\n", __LINE__, toDir);
+        //fflush(stdout);
     }
     operateDir(fromDir, transFile__, odata, true);
 
-    printf("%s =>%s: 转换%d个文件, %d个目录成功！\n   着法数量: %d, 注释数量: %d, 最大注释长度: %d\n",
-        fromDir, toDir, odata->fcount, odata->dcount, odata->movcount, odata->remcount, odata->remlenmax);
+    printf("%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
+        fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
     fflush(stdout);
 
     //chdir(curDir);
     free(odata);
+}
+
+void appendAspects_file(Aspects asps, const char* fileName)
+{
+    if (!fileIsRight__(fileName))
+        return;
+    ChessManual cm = newChessManual(fileName);
+    moveMap(cm->rootMove, appendAspects_mb, asps, cm->board);
+    delChessManual(cm);
+}
+
+static void appendAspects_fileInfo__(FileInfo fileInfo, void* asps)
+{
+    appendAspects_file(asps, fileInfo->name);
+}
+
+void appendAspects_dir(Aspects asps, const char* dirName)
+{
+    operateDir(dirName, appendAspects_fileInfo__, asps, true);
 }
 
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
@@ -763,7 +780,7 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     for (int dir = 0; dir < size && dir != toDir; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
-        setAspects_dir(asps, fromDir);
+        appendAspects_dir(asps, fromDir);
 
         for (int fromFmt = XQF; fromFmt < fmtEnd; ++fromFmt)
             for (int toFmt = BIN; toFmt < toFmtEnd; ++toFmt)
@@ -817,7 +834,7 @@ void testChessManual(FILE* fout)
     //*/
 
     Aspects asps = newAspects(FEN_MovePtr, 0);
-    moveMap(cm->rootMove, setAspects_mb, asps, cm->board);
+    moveMap(cm->rootMove, appendAspects_mb, asps, cm->board);
     writeAspectStr("str", asps);
     testAspects(asps);
 

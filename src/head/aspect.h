@@ -14,7 +14,7 @@ Aspects newAspects(SourceType st, int size);
 void delAspects(Aspects aspects);
 
 // 使用void*参数，目的是使其可以作为moveMap调用的函数参数
-void setAspects_mb(Move move, void* aspects, void* board);
+void appendAspects_mb(Move move, void* aspects, void* board);
 // 读取局面数据文件加入局面类型
 Aspects getAspects_fs(const char* fileName);
 // 读取局面MD5数据文件加入局面类型
@@ -33,7 +33,7 @@ void writeAspectStr(char* fileName, CAspects aspects);
 // 存储局面数据，可查看可读取数据
 void storeAspectLib(char* fileName, CAspects aspects);
 // 存储局面MD5数据(二进制文件)，仅读取数据
-void storeAspectMD5(char* fileName, Aspects aspects);
+void storeAspectMD5(char* fileName, CAspects aspects);
 
 // 分析局面库储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
