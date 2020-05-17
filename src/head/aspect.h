@@ -25,13 +25,10 @@ int getAspects_length(Aspects aspects);
 // 取得局面循环着法的距离
 //int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
 
-// 遍历每个局面
-void aspectsMap(CAspects aspects, void apply(Aspect, void*), void* ptr);
-
 // 输出局面字符串，仅查看(应在Move对象的生命周期内调用)
-void writeAspectStr(char* fileName, CAspects aspects);
+void writeAspectShow(char* fileName, CAspects aspects);
 // 存储局面数据，可查看可读取数据
-void storeAspectLib(char* fileName, CAspects aspects);
+void storeAspectFEN(char* fileName, CAspects aspects);
 // 存储局面MD5数据(二进制文件)，仅读取数据
 void storeAspectMD5(char* fileName, CAspects aspects);
 

@@ -835,7 +835,7 @@ void testChessManual(FILE* fout)
 
     Aspects asps = newAspects(FEN_MovePtr, 0);
     moveMap(cm->rootMove, appendAspects_mb, asps, cm->board);
-    writeAspectStr("str", asps);
+    writeAspectShow("str", asps);
     testAspects(asps);
 
     delChessManual(cm);
