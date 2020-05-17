@@ -252,7 +252,7 @@ Aspects getAspects_fs(const char* fileName)
         sourceStr = lineStr + wcslen(FEN);
         Aspect asp = putAspect__(asps, getfen_board__(FEN));
         while (wcslen(sourceStr) > 10 && swscanf(sourceStr, L"%x", &mrValue) == 1) {
-            putMoveRec_MR__(asp, (unsigned int)mrValue);
+            putMoveRec_MR__(asp, mrValue);
             asps->movCount++;
             sourceStr += 11; //source存储长度为11个字符:0x+8位数字+1个空格
         }
@@ -271,7 +271,7 @@ Aspects getAspects_fb(const char* fileName)
         if (fread(&count, sizeof(int), 1, fin) != 1)
             break;
         unsigned int mrValue[count];
-        if (fread(mrValue, sizeof(int), count, fin) != count)
+        if (fread(mrValue, sizeof(unsigned int), count, fin) != count)
             break;
         Aspect asp = putAspect__(asps, md5);
         for (int i = 0; i < count; ++i) {
@@ -347,13 +347,12 @@ void storeAspectFEN(char* fileName, CAspects asps)
 
 static void putAspectMD5__(Aspect asp, void* masps)
 {
-    Aspect masp = putAspect__((Aspects)masps, (char*)getMD5(asp->express));
-    MoveRec mr = asp->lastMoveRec, pmr;
-    while (mr) {
-        pmr = mr->preMoveRec;
-        putMoveRec_MR__(masp, getMRValue__(mr->rowcols, mr->number, mr->weight));
-        mr = pmr;
-    }
+    Aspect masp = putAspect__(masps, (char*)getMD5(asp->express));
+    MoveRec mr = asp->lastMoveRec;
+    do
+        if (mr->number)
+            putMoveRec_MR__(masp, getMRValue__(mr->rowcols, mr->number, mr->weight));
+    while ((mr = mr->preMoveRec));
 }
 
 static void writeMoveRecMD5__(MoveRec mr, void* fout)
@@ -361,7 +360,7 @@ static void writeMoveRecMD5__(MoveRec mr, void* fout)
     // 排除重复标记的着法
     if (mr->number) {
         unsigned int mrValue = getMRValue__(mr->rowcols, mr->number, mr->weight);
-        fwrite(&mrValue, sizeof(int), 1, fout); // 4个字节
+        fwrite(&mrValue, sizeof(unsigned int), 1, fout); // 4个字节
     }
 }
 
@@ -511,14 +510,14 @@ void testAspects(Aspects asps)
     char log[] = "log", libs[] = "libs", md5[] = "md5";
     analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
-    delAspects(asps);
+    //delAspects(asps);
 
-    asps = getAspects_fs(libs);
+    //asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
     storeAspectMD5(md5, asps);
     delAspects(asps);
-    //*
 
+    //*
     asps = getAspects_fb(md5);
     analyzeAspects(log, asps);
 
