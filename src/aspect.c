@@ -34,9 +34,9 @@ struct AspectAnalysis {
 static const wchar_t ASPLIB_MARK[] = L"AspectLib\n";
 
 static int getRowCols__(unsigned int mrValue) { return mrValue >> 16; }
-static int getCount__(unsigned int mrValue) { return (mrValue >> 8) & 0xFF; }
+static int getNumber__(unsigned int mrValue) { return (mrValue >> 8) & 0xFF; }
 static int getWeight__(unsigned int mrValue) { return mrValue & 0xFF; }
-static unsigned int getMRValue__(int rowcols, int number, int weight) { return (rowcols << 16) | (number << 8) | weight; }
+static unsigned int getMRValue__(MoveRec mr) { return ((unsigned int)mr->rowcols << 16) | (mr->number << 8) | mr->weight; }
 
 static MoveRec newMoveRec_MP__(CMove move)
 {
@@ -54,7 +54,7 @@ static MoveRec newMoveRec_MR__(unsigned int mrValue)
     MoveRec mr = malloc(sizeof(struct MoveRec));
     mr->move = NULL;
     mr->rowcols = getRowCols__(mrValue);
-    mr->number = getCount__(mrValue);
+    mr->number = getNumber__(mrValue);
     mr->weight = getWeight__(mrValue);
     mr->preMoveRec = NULL;
     return mr;
@@ -245,7 +245,7 @@ Aspects getAspects_fs(const char* fileName)
     fgetws(lineStr, FILENAME_MAX, fin);
     assert(wcscmp(lineStr, ASPLIB_MARK) == 0); // 检验文件标志
     fgetws(lineStr, FILENAME_MAX, fin); // 去掉一空行
-    int mrValue = 0;
+    unsigned int mrValue = 0;
     while (fgetws(lineStr, FILENAME_MAX, fin) && lineStr[0] != L'\n') { // 遇到空行(只有字符'\n')则结束
         if (swscanf(lineStr, L"%s", FEN) != 1)
             continue;
@@ -327,7 +327,7 @@ void writeAspectShow(char* fileName, CAspects asps)
 static void printfMoveRecFEN__(MoveRec mr, void* fout)
 {
     if (mr->number)
-        fprintf(fout, "0x%08x ", getMRValue__(mr->rowcols, mr->number, mr->weight));
+        fprintf(fout, "0x%08x ", getMRValue__(mr));
 }
 
 static void printfAspectFEN__(Aspect asp, void* fout)
@@ -350,8 +350,10 @@ static void putAspectMD5__(Aspect asp, void* masps)
     Aspect masp = putAspect__(masps, (char*)getMD5(asp->express));
     MoveRec mr = asp->lastMoveRec;
     do
-        if (mr->number)
-            putMoveRec_MR__(masp, getMRValue__(mr->rowcols, mr->number, mr->weight));
+        if (mr->number) {
+            putMoveRec_MR__(masp, getMRValue__(mr));
+            ((Aspects)masps)->movCount++;
+        }
     while ((mr = mr->preMoveRec));
 }
 
@@ -359,7 +361,7 @@ static void writeMoveRecMD5__(MoveRec mr, void* fout)
 {
     // 排除重复标记的着法
     if (mr->number) {
-        unsigned int mrValue = getMRValue__(mr->rowcols, mr->number, mr->weight);
+        unsigned int mrValue = getMRValue__(mr);
         fwrite(&mrValue, sizeof(unsigned int), 1, fout); // 4个字节
     }
 }
@@ -475,18 +477,21 @@ void analyzeAspects(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void aspectCmp__(Aspect asp, void* asps)
+static void aspectCmp__(Aspect asp, void* oasps)
 {
     //printf("check:%s ", asp->express);
-    Aspect oasp = getAspect__(asps, (char*)getMD5(asp->express));
+    Aspect oasp = getAspect__(oasps, (char*)getMD5(asp->express));
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
         assert(omr);
-        int mrV = getMRValue__(mr->rowcols, mr->number, mr->weight), omrV = getMRValue__(omr->rowcols, omr->number, omr->weight);
-        assert(mrV == omrV);
+        unsigned int mrV = getMRValue__(mr), omrV = getMRValue__(omr);
+        if (mrV != omrV) {
+            printf("0x%08x - 0x%08x ", (int)mrV, (int)omrV);
+            fflush(stdout);
+        }
         assert(mr->number);
-        //printf("0x%08x=0x%08x ", mrV, omrV);
+        assert(mrV == omrV);
 
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
@@ -500,7 +505,6 @@ static void checkAspectMD5__(char* libFileName, char* md5FileName)
     Aspects asps = getAspects_fs(libFileName),
             oasps = getAspects_fb(md5FileName);
     aspectsMap__(asps, aspectCmp__, oasps, NULL, NULL);
-    printf("checkAspectMD5 OK!\n");
     delAspects(asps);
     delAspects(oasps);
 }
@@ -510,18 +514,29 @@ void testAspects(Aspects asps)
     char log[] = "log", libs[] = "libs", md5[] = "md5";
     analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
-    //delAspects(asps);
+    printf("storeAspectFEN OK!\n");
+    fflush(stdout);
+    delAspects(asps);
 
-    //asps = getAspects_fs(libs);
+    asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
+    printf("getAspects_fs OK!\n");
+    fflush(stdout);
+
     storeAspectMD5(md5, asps);
+    printf("storeAspectMD5 OK!\n");
+    fflush(stdout);
     delAspects(asps);
 
     //*
     asps = getAspects_fb(md5);
     analyzeAspects(log, asps);
+    printf("getAspects_fb OK!\n");
+    fflush(stdout);
 
     checkAspectMD5__(libs, md5);
+    printf("checkAspectMD5__ OK!\n");
+    fflush(stdout);
     //*/
     delAspects(asps);
 }
