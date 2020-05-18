@@ -101,7 +101,7 @@ typedef enum {
 typedef enum {
     FEN_MovePtr,
     FEN_MRValue,
-    MD5_MRValue
+    Hash_MRValue
 } SourceType;
 
 // 着法类型

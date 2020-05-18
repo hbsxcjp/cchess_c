@@ -7,7 +7,7 @@ CFLAGS = -Wall -std=c11 -fexec-charset=gbk -g
 LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16 #lib/pdcurses.a
 SP = src/
 OP = obj/
-OBJS = $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)main.o # $(OP)console.o 
+OBJS = $(OP)sha1.o $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)main.o # $(OP)console.o 
 FIXEDOBJ = $(OP)cJSON.o # 固定的目标文件，一般只编译一次
 
 a.exe: $(OBJS) $(FIXEDOBJ)

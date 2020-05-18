@@ -1,7 +1,7 @@
 #ifndef MD5_H
 #define MD5_H
 
-#define MD5LEN 16
+#define MD5HashSize 16
 
 // 取得字符串的MD5值数组[16]
 unsigned char* getMD5(char* source);

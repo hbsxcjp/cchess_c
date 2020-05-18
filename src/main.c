@@ -6,6 +6,7 @@
 //#include "head/console.h"
 //#include "head/move.h"
 #include "head/md5.h"
+#include "head/sha1.h"
 #include "head/piece.h"
 #include "head/tools.h"
 #include <time.h>
@@ -36,6 +37,7 @@ int main(int argc, char const* argv[])
     };
     int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
     testTools(fout, chessManualDirName, size, ".xqf");
+    testsha1();
     
     //*
     if (argc == 4)

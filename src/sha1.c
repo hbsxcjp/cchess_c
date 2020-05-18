@@ -26,10 +26,23 @@
 * for messages of any number of bits less than 2^64, this
 * implementation only works with messages with a length that is
 * a multiple of the size of an 8-bit character.
+
+*描述：
+*该文件实现了1995年4月17日发布的FIPS PUB 180-1中定义的安全哈希算法1。
 *
+* SHA-1为给定的数据流生成一个160位的消息摘要。当n是摘要大小（以位为单位）时，
+大约需要2 ** n个步骤来查找与给定消息具有相同摘要的消息，而需要2 **（n / 2）
+个步骤来查找具有相同摘要的任何两个消息。因此，该算法可以用作为消息提供“指纹”的手段。
+*
+*可移植性问题：SHA-1是根据32位“字”定义的。该代码使用<stdint.h>
+（通过“ sha1.h”包含）来定义32位和8位无符号整数类型。如果您的C编译器不支持32位无符号整数，则此代码不合适。
+*
+注意事项：SHA-1设计用于处理长度小于2 ^ 64位的消息。尽管SHA-1允许为少于
+2 ^ 64的任何位数的消息生成消息摘要，但是此实现仅适用于长度为8位字符大小的倍数的消息。
 */
 
 #include "head/sha1.h"
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,7 +62,8 @@ void SHA1ProcessMessageBlock(SHA1Context*);
 * Description:
 * This function will initialize the SHA1Context in preparation
 * for computing a new SHA1 message digest.
-*
+* 此函数将初始化SHA1Context，以准备计算新的SHA1消息摘要。
+
 * Parameters:
 * context: [in/out]
 * The context to reset.
@@ -84,6 +98,8 @@ int SHA1Reset(SHA1Context* context) //初始化状态
 * Message_Digest array provided by the caller.
 * NOTE: The first octet of hash is stored in the 0th element,
 * the last octet of hash in the 19th element.
+ 此函数会将160位消息摘要返回到调用方提供的Message_Digest数组中。 
+ 注意：哈希的第一个八位位组存储在第0个元素中，哈希的最后一个八位位组存储在第19个元素中。
 *
 * Parameters:
 * context: [in/out]
@@ -115,8 +131,7 @@ int SHA1Result(SHA1Context* context, uint8_t Message_Digest[SHA1HashSize])
         context->Computed = 1;
     }
     for (i = 0; i < SHA1HashSize; ++i) {
-        Message_Digest[i] = context->Intermediate_Hash[i >> 2]
-            >> 8 * (3 - (i & 0x03));
+        Message_Digest[i] = context->Intermediate_Hash[i >> 2] >> 8 * (3 - (i & 0x03));
     }
     return shaSuccess;
 }
@@ -126,13 +141,15 @@ int SHA1Result(SHA1Context* context, uint8_t Message_Digest[SHA1HashSize])
 *
 * Description:
 * This function accepts an array of octets as the next portion
-* of the message.
+* of the message. 
+ 此函数接受八位字节数组作为消息的下一部分。
 *
 * Parameters:
 * context: [in/out]
 * The SHA context to update
 * message_array: [in]
-* An array of characters representing the next portion of
+* An array of characters representing the next portion of 代表消息下一部分的字符数组。
+ 
 * the message.
 * length: [in]
 * The length of the message in message_array
@@ -180,7 +197,8 @@ int SHA1Input(SHA1Context* context, const uint8_t* message_array, unsigned lengt
 *
 * Description:
 * This function will process the next 512 bits of the message
-* stored in the Message_Block array.
+* stored in the Message_Block array. 
+ 此函数将处理存储在Message_Block数组中的消息的后512位。
 *
 * Parameters:
 * None.
@@ -276,6 +294,9 @@ void SHA1ProcessMessageBlock(SHA1Context* context)
 * accordingly. It will also call the ProcessMessageBlock function
 * provided appropriately. When it returns, it can be assumed that
 * the message digest has been computed.
+ 根据标准，消息必须填充为偶数512位。 第一个填充位必须为“ 1”。 后64位代表原始消息的长度。 
+ 两者之间的所有位都应为0。此函数将通过填充相应的Message_Block数组，根据这些规则填充消息。 
+ 它还将调用适当提供的ProcessMessageBlock函数。 返回时，可以假定已计算出消息摘要。
 *
 * Parameters:
 * context: [in/out]
@@ -294,6 +315,8 @@ void SHA1PadMessage(SHA1Context* context)
 	* the initial padding bits and length. If so, we will pad the
 	* block, process it, and then continue padding into a second
 	* block.
+      检查当前消息块是否太小而无法容纳初始填充位和长度。 
+      如果是这样，我们将填充该块，对其进行处理，然后继续填充到第二个块中。
 	*/
     if (context->Message_Block_Index > 55) {
         context->Message_Block[context->Message_Block_Index++] = 0x80;
@@ -313,6 +336,7 @@ void SHA1PadMessage(SHA1Context* context)
 
     /*
 	* Store the message length as the last 8 octets
+     将消息长度存储为最后8个八位位组
 	*/
     context->Message_Block[56] = context->Length_High >> 24;
     context->Message_Block[57] = context->Length_High >> 16;
@@ -323,6 +347,121 @@ void SHA1PadMessage(SHA1Context* context)
     context->Message_Block[62] = context->Length_Low >> 8;
     context->Message_Block[63] = context->Length_Low;
     SHA1ProcessMessageBlock(context);
+}
+
+/*
+* sha1test.c
+*
+* Description:
+* This file will exercise the SHA-1 code performing the three
+* tests documented in FIPS PUB 180-1 plus one which calls
+* SHA1Input with an exact multiple of 512 bits, plus a few
+* error test checks.
+ 该文件将执行SHA-1代码，执行FIPS PUB 180-1中记录的三个测试，
+ 再加上一个以512位精确倍数调用SHA1Input的代码，再进行一些错误测试检查。
+*
+* Portability Issues:
+* None.
+*
+*/
+
+#include "head/sha1.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+/*
+* Define patterns for testing
+*/
+#define TEST1 "abc"
+#define TEST2a "abcdbcdecdefdefgefghfghighijhi"
+
+#define TEST2b "jkijkljklmklmnlmnomnopnopq"
+#define TEST2 TEST2a TEST2b
+#define TEST3 "a"
+#define TEST4a "01234567012345670123456701234567"
+#define TEST4b "01234567012345670123456701234567"
+/* an exact multiple of 512 bits */
+#define TEST4 TEST4a TEST4b
+char* testarray[4] = {
+    TEST1,
+    TEST2,
+    TEST3,
+    TEST4
+};
+
+long int repeatcount[4] = { 1, 1, 1000000, 10 };
+char* resultarray[4] = {
+    "A9 99 3E 36 47 06 81 6A BA 3E 25 71 78 50 C2 6C 9C D0 D8 9D",
+    "84 98 3E 44 1C 3B D2 6E BA AE 4A A1 F9 51 29 E5 E5 46 70 F1",
+    "34 AA 97 3C D4 C4 DA A4 F6 1E EB 2B DB AD 27 31 65 34 01 6F",
+    "DE A3 56 A2 CD DD 90 C7 A7 EC ED C5 EB B5 63 93 4F 46 04 52"
+};
+
+unsigned char* getSHA1(char* source)
+{
+    unsigned char* digest = malloc(SHA1HashSize);
+    SHA1Context context;
+    SHA1Reset(&context);
+    SHA1Input(&context, (const unsigned char*)source, strlen(source));
+    SHA1Result(&context, digest);
+    return digest;
+}
+
+int sha1cmp(const char* src, const char* des)
+{
+    for (int i = 0; i < SHA1HashSize; ++i)
+        if (src[i] != des[i])
+            return 1;
+    return 0;
+}
+
+int testsha1()
+{
+    SHA1Context sha;
+    int i, j, err;
+    uint8_t Message_Digest[20];
+    /*
+	* Perform SHA-1 tests
+	*/
+    for (j = 0; j < 4; ++j) {
+        //printf( "\nTest %d: %ld, ’%s’\n",j+1,repeatcount[j],testarray[j]);
+        err = SHA1Reset(&sha);
+        //if (err)
+        //{
+        //fprintf(stderr, "SHA1Reset Error %d.\n", err );
+        //break; /* out of for j loop */
+        //}
+        for (i = 0; i < repeatcount[j]; ++i) {
+            err = SHA1Input(&sha,
+                (const unsigned char*)testarray[j],
+                strlen(testarray[j]));
+            if (err) {
+                fprintf(stderr, "SHA1Input Error %d.\n", err);
+                break; /* out of for i loop */
+            }
+        }
+        err = SHA1Result(&sha, Message_Digest);
+        if (err) {
+            fprintf(stderr,
+                "SHA1Result Error %d, could not compute message digest.\n",
+                err);
+        } else {
+            printf("\t");
+            for (i = 0; i < 20; ++i) {
+                printf("%02X ", Message_Digest[i]);
+            }
+            printf("\n");
+        }
+        printf("Should match:\n");
+        printf("\t%s\n\n", resultarray[j]);
+    }
+
+    /* Test some error returns */
+    err = SHA1Input(&sha, (const unsigned char*)testarray[1], 1);
+    printf("\nError %d. Should be %d.\n", err, shaStateError);
+    err = SHA1Reset(0);
+    printf("\nError %d. Should be %d.\n", err, shaNull);
+    return 0;
 }
 
 #ifdef __cplusplus

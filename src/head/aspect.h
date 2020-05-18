@@ -2,6 +2,12 @@
 #define ASPECT_H
 
 #include "base.h"
+#include "md5.h"
+#include "sha1.h"
+
+#define HashSize MD5HashSize //SHA1HashSize // MD5HashSize
+#define HashGetFun getMD5 //getSHA1 //getMD5
+#define HashCMP md5cmp //sha1cmp //md5cmp
 
 // 着法记录类型
 typedef struct MoveRec* MoveRec;
@@ -30,7 +36,7 @@ void writeAspectShow(char* fileName, CAspects aspects);
 // 存储局面数据，可查看可读取数据
 void storeAspectFEN(char* fileName, CAspects aspects);
 // 存储局面MD5数据(二进制文件)，仅读取数据
-void storeAspectMD5(char* fileName, CAspects aspects);
+void storeAspectHash(char* fileName, CAspects aspects);
 
 // 分析局面库储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
