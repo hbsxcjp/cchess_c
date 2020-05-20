@@ -415,6 +415,7 @@ static void checkApendArray__(int** array, int* size, int* count, int value)
 static void calMoveNumber__(MoveRec mr, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
+    assert(mr->number);
     checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
@@ -510,7 +511,7 @@ static void checkAspectHash__(char* libFileName, char* md5FileName)
 void testAspects(Aspects asps)
 {
     char log[] = "log", libs[] = "libs", hash[] = "hash";
-    analyzeAspects(log, asps);
+    //analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
     printf("storeAspectFEN OK!\n");
     fflush(stdout);
@@ -518,6 +519,7 @@ void testAspects(Aspects asps)
 
     asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
+    //*
     printf("getAspects_fs OK!\n");
     fflush(stdout);
 
@@ -526,7 +528,6 @@ void testAspects(Aspects asps)
     fflush(stdout);
     delAspects(asps);
 
-    //*
     asps = getAspects_fb(hash);
     analyzeAspects(log, asps);
     printf("getAspects_fb OK!\n");

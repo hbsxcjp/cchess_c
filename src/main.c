@@ -36,7 +36,7 @@ int main(int argc, char const* argv[])
         "chessManual/中国象棋棋谱大全"
     };
     int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
-    testTools(fout, chessManualDirName, size, ".xqf");
+    //testTools(fout, chessManualDirName, size, ".xqf");
     testsha1();
     
     //*
