@@ -32,7 +32,7 @@ struct AspectAnalysis {
 
 static const wchar_t ASPLIB_MARK[] = L"AspectLib\n";
 
-static unsigned int getMRValue__(MoveRec mr) { return (mr->rowcols << 16) | (mr->number << 8) | mr->weight; }
+static unsigned int getMRValue__(MoveRec mr) { return (mr->rowcols << 16) | ((mr->number & 0xFF) << 8) | (mr->weight & 0xFF); }
 
 static MoveRec newMoveRec_MP__(CMove move)
 {
@@ -343,16 +343,14 @@ void storeAspectFEN(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void putAspectHash__(Aspect asp, void* masps)
+static void putAspectHash__(Aspect asp, void* asps)
 {
-    Aspect masp = putAspect__(masps, (char*)HashGetFun(asp->express));
+    Aspect hasp = putAspect__(asps, (char*)getHashFun(asp->express));
     MoveRec mr = asp->lastMoveRec;
-    do
-        if (mr->number) {
-            putMoveRec_MR__(masp, getMRValue__(mr));
-            ((Aspects)masps)->movCount++;
-        }
-    while ((mr = mr->preMoveRec));
+    do {
+        putMoveRec_MR__(hasp, getMRValue__(mr));
+        ((Aspects)asps)->movCount++;
+    } while ((mr = mr->preMoveRec));
 }
 
 static void writeMoveRecHash__(MoveRec mr, void* fout)
@@ -377,10 +375,10 @@ static void writeAspectHash__(Aspect asp, void* fout)
 void storeAspectHash(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "wb");
-    Aspects masps = newAspects(Hash_MRValue, asps->size);
-    aspectsMap__(asps, putAspectHash__, masps, NULL, NULL); // 转换存储格式
-    aspectsMap__(masps, writeAspectHash__, fout, writeMoveRecHash__, fout);
-    delAspects(masps);
+    Aspects hasps = newAspects(Hash_MRValue, asps->size);
+    aspectsMap__(asps, putAspectHash__, hasps, NULL, NULL); // 转换存储格式
+    aspectsMap__(hasps, writeAspectHash__, fout, writeMoveRecHash__, fout);
+    delAspects(hasps);
     fclose(fout);
 }
 
@@ -479,7 +477,7 @@ void analyzeAspects(char* fileName, CAspects asps)
 static void aspectCmp__(Aspect asp, void* oasps)
 {
     //printf("check:%s ", asp->express);
-    Aspect oasp = getAspect__(oasps, (char*)HashGetFun(asp->express));
+    Aspect oasp = getAspect__(oasps, (char*)getHashFun(asp->express));
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
@@ -519,9 +517,9 @@ void testAspects(Aspects asps)
 
     asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
-    //*
     printf("getAspects_fs OK!\n");
     fflush(stdout);
+    /*
 
     storeAspectHash(hash, asps);
     printf("storeAspectHash OK!\n");

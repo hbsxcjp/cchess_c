@@ -9,11 +9,11 @@
 
 #ifdef MD5Hash
 #define HashSize MD5HashSize
-#define HashGetFun getMD5
+#define getHashFun getMD5
 #define HashCMP md5cmp
 #else
 #define HashSize SHA1HashSize
-#define HashGetFun getSHA1
+#define getHashFun getSHA1
 #define HashCMP sha1cmp
 #endif
 
