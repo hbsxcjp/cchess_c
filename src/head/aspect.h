@@ -5,9 +5,17 @@
 #include "md5.h"
 #include "sha1.h"
 
-#define HashSize MD5HashSize //SHA1HashSize // MD5HashSize
-#define HashGetFun getMD5 //getSHA1 //getMD5
-#define HashCMP md5cmp //sha1cmp //md5cmp
+#define MD5Hash
+
+#ifdef MD5Hash
+#define HashSize MD5HashSize
+#define HashGetFun getMD5
+#define HashCMP md5cmp
+#else
+#define HashSize SHA1HashSize
+#define HashGetFun getSHA1
+#define HashCMP sha1cmp
+#endif
 
 // 着法记录类型
 typedef struct MoveRec* MoveRec;

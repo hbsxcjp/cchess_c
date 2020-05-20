@@ -5,9 +5,9 @@
 
 struct MoveRec {
     CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
-    int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
-    int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
-    int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
+    unsigned int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
+    unsigned int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
+    unsigned int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
 
@@ -32,10 +32,7 @@ struct AspectAnalysis {
 
 static const wchar_t ASPLIB_MARK[] = L"AspectLib\n";
 
-static int getRowCols__(unsigned int mrValue) { return mrValue >> 16; }
-static int getNumber__(unsigned int mrValue) { return (mrValue >> 8) & 0xFF; }
-static int getWeight__(unsigned int mrValue) { return mrValue & 0xFF; }
-static unsigned int getMRValue__(MoveRec mr) { return ((unsigned int)mr->rowcols << 16) | (mr->number << 8) | mr->weight; }
+static unsigned int getMRValue__(MoveRec mr) { return (mr->rowcols << 16) | (mr->number << 8) | mr->weight; }
 
 static MoveRec newMoveRec_MP__(CMove move)
 {
@@ -52,9 +49,9 @@ static MoveRec newMoveRec_MR__(unsigned int mrValue)
 {
     MoveRec mr = malloc(sizeof(struct MoveRec));
     mr->move = NULL;
-    mr->rowcols = getRowCols__(mrValue);
-    mr->number = getNumber__(mrValue);
-    mr->weight = getWeight__(mrValue);
+    mr->rowcols = (mrValue & 0xFFFF0000) >> 16;
+    mr->number = (mrValue & 0xFF00) >> 8;
+    mr->weight = mrValue & 0xFF;
     mr->preMoveRec = NULL;
     return mr;
 }
@@ -181,7 +178,7 @@ static void putMoveRec_MP__(Aspect asp, CMove move)
         if (mr->rowcols == pmr->rowcols) {
             mr->number += pmr->number;
             pmr->number = 0; // 标记重复，存储为FEN_MRValue, MD_MRValue格式时该mr被过滤
-            break; // 再往前推，如有重复在此之前也已被标记
+            break; // 不需再往前推，因为如有重复在此之前也已被标记
         }
         pmr = pmr->preMoveRec;
     }
@@ -264,9 +261,12 @@ Aspects getAspects_fb(const char* fileName)
 {
     Aspects asps = newAspects(Hash_MRValue, 0);
     FILE* fin = fopen(fileName, "rb");
-    char* hash = malloc(HashSize);
+    char* hash = NULL;
     int count = 0;
-    while (fread(hash, HashSize, 1, fin) == 1) {
+    while (true) {
+        hash = malloc(HashSize);
+        if (fread(hash, HashSize, 1, fin) != 1)
+            break;
         if (fread(&count, sizeof(int), 1, fin) != 1)
             break;
         unsigned int mrValue[count];
@@ -277,7 +277,6 @@ Aspects getAspects_fb(const char* fileName)
             putMoveRec_MR__(asp, mrValue[i]);
             asps->movCount++;
         }
-        hash = malloc(HashSize);
     }
     free(hash);
     fclose(fin);
@@ -486,7 +485,7 @@ static void aspectCmp__(Aspect asp, void* oasps)
         assert(omr);
         unsigned int mrV = getMRValue__(mr), omrV = getMRValue__(omr);
         if (mrV != omrV) {
-            printf("0x%08x - 0x%08x ", (int)mrV, (int)omrV);
+            printf("0x%08x - 0x%08x ", mrV, omrV);
             fflush(stdout);
         }
         assert(mr->number);
