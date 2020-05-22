@@ -49,9 +49,9 @@ static MoveRec newMoveRec_MR__(unsigned int mrValue)
 {
     MoveRec mr = malloc(sizeof(struct MoveRec));
     mr->move = NULL;
-    mr->rowcols = (mrValue & 0xFFFF0000) >> 16;
-    mr->number = (mrValue & 0xFF00) >> 8;
-    mr->weight = mrValue & 0xFF;
+    mr->rowcols = (mrValue & 0xFFFF0000U) >> 16;
+    mr->number = (mrValue & 0x0000FF00U) >> 8;
+    mr->weight = mrValue & 0x000000FFU;
     mr->preMoveRec = NULL;
     return mr;
 }
@@ -413,7 +413,6 @@ static void checkApendArray__(int** array, int* size, int* count, int value)
 static void calMoveNumber__(MoveRec mr, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
-    assert(mr->number);
     checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
@@ -509,7 +508,7 @@ static void checkAspectHash__(char* libFileName, char* md5FileName)
 void testAspects(Aspects asps)
 {
     char log[] = "log", libs[] = "libs", hash[] = "hash";
-    //analyzeAspects(log, asps);
+    analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
     printf("storeAspectFEN OK!\n");
     fflush(stdout);
@@ -519,7 +518,7 @@ void testAspects(Aspects asps)
     analyzeAspects(log, asps);
     printf("getAspects_fs OK!\n");
     fflush(stdout);
-    /*
+    //*
 
     storeAspectHash(hash, asps);
     printf("storeAspectHash OK!\n");
