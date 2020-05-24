@@ -5,15 +5,16 @@
 
 struct MoveRec {
     CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
-    unsigned int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
-    unsigned int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
-    unsigned int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
+    unsigned short rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
+    unsigned short number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
+    unsigned short weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
 
 struct Aspect {
     char* express; // 局面表示的指针
     MoveRec lastMoveRec;
+    unsigned short mrCount;
     Aspect preAspect;
 };
 
@@ -30,9 +31,7 @@ struct AspectAnalysis {
     int *laNumber, laSize, laCount; // 同一哈希值下局面个数
 };
 
-static const wchar_t ASPLIB_MARK[] = L"AspectLib\n";
-
-static unsigned int getMRValue__(MoveRec mr) { return (mr->rowcols << 16) | ((mr->number & 0xFF) << 8) | (mr->weight & 0xFF); }
+static const char ASPLIB_MARK[] = "AspectLib";
 
 static MoveRec newMoveRec_MP__(CMove move)
 {
@@ -45,13 +44,13 @@ static MoveRec newMoveRec_MP__(CMove move)
     return mr;
 }
 
-static MoveRec newMoveRec_MR__(unsigned int mrValue)
+static MoveRec newMoveRec_MR__(unsigned short rowcols, unsigned short number, unsigned short weight)
 {
     MoveRec mr = malloc(sizeof(struct MoveRec));
     mr->move = NULL;
-    mr->rowcols = (mrValue & 0xFFFF0000U) >> 16;
-    mr->number = (mrValue & 0x0000FF00U) >> 8;
-    mr->weight = mrValue & 0x000000FFU;
+    mr->rowcols = rowcols;
+    mr->number = number;
+    mr->weight = weight;
     mr->preMoveRec = NULL;
     return mr;
 }
@@ -71,6 +70,7 @@ static Aspect newAspect__(char* aspSource)
     Aspect asp = malloc(sizeof(struct Aspect));
     asp->express = aspSource;
     asp->lastMoveRec = NULL;
+    asp->mrCount = 0;
     asp->preAspect = NULL;
     return asp;
 }
@@ -185,11 +185,12 @@ static void putMoveRec_MP__(Aspect asp, CMove move)
     // 插入方式
     mr->preMoveRec = asp->lastMoveRec;
     asp->lastMoveRec = mr;
+    asp->mrCount++;
 }
 
-static void putMoveRec_MR__(Aspect asp, unsigned int mrValue)
+static void putMoveRec_MR__(Aspect asp, unsigned short rowcols, unsigned short number, unsigned short weight)
 {
-    MoveRec pmr = asp->lastMoveRec, mr = newMoveRec_MR__(mrValue);
+    MoveRec pmr = asp->lastMoveRec, mr = newMoveRec_MR__(rowcols, number, weight);
     // 追加方式
     if (pmr) {
         // 递进到最前着
@@ -198,6 +199,7 @@ static void putMoveRec_MR__(Aspect asp, unsigned int mrValue)
         pmr->preMoveRec = mr;
     } else
         asp->lastMoveRec = mr;
+    asp->mrCount++;
 }
 
 static Aspect putAspect__(Aspects asps, char* aspSource)
@@ -212,18 +214,12 @@ static Aspect putAspect__(Aspects asps, char* aspSource)
     return asp;
 }
 
-static char* getfen_board__(wchar_t* FEN)
-{
-    char* fen = malloc(wcslen(FEN) * 2 + 1);
-    wcstombs(fen, FEN, wcslen(FEN) * 2);
-    return fen;
-}
-
 void appendAspects_mb(Move move, void* asps, void* board)
 {
     wchar_t FEN[SEATNUM + 1];
     getFEN_board(FEN, board);
-    char* fen = getfen_board__(FEN);
+    char* fen = malloc(wcslen(FEN) * 2 + 1);
+    wcstombs(fen, FEN, wcslen(FEN) * 2);
     Aspect asp = getAspect__(asps, fen);
     if (asp)
         free(fen);
@@ -237,20 +233,22 @@ Aspects getAspects_fs(const char* fileName)
 {
     Aspects asps = newAspects(FEN_MRValue, 0);
     FILE* fin = fopen(fileName, "r");
-    wchar_t lineStr[FILENAME_MAX], FEN[SEATNUM], *sourceStr;
-    fgetws(lineStr, FILENAME_MAX, fin);
-    assert(wcscmp(lineStr, ASPLIB_MARK) == 0); // 检验文件标志
-    fgetws(lineStr, FILENAME_MAX, fin); // 去掉一空行
-    unsigned int mrValue = 0;
-    while (fgetws(lineStr, FILENAME_MAX, fin) && lineStr[0] != L'\n') { // 遇到空行(只有字符'\n')则结束
-        if (swscanf(lineStr, L"%s", FEN) != 1)
+    char tag[FILENAME_MAX];
+    fscanf(fin, "%s", tag);
+    assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
+    unsigned short mrCount = 0, rowcols = 0, number = 0, weight = 0;
+    char FEN[SEATNUM];
+    while (fscanf(fin, "%s", FEN) == 1) { // 遇到空行(只有字符'\n')则结束
+        if (fscanf(fin, "%hu", &mrCount) != 1)
             continue;
-        sourceStr = lineStr + wcslen(FEN);
-        Aspect asp = putAspect__(asps, getfen_board__(FEN));
-        while (wcslen(sourceStr) > 10 && swscanf(sourceStr, L"%x", &mrValue) == 1) {
-            putMoveRec_MR__(asp, mrValue);
+        char* fen = malloc(strlen(FEN) + 1);
+        strcpy(fen, FEN);
+        Aspect asp = putAspect__(asps, fen);
+        for (unsigned short i = 0; i < mrCount; ++i) {
+            if (fscanf(fin, "%hx%hu%hu", &rowcols, &number, &weight) != 3)
+                break;
+            putMoveRec_MR__(asp, rowcols, number, weight);
             asps->movCount++;
-            sourceStr += 11; //source存储长度为11个字符:0x+8位数字+1个空格
         }
     }
     fclose(fin);
@@ -262,19 +260,19 @@ Aspects getAspects_fb(const char* fileName)
     Aspects asps = newAspects(Hash_MRValue, 0);
     FILE* fin = fopen(fileName, "rb");
     char* hash = NULL;
-    int count = 0;
+    unsigned short mrCount = 0;
     while (true) {
         hash = malloc(HashSize);
         if (fread(hash, HashSize, 1, fin) != 1)
             break;
-        if (fread(&count, sizeof(int), 1, fin) != 1)
-            break;
-        unsigned int mrValue[count];
-        if (fread(mrValue, sizeof(unsigned int), count, fin) != count)
+        if (fread(&mrCount, sizeof(unsigned short), 1, fin) != 1)
             break;
         Aspect asp = putAspect__(asps, hash);
-        for (int i = 0; i < count; ++i) {
-            putMoveRec_MR__(asp, mrValue[i]);
+        unsigned short mrValue[3];
+        for (unsigned short i = 0; i < mrCount; ++i) {
+            if (fread(&mrValue, sizeof(unsigned short), 3, fin) != 3)
+                break;
+            putMoveRec_MR__(asp, mrValue[0], mrValue[1], mrValue[2]);
             asps->movCount++;
         }
     }
@@ -325,19 +323,19 @@ void writeAspectShow(char* fileName, CAspects asps)
 static void printfMoveRecFEN__(MoveRec mr, void* fout)
 {
     if (mr->number)
-        fprintf(fout, "0x%08x ", getMRValue__(mr));
+        fprintf(fout, "0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectFEN__(Aspect asp, void* fout)
 {
-    fprintf(fout, "\n%s ", asp->express);
+    fprintf(fout, "\n%s %u ", asp->express, asp->mrCount);
 }
 
 void storeAspectFEN(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "w");
     assert(asps->st <= FEN_MRValue);
-    fwprintf(fout, ASPLIB_MARK);
+    fprintf(fout, "%s\n", ASPLIB_MARK);
     aspectsMap__(asps, printfAspectFEN__, fout, printfMoveRecFEN__, fout);
 
     fclose(fout);
@@ -348,7 +346,7 @@ static void putAspectHash__(Aspect asp, void* asps)
     Aspect hasp = putAspect__(asps, (char*)getHashFun(asp->express));
     MoveRec mr = asp->lastMoveRec;
     do {
-        putMoveRec_MR__(hasp, getMRValue__(mr));
+        putMoveRec_MR__(hasp, mr->rowcols, mr->number, mr->weight);
         ((Aspects)asps)->movCount++;
     } while ((mr = mr->preMoveRec));
 }
@@ -357,19 +355,16 @@ static void writeMoveRecHash__(MoveRec mr, void* fout)
 {
     // 排除重复标记的着法
     if (mr->number) {
-        unsigned int mrValue = getMRValue__(mr);
-        fwrite(&mrValue, sizeof(unsigned int), 1, fout); // 4个字节
+        fwrite(&mr->rowcols, sizeof(unsigned short), 1, fout);
+        fwrite(&mr->number, sizeof(unsigned short), 1, fout);
+        fwrite(&mr->weight, sizeof(unsigned short), 1, fout);
     }
 }
 
 static void writeAspectHash__(Aspect asp, void* fout)
 {
-    fwrite(asp->express, HashSize, 1, fout); // 16个字节
-    int count = 1;
-    MoveRec mr = asp->lastMoveRec;
-    while ((mr = mr->preMoveRec) && mr->number)
-        count++;
-    fwrite(&count, sizeof(int), 1, fout); // 4个字节
+    fwrite(asp->express, HashSize, 1, fout); // HashSize个字节
+    fwrite(&asp->mrCount, sizeof(unsigned short), 1, fout);
 }
 
 void storeAspectHash(char* fileName, CAspects asps)
@@ -413,17 +408,18 @@ static void checkApendArray__(int** array, int* size, int* count, int value)
 static void calMoveNumber__(MoveRec mr, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
+    if (!mr->number) {
+        printf("0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
+        fflush(stdout);
+    }
+    assert(mr->number);
     checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
 static void calMoveRecCount__(Aspect asp, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
-    int mcount = 1;
-    MoveRec mr = asp->lastMoveRec;
-    while ((mr = mr->preMoveRec))
-        mcount++;
-    checkApendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, mcount);
+    checkApendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, asp->mrCount);
 }
 
 static void calWriteOut__(FILE* fout, const char* entry, int* number, int size, int count)
@@ -481,13 +477,14 @@ static void aspectCmp__(Aspect asp, void* oasps)
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
         assert(omr);
-        unsigned int mrV = getMRValue__(mr), omrV = getMRValue__(omr);
-        if (mrV != omrV) {
-            printf("0x%08x - 0x%08x ", mrV, omrV);
+        //*
+        if (!(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight)) {
+            printf("0x%04x %u %u - 0x%04x %u %u \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
             fflush(stdout);
         }
+        //*/
         assert(mr->number);
-        assert(mrV == omrV);
+        assert(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight);
 
         mr = mr->preMoveRec;
         omr = omr->preMoveRec;
@@ -508,7 +505,7 @@ static void checkAspectHash__(char* libFileName, char* md5FileName)
 void testAspects(Aspects asps)
 {
     char log[] = "log", libs[] = "libs", hash[] = "hash";
-    analyzeAspects(log, asps);
+    //analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
     printf("storeAspectFEN OK!\n");
     fflush(stdout);

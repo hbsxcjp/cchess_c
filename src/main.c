@@ -37,7 +37,7 @@ int main(int argc, char const* argv[])
     };
     int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
     //testTools(fout, chessManualDirName, size, ".xqf");
-    testsha1();
+    //testsha1();
     
     //*
     if (argc == 4)
