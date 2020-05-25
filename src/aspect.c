@@ -323,12 +323,12 @@ void writeAspectShow(char* fileName, CAspects asps)
 static void printfMoveRecFEN__(MoveRec mr, void* fout)
 {
     if (mr->number)
-        fprintf(fout, "0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
+        fprintf(fout, "0x%04hx %hu %hu ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectFEN__(Aspect asp, void* fout)
 {
-    fprintf(fout, "\n%s %u ", asp->express, asp->mrCount);
+    fprintf(fout, "\n%s %hu ", asp->express, asp->mrCount);
 }
 
 void storeAspectFEN(char* fileName, CAspects asps)
