@@ -178,6 +178,7 @@ static void putMoveRec_MP__(Aspect asp, CMove move)
         if (mr->rowcols == pmr->rowcols) {
             mr->number += pmr->number;
             pmr->number = 0; // 标记重复，存储为FEN_MRValue, MD_MRValue格式时该mr被过滤
+            asp->mrCount--;
             break; // 不需再往前推，因为如有重复在此之前也已被标记
         }
         pmr = pmr->preMoveRec;
@@ -341,16 +342,6 @@ void storeAspectFEN(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void putAspectHash__(Aspect asp, void* asps)
-{
-    Aspect hasp = putAspect__(asps, (char*)getHashFun(asp->express));
-    MoveRec mr = asp->lastMoveRec;
-    do {
-        putMoveRec_MR__(hasp, mr->rowcols, mr->number, mr->weight);
-        ((Aspects)asps)->movCount++;
-    } while ((mr = mr->preMoveRec));
-}
-
 static void writeMoveRecHash__(MoveRec mr, void* fout)
 {
     // 排除重复标记的着法
@@ -365,6 +356,17 @@ static void writeAspectHash__(Aspect asp, void* fout)
 {
     fwrite(asp->express, HashSize, 1, fout); // HashSize个字节
     fwrite(&asp->mrCount, sizeof(unsigned short), 1, fout);
+}
+
+// 非hash类型的asps复制存入hash类型的asps
+static void putAspectHash__(Aspect asp, void* asps)
+{
+    Aspect hasp = putAspect__(asps, (char*)getHashFun(asp->express));
+    MoveRec mr = asp->lastMoveRec;
+    do {
+        putMoveRec_MR__(hasp, mr->rowcols, mr->number, mr->weight);
+        ((Aspects)asps)->movCount++;
+    } while ((mr = mr->preMoveRec));
 }
 
 void storeAspectHash(char* fileName, CAspects asps)
@@ -408,11 +410,13 @@ static void checkApendArray__(int** array, int* size, int* count, int value)
 static void calMoveNumber__(MoveRec mr, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
+    /*
     if (!mr->number) {
         printf("0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
         fflush(stdout);
     }
-    assert(mr->number);
+    //*/
+    //assert(mr->number);
     checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
@@ -477,9 +481,9 @@ static void aspectCmp__(Aspect asp, void* oasps)
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
         assert(omr);
-        //*
+        /*
         if (!(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight)) {
-            printf("0x%04x %u %u - 0x%04x %u %u \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
+            printf("0x%04hx %hu %hu - 0x%04hx %hu %hu \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
             fflush(stdout);
         }
         //*/
@@ -505,7 +509,7 @@ static void checkAspectHash__(char* libFileName, char* md5FileName)
 void testAspects(Aspects asps)
 {
     char log[] = "log", libs[] = "libs", hash[] = "hash";
-    //analyzeAspects(log, asps);
+    analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
     printf("storeAspectFEN OK!\n");
     fflush(stdout);
