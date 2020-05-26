@@ -5,9 +5,11 @@
 #include "head/chessManual.h"
 //#include "head/console.h"
 //#include "head/move.h"
+#include "CUnit/CUnit.h"
+#include "CUnit/Basic.h"
 #include "head/md5.h"
-#include "head/sha1.h"
 #include "head/piece.h"
+#include "head/sha1.h"
 #include "head/tools.h"
 #include <time.h>
 
