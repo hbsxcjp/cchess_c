@@ -2,6 +2,7 @@
 #define CHESSMANUAL_H
 
 #include "base.h"
+#include "sqlite3.h"
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
