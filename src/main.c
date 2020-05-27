@@ -3,7 +3,9 @@
 
 int main(int argc, char const* argv[])
 {
-    unitTest(argc, argv);
+    unitTest();
     
+    implodedTest(argc, argv);
+
     return 0;
 }

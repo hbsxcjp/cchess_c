@@ -220,6 +220,16 @@ unsigned char* getMD5(char* source)
     return digest;
 }
 
+void md5ToStr(unsigned char* md5, char* str)
+{
+    str[0] = '\x0';
+    char tmpStr[3];
+    for (int i = 0; i < MD5HashSize; i++) {
+        sprintf(tmpStr, "%02x", md5[i]);
+        strcat(str, tmpStr);
+    }
+}
+
 int md5cmp(const char* src, const char* des)
 {
     for (int i = 0; i < MD5HashSize; ++i)

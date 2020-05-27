@@ -1,6 +1,66 @@
 #include "head/unitTest.h"
+#include "head/base.h"
+#include "head/board.h"
+#include "head/chessManual.h"
+//#include "head/console.h"
+#include "CUnit/Basic.h"
+#include "CUnit/CUnit.h"
+#include "head/md5.h"
+#include "head/move.h"
+#include "head/piece.h"
+#include "head/sha1.h"
+#include "head/tools.h"
+#include <time.h>
 
-int unitTest(int argc, char const* argv[])
+static void test_md5(void)
+{
+    char str[] = "admin", md5_str[] = "21232f297a57a5a743894a0e4a801fc3";
+    //char str[] = "陈建平", md5_str[] = "21bb705f61cb371b96a9f0c48ec68896";
+
+    char md5_str2[33];
+    unsigned char* md5 = getMD5(str);
+    md5ToStr(md5, md5_str2);
+    free(md5);
+
+    CU_ASSERT_STRING_EQUAL(md5_str, md5_str2);
+    printf("\n%s\n%s\n", md5_str, md5_str2);
+}
+
+static CU_TestInfo tests_tools[] = {
+    { "test_md5", test_md5 },
+    CU_TEST_INFO_NULL,
+};
+
+static CU_SuiteInfo suites[] = {
+    { "suite_tools", NULL, NULL, NULL, NULL, tests_tools },
+    CU_SUITE_INFO_NULL,
+};
+
+int unitTest(void)
+{
+    //CU_pSuite pSuite = NULL;
+
+    /* initialize the CUnit test registry */
+    if (CUE_SUCCESS != CU_initialize_registry()) {
+        return CU_get_error();
+    }
+
+    /* Register suites. */
+    if (CUE_SUCCESS != CU_register_suites(suites)) {
+        CU_cleanup_registry();
+        return CU_get_error();
+    }
+
+    /* Run all tests using the CUnit Basic interface */
+    CU_basic_set_mode(CU_BRM_VERBOSE);
+    CU_basic_run_tests();
+
+    /* Clean up registry and return */
+    CU_cleanup_registry();
+    return CU_get_error();
+}
+
+int implodedTest(int argc, char const* argv[])
 {
     setlocale(LC_ALL, "");
     setbuf(stdin, NULL);

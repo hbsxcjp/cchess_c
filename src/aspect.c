@@ -206,7 +206,7 @@ static void putMoveRec_MR__(Aspect asp, unsigned short rowcols, unsigned short n
 static Aspect putAspect__(Aspects asps, char* aspSource)
 {
     // 检查容量，如果超出装载因子则扩容
-    if (asps->aspCount >= asps->size * asps->loadfactor && asps->size < INT_MAX)
+    if (asps->aspCount >= asps->size * asps->loadfactor && asps->size < INT32_MAX)
         reloadLastAspects__(asps, asps->size + 1);
 
     Aspect asp = newAspect__(aspSource);
@@ -476,7 +476,9 @@ void analyzeAspects(char* fileName, CAspects asps)
 static void aspectCmp__(Aspect asp, void* oasps)
 {
     //printf("check:%s ", asp->express);
-    Aspect oasp = getAspect__(oasps, (char*)getHashFun(asp->express));
+    char* aspSource = (char*)getHashFun(asp->express);
+    Aspect oasp = getAspect__(oasps, aspSource);
+    free(aspSource);
     assert(oasp);
     MoveRec mr = asp->lastMoveRec, omr = oasp->lastMoveRec;
     while (mr) {
@@ -511,29 +513,29 @@ void testAspects(Aspects asps)
     char log[] = "log", libs[] = "libs", hash[] = "hash";
     analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
-    printf("storeAspectFEN OK!\n");
-    fflush(stdout);
+    //printf("storeAspectFEN OK!\n");
+    //fflush(stdout);
     delAspects(asps);
 
     asps = getAspects_fs(libs);
     analyzeAspects(log, asps);
-    printf("getAspects_fs OK!\n");
-    fflush(stdout);
+    //printf("getAspects_fs OK!\n");
+    //fflush(stdout);
     //*
 
     storeAspectHash(hash, asps);
-    printf("storeAspectHash OK!\n");
-    fflush(stdout);
+    //printf("storeAspectHash OK!\n");
+    //fflush(stdout);
     delAspects(asps);
 
     asps = getAspects_fb(hash);
     analyzeAspects(log, asps);
-    printf("getAspects_fb OK!\n");
-    fflush(stdout);
+    //printf("getAspects_fb OK!\n");
+    //fflush(stdout);
 
     checkAspectHash__(libs, hash);
-    printf("checkAspectHash__ OK!\n");
-    fflush(stdout);
+    //printf("checkAspectHash__ OK!\n");
+    //fflush(stdout);
     //*/
     delAspects(asps);
 }
