@@ -13,8 +13,10 @@ struct MoveRec {
 
 struct Aspect {
     char* express; // 局面表示的指针
-    MoveRec lastMoveRec;
+    wchar_t* FEN;
+    unsigned char hash[HashSize];
     unsigned short mrCount;
+    MoveRec lastMoveRec;
     Aspect preAspect;
 };
 
@@ -64,14 +66,9 @@ static void delMoveRec__(MoveRec mr)
     delMoveRec__(pmr);
 }
 
-static Aspect newAspect__(char* aspSource)
+static Aspect newAspect__(void)
 {
-    assert(aspSource);
-    Aspect asp = malloc(sizeof(struct Aspect));
-    asp->express = aspSource;
-    asp->lastMoveRec = NULL;
-    asp->mrCount = 0;
-    asp->preAspect = NULL;
+    Aspect asp = calloc(sizeof(struct Aspect), 1);
     return asp;
 }
 
@@ -81,6 +78,7 @@ static void delAspect__(Aspect asp)
         return;
     Aspect pasp = asp->preAspect;
     free(asp->express);
+    free(asp->FEN);
     delMoveRec__(asp->lastMoveRec);
     free(asp);
     delAspect__(pasp);
@@ -209,7 +207,8 @@ static Aspect putAspect__(Aspects asps, char* aspSource)
     if (asps->aspCount >= asps->size * asps->loadfactor && asps->size < INT32_MAX)
         reloadLastAspects__(asps, asps->size + 1);
 
-    Aspect asp = newAspect__(aspSource);
+    Aspect asp = newAspect__();
+    asp->express = aspSource;
     loadAspect__(asp, asps);
     asps->aspCount++;
     return asp;
