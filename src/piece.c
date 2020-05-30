@@ -56,7 +56,7 @@ void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr)
 
 inline PieceColor getColor(CPiece piece) { return piece->color; }
 inline PieceColor getColor_ch(wchar_t ch) { return islower(ch) ? BLACK : RED; }
-inline PieceColor getOtherColor(PieceColor color) { return !color; }
+inline PieceColor getOtherColor(PieceColor color) { return color == RED ? BLACK : RED; }
 
 static const wchar_t* Chars__[] = { L"KABNRCP", L"kabnrcp" };
 inline PieceKind getKind(CPiece piece) { return piece->kind; }
