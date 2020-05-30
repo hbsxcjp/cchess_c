@@ -5,7 +5,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-typedef struct MD5_CTX* MD5_CTX;
 struct MD5_CTX {
     unsigned int count[2];
     unsigned int state[4];
@@ -47,9 +46,9 @@ struct MD5_CTX {
         a += b;                   \
     }
 
-static void MD5Init(MD5_CTX context);
-static void MD5Update(MD5_CTX context, unsigned char* input, unsigned int inputlen);
-static void MD5Final(MD5_CTX context, unsigned char digest[16]);
+static void MD5Init(struct MD5_CTX* context);
+static void MD5Update(struct MD5_CTX* context, unsigned char* input, unsigned int inputlen);
+static void MD5Final(struct MD5_CTX* context, unsigned char digest[16]);
 static void MD5Transform(unsigned int state[4], unsigned char block[64]);
 static void MD5Encode(unsigned char* output, unsigned int* input, unsigned int len);
 static void MD5Decode(unsigned int* output, unsigned char* input, unsigned int len);
@@ -61,7 +60,7 @@ static unsigned char PADDING[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-static void MD5Init(MD5_CTX context)
+static void MD5Init(struct MD5_CTX* context)
 {
     context->count[0] = 0;
     context->count[1] = 0;
@@ -71,7 +70,7 @@ static void MD5Init(MD5_CTX context)
     context->state[3] = 0x10325476;
 }
 
-static void MD5Update(MD5_CTX context, unsigned char* input, unsigned int inputlen)
+static void MD5Update(struct MD5_CTX* context, unsigned char* input, unsigned int inputlen)
 {
     unsigned int i = 0, index = 0, partlen = 0;
     index = (context->count[0] >> 3) & 0x3F;
@@ -93,7 +92,7 @@ static void MD5Update(MD5_CTX context, unsigned char* input, unsigned int inputl
     memcpy(&context->buffer[index], &input[i], inputlen - i);
 }
 
-static void MD5Final(MD5_CTX context, unsigned char digest[16])
+static void MD5Final(struct MD5_CTX* context, unsigned char digest[16])
 {
     unsigned int index = 0, padlen = 0;
     unsigned char bits[8];
@@ -212,22 +211,11 @@ static void MD5Transform(unsigned int state[4], unsigned char block[64])
 unsigned char* getMD5(char* source)
 {
     unsigned char* digest = malloc(MD5HashSize);
-    MD5_CTX context = malloc(sizeof(struct MD5_CTX));
-    MD5Init(context);
-    MD5Update(context, (unsigned char*)source, strlen(source));
-    MD5Final(context, digest);
-    free(context);
+    struct MD5_CTX context;
+    MD5Init(&context);
+    MD5Update(&context, (unsigned char*)source, strlen(source));
+    MD5Final(&context, digest);
     return digest;
-}
-
-void md5ToStr(unsigned char* md5, char* str)
-{
-    str[0] = '\x0';
-    char tmpStr[3];
-    for (int i = 0; i < MD5HashSize; i++) {
-        sprintf(tmpStr, "%02x", md5[i]);
-        strcat(str, tmpStr);
-    }
 }
 
 int md5cmp(const char* src, const char* des)
@@ -238,40 +226,38 @@ int md5cmp(const char* src, const char* des)
     return 0;
 }
 
-/*
 void testMD5_1(void)
 {
     int i;
     unsigned char encrypt[] = "admin"; //21232f297a57a5a743894a0e4a801fc3
     unsigned char decrypt[16];
-    MD5_CTX md5 = malloc(sizeof(struct MD5_CTX));
-    MD5Init(md5);
-    MD5Update(md5, encrypt, strlen((char*)encrypt));
-    MD5Final(md5, decrypt);
+    struct MD5_CTX md5;
+    MD5Init(&md5);
+    MD5Update(&md5, encrypt, strlen((char*)encrypt));
+    MD5Final(&md5, decrypt);
     printf("加密前:%s\n加密后:", encrypt);
     for (i = 0; i < 16; i++) {
         printf("%02x", decrypt[i]);
     }
     printf("\n");
-    free(md5);
 }
 
-// md5函数测试 
-int testMD5_2(char* argv)
+// md5函数测试 如存在文件则取文件的md5，否则取字符串的md5
+int testMD5_2(const char* argv)
 {
     struct stat st;
     unsigned char digest[16] = { 0 };
-    MD5_CTX context = malloc(sizeof(struct MD5_CTX));
+    struct MD5_CTX context;
     int i = 0;
 
-    MD5Init(context);
+    MD5Init(&context);
 
     if (-1 == stat(argv, &st)) {
-        // 文件不存在则计算参数字符串的MD5 
-        MD5Update(context, (unsigned char*)argv, strlen(argv));
+        // 文件不存在则计算参数字符串的MD5
+        MD5Update(&context, (unsigned char*)argv, strlen(argv));
     } else {
-        // 计算文件MD5 
-        FILE* fp = fopen(argv, "r");
+        // 计算文件MD5
+        FILE* fp = fopen(argv, "rb");
         unsigned char* data = NULL;
         int ret = 0;
 
@@ -290,20 +276,18 @@ int testMD5_2(char* argv)
             perror("fread");
             exit(-1);
         }
-        MD5Update(context, data, st.st_size);
+        MD5Update(&context, data, st.st_size);
         fclose(fp);
         free(data);
     }
-    MD5Final(context, digest);
+    MD5Final(&context, digest);
 
-    // 打印MD5值 
+    // 打印MD5值
     printf("md5: ");
     for (i = 0; i < 16; i++) {
         printf("%02x", digest[i]);
     }
     printf("\n");
 
-    free(context);
     return 0;
 }
-//*/

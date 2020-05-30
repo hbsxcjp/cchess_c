@@ -18,6 +18,9 @@ unsigned int BKDRHash_s(const wchar_t* wstr);
 unsigned int DJBHash(const wchar_t* wstr);
 unsigned int SDBMHash(const wchar_t* wstr);
 
+// 取得hash的字符串表示
+void hashToStr(unsigned char* hash, int length, char* str);
+
 // 去掉字符串前后的空白字符
 char* trim(char* str);
 

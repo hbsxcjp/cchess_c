@@ -99,6 +99,16 @@ unsigned int SDBMHash(const wchar_t* wstr)
     return hash;
 }
 
+void hashToStr(unsigned char* hash, int length, char* str)
+{
+    str[0] = '\x0';
+    char tmpStr[3];
+    for (int i = 0; i < length; i++) {
+        sprintf(tmpStr, "%02x", hash[i]);
+        strcat(str, tmpStr);
+    }
+}
+
 char* trim(char* str)
 {
     size_t size = strlen(str);

@@ -13,8 +13,6 @@ struct MoveRec {
 
 struct Aspect {
     char* express; // 局面表示的指针
-    wchar_t* FEN;
-    unsigned char hash[HashSize];
     unsigned short mrCount;
     MoveRec lastMoveRec;
     Aspect preAspect;
@@ -78,7 +76,6 @@ static void delAspect__(Aspect asp)
         return;
     Aspect pasp = asp->preAspect;
     free(asp->express);
-    free(asp->FEN);
     delMoveRec__(asp->lastMoveRec);
     free(asp);
     delAspect__(pasp);

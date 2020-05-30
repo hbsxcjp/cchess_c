@@ -66,6 +66,6 @@ unsigned char* getSHA1(char* source);
 int sha1cmp(const char* src, const char* des);
 
 // 测试函数
-int testsha1();
+int testsha1(void);
 
 #endif

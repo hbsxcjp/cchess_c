@@ -22,11 +22,10 @@ Pieces newPieces(void)
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
     for (int c = RED; c < NOTCOLOR; ++c) {
         for (int k = KING; k < NOTKIND; ++k) {
-            pieces->piece[c][k] = malloc(count[k] * sizeof(struct Piece));
+            Piece apiece = pieces->piece[c][k] = malloc(count[k] * sizeof(struct Piece));
             pieces->count[k] = count[k];
-            Piece apiece = getPieces__(pieces, c, k);
             for (int i = 0; i < count[k]; ++i) {
-                Piece piece = apiece++;
+                Piece piece = apiece + i;
                 piece->color = c;
                 piece->kind = k;
                 setNullSeat(piece);
@@ -146,25 +145,28 @@ wchar_t* getPieString(wchar_t* pieStr, CPiece piece)
 {
     extern int getRowCol_s(CSeat seat);
     if (!isBlankPiece(piece))
-        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X", // %c
-            getColor(piece) == RED ? L'红' : L'黑', getPieName_T(piece), getChar(piece),
+        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X ", // %c
+            getColor(piece) == RED ? L'红' : L'黑',
+            getPieName_T(piece),
+            getChar(piece),
             getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF); // getPieName(piece),
     else
         pieStr = L"空";
+    wprintf(L"%s ", pieStr);
     return pieStr;
 }
 
-static void printPiece__(Piece piece, void* ptr)
+static void printPiece__(Piece piece, void* wstr)
 {
-    FILE* fout = ptr;
-    wchar_t pstr[WCHARSIZE];
-    fwprintf(fout, L"%s ", getPieString(pstr, piece));
+    wchar_t pieStr[WCHARSIZE];
+    wcscat(wstr, getPieString(pieStr, piece));
 }
 
-void testPiece(FILE* fout)
+void testPiece(wchar_t* wstr)
 {
-    fwprintf(fout, L"testPiece：\n");
+    wcscpy(wstr, L"testPiece：\n");
     Pieces pieces = newPieces();
-    piecesMap(pieces, printPiece__, fout);
+    piecesMap(pieces, printPiece__, wstr);
+    wprintf(L"\n%s\n", wstr);
     free(pieces);
 }

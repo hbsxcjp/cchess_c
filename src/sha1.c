@@ -415,7 +415,7 @@ int sha1cmp(const char* src, const char* des)
     return 0;
 }
 
-int testsha1()
+int testsha1(void)
 {
     SHA1Context sha;
     int i, j, err;
