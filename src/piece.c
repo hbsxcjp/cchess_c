@@ -90,7 +90,7 @@ Piece getOtherPiece(Pieces pieces, CPiece piece)
     PieceKind kind = getKind(piece);
     Piece apiece = getPieces__(pieces, color, kind);
     for (int i = 0; i < pieces->count[kind]; ++i)
-        if (piece == apiece++)
+        if (piece == apiece + i)
             return getPieces__(pieces, othColor, kind) + i;
     assert(!L"没有找到对应的棋子");
     return NULL;
@@ -103,11 +103,11 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch)
         PieceKind kind = getKind_ch(ch);
         Piece apiece = getPieces__(pieces, color, kind);
         for (int i = 0; i < pieces->count[kind]; ++i) {
-            Piece piece = apiece++;
+            Piece piece = apiece + i;
             if (getSeat_p(piece) == NULL) // && getChar(piece) == ch 不需要判断，必定成立
                 return piece;
         }
-        assert(!"没有找到合适的棋子。");
+        assert(!L"没有找到合适的棋子。");
     }
     return getBlankPiece();
 }
@@ -145,14 +145,13 @@ wchar_t* getPieString(wchar_t* pieStr, CPiece piece)
 {
     extern int getRowCol_s(CSeat seat);
     if (!isBlankPiece(piece))
-        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X ", // %c
+        swprintf(pieStr, WCHARSIZE, L"%c%c%c@%02X",
             getColor(piece) == RED ? L'红' : L'黑',
             getPieName_T(piece),
             getChar(piece),
-            getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF); // getPieName(piece),
+            getSeat_p(piece) ? getRowCol_s(getSeat_p(piece)) : 0xFF);
     else
-        pieStr = L"空";
-    wprintf(L"%s ", pieStr);
+        wcscpy(pieStr, L"空");
     return pieStr;
 }
 
@@ -160,13 +159,13 @@ static void printPiece__(Piece piece, void* wstr)
 {
     wchar_t pieStr[WCHARSIZE];
     wcscat(wstr, getPieString(pieStr, piece));
+    wcscat(wstr, L" ");
 }
 
 void testPiece(wchar_t* wstr)
 {
-    wcscpy(wstr, L"testPiece：\n");
+    wstr[0] = L'\x0';
     Pieces pieces = newPieces();
     piecesMap(pieces, printPiece__, wstr);
-    wprintf(L"\n%s\n", wstr);
     free(pieces);
 }

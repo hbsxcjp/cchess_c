@@ -32,6 +32,22 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
 static bool isValidRow__(int row) { return row >= RowLowIndex_ && row <= RowUpIndex_; }
 static bool isValidCol__(int col) { return col >= ColLowIndex_ && col <= ColUpIndex_; }
 
+inline int getRow_s(CSeat seat) { return seat->row; }
+inline int getCol_s(CSeat seat) { return seat->col; }
+
+inline int getOtherRow_r(int row) { return BOARDROW - 1 - row; }
+inline int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
+
+inline int getOtherRow_s(CSeat seat) { return getOtherRow_r(getRow_s(seat)); }
+inline int getOtherCol_s(CSeat seat) { return getOtherCol_c(getCol_s(seat)); }
+
+inline int getRowCol_rc(int row, int col) { return (row << 4) | col; }
+inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_s(seat)); }
+inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
+inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
+
+bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowCol_s(bseat); }
+
 Board newBoard(void)
 {
     Board board = malloc(sizeof(struct Board));
@@ -53,22 +69,6 @@ void delBoard(Board board)
     delPieces(board->pieces);
     free(board);
 }
-
-inline int getRow_s(CSeat seat) { return seat->row; }
-inline int getCol_s(CSeat seat) { return seat->col; }
-
-inline int getOtherRow_r(int row) { return BOARDROW - 1 - row; }
-inline int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
-
-inline int getOtherRow_s(CSeat seat) { return getOtherRow_r(getRow_s(seat)); }
-inline int getOtherCol_s(CSeat seat) { return getOtherCol_c(getCol_s(seat)); }
-
-inline int getRowCol_rc(int row, int col) { return (row << 4) | col; }
-inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_s(seat)); }
-inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
-inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
-
-bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowCol_s(bseat); }
 
 inline Seat getSeat_rc(Board board, int row, int col)
 {
