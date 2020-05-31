@@ -128,7 +128,7 @@ static int filterLiveSeats__(Seat* seats, Pieces pieces, PieceColor color, bool 
     for (int k = KING; k < NOTKIND; ++k) {
         Piece apiece = getPieces__(pieces, color, k);
         for (int i = 0; i < pieces->count[k]; ++i) {
-            Piece piece = apiece++;
+            Piece piece = apiece + i;
             Seat seat = getSeat_p(piece);
             if (func(seat, piece))
                 seats[count++] = seat;
@@ -162,7 +162,7 @@ static void printPiece__(Piece piece, void* wstr)
     wcscat(wstr, L" ");
 }
 
-void testPiece(wchar_t* wstr)
+void testPieceString(wchar_t* wstr)
 {
     wstr[0] = L'\x0';
     Pieces pieces = newPieces();

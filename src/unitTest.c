@@ -43,16 +43,16 @@ static void test_sha1(void)
     //printf("\n%s\n%s\n", str1, str2);
 }
 
-static void test_piece(void)
+static void test_piece_str(void)
 {
     char expectedStr[] = "红帅K@FF 红仕A@FF 红仕A@FF 红相B@FF 红相B@FF 红马N@FF 红马N@FF 红车R@FF 红车R@FF 红炮C@FF 红炮C@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF "
                          "黑将k@FF 黑士a@FF 黑士a@FF 黑象b@FF 黑象b@FF 黑馬n@FF 黑馬n@FF 黑車r@FF 黑車r@FF 黑砲c@FF 黑砲c@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF ",
          resultStr[WIDEWCHARSIZE];
     wchar_t wstr[WIDEWCHARSIZE];
-    testPiece(wstr);
+    testPieceString(wstr);
     wcstombs(resultStr, wstr, WIDEWCHARSIZE);
-    //printf("\n%s\n%s\n", expectedStr, resultStr);
 
+    //printf("\n%s\n%s\n", expectedStr, resultStr);
     CU_ASSERT_STRING_EQUAL(expectedStr, resultStr);
 }
 
@@ -63,7 +63,7 @@ static CU_TestInfo tests_tools[] = {
 };
 
 static CU_TestInfo tests_piece[] = {
-    { "test_piece", test_piece },
+    { "test_piece_str", test_piece_str },
     CU_TEST_INFO_NULL,
 };
 
