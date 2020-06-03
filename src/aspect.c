@@ -5,15 +5,15 @@
 
 struct MoveRec {
     CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
-    unsigned short rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
-    unsigned short number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
-    unsigned short weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
+    int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
+    int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
+    int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
     MoveRec preMoveRec;
 };
 
 struct Aspect {
     char* express; // 局面表示的指针
-    unsigned short mrCount;
+    int mrCount;
     MoveRec lastMoveRec;
     Aspect preAspect;
 };
@@ -44,7 +44,7 @@ static MoveRec newMoveRec_MP__(CMove move)
     return mr;
 }
 
-static MoveRec newMoveRec_MR__(unsigned short rowcols, unsigned short number, unsigned short weight)
+static MoveRec newMoveRec_MR__(int rowcols, int number, int weight)
 {
     MoveRec mr = malloc(sizeof(struct MoveRec));
     mr->move = NULL;
@@ -184,7 +184,7 @@ static void putMoveRec_MP__(Aspect asp, CMove move)
     asp->mrCount++;
 }
 
-static void putMoveRec_MR__(Aspect asp, unsigned short rowcols, unsigned short number, unsigned short weight)
+static void putMoveRec_MR__(Aspect asp, int rowcols, int number, int weight)
 {
     MoveRec pmr = asp->lastMoveRec, mr = newMoveRec_MR__(rowcols, number, weight);
     // 追加方式
@@ -233,16 +233,16 @@ Aspects getAspects_fs(const char* fileName)
     char tag[FILENAME_MAX];
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
-    unsigned short mrCount = 0, rowcols = 0, number = 0, weight = 0;
+    int mrCount = 0, rowcols = 0, number = 0, weight = 0;
     char FEN[SEATNUM];
     while (fscanf(fin, "%s", FEN) == 1) { // 遇到空行(只有字符'\n')则结束
-        if (fscanf(fin, "%hu", &mrCount) != 1)
+        if (fscanf(fin, "%d", &mrCount) != 1)
             continue;
         char* fen = malloc(strlen(FEN) + 1);
         strcpy(fen, FEN);
         Aspect asp = putAspect__(asps, fen);
-        for (unsigned short i = 0; i < mrCount; ++i) {
-            if (fscanf(fin, "%hx%hu%hu", &rowcols, &number, &weight) != 3)
+        for (int i = 0; i < mrCount; ++i) {
+            if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3)
                 break;
             putMoveRec_MR__(asp, rowcols, number, weight);
             asps->movCount++;
@@ -257,17 +257,17 @@ Aspects getAspects_fb(const char* fileName)
     Aspects asps = newAspects(Hash_MRValue, 0);
     FILE* fin = fopen(fileName, "rb");
     char* hash = NULL;
-    unsigned short mrCount = 0;
+    int mrCount = 0;
     while (true) {
         hash = malloc(HashSize);
         if (fread(hash, HashSize, 1, fin) != 1)
             break;
-        if (fread(&mrCount, sizeof(unsigned short), 1, fin) != 1)
+        if (fread(&mrCount, sizeof(int), 1, fin) != 1)
             break;
         Aspect asp = putAspect__(asps, hash);
-        unsigned short mrValue[3];
-        for (unsigned short i = 0; i < mrCount; ++i) {
-            if (fread(&mrValue, sizeof(unsigned short), 3, fin) != 3)
+        int mrValue[3];
+        for (int i = 0; i < mrCount; ++i) {
+            if (fread(&mrValue, sizeof(int), 3, fin) != 3)
                 break;
             putMoveRec_MR__(asp, mrValue[0], mrValue[1], mrValue[2]);
             asps->movCount++;
@@ -320,12 +320,12 @@ void writeAspectShow(char* fileName, CAspects asps)
 static void printfMoveRecFEN__(MoveRec mr, void* fout)
 {
     if (mr->number)
-        fprintf(fout, "0x%04hx %hu %hu ", mr->rowcols, mr->number, mr->weight);
+        fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectFEN__(Aspect asp, void* fout)
 {
-    fprintf(fout, "\n%s %hu ", asp->express, asp->mrCount);
+    fprintf(fout, "\n%s %d ", asp->express, asp->mrCount);
 }
 
 void storeAspectFEN(char* fileName, CAspects asps)
@@ -342,16 +342,16 @@ static void writeMoveRecHash__(MoveRec mr, void* fout)
 {
     // 排除重复标记的着法
     if (mr->number) {
-        fwrite(&mr->rowcols, sizeof(unsigned short), 1, fout);
-        fwrite(&mr->number, sizeof(unsigned short), 1, fout);
-        fwrite(&mr->weight, sizeof(unsigned short), 1, fout);
+        fwrite(&mr->rowcols, sizeof(int), 1, fout);
+        fwrite(&mr->number, sizeof(int), 1, fout);
+        fwrite(&mr->weight, sizeof(int), 1, fout);
     }
 }
 
 static void writeAspectHash__(Aspect asp, void* fout)
 {
     fwrite(asp->express, HashSize, 1, fout); // HashSize个字节
-    fwrite(&asp->mrCount, sizeof(unsigned short), 1, fout);
+    fwrite(&asp->mrCount, sizeof(int), 1, fout);
 }
 
 // 非hash类型的asps复制存入hash类型的asps
@@ -481,7 +481,7 @@ static void aspectCmp__(Aspect asp, void* oasps)
         assert(omr);
         /*
         if (!(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight)) {
-            printf("0x%04hx %hu %hu - 0x%04hx %hu %hu \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
+            printf("0x%04hx %d %d - 0x%04hx %d %d \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
             fflush(stdout);
         }
         //*/
