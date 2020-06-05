@@ -373,6 +373,7 @@ static bool moveSameColor__(Board board, Seat fseat, Seat tseat)
 {
     return getColor(getPiece_s(fseat)) == getColor(getPiece_s(tseat));
 }
+
 int moveSeats(Seat* seats, Board board, Seat fseat)
 {
     int count = 0, frow = getRow_s(fseat), fcol = getCol_s(fseat);
@@ -543,23 +544,23 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
     return filterMoveSeats__(seats, count, board, fseat, moveSameColor__, false);
 }
 
-static bool moveToFail__(Board board, Seat fseat, Seat tseat)
+static bool moveFailed__(Board board, Seat fseat, Seat tseat)
 {
     PieceColor fcolor = getColor(getPiece_s(fseat));
     Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
-    bool fail = isFail(board, fcolor);
+    bool failed = isFail(board, fcolor);
     movePiece(tseat, fseat, eatPiece);
-    return fail;
+    return failed;
 }
 
 int ableMoveSeats(Seat* seats, int count, Board board, Seat fseat)
 {
-    return filterMoveSeats__(seats, count, board, fseat, moveToFail__, false);
+    return filterMoveSeats__(seats, count, board, fseat, moveFailed__, false);
 }
 
 int unableMoveSeats(Seat* seats, int count, Board board, Seat fseat)
 {
-    return filterMoveSeats__(seats, count, board, fseat, moveToFail__, true);
+    return filterMoveSeats__(seats, count, board, fseat, moveFailed__, true);
 }
 
 Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece)

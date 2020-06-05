@@ -13,19 +13,19 @@ void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr);
 
 // 取得表示棋子的颜色
 PieceColor getColor(CPiece piece);
-PieceColor getColor_ch(wchar_t ch);
+//PieceColor getColor_ch(wchar_t ch);
 // 取得对方颜色
 PieceColor getOtherColor(PieceColor color);
 
-//  取得表示棋子的种类(取棋子值的低四位)
+//  取得表示棋子的种类
 PieceKind getKind(CPiece piece);
-PieceKind getKind_ch(wchar_t ch);
+//PieceKind getKind_ch(wchar_t ch);
 
 //  取得表示棋子的字符
 wchar_t getBlankChar();
 wchar_t getChar(CPiece piece);
 // 取得表示棋子的名称
-wchar_t getPieName_ch(wchar_t ch);
+//wchar_t getPieName_ch(wchar_t ch);
 wchar_t getPieName(CPiece piece);
 // 取得表示棋子文本的名称
 wchar_t getPieName_T_ch(wchar_t ch);

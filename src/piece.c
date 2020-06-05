@@ -54,19 +54,23 @@ void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr)
         }
 }
 
+static PieceColor getColor_ch(wchar_t ch) { return islower(ch) ? BLACK : RED; }
 inline PieceColor getColor(CPiece piece) { return piece->color; }
-inline PieceColor getColor_ch(wchar_t ch) { return islower(ch) ? BLACK : RED; }
 inline PieceColor getOtherColor(PieceColor color) { return color == RED ? BLACK : RED; }
 
 static const wchar_t* Chars__[] = { L"KABNRCP", L"kabnrcp" };
+static PieceKind getKind_ch(wchar_t ch)
+{
+    const wchar_t* pch = Chars__[getColor_ch(ch)];
+    return wcschr(pch, ch) - pch;
+}
 inline PieceKind getKind(CPiece piece) { return piece->kind; }
-inline PieceKind getKind_ch(wchar_t ch) { return wcschr(Chars__[getColor_ch(ch)], ch) - Chars__[getColor_ch(ch)]; }
 
 inline wchar_t getBlankChar() { return L'_'; }
 inline wchar_t getChar(CPiece piece) { return piece == getBlankPiece() ? getBlankChar() : Chars__[getColor(piece)][getKind(piece)]; }
 
 static const wchar_t* Names__[] = { L"帅仕相马车炮兵", L"将士象马车炮卒", L"将士象馬車砲卒" };
-wchar_t getPieName_ch(wchar_t ch) { return Names__[getColor_ch(ch)][getKind_ch(ch)]; }
+static wchar_t getPieName_ch(wchar_t ch) { return Names__[getColor_ch(ch)][getKind_ch(ch)]; }
 inline wchar_t getPieName(CPiece piece) { return getPieName_ch(getChar(piece)); }
 wchar_t getPieName_T_ch(wchar_t ch) { return getColor_ch(ch) == RED ? getPieName_ch(ch) : Names__[BLACK + 1][getKind_ch(ch)]; }
 wchar_t getPieName_T(CPiece piece) { return getPieName_T_ch(getChar(piece)); }
