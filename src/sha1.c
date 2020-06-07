@@ -397,22 +397,12 @@ char* resultarray[4] = {
     "DE A3 56 A2 CD DD 90 C7 A7 EC ED C5 EB B5 63 93 4F 46 04 52"
 };
 
-unsigned char* getSHA1(char* source)
+void getSHA1(unsigned char* sha1, char* source)
 {
-    unsigned char* digest = malloc(SHA1HashSize);
     SHA1Context context;
     SHA1Reset(&context);
     SHA1Input(&context, (const unsigned char*)source, strlen(source));
-    SHA1Result(&context, digest);
-    return digest;
-}
-
-int sha1cmp(const char* src, const char* des)
-{
-    for (int i = 0; i < SHA1HashSize; ++i)
-        if (src[i] != des[i])
-            return 1;
-    return 0;
+    SHA1Result(&context, sha1);
 }
 
 int testsha1(void)

@@ -59,11 +59,8 @@ int SHA1Reset(SHA1Context*);
 int SHA1Input(SHA1Context*, const uint8_t*, unsigned int);
 int SHA1Result(SHA1Context*, uint8_t Message_Digest[SHA1HashSize]);
 
-// 取得字符串的SHA1值数组[20]
-unsigned char* getSHA1(char* source);
-
-// 比较SHA1值数组[20]是否相等
-int sha1cmp(const char* src, const char* des);
+// 取得字符串的sha1
+void getSHA1(unsigned char* sha1, char* source);
 
 // 测试函数
 int testsha1(void);

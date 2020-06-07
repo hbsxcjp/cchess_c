@@ -47,7 +47,7 @@ int getPrime(int size)
 
 // BKDR Hash Function
 
-unsigned int BKDRHash_c(char* src, int size)
+unsigned int BKDRHash_c(const char* src, int size)
 {
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
@@ -97,6 +97,14 @@ unsigned int SDBMHash(const wchar_t* wstr)
         hash = (hash << 5) + (hash << 16) - hash + wstr[i];
     }
     return hash;
+}
+
+bool charIsSame(const char* dst, const char* src, int len)
+{
+    for (int i = 0; i < len; ++i)
+        if (dst[i] != src[i])
+            return false;
+    return true;
 }
 
 void hashToStr(unsigned char* hash, int length, char* str)

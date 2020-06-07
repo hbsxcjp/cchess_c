@@ -13,10 +13,13 @@ int getPrimes(int* primes, int bitCount);
 int getPrime(int size);
 
 // 哈希函数
-unsigned int BKDRHash_c(char* src, int size);
+unsigned int BKDRHash_c(const char* src, int size);
 unsigned int BKDRHash_s(const wchar_t* wstr);
 unsigned int DJBHash(const wchar_t* wstr);
 unsigned int SDBMHash(const wchar_t* wstr);
+
+// 比较相同长度的字节串是否相等
+bool charIsSame(const char* dst, const char* src, int len);
 
 // 取得hash的字符串表示
 void hashToStr(unsigned char* hash, int length, char* str);

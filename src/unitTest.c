@@ -17,10 +17,10 @@ static void test_md5(void)
     char str[] = "admin", str1[] = "21232f297a57a5a743894a0e4a801fc3";
     //char str[] = "陈建平", str1[] = "21bb705f61cb371b96a9f0c48ec68896";// 未成功！
 
+    unsigned char md5[MD5HashSize];
+    getMD5(md5, str);
     char str2[33];
-    unsigned char* md5 = getMD5(str);
     hashToStr(md5, MD5HashSize, str2);
-    free(md5);
 
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //testMD5_1();
@@ -33,10 +33,10 @@ static void test_sha1(void)
     char str[] = "admin", str1[] = "d033e22ae348aeb5660fc2140aec35850c4da997";
     //char str[] = "陈建平", str1[] = "2b86ed62ae08865d16c6d4f86c5b79f695e6c723"; // 未成功！
 
+    unsigned char sha1[SHA1HashSize];
+    getSHA1(sha1, str);
     char str2[41];
-    unsigned char* sha1 = getSHA1(str);
     hashToStr(sha1, SHA1HashSize, str2);
-    free(sha1);
 
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //testsha1();

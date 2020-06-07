@@ -12,15 +12,17 @@ struct MoveRec {
 };
 
 struct Aspect {
-    char* express; // 局面表示的指针
+    char* key; // 局面表示的指针
+    int klen;
     int mrCount;
     MoveRec rootMR;
     Aspect forward;
 };
 
 struct Aspects {
-    int size, aspCount, movCount;
+    int size;
     double loadfactor;
+    int aspCount, movCount;
     Aspect* rootAsps;
     SourceType st; // 数据源类型，决定Aspect的express字段解释（fen or hash）
 };
@@ -57,28 +59,34 @@ static MoveRec newMoveRec_MR__(int rowcols, int number, int weight)
 
 static void delMoveRec__(MoveRec mr)
 {
-    if (mr == NULL)
-        return;
-    MoveRec pmr = mr->forward;
-    free(mr);
-    delMoveRec__(pmr);
+    while (mr != NULL) {
+        MoveRec pmr = mr->forward;
+        free(mr);
+        mr = pmr;
+    }
 }
 
-static Aspect newAspect__(void)
+static Aspect newAspect__(const char* key, int klen)
 {
-    Aspect asp = calloc(sizeof(struct Aspect), 1);
+    Aspect asp = malloc(sizeof(struct Aspect));
+    asp->key = malloc(klen);
+    memcpy(asp->key, key, klen);
+    asp->klen = klen;
+    asp->mrCount = 0;
+    asp->rootMR = NULL;
+    asp->forward = NULL;
     return asp;
 }
 
 static void delAspect__(Aspect asp)
 {
-    if (asp == NULL)
-        return;
-    Aspect pasp = asp->forward;
-    free(asp->express);
-    delMoveRec__(asp->rootMR);
-    free(asp);
-    delAspect__(pasp);
+    while (asp != NULL) {
+        Aspect pasp = asp->forward;
+        free(asp->key);
+        delMoveRec__(asp->rootMR);
+        free(asp);
+        asp = pasp;
+    }
 }
 
 Aspects newAspects(SourceType st, int size)
@@ -131,18 +139,17 @@ static void aspectsMap__(CAspects asps, void applyAsp(Aspect, void*), void* aspA
     }
 }
 
-// 依据aspSource取得最后的局面记录指针
-inline static Aspect* getLastAspect__(CAspects asps, char* aspSource)
+// hash值相等的最后局面记录指针
+inline static Aspect* getLastAspect__(CAspects asps, const char* key, int klen)
 {
-    return &asps->rootAsps[BKDRHash_c(aspSource, asps->st == Hash_MRValue ? HashSize : strlen(aspSource)) % asps->size];
+    return &asps->rootAsps[BKDRHash_c(key, klen) % asps->size];
 }
 
-// 取得某个局面
-static Aspect getAspect__(CAspects asps, char* aspSource)
+// 取得key完全相等的局面记录指针
+static Aspect getAspect__(CAspects asps, const char* key, int klen)
 {
-    Aspect asp = *getLastAspect__(asps, aspSource);
-    int (*cmpfun)(const char*, const char*) = asps->st == Hash_MRValue ? HashCMP : strcmp;
-    while (asp && cmpfun(asp->express, aspSource) != 0)
+    Aspect asp = *getLastAspect__(asps, key, klen);
+    while (asp && !charIsSame(asp->key, key, klen))
         asp = asp->forward;
     return asp;
 }
@@ -182,7 +189,7 @@ static void putMoveRec_MR__(Aspect asp, int rowcols, int number, int weight)
 
 static void loadAspect__(Aspect asp, void* asps)
 {
-    Aspect* pasp = getLastAspect__(asps, asp->express);
+    Aspect* pasp = getLastAspect__(asps, asp->key, asp->klen);
     asp->forward = *pasp;
     *pasp = asp;
 }
@@ -199,30 +206,29 @@ static void reloadLastAspects__(Aspects asps, int minSize)
     free(tmpAsps); // tmpAsps->rootAsps 仍保留
 }
 
-static Aspect putAspect__(Aspects asps, char* aspSource)
+static Aspect putAspect__(Aspects asps, const char* key, int klen)
 {
     // 检查容量，如果超出装载因子则扩容
     if (asps->aspCount >= asps->size * asps->loadfactor && asps->size < INT32_MAX)
         reloadLastAspects__(asps, asps->size + 1);
 
-    Aspect asp = newAspect__();
-    asp->express = aspSource;
+    Aspect asp = newAspect__(key, klen);
     loadAspect__(asp, asps);
+
     asps->aspCount++;
     return asp;
 }
 
 void appendAspects_mb(Move move, void* asps, void* board)
 {
-    wchar_t FEN[SEATNUM + 1];
+    wchar_t FEN[SEATNUM];
     getFEN_board(FEN, board);
-    char* fen = malloc(wcslen(FEN) * 2 + 1);
-    wcstombs(fen, FEN, wcslen(FEN) * 2);
-    Aspect asp = getAspect__(asps, fen);
-    if (asp)
-        free(fen);
-    else
-        asp = putAspect__(asps, fen);
+    char fen[SEATNUM];
+    wcstombs(fen, FEN, SEATNUM);
+    Aspect asp = getAspect__(asps, fen, strlen(fen) + 1);
+    if (!asp)
+        asp = putAspect__(asps, fen, strlen(fen) + 1);
+
     putMoveRec_MP__(asp, move);
     ((Aspects)asps)->movCount++;
 }
@@ -235,13 +241,12 @@ Aspects getAspects_fs(const char* fileName)
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
     int mrCount = 0, rowcols = 0, number = 0, weight = 0;
-    char FEN[SEATNUM];
-    while (fscanf(fin, "%s", FEN) == 1) { // 遇到空行(只有字符'\n')则结束
+    char fen[SEATNUM];
+    while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
         if (fscanf(fin, "%d", &mrCount) != 1)
             continue;
-        char* fen = malloc(strlen(FEN) + 1);
-        strcpy(fen, FEN);
-        Aspect asp = putAspect__(asps, fen);
+        Aspect asp = putAspect__(asps, fen, strlen(fen) + 1);
+
         for (int i = 0; i < mrCount; ++i) {
             if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3)
                 break;
@@ -257,15 +262,15 @@ Aspects getAspects_fb(const char* fileName)
 {
     Aspects asps = newAspects(Hash_MRValue, 0);
     FILE* fin = fopen(fileName, "rb");
-    char* hash = NULL;
+    char hash[HashSize];
     int mrCount = 0;
     while (true) {
-        hash = malloc(HashSize);
         if (fread(hash, HashSize, 1, fin) != 1)
             break;
         if (fread(&mrCount, sizeof(int), 1, fin) != 1)
             break;
-        Aspect asp = putAspect__(asps, hash);
+        Aspect asp = putAspect__(asps, hash, HashSize);
+
         int mrValue[3];
         for (int i = 0; i < mrCount; ++i) {
             if (fread(&mrValue, sizeof(int), 3, fin) != 3)
@@ -274,7 +279,6 @@ Aspects getAspects_fb(const char* fileName)
             asps->movCount++;
         }
     }
-    free(hash);
     fclose(fin);
     return asps;
 }
@@ -304,7 +308,7 @@ static void printfMoveRecShow__(MoveRec mr, void* fout)
 
 static void printfAspectShow__(Aspect asp, void* fout)
 {
-    fprintf(fout, "FEN:%s\n", asp->express);
+    fprintf(fout, "FEN:%s\n", asp->key);
 }
 
 void writeAspectShow(char* fileName, CAspects asps)
@@ -326,7 +330,7 @@ static void printfMoveRecFEN__(MoveRec mr, void* fout)
 
 static void printfAspectFEN__(Aspect asp, void* fout)
 {
-    fprintf(fout, "\n%s %d ", asp->express, asp->mrCount);
+    fprintf(fout, "\n%s %d ", asp->key, asp->mrCount);
 }
 
 void storeAspectFEN(char* fileName, CAspects asps)
@@ -351,7 +355,7 @@ static void writeMoveRecHash__(MoveRec mr, void* fout)
 
 static void writeAspectHash__(Aspect asp, void* fout)
 {
-    fwrite(asp->express, HashSize, 1, fout); // HashSize个字节
+    fwrite(asp->key, asp->klen, 1, fout);
     fwrite(&asp->mrCount, sizeof(int), 1, fout);
 }
 
@@ -363,7 +367,10 @@ static void copyMoveRec__(MoveRec mr, void* asp)
 // 非hash类型的asps复制存入hash类型的asps
 static void copyAspectHash__(Aspect asp, void* hasps)
 {
-    Aspect hasp = putAspect__(hasps, (char*)getHashFun(asp->express));
+    unsigned char hash[HashSize];
+    getHashFun(hash, asp->key);
+    Aspect hasp = putAspect__(hasps, (char*)hash, HashSize);
+
     moveRecMap__(asp->rootMR, copyMoveRec__, hasp); // 参数hasp不能在aspectsMap__函数调用时提供，因此只能在这里调用moveRecMap__
 }
 
@@ -373,7 +380,7 @@ void storeAspectHash(char* fileName, CAspects asps)
     Aspects hasps = newAspects(Hash_MRValue, asps->size);
     aspectsMap__(asps, copyAspectHash__, hasps, NULL, NULL); // 转换存储格式
     hasps->movCount = asps->movCount;
-    
+
     aspectsMap__(hasps, writeAspectHash__, fout, writeMoveRecHash__, fout);
     delAspects(hasps);
     fclose(fout);
@@ -475,10 +482,11 @@ void analyzeAspects(char* fileName, CAspects asps)
 
 static void aspectCmp__(Aspect asp, void* oasps)
 {
-    //printf("check:%s ", asp->express);
-    char* aspSource = (char*)getHashFun(asp->express);
-    Aspect oasp = getAspect__(oasps, aspSource);
-    free(aspSource);
+    //printf("check:%s ", asp->key);
+    unsigned char hash[HashSize];
+    getHashFun(hash, asp->key);
+    Aspect oasp = getAspect__(oasps, (char*)hash, HashSize);
+
     assert(oasp);
     MoveRec mr = asp->rootMR, omr = oasp->rootMR;
     while (mr) {

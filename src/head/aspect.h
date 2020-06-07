@@ -10,11 +10,9 @@
 #ifdef MD5Hash
 #define HashSize MD5HashSize
 #define getHashFun getMD5
-#define HashCMP md5cmp
 #else
 #define HashSize SHA1HashSize
 #define getHashFun getSHA1
-#define HashCMP sha1cmp
 #endif
 
 // 着法记录类型

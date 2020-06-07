@@ -208,22 +208,12 @@ static void MD5Transform(unsigned int state[4], unsigned char block[64])
     state[3] += d;
 }
 
-unsigned char* getMD5(char* source)
+void getMD5(unsigned char* md5, char* source)
 {
-    unsigned char* digest = malloc(MD5HashSize);
     struct MD5_CTX context;
     MD5Init(&context);
     MD5Update(&context, (unsigned char*)source, strlen(source));
-    MD5Final(&context, digest);
-    return digest;
-}
-
-int md5cmp(const char* src, const char* des)
-{
-    for (int i = 0; i < MD5HashSize; ++i)
-        if (src[i] != des[i])
-            return 1;
-    return 0;
+    MD5Final(&context, md5);
 }
 
 void testMD5_1(void)

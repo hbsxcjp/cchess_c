@@ -3,11 +3,8 @@
 
 #define MD5HashSize 16
 
-// 取得字符串的MD5值数组[16]
-unsigned char* getMD5(char* source);
-
-// 比较MD5值数组[16]是否相等
-int md5cmp(const char* src, const char* des);
+// 取得字符串的md5
+void getMD5(unsigned char* md5, char* source);
 
 void testMD5_1(void);
 
