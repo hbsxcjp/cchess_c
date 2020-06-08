@@ -728,19 +728,9 @@ void testBoard(FILE* fout)
         //* FEN转换成PieChars
         wchar_t pieChars[SEATNUM + 1];
         getPieChars_FEN(pieChars, FENs[i]);
-        fwprintf(fout, L"     FEN:%s size:%d\nPieChars:%s size:%d\n",
-            FENs[i], wcslen(FENs[i]), pieChars, wcslen(pieChars));
-        //*/
-
         //* 设置棋局，生成PieChars，转换成FEN
         setBoard_pieChars(board, pieChars);
-
         getPieChars_board(pieChars, board);
-        wchar_t FEN[SEATNUM + 1];
-        getFEN_pieChars(FEN, pieChars);
-        fwprintf(fout, L"PieChars:%s size:%d\n     FEN:%s size:%d\n",
-            pieChars, wcslen(pieChars), FEN, wcslen(FEN));
-        //*/
 
         wchar_t boardStr[SUPERWIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
         fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s\n",

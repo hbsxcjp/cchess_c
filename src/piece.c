@@ -45,7 +45,7 @@ void delPieces(Pieces pieces)
 
 void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr)
 {
-    assert(apply);
+    //assert(apply);
     for (int c = RED; c < NOTCOLOR; ++c)
         for (int k = KING; k < NOTKIND; ++k) {
             Piece apiece = getPieces__(pieces, c, k);

@@ -51,15 +51,15 @@ static CU_TestInfo tests_tools[] = {
 
 static void test_piece_str(void)
 {
-    char expectedStr[] = "红帅K@FF 红仕A@FF 红仕A@FF 红相B@FF 红相B@FF 红马N@FF 红马N@FF 红车R@FF 红车R@FF 红炮C@FF 红炮C@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF "
-                         "黑将k@FF 黑士a@FF 黑士a@FF 黑象b@FF 黑象b@FF 黑馬n@FF 黑馬n@FF 黑車r@FF 黑車r@FF 黑砲c@FF 黑砲c@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF ",
-         resultStr[WIDEWCHARSIZE];
+    char str1[] = "红帅K@FF 红仕A@FF 红仕A@FF 红相B@FF 红相B@FF 红马N@FF 红马N@FF 红车R@FF 红车R@FF 红炮C@FF 红炮C@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF "
+                  "黑将k@FF 黑士a@FF 黑士a@FF 黑象b@FF 黑象b@FF 黑馬n@FF 黑馬n@FF 黑車r@FF 黑車r@FF 黑砲c@FF 黑砲c@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF ",
+         str2[WIDEWCHARSIZE];
     wchar_t wstr[WIDEWCHARSIZE];
     testPieceString(wstr);
-    wcstombs(resultStr, wstr, WIDEWCHARSIZE);
+    wcstombs(str2, wstr, WIDEWCHARSIZE);
 
-    //printf("\n%s\n%s\n", expectedStr, resultStr);
-    CU_ASSERT_STRING_EQUAL(expectedStr, resultStr);
+    //printf("\n%s\n%s\n", str1, str2);
+    CU_ASSERT_STRING_EQUAL(str1, str2);
 }
 
 static CU_TestInfo tests_piece[] = {
@@ -67,9 +67,45 @@ static CU_TestInfo tests_piece[] = {
     CU_TEST_INFO_NULL,
 };
 
+static void test_board_str(void)
+{
+    wchar_t* FENs[] = {
+        L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
+        L"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5",
+        L"2b1kab2/4a4/4c4/9/9/3R5/9/1C7/4r4/2BK2B2",
+        L"4kab2/4a4/4b4/3N5/9/4N4/4n4/4B4/4A4/3AK1B2"
+    };
+    wchar_t pieChars[SEATNUM + 1], pieChars2[SEATNUM + 1], FEN[SEATNUM + 1];
+    char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], str4[SEATNUM + 1];
+    Board board = newBoard();
+    for (int i = 0; i < 4; ++i) {
+
+        // FEN转换成PieChars
+        getPieChars_FEN(pieChars, FENs[i]);
+        // 设置棋局，生成PieChars，转换成FEN
+        setBoard_pieChars(board, pieChars);
+        getPieChars_board(pieChars2, board);
+        wcstombs(str1, pieChars, WIDEWCHARSIZE);
+        wcstombs(str2, pieChars2, WIDEWCHARSIZE);
+        CU_ASSERT_STRING_EQUAL(str1, str2);
+
+        // PieChars转换成FEN
+        getFEN_pieChars(FEN, pieChars);
+        wcstombs(str3, FENs[i], WIDEWCHARSIZE);
+        wcstombs(str4, FEN, WIDEWCHARSIZE);
+        CU_ASSERT_STRING_EQUAL(str3, str4);
+    }
+}
+
+static CU_TestInfo tests_board[] = {
+    { "test_board_str", test_board_str },
+    CU_TEST_INFO_NULL,
+};
+
 static CU_SuiteInfo suites[] = {
     { "suite_tools", NULL, NULL, NULL, NULL, tests_tools },
     { "suite_piece", NULL, NULL, NULL, NULL, tests_piece },
+    { "suite_board", NULL, NULL, NULL, NULL, tests_board },
     CU_SUITE_INFO_NULL,
 };
 

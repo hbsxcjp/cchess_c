@@ -2,6 +2,7 @@
 #include "head/board.h"
 #include "head/piece.h"
 #include "head/tools.h"
+#include "pcre.h"
 
 struct Move {
     Seat fseat, tseat; // 起止位置0x00

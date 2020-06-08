@@ -2,6 +2,7 @@
 #define MOVE_H
 
 #include "base.h"
+#include "cJSON.h"
 
 // 新建根着法
 Move getRootMove();

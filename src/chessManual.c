@@ -5,6 +5,8 @@
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
+#include "pcre.h"
+#include "sqlite3.h"
 //#include <regex.h>
 //#include <sys/types.h>
 

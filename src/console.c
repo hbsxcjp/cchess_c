@@ -5,6 +5,39 @@
 #include "head/piece.h"
 #include "head/tools.h"
 
+struct _Menu;
+// 演示类型结构
+struct Console {
+    HANDLE hIn, hOut;
+    ChessManual cm;
+    Thema thema;
+    Area curArea;
+    int fileIndex;
+    char fileName[FILENAME_MAX];
+    SMALL_RECT WinRect, MenuRect, BoardRect, CurmoveRect, MoveRect, StatusRect, OpenFileRect;
+    SMALL_RECT iMenuRect, iBoardRect, iCurmoveRect, iMoveRect, iStatusRect, iOpenFileRect;
+    struct _Menu *rootMenu, *curMenu;
+    //CHAR_INFO chBuf[40 * 120];
+    //SMALL_RECT chBufRect;
+};
+
+// 菜单命令
+typedef void (*MENU_FUNC)(PConsole);
+
+// 菜单结构
+typedef struct _Menu {
+    wchar_t name[WCHARSIZE], desc[WCHARSIZE];
+    MENU_FUNC func; // 菜单关联的命令函数，如有子菜单则应为空
+    struct _Menu *preMenu, *brotherMenu, *childMenu;
+    int brotherIndex, childIndex;
+} Menu, *PMenu;
+
+// 菜单初始信息结构
+typedef struct _MenuData {
+    wchar_t name[WCHARSIZE], desc[WCHARSIZE];
+    MENU_FUNC func;
+} MenuData, *PMenuData;
+
 // 公用变量
 static DWORD rwNum;
 static wchar_t wstr[SUPERWIDEWCHARSIZE];
@@ -151,7 +184,7 @@ static void setRect(PConsole con)
 
 PConsole newConsole(const char* fileName)
 {
-    PConsole con = calloc(sizeof(Console), 1);
+    PConsole con = calloc(sizeof(struct Console), 1);
     con->hIn = GetStdHandle(STD_INPUT_HANDLE);
     con->hOut = CreateConsoleScreenBuffer(
         GENERIC_READ | GENERIC_WRITE, // read/write access
@@ -250,7 +283,7 @@ void operateWin(PConsole con)
                 if (((keys & (LEFT_ALT_PRESSED | RIGHT_ALT_PRESSED))
                         && key == VK_F4)
                     || ((keys & (LEFT_CTRL_PRESSED | RIGHT_CTRL_PRESSED))
-                           && key == 'C'))
+                        && key == 'C'))
                     return;
                 else if (key == VK_ESCAPE) {
                     setArea(con, OLDAREA);
@@ -313,7 +346,7 @@ void operateBoard(PConsole con, PKEY_EVENT_RECORD keroldArea)
 
 void operateMove(PConsole con, PKEY_EVENT_RECORD ker)
 {
-    PMove oldCurMove = con->cm->currentMove;
+    Move oldCurMove = con->cm->currentMove;
     switch (ker->wVirtualKeyCode) {
     case VK_DOWN:
         go(con->cm);
@@ -685,7 +718,7 @@ void writeMove(PConsole con)
     } //*/
 
     // 设置rootMove背景
-    PMove curMove = con->cm->currentMove;
+    Move curMove = con->cm->currentMove;
     if (curMove == con->cm->rootMove) {
         COORD pos = { iMoveRect.Left, iMoveRect.Top };
         FillConsoleOutputAttribute(con->hOut, reverseAttr(MOVEATTR[con->thema]), 4 * 2, pos, &rwNum);
@@ -905,7 +938,7 @@ void setArea(PConsole con, Area area)
         }
 
     //if (con->curArea == MOVEA || con->curArea == CURMOVEA || con->curArea == BOARDA)
-       // oldArea = con->curArea;
+    // oldArea = con->curArea;
     switch ((con->curArea = area)) { // 进入弹出区域
     case MENUA:
         showSubMenu(con, true);
