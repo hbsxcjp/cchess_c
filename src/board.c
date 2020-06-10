@@ -723,24 +723,14 @@ void testBoard(FILE* fout)
     };
     Board board = newBoard();
     for (int i = 0; i < 4; ++i) {
-        fwprintf(fout, L"第%d个FEN =============================================\n", i);
 
         //* FEN转换成PieChars
         wchar_t pieChars[SEATNUM + 1];
         getPieChars_FEN(pieChars, FENs[i]);
         //* 设置棋局，生成PieChars，转换成FEN
         setBoard_pieChars(board, pieChars);
-        getPieChars_board(pieChars, board);
 
         wchar_t boardStr[SUPERWIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
-        fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s\n",
-            getBoardPreString(preStr, board),
-            getBoardString(boardStr, board),
-            getBoardSufString(sufStr, board),
-            board,
-            board->bottomColor,
-            getSeatString(seatStr, getKingSeat(board, board->bottomColor)));
-        //*// 打印棋局
         for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
             changeBoard(board, ct);
             fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s ct:%d\n",

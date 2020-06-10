@@ -67,7 +67,7 @@ static CU_TestInfo tests_piece[] = {
     CU_TEST_INFO_NULL,
 };
 
-static void test_board_str(void)
+static void test_board_FEN_str(void)
 {
     wchar_t* FENs[] = {
         L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
@@ -78,7 +78,7 @@ static void test_board_str(void)
     wchar_t pieChars[SEATNUM + 1], pieChars2[SEATNUM + 1], FEN[SEATNUM + 1];
     char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], str4[SEATNUM + 1];
     Board board = newBoard();
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
 
         // FEN转换成PieChars
         getPieChars_FEN(pieChars, FENs[i]);
@@ -97,8 +97,89 @@ static void test_board_str(void)
     }
 }
 
+static void test_board_Txt_str(void)
+{
+    wchar_t* FENs[] = {
+        L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
+        L"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5"
+    };
+    char *str1[] = {
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "車━馬━象━士━将━士━象━馬━車\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┠─砲─┼─┼─┼─┼─┼─砲─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "卒─┼─卒─┼─卒─┼─卒─┼─卒\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "兵─┼─兵─┼─兵─┼─兵─┼─兵\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─炮─┼─┼─┼─┼─┼─炮─┨\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─╳─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "车━马━相━仕━帅━仕━相━马━车\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "04红帅K@04\n",
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "┏━┯━┯━┯━┯━士━┯━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─士─将─┼─┼─車\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┠─╬─┼─┼─┼─┼─车─╬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─卒\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "相─╬─┼─┼─┼─马─┼─╬─相\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─帅─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━┷━砲━┷━┷━┷━┷━┛\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "14红帅K@14\n"
+    },
+         str2[SUPERWIDEWCHARSIZE];
+    Board board = newBoard();
+    for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
+        //* FEN转换成PieChars
+        wchar_t pieChars[SEATNUM + 1];
+        getPieChars_FEN(pieChars, FENs[i]);
+        //* 设置棋局，生成PieChars，转换成FEN
+        setBoard_pieChars(board, pieChars);
+
+        //*// 打印棋局
+        wchar_t boardStr[WIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
+        wchar_t wstr[SUPERWIDEWCHARSIZE];
+        swprintf(wstr, sizeof(wstr), L"%s%s%s%s\n",
+            getBoardPreString(preStr, board),
+            getBoardString(boardStr, board),
+            getBoardSufString(sufStr, board),
+            getSeatString(seatStr, getKingSeat(board, RED)));
+        wcstombs(str2, wstr, SUPERWIDEWCHARSIZE);
+
+        //printf("\n%s\n%s\n", str1[i], str2);
+        CU_ASSERT_STRING_EQUAL(str1[i], str2);
+    }
+}
+
 static CU_TestInfo tests_board[] = {
-    { "test_board_str", test_board_str },
+    { "test_board_FEN_str", test_board_FEN_str },
+    { "test_board_Txt_str", test_board_Txt_str },
     CU_TEST_INFO_NULL,
 };
 
