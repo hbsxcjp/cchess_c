@@ -56,7 +56,7 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
 // 批量转换目录的存储格式
 void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd);
 
-// 测试本翻译单元各种对象、函数
-void testChessManual(FILE* fout);
+// 取得棋谱有关的数据
+void getChessManualNumStr(char* str, ChessManual cm);
 
 #endif

@@ -6,7 +6,6 @@
 #include "head/piece.h"
 #include "head/tools.h"
 #include "pcre.h"
-#include "sqlite3.h"
 //#include <regex.h>
 //#include <sys/types.h>
 
@@ -746,9 +745,9 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     }
     operateDir(fromDir, transFile__, odata, true);
 
-    printf("%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
-        fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
-    fflush(stdout);
+    //printf("%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
+    //    fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
+    //fflush(stdout);
 
     //chdir(curDir);
     free(odata);
@@ -793,66 +792,8 @@ void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtE
     testAspects(asps);
 }
 
-// 测试本翻译单元各种对象、函数
-void testChessManual(FILE* fout)
+void getChessManualNumStr(char* str, ChessManual cm)
 {
-    ChessManual cm = newChessManual("01.xqf");
-    //*
-    writeChessManual(cm, "01.bin");
-
-    resetChessManual(&cm, "01.bin");
-    writeChessManual(cm, "01.json");
-
-    //wchar_t wstr[WIDEWCHARSIZE];
-    //wprintf(L"%s", getBoardString(wstr, cm->board));
-
-    resetChessManual(&cm, "01.json");
-    writeChessManual(cm, "01.pgn_iccs");
-
-    resetChessManual(&cm, "01.pgn_iccs");
-    writeChessManual(cm, "01.pgn_zh");
-
-    //printf("%s %d ok.\n", __FILE__, __LINE__);
-    //fflush(stdout);
-    resetChessManual(&cm, "01.pgn_zh");
-    //printf("%s %d ok.\n", __FILE__, __LINE__);
-    //fflush(stdout);
-    writeChessManual(cm, "01.pgn_cc");
-    //printf("%s %d ok.\n", __FILE__, __LINE__);
-    //fflush(stdout);
-
-    resetChessManual(&cm, "01.pgn_cc");
-    writeChessManual(cm, "01.pgn_cc");
-
-    //fprintf(fout, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
-    //    __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
-
-    for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
-        changeChessManual(cm, ct);
-        char fname[32];
-        sprintf(fname, "01_%d.pgn_cc", ct);
-        writeChessManual(cm, fname);
-    }
-    //*/
-
-    Aspects asps = newAspects(FEN_MovePtr, 0);
-    moveMap(cm->rootMove, appendAspects_mb, asps, cm->board);
-    writeAspectShow("str", asps);
-    testAspects(asps);
-
-    delChessManual(cm);
-
-    sqlite3* db;
-    //char* zErrMsg = 0;
-    int rc;
-
-    rc = sqlite3_open("test.db", &db);
-
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-        exit(0);
-    } else {
-        fprintf(stderr, "\nOpened database successfully\n");
-    }
-    sqlite3_close(db);
+    snprintf(str, WIDEWCHARSIZE, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
+        __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 }

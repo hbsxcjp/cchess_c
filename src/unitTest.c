@@ -1,7 +1,9 @@
 #include "head/unitTest.h"
+#include "head/aspect.h"
 #include "head/base.h"
 #include "head/board.h"
 #include "head/chessManual.h"
+#include "sqlite3.h"
 //#include "head/console.h"
 #include "CUnit/Basic.h"
 #include "CUnit/CUnit.h"
@@ -494,10 +496,96 @@ static CU_TestInfo tests_board[] = {
     CU_TEST_INFO_NULL,
 };
 
+static void test_aspect_str(void)
+{
+    Aspects asps = newAspects(FEN_MovePtr, 0);
+    appendAspects_file(asps, "01.xqf");
+    writeAspectShow("str", asps);
+    testAspects(asps);
+
+    /*
+    sqlite3* db;
+    //char* zErrMsg = 0;
+    int rc = sqlite3_open("test.db", &db);
+    if (rc) {
+        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
+        exit(0);
+    } else {
+        fprintf(stderr, "\nOpened database successfully\n");
+    }
+    sqlite3_close(db);
+    //*/
+}
+
+static CU_TestInfo suite_aspect[] = {
+    { "test_aspect_str", test_aspect_str },
+    CU_TEST_INFO_NULL,
+};
+
+static void test_chessManual_file(void)
+{
+    char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
+         str2[WIDEWCHARSIZE];
+    ChessManual cm = newChessManual("01.xqf");
+    writeChessManual(cm, "01.bin");
+
+    resetChessManual(&cm, "01.bin");
+    writeChessManual(cm, "01.json");
+
+    resetChessManual(&cm, "01.json");
+    writeChessManual(cm, "01.pgn_iccs");
+
+    resetChessManual(&cm, "01.pgn_iccs");
+    writeChessManual(cm, "01.pgn_zh");
+
+    resetChessManual(&cm, "01.pgn_zh");
+    writeChessManual(cm, "01.pgn_cc");
+
+    resetChessManual(&cm, "01.pgn_cc");
+    writeChessManual(cm, "01.pgn_cc");
+
+    for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
+        changeChessManual(cm, ct);
+        char fname[32];
+        sprintf(fname, "01_%d.pgn_cc", ct);
+        writeChessManual(cm, fname);
+    }
+
+    getChessManualNumStr(str2, cm);
+    //if (strcmp(str1, str2) != 0)
+    //    printf("\n%s\n\n%s\n", str1, str2);
+    
+    CU_ASSERT_STRING_EQUAL(str1, str2);
+    delChessManual(cm);
+}
+
+static void test_chessManual_dir(void)
+{
+    const char* chessManualDirName[] = {
+        "chessManual/示例文件",
+        "chessManual/象棋杀着大全",
+        "chessManual/疑难文件",
+        "chessManual/中国象棋棋谱大全"
+    };
+    int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
+
+    testTransDir(chessManualDirName, size, 1, 1, 2);
+    //testTransDir(chessManualDirName, size, 2, 1, 2);
+    //testTransDir(chessManualDirName, size, 3, 1, 2);
+}
+
+static CU_TestInfo suite_chessManual[] = {
+    { "test_chessManual_file", test_chessManual_file },
+    { "test_chessManual_dir", test_chessManual_dir },
+    CU_TEST_INFO_NULL,
+};
+
 static CU_SuiteInfo suites[] = {
     { "suite_tools", NULL, NULL, NULL, NULL, tests_tools },
     { "suite_piece", NULL, NULL, NULL, NULL, tests_piece },
     { "suite_board", NULL, NULL, NULL, NULL, tests_board },
+    { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
+    { "suite_chessManual", NULL, NULL, NULL, NULL, suite_chessManual },
     CU_SUITE_INFO_NULL,
 };
 
@@ -535,8 +623,6 @@ int implodedTest(int argc, char const* argv[])
     if (!fout)
         return -1;
     //fwprintf(fout, L"输出中文成功了！\n");
-
-    testChessManual(fout);
 
     const char* chessManualDirName[] = {
         "chessManual/示例文件",
