@@ -93,6 +93,11 @@ Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 // 按某种变换类型变换棋盘局面
 void changeBoard(Board board, ChangeType ct);
 
+// 取得活的棋子位置
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
+// 取得活的强棋子位置
+int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color);
+
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);
 // 输出某棋盘局面的文本字符串，长度小于1024
@@ -104,7 +109,5 @@ wchar_t* getBoardPreString(wchar_t* preStr, CBoard board);
 // 棋盘下边标识字符串
 wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board);
 
-// 测试本翻译单元各种对象、函数
-void testBoard(FILE* fout);
 
 #endif

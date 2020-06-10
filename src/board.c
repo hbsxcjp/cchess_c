@@ -625,6 +625,16 @@ void changeBoard(Board board, ChangeType ct)
     }
 }
 
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color)
+{
+    return getLiveSeats_c(seats, board->pieces, color);
+}
+
+int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color)
+{
+    return getLiveSeats_cs(seats, board->pieces, color);
+}
+
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat)
 {
     wchar_t str[WCHARSIZE];
@@ -709,104 +719,4 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
         L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
     };
     return wcscpy(sufStr, SUFSTR[board->bottomColor]);
-}
-
-// 测试本翻译单元各种对象、函数
-void testBoard(FILE* fout)
-{
-    fwprintf(fout, L"\ntestBoard：\n");
-    wchar_t* FENs[] = {
-        L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
-        L"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5",
-        L"2b1kab2/4a4/4c4/9/9/3R5/9/1C7/4r4/2BK2B2",
-        L"4kab2/4a4/4b4/3N5/9/4N4/4n4/4B4/4A4/3AK1B2"
-    };
-    Board board = newBoard();
-    for (int i = 0; i < 4; ++i) {
-
-        //* FEN转换成PieChars
-        wchar_t pieChars[SEATNUM + 1];
-        getPieChars_FEN(pieChars, FENs[i]);
-        //* 设置棋局，生成PieChars，转换成FEN
-        setBoard_pieChars(board, pieChars);
-
-        wchar_t boardStr[SUPERWIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
-        for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
-            changeBoard(board, ct);
-            fwprintf(fout, L"%s%s%sboard：@%p bottomColor:%d %s ct:%d\n",
-                getBoardPreString(preStr, board),
-                getBoardString(boardStr, board),
-                getBoardSufString(sufStr, board),
-                board,
-                board->bottomColor,
-                getSeatString(seatStr, getKingSeat(board, board->bottomColor)),
-                ct);
-        }
-        //*/
-
-        //* 取得将帅位置
-        Seat rkseat = getKingSeat(board, RED),
-             bkseat = getKingSeat(board, BLACK);
-        fwprintf(fout, L"%s <==> %s\n",
-            getSeatString(preStr, rkseat), getSeatString(sufStr, bkseat));
-        //*/
-
-        /* 取得各棋子的可放置位置
-        for (int color = RED; color <= BLACK; ++color) {
-            Seat pseats[SIDEPIECENUM];
-            int pcount = getLiveSeats_c(pseats, board->pieces, color);
-            for (int i = 0; i < pcount; ++i) {
-                Piece piece = getPiece_s(pseats[i]);
-                Seat seats[BOARDROW * BOARDCOL] = { 0 };
-                int count = putSeats(seats, board, true, getKind(piece));
-                fwprintf(fout, L"%s =【", getPieString(preStr, piece));
-                for (int i = 0; i < count; ++i)
-                    fwprintf(fout, L" %s ", getSeatString(preStr, seats[i]));
-                fwprintf(fout, L"】%d\n", count);
-            }
-        }
-        //*/
-
-        //* 取得各种条件下活的棋子
-        for (int color = RED; color <= BLACK; ++color) {
-            Seat lvseats[PIECENUM] = { NULL };
-            int count = getLiveSeats_c(lvseats, board->pieces, color);
-            fwprintf(fout, L"%c：", color == RED ? L'红' : L'黑');
-            for (int i = 0; i < count; ++i)
-                fwprintf(fout, L"%s ", getSeatString(preStr, lvseats[i]));
-            fwprintf(fout, L"count:%d\n", count);
-        }
-        //*/
-
-        //* 取得各活棋子的可移动位置
-        for (int color = RED; color <= BLACK; ++color) {
-            Seat lvseats[PIECENUM] = { NULL };
-            int count = getLiveSeats_c(lvseats, board->pieces, color);
-            for (int i = 0; i < count; ++i) {
-                Seat fseat = lvseats[i];
-                fwprintf(fout, L"%s >>【", getSeatString(preStr, fseat));
-
-                Seat mseats[BOARDROW + BOARDCOL] = { NULL };
-                int mcount = moveSeats(mseats, board, fseat);
-                for (int i = 0; i < mcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
-                fwprintf(fout, L"】%d", mcount);
-
-                fwprintf(fout, L" =【");
-                int cmcount = ableMoveSeats(mseats, mcount, board, fseat);
-                for (int i = 0; i < cmcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
-                fwprintf(fout, L"】%d", cmcount);
-
-                fwprintf(fout, L" +【");
-                int kmcount = unableMoveSeats(mseats, mcount, board, fseat);
-                for (int i = 0; i < kmcount; ++i)
-                    fwprintf(fout, L"%s ", getSeatString(preStr, mseats[i]));
-                fwprintf(fout, L"】%d\n", kmcount);
-            }
-        }
-        //*/
-        fwprintf(fout, L"\n");
-    }
-    delBoard(board);
 }

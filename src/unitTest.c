@@ -77,9 +77,7 @@ static wchar_t* FENs[] = {
 static void setBoard__(Board board, wchar_t* FEN)
 {
     wchar_t pieChars[SEATNUM + 1];
-    // FEN转换成PieChars
     getPieChars_FEN(pieChars, FEN);
-    // 设置棋局，生成PieChars，转换成FEN
     setBoard_pieChars(board, pieChars);
 }
 
@@ -89,32 +87,33 @@ static void test_board_FEN_str(void)
     char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], str4[SEATNUM + 1];
     Board board = newBoard();
     for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
-        getPieChars_FEN(pieChars, FENs[i]);
         setBoard__(board, FENs[i]);
 
-        getPieChars_board(pieChars2, board);
+        getPieChars_FEN(pieChars, FENs[i]);
         wcstombs(str1, pieChars, WIDEWCHARSIZE);
+        getPieChars_board(pieChars2, board);
         wcstombs(str2, pieChars2, WIDEWCHARSIZE);
         CU_ASSERT_STRING_EQUAL(str1, str2);
 
         // PieChars转换成FEN
-        getFEN_pieChars(FEN, pieChars);
         wcstombs(str3, FENs[i], WIDEWCHARSIZE);
+        getFEN_pieChars(FEN, pieChars);
         wcstombs(str4, FEN, WIDEWCHARSIZE);
         CU_ASSERT_STRING_EQUAL(str3, str4);
     }
+    delBoard(board);
 }
 
 static void getBoardStr__(char* str, Board board)
 {
-    wchar_t boardStr[WIDEWCHARSIZE], preStr[WCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
+    wchar_t preStr[WCHARSIZE], boardStr[WIDEWCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
     wchar_t wstr[SUPERWIDEWCHARSIZE];
     swprintf(wstr, sizeof(wstr), L"%s%s%s%s\n",
         getBoardPreString(preStr, board),
         getBoardString(boardStr, board),
         getBoardSufString(sufStr, board),
         getSeatString(seatStr, getKingSeat(board, RED)));
-    wcstombs(str, wstr, SUPERWIDEWCHARSIZE);
+    wcstombs(str, wstr, sizeof(wstr));
 }
 
 static void test_board_Txt_str(void)
@@ -167,21 +166,331 @@ static void test_board_Txt_str(void)
         "┗━┷━┷━砲━┷━┷━┷━┷━┛\n"
         "九　八　七　六　五　四　三　二　一\n"
         "　　　　　　　红　方　　　　　　　\n"
-        "14红帅K@14\n"
+        "14红帅K@14\n",
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "┏━┯━象━┯━将━士━象━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─士─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┠─╬─┼─┼─砲─┼─┼─╬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─车─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─炮─┼─┼─┼─┼─┼─╬─┨\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─車─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━相━帅━┷━┷━相━┷━┛\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "03红帅K@03\n",
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "┏━┯━┯━┯━将━士━象━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─士─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┠─╬─┼─┼─象─┼─┼─╬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─马─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─马─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─馬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─╬─┼─┼─相─┼─┼─╬─┨\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─仕─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━┷━仕━帅━┷━相━┷━┛\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "04红帅K@04\n"
     },
          str2[SUPERWIDEWCHARSIZE];
     Board board = newBoard();
     for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
         setBoard__(board, FENs[i]);
         getBoardStr__(str2, board);
-        printf("\n%s\n%s\n", str1[i], str2);
-        //CU_ASSERT_STRING_EQUAL(str1[i], str2);
+
+        CU_ASSERT_STRING_EQUAL(str1[i], str2);
     }
+    delBoard(board);
+}
+
+static void test_board_change_str(void)
+{
+    char *str1[] = {
+        "　　　　　　　红　方　　　　　　　\n"
+        "一　二　三　四　五　六　七　八　九\n"
+        "┏━┯━┯━┯━┯━仕━┯━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─仕─帅─┼─┼─车\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┠─╬─┼─┼─┼─┼─車─╬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─兵\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "象─╬─┼─┼─┼─馬─┼─╬─象\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─将─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━┷━炮━┷━┷━┷━┷━┛\n"
+        "９　８　７　６　５　４　３　２　１\n"
+        "　　　　　　　黑　方　　　　　　　\n"
+        "85红帅K@85\n",
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "┏━┯━┯━┯━┯━炮━┯━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─将─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "象─╬─┼─馬─┼─┼─┼─╬─象\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "兵─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─╬─車─┼─┼─┼─┼─╬─┨\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "车─┼─┼─帅─仕─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━┷━仕━┷━┷━┷━┷━┛\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "13红帅K@13\n",
+        "　　　　　　　黑　方　　　　　　　\n"
+        "１　２　３　４　５　６　７　８　９\n"
+        "┏━┯━┯━炮━┯━┯━┯━┯━┓\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─将─┼─┼─┼─┨\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "象─╬─┼─┼─┼─馬─┼─╬─象\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┴─┴─┴─┴─┴─┴─┴─┨\n"
+        "┃　　　　　　　　　　　　　　　┃\n"
+        "┠─┬─┬─┬─┬─┬─┬─┬─┨\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─┼─╬─┼─╬─┼─╬─┼─兵\n"
+        "┃　│　│　│　│　│　│　│　┃\n"
+        "┠─╬─┼─┼─┼─┼─車─╬─┨\n"
+        "┃　│　│　│╲│╱│　│　│　┃\n"
+        "┠─┼─┼─┼─仕─帅─┼─┼─车\n"
+        "┃　│　│　│╱│╲│　│　│　┃\n"
+        "┗━┷━┷━┷━┷━仕━┷━┷━┛\n"
+        "九　八　七　六　五　四　三　二　一\n"
+        "　　　　　　　红　方　　　　　　　\n"
+        "15红帅K@15\n"
+    },
+         str2[SUPERWIDEWCHARSIZE];
+    Board board = newBoard();
+    setBoard__(board, FENs[1]); // 选择第2个FEN
+
+    for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
+        changeBoard(board, ct);
+        getBoardStr__(str2, board);
+        //if (strcmp(str1[ct], str2) != 0)
+        //    printf("%s\n%s\n", str1[ct], str2);
+
+        CU_ASSERT_STRING_EQUAL(str1[ct], str2);
+    }
+    delBoard(board);
+}
+
+static void appendWstr__(wchar_t* wstr, const wchar_t* format, wchar_t* tmpWstr)
+{
+    wchar_t tmpWstr1[WIDEWCHARSIZE];
+    swprintf(tmpWstr1, WIDEWCHARSIZE, format, tmpWstr);
+    wcscat(wstr, tmpWstr1);
+}
+
+static void test_board_putSeats_str(void)
+{
+    char str1[] = "红帅K@14=【03黑砲c@0304空05空13空14红帅K@1415空23空24空25红马N@25】9\n"
+                  "红相B@20=【02空06空20红相B@2024空28红相B@2842空46空】7\n"
+                  "红相B@28=【02空06空20红相B@2024空28红相B@2842空46空】7\n"
+                  "红马N@25=【00空01空02空03黑砲c@0304空05空06空07空08空10空11空12空13空"
+                  "14红帅K@1415空16空17空18空20红相B@2021空22空23空24空25红马N@2526空27空"
+                  "28红相B@2830空31空32空33空34空35空36空37空38空40空41空42空43空44空45空"
+                  "46空47空48空50空51空52空53空54空55空56空57空58空60空61空62空63空64空"
+                  "65空66空67空68黑卒p@6870空71空72空73空74空75空76红车R@7677空78空80空"
+                  "81空82空83空84黑士a@8485黑将k@8586空87空88黑車r@8890空91空92空93空94空"
+                  "95黑士a@9596空97空98空】90\n"
+                  "红车R@76=【00空01空02空03黑砲c@0304空05空06空07空08空10空11空12空13空"
+                  "14红帅K@1415空16空17空18空20红相B@2021空22空23空24空25红马N@2526空27空"
+                  "28红相B@2830空31空32空33空34空35空36空37空38空40空41空42空43空44空45空"
+                  "46空47空48空50空51空52空53空54空55空56空57空58空60空61空62空63空64空"
+                  "65空66空67空68黑卒p@6870空71空72空73空74空75空76红车R@7677空78空80空"
+                  "81空82空83空84黑士a@8485黑将k@8586空87空88黑車r@8890空91空92空93空94空"
+                  "95黑士a@9596空97空98空】90\n"
+                  "黑将k@85=【03黑砲c@0304空05空13空14红帅K@1415空23空24空25红马N@25】9\n"
+                  "黑士a@95=【03黑砲c@0305空14红帅K@1423空25红马N@25】5\n"
+                  "黑士a@84=【03黑砲c@0305空14红帅K@1423空25红马N@25】5\n"
+                  "黑車r@88=【00空01空02空03黑砲c@0304空05空06空07空08空10空11空12空13空"
+                  "14红帅K@1415空16空17空18空20红相B@2021空22空23空24空25红马N@2526空27空"
+                  "28红相B@2830空31空32空33空34空35空36空37空38空40空41空42空43空44空45空"
+                  "46空47空48空50空51空52空53空54空55空56空57空58空60空61空62空63空64空"
+                  "65空66空67空68黑卒p@6870空71空72空73空74空75空76红车R@7677空78空80空"
+                  "81空82空83空84黑士a@8485黑将k@8586空87空88黑車r@8890空91空92空93空94空"
+                  "95黑士a@9596空97空98空】90\n"
+                  "黑砲c@03=【00空01空02空03黑砲c@0304空05空06空07空08空10空11空12空13空"
+                  "14红帅K@1415空16空17空18空20红相B@2021空22空23空24空25红马N@2526空27空"
+                  "28红相B@2830空31空32空33空34空35空36空37空38空40空41空42空43空44空45空"
+                  "46空47空48空50空51空52空53空54空55空56空57空58空60空61空62空63空64空"
+                  "65空66空67空68黑卒p@6870空71空72空73空74空75空76红车R@7677空78空80空"
+                  "81空82空83空84黑士a@8485黑将k@8586空87空88黑車r@8890空91空92空93空94空"
+                  "95黑士a@9596空97空98空】90\n"
+                  "黑卒p@68=【30空32空34空36空38空40空42空44空46空48空50空51空52空53空"
+                  "54空55空56空57空58空60空61空62空63空64空65空66空67空68黑卒p@6870空71空"
+                  "72空73空74空75空76红车R@7677空78空80空81空82空83空84黑士a@8485黑将k@85"
+                  "86空87空88黑車r@8890空91空92空93空94空95黑士a@9596空97空98空】55\n",
+         str2[SUPERWIDEWCHARSIZE];
+    Board board = newBoard();
+    setBoard__(board, FENs[1]); // 选择第2个FEN
+
+    //* 取得各棋子的可放置位置
+    wchar_t wstr[SUPERWIDEWCHARSIZE], tmpWstr[WIDEWCHARSIZE];
+    wstr[0] = L'\x0';
+    for (int color = RED; color <= BLACK; ++color) {
+        Seat pseats[SIDEPIECENUM];
+        int pcount = getLiveSeats_bc(pseats, board, color);
+        for (int i = 0; i < pcount; ++i) {
+            Piece piece = getPiece_s(pseats[i]);
+            Seat seats[BOARDROW * BOARDCOL] = { 0 };
+            int count = putSeats(seats, board, true, getKind(piece));
+            appendWstr__(wstr, L"%s=【", getPieString(tmpWstr, piece));
+
+            for (int i = 0; i < count; ++i) {
+                appendWstr__(wstr, L"%s", getSeatString(tmpWstr, seats[i]));
+            }
+            swprintf(tmpWstr, WIDEWCHARSIZE, L"】%d\n", count);
+            wcscat(wstr, tmpWstr);
+        }
+    }
+    wcstombs(str2, wstr, sizeof(wstr));
+    //if (strcmp(str1, str2) != 0)
+    //    printf("\n%s\n\n%s\n", str1, str2);
+
+    CU_ASSERT_STRING_EQUAL(str1, str2);
+    delBoard(board);
+}
+
+static void test_board_liveSeats_str(void)
+{
+    char str1[] = "红：14红帅K@14 20红相B@20 28红相B@28 25红马N@25 76红车R@76 count:5\n"
+                  "黑：85黑将k@85 95黑士a@95 84黑士a@84 88黑車r@88 03黑砲c@03 68黑卒p@68 count:6\n",
+         str2[SUPERWIDEWCHARSIZE];
+    Board board = newBoard();
+    setBoard__(board, FENs[1]); // 选择第2个FEN
+
+    //* 取得各种条件下活的棋子
+    wchar_t wstr[SUPERWIDEWCHARSIZE], tmpWstr[WIDEWCHARSIZE];
+    wstr[0] = L'\x0';
+    for (int color = RED; color <= BLACK; ++color) {
+        Seat lvseats[PIECENUM] = { NULL };
+        int count = getLiveSeats_bc(lvseats, board, color);
+        appendWstr__(wstr, L"%s：", color == RED ? L"红" : L"黑");
+        for (int i = 0; i < count; ++i) {
+            appendWstr__(wstr, L"%s ", getSeatString(tmpWstr, lvseats[i]));
+        }
+        swprintf(tmpWstr, WIDEWCHARSIZE, L"count:%d\n", count);
+        wcscat(wstr, tmpWstr);
+    }
+    wcstombs(str2, wstr, sizeof(wstr));
+    //if (strcmp(str1, str2) != 0)
+    //    printf("\n%s\n\n%s\n", str1, str2);
+
+    CU_ASSERT_STRING_EQUAL(str1, str2);
+    delBoard(board);
+}
+
+static void test_board_moveSeats_str(void)
+{
+    char str1[] = "14红帅K@14 >>【13空 15空 04空 24空 】4 =【13空 15空 04空 24空 】4 +【】0\n"
+                  "20红相B@20 >>【02空 42空 】2 =【02空 42空 】2 +【】0\n"
+                  "28红相B@28 >>【06空 46空 】2 =【06空 46空 】2 +【】0\n"
+                  "25红马N@25 >>【04空 06空 44空 46空 13空 17空 33空 37空 】8 =【04空 06空 44空 46空 13空 17空 33空 37空 】8 +【】0\n"
+                  "76红车R@76 >>【75空 74空 73空 72空 71空 70空 77空 78空 66空 56空 46空 36空 26空 16空 06空 86空 96空 】17 "
+                  "=【75空 74空 73空 72空 71空 70空 77空 78空 66空 56空 46空 36空 26空 16空 06空 86空 96空 】17 +【】0\n"
+                  "85黑将k@85 >>【75空 】1 =【】0 +【75空 】1\n"
+                  "95黑士a@95 >>【】0 =【】0 +【】0\n"
+                  "84黑士a@84 >>【73空 75空 93空 】3 =【73空 75空 93空 】3 +【】0\n"
+                  "88黑車r@88 >>【87空 86空 98空 78空 】4 =【87空 86空 98空 78空 】4 +【】0\n"
+                  "03黑砲c@03 >>【02空 01空 00空 04空 05空 06空 07空 08空 13空 23空 33空 43空 53空 63空 73空 83空 93空 】17 "
+                  "=【02空 01空 00空 04空 05空 06空 07空 08空 13空 23空 33空 43空 53空 63空 73空 83空 93空 】17 +【】0\n"
+                  "68黑卒p@68 >>【78空 】1 =【78空 】1 +【】0\n",
+         str2[SUPERWIDEWCHARSIZE];
+    Board board = newBoard();
+    setBoard__(board, FENs[1]); // 选择第2个FEN
+
+    //* 取得各活棋子的可移动位置
+    wchar_t wstr[SUPERWIDEWCHARSIZE], tmpWstr1[WIDEWCHARSIZE], tmpWstr2[WIDEWCHARSIZE];
+    wstr[0] = L'\x0';
+    for (int color = RED; color <= BLACK; ++color) {
+        Seat lvseats[PIECENUM] = { NULL };
+        int count = getLiveSeats_bc(lvseats, board, color);
+        for (int i = 0; i < count; ++i) {
+            Seat fseat = lvseats[i];
+            appendWstr__(wstr, L"%s >>【", getSeatString(tmpWstr2, fseat));
+
+            Seat mseats[BOARDROW + BOARDCOL] = { NULL };
+            int mcount = moveSeats(mseats, board, fseat);
+            for (int i = 0; i < mcount; ++i)
+                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+            swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d", mcount);
+            wcscat(wstr, tmpWstr1);
+
+            wcscat(wstr, L" =【");
+            int cmcount = ableMoveSeats(mseats, mcount, board, fseat);
+            for (int i = 0; i < cmcount; ++i)
+                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+            swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d", cmcount);
+            wcscat(wstr, tmpWstr1);
+
+            wcscat(wstr, L" +【");
+            int kmcount = unableMoveSeats(mseats, mcount, board, fseat);
+            for (int i = 0; i < kmcount; ++i)
+                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+            swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d\n", kmcount);
+            wcscat(wstr, tmpWstr1);
+        }
+    }
+    wcstombs(str2, wstr, sizeof(wstr));
+    //if (strcmp(str1, str2) != 0)
+    //    printf("\n%s\n\n%s\n", str1, str2);
+
+    CU_ASSERT_STRING_EQUAL(str1, str2);
+    delBoard(board);
 }
 
 static CU_TestInfo tests_board[] = {
     { "test_board_FEN_str", test_board_FEN_str },
     { "test_board_Txt_str", test_board_Txt_str },
+    { "test_board_change_str", test_board_change_str },
+    { "test_board_putSeats_str", test_board_putSeats_str },
+    { "test_board_liveSeats_str", test_board_liveSeats_str },
+    { "test_board_moveSeats_str", test_board_moveSeats_str },
     CU_TEST_INFO_NULL,
 };
 
@@ -227,8 +536,6 @@ int implodedTest(int argc, char const* argv[])
         return -1;
     //fwprintf(fout, L"输出中文成功了！\n");
 
-    //testPiece(fout);
-    testBoard(fout);
     testChessManual(fout);
 
     const char* chessManualDirName[] = {
