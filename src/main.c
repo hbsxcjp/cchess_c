@@ -5,11 +5,8 @@
 int main(int argc, char const* argv[])
 {
     setlocale(LC_ALL, "");
-    setbuf(stdin, NULL);
+    //setbuf(stdin, NULL);
 
     unitTest();
-    
-    implodedTest(argc, argv);
-
     return 0;
 }

@@ -507,43 +507,11 @@ static void aspectCmp__(Aspect asp, void* oasps)
 }
 
 // 检查局面Hash数据文件与局面文本数据文件是否完全一致
-static void checkAspectHash__(char* libFileName, char* md5FileName)
+void checkAspectHash(char* libFileName, char* md5FileName)
 {
     Aspects asps = getAspects_fs(libFileName),
             oasps = getAspects_fb(md5FileName);
     aspectsMap__(asps, aspectCmp__, oasps, NULL, NULL);
     delAspects(asps);
     delAspects(oasps);
-}
-
-void testAspects(Aspects asps)
-{
-    char log[] = "log", libs[] = "libs", hash[] = "hash";
-    analyzeAspects(log, asps);
-    storeAspectFEN(libs, asps);
-    //printf("storeAspectFEN OK!\n");
-    //fflush(stdout);
-    delAspects(asps);
-
-    asps = getAspects_fs(libs);
-    analyzeAspects(log, asps);
-    //printf("getAspects_fs OK!\n");
-    //fflush(stdout);
-    //*
-
-    storeAspectHash(hash, asps);
-    //printf("storeAspectHash OK!\n");
-    //fflush(stdout);
-    delAspects(asps);
-
-    asps = getAspects_fb(hash);
-    analyzeAspects(log, asps);
-    //printf("getAspects_fb OK!\n");
-    //fflush(stdout);
-
-    checkAspectHash__(libs, hash);
-    //printf("checkAspectHash__ OK!\n");
-    //fflush(stdout);
-    //*/
-    delAspects(asps);
 }

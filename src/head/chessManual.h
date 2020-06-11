@@ -16,9 +16,11 @@ void delChessManual(ChessManual cm);
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 void delInfoItem(ChessManual cm, const wchar_t* name);
 
-// 将PGN_CC格式的move、remark信息写入字符串
+// 将PGN_CC格式的info、move、remark信息写入字符串
+void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm);
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
+void writePGN_CCtoWstr(wchar_t** pStr, ChessManual cm);
 
 // 从chessManual存储到文件
 void writeChessManual(ChessManual cm, const char* fileName);
@@ -54,7 +56,7 @@ void appendAspects_dir(Aspects aspects, const char* dirName);
 // 批量转换棋局存储格式
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
 // 批量转换目录的存储格式
-void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd);
+void testTransDir(const char** chessManualDirName, int size, int dirNum, int fromFmtNum, int toFmtNum);
 
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);

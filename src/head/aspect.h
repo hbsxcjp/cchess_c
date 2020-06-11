@@ -47,6 +47,7 @@ void storeAspectHash(char* fileName, CAspects aspects);
 // 分析局面库储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
 
-void testAspects(Aspects asps);
+// 检查局面Hash数据文件与局面文本数据文件是否完全一致
+void checkAspectHash(char* libFileName, char* md5FileName);
 
 #endif

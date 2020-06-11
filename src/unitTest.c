@@ -501,7 +501,35 @@ static void test_aspect_str(void)
     Aspects asps = newAspects(FEN_MovePtr, 0);
     appendAspects_file(asps, "01.xqf");
     writeAspectShow("str", asps);
-    testAspects(asps);
+
+    char log[] = "log", libs[] = "libs", hash[] = "hash";
+    analyzeAspects(log, asps);
+    storeAspectFEN(libs, asps);
+    //printf("storeAspectFEN OK!\n");
+    //fflush(stdout);
+    delAspects(asps);
+
+    asps = getAspects_fs(libs);
+    analyzeAspects(log, asps);
+    //printf("getAspects_fs OK!\n");
+    //fflush(stdout);
+    //*
+
+    storeAspectHash(hash, asps);
+    //printf("storeAspectHash OK!\n");
+    //fflush(stdout);
+    delAspects(asps);
+
+    asps = getAspects_fb(hash);
+    analyzeAspects(log, asps);
+    //printf("getAspects_fb OK!\n");
+    //fflush(stdout);
+
+    checkAspectHash(libs, hash);
+    //printf("checkAspectHash OK!\n");
+    //fflush(stdout);
+    //*/
+    delAspects(asps);
 
     /*
     sqlite3* db;
@@ -525,8 +553,89 @@ static CU_TestInfo suite_aspect[] = {
 static void test_chessManual_file(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
-         str2[WIDEWCHARSIZE];
+         str2[WIDEWCHARSIZE],
+         *str3 = "[TitleA \"第01局\"]\n"
+                 "[Event \"\"]\n"
+                 "[Date \"\"]\n"
+                 "[Site \"\"]\n"
+                 "[Red \"\"]\n"
+                 "[Black \"\"]\n"
+                 "[Opening \"\"]\n"
+                 "[RMKWriter \"\"]\n"
+                 "[Author \"\"]\n"
+                 "[PlayType \"残局\"]\n"
+                 "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 - b\"]\n"
+                 "[Result \"红胜\"]\n"
+                 "[Version \"18\"]\n"
+                 "\n"
+                 "　开始　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                 "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                 "马四进三……………………………………………………………………马四进五　\n"
+                 "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "炮４退９…炮４退７……………………………士５进６…卒９进１　炮４退９　\n"
+                 "　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　　　↓　　\n"
+                 "马三进五　马三进五　　　　　　　　　　　马三进二　马三进五　马五进三　\n"
+                 "　　↓　　　　↓　　　　　　　　　　　　　　　　　　　↓　　　　↓　　\n"
+                 "炮４平５　炮４平５…车９平８　　　　　　　　　　　车９进２　炮４平５　\n"
+                 "　　↓　　　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　\n"
+                 "车三平四　马五进三　车三平四　　　　　　　　　　　车三进一　帅五平六　\n"
+                 "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "士５进６　　　　　　士５进６　　　　　　　　　　　　　　　　车９平８　\n"
+                 "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "马五进三　　　　　　马五进三…马五进六　　　　　　　　　　　马三进二　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车８进１　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车三平二　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士５退４　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二进一　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６进１　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二退二　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士６进５　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二平四　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车四平一　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将５平６　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车一平四　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　帅六退一　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　炮５平６　\n"
+                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                 "\n"
+                 "(1,0): {　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。 \n}\n"
+                 "(12,6): {　　至此，形成少见的高将底炮双士和单车的局面。 \n}\n"
+                 "(22,6): {　　和棋。 \n}\n"
+                 "(3,4): {　　叫杀得车。 \n}\n"
+                 "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。 \n}\n"
+                 "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\n}\n",
+         str4[16 * SUPERWIDEWCHARSIZE];
+    wchar_t* pgn_ccStr = NULL;
+
     ChessManual cm = newChessManual("01.xqf");
+    writePGN_CCtoWstr(&pgn_ccStr, cm);
+    wcstombs(str4, pgn_ccStr, 16 * SUPERWIDEWCHARSIZE);
+    if (strcmp(str3, str4) != 0)
+        printf("\n%s\n\n%s\n", str3, str4);
+
+    FILE* fout = fopen("str3","w");
+    fprintf(fout, "%s", str3);
+    fclose(fout);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
+    free(pgn_ccStr);
+
     writeChessManual(cm, "01.bin");
 
     resetChessManual(&cm, "01.bin");
@@ -554,7 +663,7 @@ static void test_chessManual_file(void)
     getChessManualNumStr(str2, cm);
     //if (strcmp(str1, str2) != 0)
     //    printf("\n%s\n\n%s\n", str1, str2);
-    
+
     CU_ASSERT_STRING_EQUAL(str1, str2);
     delChessManual(cm);
 }
@@ -569,9 +678,10 @@ static void test_chessManual_dir(void)
     };
     int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
 
-    testTransDir(chessManualDirName, size, 1, 1, 2);
-    //testTransDir(chessManualDirName, size, 2, 1, 2);
+    //testTransDir(chessManualDirName, size, 1, 1, 2);
+    testTransDir(chessManualDirName, size, 2, 1, 2);
     //testTransDir(chessManualDirName, size, 3, 1, 2);
+    //testTransDir(chessManualDirName, size, 2, 6, 6);
 }
 
 static CU_TestInfo suite_chessManual[] = {
@@ -611,54 +721,4 @@ int unitTest(void)
     /* Clean up registry and return */
     CU_cleanup_registry();
     return CU_get_error();
-}
-
-int implodedTest(int argc, char const* argv[])
-{
-    time_t time0;
-    time(&time0);
-
-    //FILE* fout = stdout;
-    FILE* fout = fopen("s", "w");
-    if (!fout)
-        return -1;
-    //fwprintf(fout, L"输出中文成功了！\n");
-
-    const char* chessManualDirName[] = {
-        "chessManual/示例文件",
-        "chessManual/象棋杀着大全",
-        "chessManual/疑难文件",
-        "chessManual/中国象棋棋谱大全"
-    };
-    int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
-    //testTools(fout, chessManualDirName, size, ".xqf");
-    //testsha1();
-
-    //*
-    if (argc == 4)
-        testTransDir(chessManualDirName, size, atoi(argv[1]), atoi(argv[2]), atoi(argv[3]));
-    else if (argc == 2) {
-        testTransDir(chessManualDirName, size, atoi(argv[1]), 1, 2);
-        //testTransDir(chessManualDirName, size, 2, 6, 6);
-    }
-    //*/
-
-    //doView();
-    //testConview();
-
-    //PConsole pconsole = newConsole("01.xqf");
-    //delConsole(pconsole);
-
-    //wchar_t* dir = L"C:\\棋谱\\示例文件.xqf";
-    //wchar_t* dir = L"C:\\棋谱\\象棋杀着大全.xqf";
-    //textView(dir);
-
-    time_t time1;
-    time(&time1);
-    double t = difftime(time1, time0);
-    //printf("  use:%6.2fs\n", t);
-    printf("\nuse:%6.3fs\n", t); // , ctime(&time0), ctime(&time1)
-
-    fclose(fout);
-    return 0;
 }

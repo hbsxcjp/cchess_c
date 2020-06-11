@@ -436,6 +436,19 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
     (fmt == PGN_CC) ? readMove_PGN_CC(cm->rootMove, fin, cm->board) : readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
 }
 
+void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm)
+{
+    int size = WIDEWCHARSIZE;
+    wchar_t tmpWstr[WIDEWCHARSIZE], *infoStr = malloc(size * sizeof(wchar_t));
+    assert(infoStr);
+    infoStr[0] = L'\x0';
+    for (int i = 0; i < cm->infoCount; ++i) {
+        swprintf(tmpWstr, WIDEWCHARSIZE, L"[%s \"%s\"]\n", cm->info[i][0], cm->info[i][1]);
+        writeWString(&infoStr, &size, tmpWstr);
+    }
+    *pinfoStr = infoStr;
+}
+
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 {
     int rowNum = (cm->maxRow_ + 1) * 2,
@@ -468,20 +481,48 @@ void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
     *premStr = remarkStr;
 }
 
+void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
+{
+    wchar_t *infoStr = NULL, *moveStr = NULL, *remarkStr = NULL;
+    writeInfo_PGN_CCtoWstr(&infoStr, cm);
+    writeMove_PGN_CCtoWstr(&moveStr, cm);
+    writeRemark_PGN_CCtoWstr(&remarkStr, cm);
+
+    wchar_t* wstr = malloc((wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 1) * sizeof(wchar_t));
+    assert(wstr);
+    wcscpy(wstr, infoStr);
+    wcscat(wstr, L"\n");
+    wcscat(wstr, moveStr);
+    wcscat(wstr, L"\n");
+    wcscat(wstr, remarkStr);
+    *pstr = wstr;
+
+    free(infoStr);
+    free(moveStr);
+    free(remarkStr);
+}
+
 static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 {
-    for (int i = 0; i < cm->infoCount; ++i)
-        fwprintf(fout, L"[%s \"%s\"]\n", cm->info[i][0], cm->info[i][1]);
-    fwprintf(fout, L"\n");
-    if (fmt != PGN_CC)
+    if (fmt != PGN_CC) {
+        for (int i = 0; i < cm->infoCount; ++i)
+            fwprintf(fout, L"[%s \"%s\"]\n", cm->info[i][0], cm->info[i][1]);
+        fwprintf(fout, L"\n");
         writeMove_PGN_ICCSZH(fout, cm->rootMove, fmt);
-    else {
+    } else {
+        wchar_t* wstr = NULL;
+        writePGN_CCtoWstr(&wstr, cm);
+        fwprintf(fout, L"%s", wstr);
+        free(wstr);
+
+        /*
         wchar_t *moveStr = NULL, *remarkStr = NULL;
         writeMove_PGN_CCtoWstr(&moveStr, cm);
         writeRemark_PGN_CCtoWstr(&remarkStr, cm);
         fwprintf(fout, L"%s\n%s", moveStr, remarkStr);
         free(moveStr);
         free(remarkStr);
+        //*/
     }
 }
 
@@ -772,24 +813,25 @@ void appendAspects_dir(Aspects asps, const char* dirName)
     operateDir(dirName, appendAspects_fileInfo__, asps, true);
 }
 
-void testTransDir(const char** chessManualDirName, int size, int toDir, int fmtEnd, int toFmtEnd)
+void testTransDir(const char** chessManualDirName, int size, int dirNum, int fromFmtNum, int toFmtNum)
 {
     Aspects asps = newAspects(FEN_MovePtr, 0);
 
     // 调节三个循环变量的初值、终值，控制转换目录
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
-    for (int dir = 0; dir < size && dir != toDir; ++dir) {
+    for (int dir = 0; dir < size && dir != dirNum; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
         appendAspects_dir(asps, fromDir);
 
-        for (int fromFmt = XQF; fromFmt < fmtEnd; ++fromFmt)
-            for (int toFmt = BIN; toFmt < toFmtEnd; ++toFmt)
+        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt)
+            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt)
                 if (toFmt != fromFmt)
                     transDir(chessManualDirName[dir], fmts[fromFmt], fmts[toFmt]);
     }
 
-    testAspects(asps);
+    //testAspects(asps);
+    delAspects(asps);
 }
 
 void getChessManualNumStr(char* str, ChessManual cm)
