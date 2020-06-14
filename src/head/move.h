@@ -41,8 +41,8 @@ void setCC_ColNo(Move move, int CC_ColNo);
 const wchar_t* getRemark(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
-const wchar_t* getZhStr(CMove move);
-const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
+//const wchar_t* getZhStr(CMove move);
+//const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
 
 // 添加着法
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);

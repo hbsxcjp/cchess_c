@@ -5,7 +5,7 @@
 int main(int argc, char const* argv[])
 {
     setlocale(LC_ALL, "");
-    //setbuf(stdin, NULL);
+    setbuf(stdout, NULL);
 
     unitTest();
     return 0;

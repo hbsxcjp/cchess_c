@@ -131,9 +131,11 @@ static void aspectsMap__(CAspects asps, void applyAsp(Aspect, void*), void* aspA
             preAsp = asp->forward;
             applyAsp(asp, aspArg);
 
+            assert(asp->rootMR);
             // 处理applyMr
-            if (applyMr)
+            if (applyMr) {
                 moveRecMap__(asp->rootMR, applyMr, mrArg);
+            }
             asp = preAsp;
         }
     }
@@ -302,13 +304,14 @@ int getLoopBoutCount(CAspects asps, const wchar_t* FEN)
 
 static void printfMoveRecShow__(MoveRec mr, void* fout)
 {
-    wchar_t iccs[6];
-    fwprintf(fout, L"\tmove@:%p iccs:%s\n", mr->move, getICCS(iccs, mr->move));
+    //wchar_t iccs[6];
+    //fwprintf(fout, L"\tmove@:%p iccs:%s\n", mr->move, getICCS(iccs, mr->move)); // 当move所指已被释放时，将会出错.
+    fprintf(fout, "\t0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectShow__(Aspect asp, void* fout)
 {
-    fprintf(fout, "FEN:%s\n", asp->key);
+    fprintf(fout, "\nFEN:%s ", asp->key);
 }
 
 void writeAspectShow(char* fileName, CAspects asps)
@@ -316,6 +319,7 @@ void writeAspectShow(char* fileName, CAspects asps)
     assert(asps->st == FEN_MovePtr);
     FILE* fout = fopen(fileName, "w");
     aspectsMap__(asps, printfAspectShow__, fout, printfMoveRecShow__, fout);
+    //printf("%d: %s\n", __LINE__, fileName);
 
     fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.2f SourceType:%d】\n",
         asps->size, asps->aspCount, asps->movCount, (double)asps->aspCount / asps->size, asps->st);
@@ -420,7 +424,6 @@ static void calMoveNumber__(MoveRec mr, void* ana)
     /*
     if (!mr->number) {
         printf("0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
-        fflush(stdout);
     }
     //*/
     //assert(mr->number);
@@ -494,7 +497,6 @@ static void aspectCmp__(Aspect asp, void* oasps)
         /*
         if (!(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight)) {
             printf("0x%04hx %d %d - 0x%04hx %d %d \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
-            fflush(stdout);
         }
         //*/
         assert(mr->number);
@@ -518,33 +520,30 @@ void checkAspectHash(char* libFileName, char* md5FileName)
 
 void testAspects(CAspects asps)
 {
-    writeAspectShow("str", asps);
+    assert(asps);
+    char show[] = "show", log[] = "log", libs[] = "libs", hash[] = "hash";
+    writeAspectShow(show, asps);
+    //printf("\nwriteAspectShow OK!\n");
 
-    char log[] = "log", libs[] = "libs", hash[] = "hash";
     analyzeAspects(log, asps);
     storeAspectFEN(libs, asps);
     //printf("storeAspectFEN OK!\n");
-    //fflush(stdout);
 
-   Aspects aspsl = getAspects_fs(libs);
-    analyzeAspects(log, aspsl);
+    Aspects aspsl = getAspects_fs(libs);
     //printf("getAspects_fs OK!\n");
-    //fflush(stdout);
-    //*
 
+    analyzeAspects(log, aspsl);
     storeAspectHash(hash, aspsl);
     //printf("storeAspectHash OK!\n");
-    //fflush(stdout);
+
     delAspects(aspsl);
 
     Aspects aspsh = getAspects_fb(hash);
-    analyzeAspects(log, aspsh);
     //printf("getAspects_fb OK!\n");
-    //fflush(stdout);
 
+    analyzeAspects(log, aspsh);
     checkAspectHash(libs, hash);
     //printf("checkAspectHash OK!\n");
-    //fflush(stdout);
-    //*/
+
     delAspects(aspsh);
 }

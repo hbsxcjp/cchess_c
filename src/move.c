@@ -334,9 +334,9 @@ static const wchar_t* getRcStr_rowcol__(wchar_t* rcStr, int frowcol, int trowcol
 
 int getRowCols_m(CMove move) { return (getRowCol_s(move->fseat) << 8) | getRowCol_s(move->tseat); }
 
-inline const wchar_t* getZhStr(CMove move) { return move->zhStr; }
+inline static const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
-const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
+static const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
 {
     if (isRootMove(move))
         wcscpy(ICCSStr, L"0000");

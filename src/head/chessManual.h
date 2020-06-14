@@ -49,7 +49,7 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
 // 存储文件到局面记录库
-void appendAspects_file(Aspects aspects, const char* fileName); // 使用void*参数，目的是使其可以作为operateDir调用的函数参数
+void appendAspects_file(Aspects aspects, const char* fileName); 
 // 批量存储目录到局面记录库
 void appendAspects_dir(Aspects aspects, const char* dirName);
 
