@@ -500,35 +500,8 @@ static void test_aspect_str(void)
 {
     Aspects asps = newAspects(FEN_MovePtr, 0);
     appendAspects_file(asps, "01.xqf");
-    writeAspectShow("str", asps);
 
-    char log[] = "log", libs[] = "libs", hash[] = "hash";
-    analyzeAspects(log, asps);
-    storeAspectFEN(libs, asps);
-    //printf("storeAspectFEN OK!\n");
-    //fflush(stdout);
-    delAspects(asps);
-
-    asps = getAspects_fs(libs);
-    analyzeAspects(log, asps);
-    //printf("getAspects_fs OK!\n");
-    //fflush(stdout);
-    //*
-
-    storeAspectHash(hash, asps);
-    //printf("storeAspectHash OK!\n");
-    //fflush(stdout);
-    delAspects(asps);
-
-    asps = getAspects_fb(hash);
-    analyzeAspects(log, asps);
-    //printf("getAspects_fb OK!\n");
-    //fflush(stdout);
-
-    checkAspectHash(libs, hash);
-    //printf("checkAspectHash OK!\n");
-    //fflush(stdout);
-    //*/
+    testAspects(asps);
     delAspects(asps);
 
     /*
@@ -550,6 +523,14 @@ static CU_TestInfo suite_aspect[] = {
     CU_TEST_INFO_NULL,
 };
 
+static void writePGN_CCtoStr__(char* str, ChessManual cm)
+{
+    wchar_t* wstr = NULL;
+    writePGN_CCtoWstr(&wstr, cm);
+    wcstombs(str, wstr, wcslen(wstr) * 3 + 1);
+    free(wstr);
+}
+
 static void test_chessManual_file(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
@@ -564,7 +545,7 @@ static void test_chessManual_file(void)
                  "[RMKWriter \"\"]\n"
                  "[Author \"\"]\n"
                  "[PlayType \"残局\"]\n"
-                 "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 - b\"]\n"
+                 "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 -b\"]\n"
                  "[Result \"红胜\"]\n"
                  "[Version \"18\"]\n"
                  "\n"
@@ -615,43 +596,47 @@ static void test_chessManual_file(void)
                  "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　炮５平６　\n"
                  "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
                  "\n"
-                 "(1,0): {　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。 \n}\n"
-                 "(12,6): {　　至此，形成少见的高将底炮双士和单车的局面。 \n}\n"
-                 "(22,6): {　　和棋。 \n}\n"
-                 "(3,4): {　　叫杀得车。 \n}\n"
-                 "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。 \n}\n"
-                 "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\n}\n",
+                 "(1,0): {　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n}\n"
+                 "(12,6): {　　至此，形成少见的高将底炮双士和单车的局面。\r\n}\n"
+                 "(22,6): {　　和棋。\r\n}\n"
+                 "(3,4): {　　叫杀得车。\r\n}\n"
+                 "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。\r\n}\n"
+                 "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n",
          str4[16 * SUPERWIDEWCHARSIZE];
-    wchar_t* pgn_ccStr = NULL;
 
+    //FILE* fout = fopen("str3","w");
+    //fprintf(fout, "%s", str3);
+    //fclose(fout);
     ChessManual cm = newChessManual("01.xqf");
-    writePGN_CCtoWstr(&pgn_ccStr, cm);
-    wcstombs(str4, pgn_ccStr, 16 * SUPERWIDEWCHARSIZE);
-    if (strcmp(str3, str4) != 0)
-        printf("\n%s\n\n%s\n", str3, str4);
-
-    FILE* fout = fopen("str3","w");
-    fprintf(fout, "%s", str3);
-    fclose(fout);
+    writePGN_CCtoStr__(str4, cm);
+    //if (strcmp(str3, str4) != 0)
+    //    printf("\n%s\n\n%s\n", str3, str4);
     CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(pgn_ccStr);
 
     writeChessManual(cm, "01.bin");
-
     resetChessManual(&cm, "01.bin");
+    writePGN_CCtoStr__(str4, cm);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
+
     writeChessManual(cm, "01.json");
-
     resetChessManual(&cm, "01.json");
+    writePGN_CCtoStr__(str4, cm);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
+
     writeChessManual(cm, "01.pgn_iccs");
-
     resetChessManual(&cm, "01.pgn_iccs");
+    writePGN_CCtoStr__(str4, cm);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
+
     writeChessManual(cm, "01.pgn_zh");
-
     resetChessManual(&cm, "01.pgn_zh");
-    writeChessManual(cm, "01.pgn_cc");
+    writePGN_CCtoStr__(str4, cm);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
 
-    resetChessManual(&cm, "01.pgn_cc");
     writeChessManual(cm, "01.pgn_cc");
+    resetChessManual(&cm, "01.pgn_cc");
+    writePGN_CCtoStr__(str4, cm);
+    CU_ASSERT_STRING_EQUAL(str3, str4);
 
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);

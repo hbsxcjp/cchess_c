@@ -515,3 +515,36 @@ void checkAspectHash(char* libFileName, char* md5FileName)
     delAspects(asps);
     delAspects(oasps);
 }
+
+void testAspects(CAspects asps)
+{
+    writeAspectShow("str", asps);
+
+    char log[] = "log", libs[] = "libs", hash[] = "hash";
+    analyzeAspects(log, asps);
+    storeAspectFEN(libs, asps);
+    //printf("storeAspectFEN OK!\n");
+    //fflush(stdout);
+
+   Aspects aspsl = getAspects_fs(libs);
+    analyzeAspects(log, aspsl);
+    //printf("getAspects_fs OK!\n");
+    //fflush(stdout);
+    //*
+
+    storeAspectHash(hash, aspsl);
+    //printf("storeAspectHash OK!\n");
+    //fflush(stdout);
+    delAspects(aspsl);
+
+    Aspects aspsh = getAspects_fb(hash);
+    analyzeAspects(log, aspsh);
+    //printf("getAspects_fb OK!\n");
+    //fflush(stdout);
+
+    checkAspectHash(libs, hash);
+    //printf("checkAspectHash OK!\n");
+    //fflush(stdout);
+    //*/
+    delAspects(aspsh);
+}
