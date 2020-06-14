@@ -635,14 +635,15 @@ static const char* dirNames__[] = {
     "chessManual/中国象棋棋谱大全"
 };
 static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
+static int dirNum__ = 2; // 测试目录个数
 
 static void test_chessManual_dir(void)
 {
-    // 调节三个循环变量的终值，控制转换目录
-    int dirNum = 2, fromFmtNum = 1, toFmtNum = 2;
+    // 调节控制转换目录
+    int fromFmtNum = 1, toFmtNum = 2;
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
-    for (int dir = 0; dir < dirSize__ && dir < dirNum; ++dir) {
+    for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt)
             for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt)
                 if (toFmt != fromFmt)
@@ -680,9 +681,8 @@ static void test_aspect_file(void)
 
 static void test_aspect_dir(void)
 {
-    int dirNum = 2;
     Aspects asps = newAspects(FEN_MovePtr, 0);
-    for (int dir = 0; dir < dirSize__ && dir < dirNum; ++dir) {
+    for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", dirNames__[dir], ".xqf");
         //printf("%d: %s\n", __LINE__, fromDir);
