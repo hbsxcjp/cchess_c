@@ -43,20 +43,16 @@ void backTo(ChessManual cm, Move move);
 // 前进或后退数步
 void goInc(ChessManual cm, int inc);
 
+// 遍历每个着法
+void moveMap(ChessManual cm, void apply(Move, Board, void*), void* ptr);
+
 // 转变棋局实例
 void changeChessManual(ChessManual cm, ChangeType ct);
 // 某着从头至尾的着法图示
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
-// 存储文件到局面记录库
-void appendAspects_file(Aspects aspects, const char* fileName); 
-// 批量存储目录到局面记录库
-void appendAspects_dir(Aspects aspects, const char* dirName);
-
 // 批量转换棋局存储格式
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
-// 批量转换目录的存储格式
-void testTransDir(const char** chessManualDirName, int size, int dirNum, int fromFmtNum, int toFmtNum);
 
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);

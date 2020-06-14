@@ -496,33 +496,6 @@ static CU_TestInfo tests_board[] = {
     CU_TEST_INFO_NULL,
 };
 
-static void test_aspect_str(void)
-{
-    Aspects asps = newAspects(FEN_MovePtr, 0);
-    appendAspects_file(asps, "01.xqf");
-
-    testAspects(asps);
-    delAspects(asps);
-
-    /*
-    sqlite3* db;
-    //char* zErrMsg = 0;
-    int rc = sqlite3_open("test.db", &db);
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-        exit(0);
-    } else {
-        fprintf(stderr, "\nOpened database successfully\n");
-    }
-    sqlite3_close(db);
-    //*/
-}
-
-static CU_TestInfo suite_aspect[] = {
-    { "test_aspect_str", test_aspect_str },
-    CU_TEST_INFO_NULL,
-};
-
 static void writePGN_CCtoStr__(char* str, ChessManual cm)
 {
     wchar_t* wstr = NULL;
@@ -530,6 +503,8 @@ static void writePGN_CCtoStr__(char* str, ChessManual cm)
     wcstombs(str, wstr, wcslen(wstr) * 3 + 1);
     free(wstr);
 }
+
+static char* xqfFileName__ = "01.xqf";
 
 static void test_chessManual_file(void)
 {
@@ -607,7 +582,7 @@ static void test_chessManual_file(void)
     //FILE* fout = fopen("str3","w");
     //fprintf(fout, "%s", str3);
     //fclose(fout);
-    ChessManual cm = newChessManual("01.xqf");
+    ChessManual cm = newChessManual(xqfFileName__);
     writePGN_CCtoStr__(str4, cm);
     //if (strcmp(str3, str4) != 0)
     //    printf("\n%s\n\n%s\n", str3, str4);
@@ -653,20 +628,26 @@ static void test_chessManual_file(void)
     delChessManual(cm);
 }
 
+static const char* dirNames__[] = {
+    "chessManual/示例文件",
+    "chessManual/象棋杀着大全",
+    "chessManual/疑难文件",
+    "chessManual/中国象棋棋谱大全"
+};
+static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
+
 static void test_chessManual_dir(void)
 {
-    const char* chessManualDirName[] = {
-        "chessManual/示例文件",
-        "chessManual/象棋杀着大全",
-        "chessManual/疑难文件",
-        "chessManual/中国象棋棋谱大全"
-    };
-    int size = sizeof(chessManualDirName) / sizeof(chessManualDirName[0]);
+    // 调节三个循环变量的初值、终值，控制转换目录
+    int dirNum = 2, fromFmtNum = 1, toFmtNum = 2;
 
-    //testTransDir(chessManualDirName, size, 1, 1, 2);
-    testTransDir(chessManualDirName, size, 2, 1, 2);
-    //testTransDir(chessManualDirName, size, 3, 1, 2);
-    //testTransDir(chessManualDirName, size, 2, 6, 6);
+    RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
+    for (int dir = 0; dir < dirSize__ && dir < dirNum; ++dir) {
+        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt)
+            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt)
+                if (toFmt != fromFmt)
+                    transDir(dirNames__[dir], fmts[fromFmt], fmts[toFmt]);
+    }
 }
 
 static CU_TestInfo suite_chessManual[] = {
@@ -675,12 +656,56 @@ static CU_TestInfo suite_chessManual[] = {
     CU_TEST_INFO_NULL,
 };
 
+static void test_aspect_file(void)
+{
+    Aspects asps = newAspects(FEN_MovePtr, 0);
+    appendAspects_file(asps, xqfFileName__);
+
+    testAspects(asps);
+    delAspects(asps);
+
+    /*
+    sqlite3* db;
+    //char* zErrMsg = 0;
+    int rc = sqlite3_open("test.db", &db);
+    if (rc) {
+        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
+        exit(0);
+    } else {
+        fprintf(stderr, "\nOpened database successfully\n");
+    }
+    sqlite3_close(db);
+    //*/
+}
+
+static void test_aspect_dir(void)
+{
+    int dirNum = 2;
+    Aspects asps = newAspects(FEN_MovePtr, 0);
+    for (int dir = 0; dir < dirSize__ && dir < dirNum; ++dir) {
+        char fromDir[FILENAME_MAX];
+        sprintf(fromDir, "%s%s", dirNames__[dir], ".xqf");
+        //printf("%d: %s\n", __LINE__, fromDir);
+
+        appendAspects_dir(asps, fromDir);
+    }
+
+    testAspects(asps);
+    delAspects(asps);
+}
+
+static CU_TestInfo suite_aspect[] = {
+    { "test_aspect_file", test_aspect_file },
+    { "test_aspect_dir", test_aspect_dir },
+    CU_TEST_INFO_NULL,
+};
+
 static CU_SuiteInfo suites[] = {
     { "suite_tools", NULL, NULL, NULL, NULL, tests_tools },
     { "suite_piece", NULL, NULL, NULL, NULL, tests_piece },
     { "suite_board", NULL, NULL, NULL, NULL, tests_board },
-    { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
     { "suite_chessManual", NULL, NULL, NULL, NULL, suite_chessManual },
+    { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
     CU_SUITE_INFO_NULL,
 };
 

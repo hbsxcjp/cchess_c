@@ -1,10 +1,10 @@
 #include "head/aspect.h"
 #include "head/board.h"
 #include "head/move.h"
+#include "head/chessManual.h"
 #include "head/tools.h"
 
 struct MoveRec {
-    CMove move; // 着法指针(主要用途：正在对局时，判断是否有违反行棋规则的棋例出现)
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
     int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
     int weight; // 对应某局面的本着价值权重(通过局面评价函数计算)
@@ -35,21 +35,9 @@ struct AspectAnalysis {
 
 static const char ASPLIB_MARK[] = "AspectLib";
 
-static MoveRec newMoveRec_MP__(CMove move)
+static MoveRec newMoveRec__(int rowcols, int number, int weight)
 {
     MoveRec mr = malloc(sizeof(struct MoveRec));
-    mr->move = move;
-    mr->rowcols = getRowCols_m(mr->move);
-    mr->number = 1;
-    mr->weight = 0; //待完善
-    mr->forward = NULL;
-    return mr;
-}
-
-static MoveRec newMoveRec_MR__(int rowcols, int number, int weight)
-{
-    MoveRec mr = malloc(sizeof(struct MoveRec));
-    mr->move = NULL;
     mr->rowcols = rowcols;
     mr->number = number;
     mr->weight = weight;
@@ -158,14 +146,14 @@ static Aspect getAspect__(CAspects asps, const char* key, int klen)
 
 static void putMoveRec_MP__(Aspect asp, CMove move)
 {
-    MoveRec pmr = asp->rootMR, mr = newMoveRec_MP__(move);
+    MoveRec pmr = asp->rootMR, mr = newMoveRec__(getRowCols_m(move), 1, 0);
     // 允许存在相同着法，需对number作出标记
     while (pmr) {
         if (mr->rowcols == pmr->rowcols) {
             mr->number += pmr->number;
-            pmr->number = 0; // 标记重复，存储为FEN_MRValue, MD_MRValue格式时该mr被过滤
-            asp->mrCount--;
-            break; // 不需再往前推，因为如有重复在此之前也已被标记
+            pmr->number = 0; // 标记重复，存储为FEN_MRValue, Hash_MRValue格式时该mr被过滤
+            asp->mrCount--; // 与函数尾部的递增抵消，即不增不减
+            break; // 不需再往前推，因为如有重复在此之前也已标记重复
         }
         pmr = pmr->forward;
     }
@@ -177,7 +165,7 @@ static void putMoveRec_MP__(Aspect asp, CMove move)
 
 static void putMoveRec_MR__(Aspect asp, int rowcols, int number, int weight)
 {
-    MoveRec pmr = asp->rootMR, mr = newMoveRec_MR__(rowcols, number, weight);
+    MoveRec pmr = asp->rootMR, mr = newMoveRec__(rowcols, number, weight);
     // 追加方式
     if (pmr) {
         // 递进到最前着
@@ -221,7 +209,8 @@ static Aspect putAspect__(Aspects asps, const char* key, int klen)
     return asp;
 }
 
-void appendAspects_mb(Move move, void* asps, void* board)
+// 使用void*参数，目的是使其可以作为moveMap调用的函数参数
+static void appendAspects_mb__(Move move, Board board, void* asps)
 {
     wchar_t FEN[SEATNUM];
     getFEN_board(FEN, board);
@@ -285,6 +274,25 @@ Aspects getAspects_fb(const char* fileName)
     return asps;
 }
 
+void appendAspects_file(Aspects asps, const char* fileName)
+{
+    ChessManual cm = newChessManual(fileName);
+    moveMap(cm, appendAspects_mb__, asps);
+    delChessManual(cm);
+}
+
+// 使用void*参数，目的是使其可以作为operateDir调用的函数参数
+static void appendAspects_fileInfo__(FileInfo fileInfo, void* asps)
+{
+    appendAspects_file(asps, fileInfo->name);
+    //printf("%d: %s\n", __LINE__, fileInfo->name);
+}
+
+void appendAspects_dir(Aspects asps, const char* dirName)
+{
+    operateDir(dirName, appendAspects_fileInfo__, asps, true);
+}
+
 int getAspects_length(Aspects asps) { return asps->aspCount; }
 
 /*
@@ -304,8 +312,6 @@ int getLoopBoutCount(CAspects asps, const wchar_t* FEN)
 
 static void printfMoveRecShow__(MoveRec mr, void* fout)
 {
-    //wchar_t iccs[6];
-    //fwprintf(fout, L"\tmove@:%p iccs:%s\n", mr->move, getICCS(iccs, mr->move)); // 当move所指已被释放时，将会出错.
     fprintf(fout, "\t0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
 }
 

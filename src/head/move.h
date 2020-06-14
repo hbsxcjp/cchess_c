@@ -59,9 +59,6 @@ void changeMove(Move move, Board board, ChangeType ct);
 void doMove(Move move);
 void undoMove(CMove move);
 
-// 遍历每个着法
-void moveMap(Move rootMove, void apply(Move, void*, void*), void* ptr1, void* ptr2);
-
 // 输出表示着法的字符串
 wchar_t* getMoveStr(wchar_t* wstr, CMove move);
 wchar_t* getMoveString(wchar_t* wstr, CMove move);

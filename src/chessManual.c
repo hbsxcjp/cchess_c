@@ -566,7 +566,6 @@ void readChessManual__(ChessManual cm, const char* fileName)
         setMoveNumZhStr__(cm, getNext(cm->rootMove)); // 驱动函数
     //*/
     //printf("设置成功！\n");
-    
 
     fclose(fin);
 }
@@ -683,6 +682,24 @@ void goInc(ChessManual cm, int inc)
         func(cm);
 }
 
+static void moveMap__(Move move, Board board, void apply(Move, Board, void*), void* ptr)
+{
+    if (move == NULL)
+        return;
+    apply(move, board, ptr);
+
+    doMove(move);
+    moveMap__(getNext(move), board, apply, ptr);
+    undoMove(move);
+
+    moveMap__(getOther(move), board, apply, ptr);
+}
+
+void moveMap(ChessManual cm, void apply(Move, Board, void*), void* ptr)
+{
+    moveMap__(getNext(cm->rootMove), cm->board, apply, ptr);
+}
+
 void changeChessManual(ChessManual cm, ChangeType ct)
 {
     Move curMove = cm->currentMove;
@@ -770,9 +787,7 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     char fromDir[FILENAME_MAX], toDir[FILENAME_MAX]; //, curDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     sprintf(toDir, "%s%s", dirName, EXTNAMES[tofmt]);
-    //getcwd(curDir, FILENAME_MAX);
-    //chdir(fromDir);
-
+    
     OperateDirData odata = malloc(sizeof(struct OperateDirData));
     odata->fcount = odata->dcount = odata->movCount = odata->remCount = odata->remLenMax = 0;
     odata->fromDir = fromDir;
@@ -782,62 +797,13 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     if (strlen(toDir) > 0 && access(toDir, 0) != 0) {
         mkdir(toDir);
         //printf("%d: %s\n", __LINE__, toDir);
-        //
     }
     operateDir(fromDir, transFile__, odata, true);
 
-    //printf("%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
-    //    fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
-    //
-
-    //chdir(curDir);
+    printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
+        fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
+    
     free(odata);
-}
-
-void appendAspects_file(Aspects asps, const char* fileName)
-{
-    if (!fileIsRight__(fileName))
-        return;
-    ChessManual cm = newChessManual(fileName);
-    moveMap(cm->rootMove, appendAspects_mb, asps, cm->board);
-    delChessManual(cm);
-}
-
-// 使用void*参数，目的是使其可以作为operateDir调用的函数参数
-static void appendAspects_fileInfo__(FileInfo fileInfo, void* asps)
-{
-    appendAspects_file(asps, fileInfo->name);
-    //printf("%d: %s\n", __LINE__, fileInfo->name);
-    //
-}
-
-void appendAspects_dir(Aspects asps, const char* dirName)
-{
-    operateDir(dirName, appendAspects_fileInfo__, asps, true);
-}
-
-void testTransDir(const char** chessManualDirName, int size, int dirNum, int fromFmtNum, int toFmtNum)
-{
-    Aspects asps = newAspects(FEN_MovePtr, 0);
-
-    // 调节三个循环变量的初值、终值，控制转换目录
-    RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
-    for (int dir = 0; dir < size && dir < dirNum; ++dir) {
-        char fromDir[FILENAME_MAX];
-        sprintf(fromDir, "%s%s", chessManualDirName[dir], EXTNAMES[XQF]);
-        //printf("%d: %s\n", __LINE__, fromDir);
-        //
-
-        appendAspects_dir(asps, fromDir);
-
-        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt)
-            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt)
-                if (toFmt != fromFmt)
-                    transDir(chessManualDirName[dir], fmts[fromFmt], fmts[toFmt]);
-    }
-
-    testAspects(asps);
-    delAspects(asps);
 }
 
 void getChessManualNumStr(char* str, ChessManual cm)

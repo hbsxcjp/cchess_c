@@ -420,24 +420,6 @@ static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
     return wstr;
 }
 
-static void moveMap__(Move move, void apply(Move, void*, void*), void* ptr1, void* ptr2)
-{
-    if (move == NULL)
-        return;
-    apply(move, ptr1, ptr2);
-
-    doMove(move);
-    moveMap__(getNext(move), apply, ptr1, ptr2);
-    undoMove(move);
-
-    moveMap__(getOther(move), apply, ptr1, ptr2);
-}
-
-void moveMap(Move rootMove, void apply(Move, void*, void*), void* ptr1, void* ptr2)
-{
-    moveMap__(getNext(rootMove), apply, ptr1, ptr2);
-}
-
 wchar_t* getMoveStr(wchar_t* wstr, CMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
