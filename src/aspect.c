@@ -1,7 +1,7 @@
 #include "head/aspect.h"
 #include "head/board.h"
-#include "head/move.h"
 #include "head/chessManual.h"
+#include "head/move.h"
 #include "head/tools.h"
 
 struct MoveRec {
@@ -345,8 +345,8 @@ static void printfAspectFEN__(Aspect asp, void* fout)
 
 void storeAspectFEN(char* fileName, CAspects asps)
 {
-    FILE* fout = fopen(fileName, "w");
     assert(asps->st <= FEN_MRValue);
+    FILE* fout = fopen(fileName, "w");
     fprintf(fout, "%s\n", ASPLIB_MARK);
     aspectsMap__(asps, printfAspectFEN__, fout, printfMoveRecFEN__, fout);
 
@@ -527,7 +527,7 @@ void checkAspectHash(char* libFileName, char* md5FileName)
 void testAspects(CAspects asps)
 {
     assert(asps);
-    char show[] = "show", log[] = "log", libs[] = "libs", hash[] = "hash";
+    char *show = "show", *log = "log", *libs = "libs", *hash = "hash";
     writeAspectShow(show, asps);
     //printf("\nwriteAspectShow OK!\n");
 

@@ -1,18 +1,18 @@
 #include "head/unitTest.h"
+#include "CUnit/Basic.h"
+#include "CUnit/CUnit.h"
 #include "head/aspect.h"
 #include "head/base.h"
 #include "head/board.h"
 #include "head/chessManual.h"
-#include "sqlite3.h"
-//#include "head/console.h"
-#include "CUnit/Basic.h"
-#include "CUnit/CUnit.h"
 #include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/sha1.h"
 #include "head/tools.h"
+#include "sqlite3.h"
 #include <time.h>
+//#include "head/console.h"
 
 static void test_md5(void)
 {
@@ -638,7 +638,7 @@ static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
 
 static void test_chessManual_dir(void)
 {
-    // 调节三个循环变量的初值、终值，控制转换目录
+    // 调节三个循环变量的终值，控制转换目录
     int dirNum = 2, fromFmtNum = 1, toFmtNum = 2;
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
