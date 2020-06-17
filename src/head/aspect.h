@@ -5,14 +5,14 @@
 #include "md5.h"
 #include "sha1.h"
 
-#define MD5Hash
+//#define MD5Hash
 
 #ifdef MD5Hash
 #define HashSize MD5HashSize
-#define getHashFun getMD5
+#define getHashFun ustrToMD5
 #else
 #define HashSize SHA1HashSize
-#define getHashFun getSHA1
+#define getHashFun ustrToSHA1
 #endif
 
 // 着法记录类型

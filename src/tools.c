@@ -107,7 +107,7 @@ bool charIsSame(const char* dst, const char* src, int len)
     return true;
 }
 
-void hashToStr(unsigned char* hash, int length, char* str)
+void hashToStr(char* str, unsigned char* hash, int length)
 {
     str[0] = '\x0';
     char tmpStr[3];

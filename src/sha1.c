@@ -397,11 +397,11 @@ char* resultarray[4] = {
     "DE A3 56 A2 CD DD 90 C7 A7 EC ED C5 EB B5 63 93 4F 46 04 52"
 };
 
-void getSHA1(unsigned char* sha1, char* source)
+void ustrToSHA1(unsigned char* sha1, const unsigned char* source)
 {
     SHA1Context context;
     SHA1Reset(&context);
-    SHA1Input(&context, (const unsigned char*)source, strlen(source));
+    SHA1Input(&context, source, strlen((char*)source));
     SHA1Result(&context, sha1);
 }
 

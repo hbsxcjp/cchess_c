@@ -208,11 +208,11 @@ static void MD5Transform(unsigned int state[4], unsigned char block[64])
     state[3] += d;
 }
 
-void getMD5(unsigned char* md5, char* source)
+void ustrToMD5(unsigned char* md5, unsigned char* source)
 {
     struct MD5_CTX context;
     MD5Init(&context);
-    MD5Update(&context, (unsigned char*)source, strlen(source));
+    MD5Update(&context, source, strlen((char*)source));
     MD5Final(&context, md5);
 }
 

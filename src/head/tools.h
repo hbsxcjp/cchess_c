@@ -22,7 +22,7 @@ unsigned int SDBMHash(const wchar_t* wstr);
 bool charIsSame(const char* dst, const char* src, int len);
 
 // 取得hash的字符串表示
-void hashToStr(unsigned char* hash, int length, char* str);
+void hashToStr(char* str, unsigned char* hash, int length);
 
 // 去掉字符串前后的空白字符
 char* trim(char* str);

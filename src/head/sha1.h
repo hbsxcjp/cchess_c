@@ -60,7 +60,7 @@ int SHA1Input(SHA1Context*, const uint8_t*, unsigned int);
 int SHA1Result(SHA1Context*, uint8_t Message_Digest[SHA1HashSize]);
 
 // 取得字符串的sha1
-void getSHA1(unsigned char* sha1, char* source);
+void ustrToSHA1(unsigned char* sha1, const unsigned char* source);
 
 // 测试函数
 int testsha1(void);

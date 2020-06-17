@@ -4,7 +4,7 @@
 #define MD5HashSize 16
 
 // 取得字符串的md5
-void getMD5(unsigned char* md5, char* source);
+void ustrToMD5(unsigned char* md5, unsigned char* source);
 
 void testMD5_1(void);
 

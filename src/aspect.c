@@ -378,7 +378,7 @@ static void copyMoveRec__(MoveRec mr, void* asp)
 static void copyAspectHash__(Aspect asp, void* hasps)
 {
     unsigned char hash[HashSize];
-    getHashFun(hash, asp->key);
+    getHashFun(hash, (unsigned char*)asp->key);
     Aspect hasp = putAspect__(hasps, (char*)hash, HashSize);
 
     moveRecMap__(asp->rootMR, copyMoveRec__, hasp); // 参数hasp不能在aspectsMap__函数调用时提供，因此只能在这里调用moveRecMap__
@@ -493,7 +493,7 @@ static void aspectCmp__(Aspect asp, void* oasps)
 {
     //printf("check:%s ", asp->key);
     unsigned char hash[HashSize];
-    getHashFun(hash, asp->key);
+    getHashFun(hash, (const unsigned char*)asp->key);
     Aspect oasp = getAspect__(oasps, (char*)hash, HashSize);
 
     assert(oasp);

@@ -16,33 +16,33 @@
 
 static void test_md5(void)
 {
-    char str[] = "admin", str1[] = "21232f297a57a5a743894a0e4a801fc3";
-    //char str[] = "陈建平", str1[] = "21bb705f61cb371b96a9f0c48ec68896";// 未成功！
+    unsigned char str[] = "admin", str1[] = "21232f297a57a5a743894a0e4a801fc3";
+    //unsigned char str[] = "陈建平", str1[] = "21bb705f61cb371b96a9f0c48ec68896"; // 未成功！
 
     unsigned char md5[MD5HashSize];
-    getMD5(md5, str);
+    ustrToMD5(md5, str);
     char str2[33];
-    hashToStr(md5, MD5HashSize, str2);
+    hashToStr(str2, md5, MD5HashSize);
 
+    //printf("\n%s\n%s\n", str1, str2);
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //testMD5_1();
     //testMD5_2("s");
-    //printf("\n%s\n%s\n", str1, str2);
 }
 
 static void test_sha1(void)
 {
-    char str[] = "admin", str1[] = "d033e22ae348aeb5660fc2140aec35850c4da997";
-    //char str[] = "陈建平", str1[] = "2b86ed62ae08865d16c6d4f86c5b79f695e6c723"; // 未成功！
+    unsigned char str[] = "admin", str1[] = "d033e22ae348aeb5660fc2140aec35850c4da997";
+    //unsigned char str[] = "陈建平", str1[] = "2b86ed62ae08865d16c6d4f86c5b79f695e6c723"; // 未成功！
 
     unsigned char sha1[SHA1HashSize];
-    getSHA1(sha1, str);
+    ustrToSHA1(sha1, str);
     char str2[41];
-    hashToStr(sha1, SHA1HashSize, str2);
+    hashToStr(str2, sha1, SHA1HashSize);
 
+    //printf("\n%s\n%s\n", str1, str2);
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //testsha1();
-    //printf("\n%s\n%s\n", str1, str2);
 }
 
 static CU_TestInfo tests_tools[] = {
