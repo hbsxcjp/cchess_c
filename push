@@ -1,5 +1,5 @@
 git status
 git add src/*.c src/head/*.h Makefile push
-git commit -am "push commit"
-git push origin mini
+git commit -am "u260 commit"
+git push origin linux
 git branch -av

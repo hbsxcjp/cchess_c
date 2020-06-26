@@ -4,7 +4,8 @@
 #include "base.h"
 
 // 文件信息结构数组指针
-typedef struct _finddata_t* FileInfo;
+//typedef struct _finddata_t* FileInfo;
+typedef struct FileInfo* FileInfo;
 typedef struct FileInfos* FileInfos;
 
 bool isPrime(int n);

@@ -1,10 +1,10 @@
 #ifndef BASE_H
 #define BASE_H
 
+// 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'
+
 #include <assert.h>
-#include <conio.h>
 #include <ctype.h>
-#include <io.h>
 #include <locale.h>
 #include <math.h>
 #include <stdbool.h>
@@ -14,7 +14,29 @@
 #include <string.h>
 #include <wchar.h>
 #include <wctype.h>
+#ifdef __linux
+#include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+//printf("Linux\n");
+#endif
+#ifdef __sun
+#ifdef __sparc
+printf("Sun SPARC\n");
+#else
+printf("Sun X86\n");
+#endif
+#endif
+#ifdef _AIX
+printf("AIX\n");
+#endif
+#ifdef WINVER
+#include <conio.h>
+#include <io.h>
 #include <windows.h>
+//printf("Windows\n");
+#endif
 
 #define THOUSAND 1024
 #define WCHARSIZE 256
