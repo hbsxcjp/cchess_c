@@ -2,15 +2,15 @@
 
 CC = gcc
 #CFLAGS = -Wall -std=c11
-CFLAGS = -Wall -std=c11 -fexec-charset=gbk -g 
+CFLAGS = -Wall -std=c11 -fexec-charset=utf-8 -g #gbk
 #LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
-LDFLAGS = -L/C/msys32/mingw32/lib -lpcre16 -lsqlite3 -llibcunit #lib/pdcurses.a
+LDFLAGS = -lm -lpcre32 -lsqlite3 -lcunit #lib/pdcurses.a
 SP = src/
 OP = obj/
 OBJS = $(OP)sha1.o $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)unitTest.o $(OP)main.o # $(OP)console.o 
 FIXEDOBJ = $(OP)cJSON.o # 固定的目标文件，一般只编译一次
 
-a.exe: $(OBJS) $(FIXEDOBJ)
+a: $(OBJS) $(FIXEDOBJ)
 	$(CC) -Wall -o $@ $^ $(LDFLAGS) 
 
 	

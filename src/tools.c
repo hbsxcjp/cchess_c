@@ -1,13 +1,15 @@
 #include "head/tools.h"
 
-typedef struct FileInfo {
-    char* name;
+typedef struct FileInfo
+{
+    char *name;
     int attrib;
     unsigned long size;
 } * FileInfo;
 
-typedef struct FileInfos {
-    FileInfo* fis;
+typedef struct FileInfos
+{
+    FileInfo *fis;
     int size;
     int count;
 } * FileInfos;
@@ -22,10 +24,11 @@ bool isPrime(int n)
     return true;
 }
 
-int getPrimes(int* primes, int bitCount)
+int getPrimes(int *primes, int bitCount)
 {
     int index = 0;
-    for (int i = 1; i < bitCount; ++i) {
+    for (int i = 1; i < bitCount; ++i)
+    {
         int n = (1 << i) - 1;
         while (n > 1 && !isPrime(n))
             n--;
@@ -43,9 +46,9 @@ int getPrimes(int* primes, int bitCount)
 int getPrime(int size)
 {
     //static int primes[] = { 509, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65521, INT_MAX };
-    static int primes[] = { 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, //3, 7, 13, 31,
-        131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
-        67108859, 134217689, 268435399, 536870909, 1073741789, INT32_MAX };
+    static int primes[] = {61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521, //3, 7, 13, 31,
+                           131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
+                           67108859, 134217689, 268435399, 536870909, 1073741789, INT32_MAX};
     int i = 0;
     while (primes[i] < size)
         i++;
@@ -54,7 +57,7 @@ int getPrime(int size)
 
 // BKDR Hash Function
 
-unsigned int BKDRHash_c(const char* src, int size)
+unsigned int BKDRHash_c(const char *src, int size)
 {
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
@@ -65,7 +68,7 @@ unsigned int BKDRHash_c(const char* src, int size)
     return (hash & 0x7FFFFFFF);
 }
 
-unsigned int BKDRHash_s(const wchar_t* wstr)
+unsigned int BKDRHash_s(const wchar_t *wstr)
 {
     //*
     int len = wcslen(wstr) * 2;
@@ -86,27 +89,29 @@ unsigned int BKDRHash_s(const wchar_t* wstr)
     //*/
 }
 
-unsigned int DJBHash(const wchar_t* wstr)
+unsigned int DJBHash(const wchar_t *wstr)
 {
     unsigned int hash = 5381;
     int len = wcslen(wstr);
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         hash = ((hash << 5) + hash) + wstr[i];
     }
     return hash;
 }
 
-unsigned int SDBMHash(const wchar_t* wstr)
+unsigned int SDBMHash(const wchar_t *wstr)
 {
     unsigned int hash = 0;
     int len = wcslen(wstr);
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         hash = (hash << 5) + (hash << 16) - hash + wstr[i];
     }
     return hash;
 }
 
-bool charIsSame(const char* dst, const char* src, int len)
+bool charIsSame(const char *dst, const char *src, int len)
 {
     for (int i = 0; i < len; ++i)
         if (dst[i] != src[i])
@@ -114,17 +119,18 @@ bool charIsSame(const char* dst, const char* src, int len)
     return true;
 }
 
-void hashToStr(char* str, unsigned char* hash, int length)
+void hashToStr(char *str, unsigned char *hash, int length)
 {
     str[0] = '\x0';
     char tmpStr[3];
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < length; i++)
+    {
         sprintf(tmpStr, "%02x", hash[i]);
         strcat(str, tmpStr);
     }
 }
 
-char* trim(char* str)
+char *trim(char *str)
 {
     size_t size = strlen(str);
     for (int i = size - 1; i >= 0; --i)
@@ -142,7 +148,7 @@ char* trim(char* str)
     return str + offset;
 }
 
-wchar_t* wtrim(wchar_t* wstr)
+wchar_t *wtrim(wchar_t *wstr)
 {
     size_t size = wcslen(wstr);
     for (int i = size - 1; i >= 0; --i)
@@ -160,50 +166,55 @@ wchar_t* wtrim(wchar_t* wstr)
     return wstr + offset;
 }
 
-static char* getSplitChar__(char* fileName)
+// 返回指向目录与文件的分界字符指针，如不存在则返回NULL
+static char *getSplitChar__(const char *fileName)
 {
-    char* pext = strrchr(fileName, '/');
-    if (pext == NULL)
-        pext = strrchr(fileName, '\\');
-    return pext;
+    char *sp0 = strrchr(fileName, '/');
+    char *sp1 = strrchr(fileName, '\\');
+    // 两个符号都存在，则返回较后的那个
+    if (sp0 && sp1)
+        return sp0 - fileName > sp1 - fileName ? sp0 : sp1;
+    return sp0 ? sp0 : sp1;
 }
 
-char* getDirName(char* fileName)
+void getDirName(char *dirName, const char *fileName)
 {
-    char* pext = getSplitChar__(fileName);
-    if (pext != NULL)
-        *pext = '\0';
-    else
-        fileName[0] = '\0';
-    return fileName;
+    int size = 0;
+    char *sp = getSplitChar__(fileName);
+    if (sp != NULL)
+    {
+        size = sp - fileName;
+        strncpy(dirName, fileName, size);
+    }
+    dirName[size] = '\x0';
 }
 
-char* getFileName(char* fileName)
+const char *getFileName(const char *fileName)
 {
-    char* pext = getSplitChar__(fileName);
-    return pext ? pext + 1 : fileName;
+    char *sp = getSplitChar__(fileName);
+    return sp ? sp + 1 : fileName;
 }
 
-const char* getExtName(const char* fileName)
+const char *getExtName(const char *fileName)
 {
     return strrchr(fileName, '.');
 }
 
-char* transFileExtName(char* fileName, const char* extname)
+void transFileExtName(char *fileName, const char *extname)
 {
-    char* pext = strrchr(fileName, '.');
-    if (pext != NULL)
-        *pext = '\0';
-    return strcat(fileName, extname);
+    char *sp = strrchr(fileName, '.');
+    if (sp != NULL)
+        *sp = '\0';
+    strcat(fileName, extname);
 }
 
-wchar_t* getWString(FILE* fin)
+wchar_t *getWString(FILE *fin)
 {
     long start = ftell(fin);
     fseek(fin, 0, SEEK_END);
     long end = ftell(fin);
     fseek(fin, start, SEEK_SET);
-    wchar_t* wstr = malloc((end - start + 1) * sizeof(wchar_t));
+    wchar_t *wstr = malloc((end - start + 1) * sizeof(wchar_t));
     int index = 0;
     while (!feof(fin))
         wstr[index++] = fgetwc(fin);
@@ -211,16 +222,25 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
-void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr)
+void writeWString(wchar_t **pstr, int *size, const wchar_t *wstr)
 {
     int len = wcslen(wstr);
     // 如字符串分配的长度不够，则增加长度
-    if (wcslen(*pstr) + len > *size - 1) {
+    if (wcslen(*pstr) + len > *size - 1)
+    {
         *size += WIDEWCHARSIZE + len;
         *pstr = realloc(*pstr, *size * sizeof(wchar_t));
         assert(*pstr);
     }
     wcscat(*pstr, wstr);
+}
+int makeDir(const char *dirName)
+{
+#ifdef WINVER
+    return mkdir(dirName);
+#else
+    return mkdir(dirName, S_IRWXU);
+#endif
 }
 
 /*****************************************************************************************
@@ -229,23 +249,26 @@ Description:    复制文件
 Input:          SourceFile:原文件路径 NewFile:复制后的文件路径
 Return:         1:成功 0:失败
 ******************************************************************************************/
-int copyFile(const char* SourceFile, const char* NewFile)
+int copyFile(const char *SourceFile, const char *NewFile)
 {
-    FILE* fin = fopen(SourceFile, "rb"); //打开源文件
-    if (fin == NULL) //打开源文件失败
+    FILE *fin = fopen(SourceFile, "rb"); //打开源文件
+    if (fin == NULL)                     //打开源文件失败
     {
         printf("Error 1: Fail to open the source file.");
         return 0;
     }
-    FILE* fout = fopen(NewFile, "wb"); //创建目标文件
-    if (fout == NULL) //创建文件失败
+    FILE *fout = fopen(NewFile, "wb"); //创建目标文件
+    if (fout == NULL)                  //创建文件失败
     {
         printf("Error 2: Fail to create the new file.");
         return 0;
-    } else { //复制文件
-        char data[1024] = { 0 };
+    }
+    else
+    { //复制文件
+        char data[1024] = {0};
         size_t n = 0;
-        while (!feof(fin)) {
+        while (!feof(fin))
+        {
             n = fread(data, sizeof(char), 1024, fin);
             fwrite(data, sizeof(char), n, fout);
         }
@@ -253,7 +276,7 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)
+static FileInfo newFileInfo__(char *name, int attrib, long unsigned int size)
 {
     FileInfo fileInfo = malloc(sizeof(struct FileInfo));
     fileInfo->name = malloc(strlen(name) + 1);
@@ -288,41 +311,51 @@ void delFileInfos(FileInfos fileInfos)
     free(fileInfos);
 }
 
-void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive)
+void operateDir(const char *dirName, void operateFile(FileInfo, void *), void *ptr, bool recursive)
 {
 #ifdef __linux
-    struct dirent* dp;
-    DIR* dfd;
+    struct dirent *dp;
+    DIR *dfd;
 
-    if ((dfd = opendir(dirName)) == NULL) {
+    if ((dfd = opendir(dirName)) == NULL)
+    {
         fprintf(stderr, "dirwalk: can't open %s\n", dirName);
         return;
     }
 
-    while ((dp = readdir(dfd)) != NULL) { //读目录记录项
-        if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0) {
+    while ((dp = readdir(dfd)) != NULL)
+    { //读目录记录项
+        if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
+        {
             continue; //跳过当前目录以及父目录
         }
 
-        char name[256];
-        if (strlen(dirName) + strlen(dp->d_name) + 2 > sizeof(name)) {
+        char name[512];
+        if (strlen(dirName) + strlen(dp->d_name) + 2 > sizeof(name))
+        {
             fprintf(stderr, "dirwalk : name %s %s too long\n", dirName, dp->d_name);
-        } else {
-            snprintf(name, 255, "%s/%s", dirName, dp->d_name);
+        }
+        else
+        {
+            sprintf(name, "%s/%s", dirName, dp->d_name);
             //(*func)(name);
 
             struct stat stbuf;
-            if (stat(name, &stbuf) == -1) {
+            if (stat(name, &stbuf) == -1)
+            {
                 fprintf(stderr, "file size: open %s failed\n", name);
                 return;
             }
 
             //如果是目录且要求递归，则递归调用
-            if ((stbuf.st_mode & __S_IFMT) == __S_IFDIR) {
+            if ((stbuf.st_mode & __S_IFMT) == __S_IFDIR)
+            {
                 //dirwalk(name, print_file_info); //如果是目录遍历下一级目录
                 if (recursive)
                     operateDir(name, operateFile, ptr, recursive);
-            } else {
+            }
+            else
+            {
                 //printf("%8ld    %s\n", stbuf.st_size, name); //不是目录，打印文件size及name
                 FileInfo fi = newFileInfo__(name, stbuf.st_mode, stbuf.st_size);
                 operateFile(fi, ptr);
@@ -333,8 +366,8 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
 #endif
 
 #ifdef WINVER
-    long hFile = 0; //文件句柄
-    struct _finddata_t fileinfo = { 0 }; //文件信息
+    long hFile = 0;                    //文件句柄
+    struct _finddata_t fileinfo = {0}; //文件信息
     char findName[FILENAME_MAX];
     snprintf(findName, FILENAME_MAX, "%s/*", dirName);
     //printf("%d: %s\n", __LINE__, findName);
@@ -342,15 +375,19 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
     if ((hFile = _findfirst(findName, &fileinfo)) == -1)
         return;
 
-    do {
+    do
+    {
         if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
             continue;
         snprintf(findName, FILENAME_MAX, "%s/%s", dirName, fileinfo.name);
         //如果是目录且要求递归，则递归调用
-        if (fileinfo.attrib & _A_SUBDIR) {
+        if (fileinfo.attrib & _A_SUBDIR)
+        {
             if (recursive)
                 operateDir(findName, operateFile, ptr, recursive);
-        } else {
+        }
+        else
+        {
             strcpy(fileinfo.name, findName);
             operateFile(&fileinfo, ptr);
         }
@@ -359,10 +396,11 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
 #endif
 }
 
-static void addFileInfos__(FileInfo fileInfo, void* ptr)
+static void addFileInfos__(FileInfo fileInfo, void *ptr)
 {
     FileInfos fileInfos = (FileInfos)ptr;
-    if (fileInfos->count == fileInfos->size) {
+    if (fileInfos->count == fileInfos->size)
+    {
         fileInfos->size += fileInfos->size;
         fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
         assert(fileInfos->fis);
@@ -373,17 +411,23 @@ static void addFileInfos__(FileInfo fileInfo, void* ptr)
     fileInfos->fis[fileInfos->count++] = fileInfo;
 }
 
-void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
+void getFileInfos(FileInfos fileInfos, const char *dirName, bool recursive)
 {
     operateDir(dirName, addFileInfos__, fileInfos, recursive);
 }
 
+void getFileInfoName(char *fileName, FileInfo fileInfo)
+{
+    strcpy(fileName, fileInfo->name);
+}
+
 // 测试函数
-void testTools(FILE* fout, const char** chessManualDirName, int size, const char* ext)
+void testTools(FILE *fout, const char **chessManualDirName, int size, const char *ext)
 {
     fprintf(fout, "\n");
     int sum = 0;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i)
+    {
         FileInfos fileInfos = newFileInfos();
 
         char dirName[FILENAME_MAX];

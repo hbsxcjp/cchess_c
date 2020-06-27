@@ -10,8 +10,8 @@
 #include "head/piece.h"
 #include "head/sha1.h"
 #include "head/tools.h"
-#include "sqlite3.h"
 #include <time.h>
+#include "sqlite3.h"
 //#include "head/console.h"
 
 static void test_md5(void)
@@ -56,8 +56,11 @@ static void test_piece_str(void)
     char str1[] = "红帅K@FF 红仕A@FF 红仕A@FF 红相B@FF 红相B@FF 红马N@FF 红马N@FF 红车R@FF 红车R@FF 红炮C@FF 红炮C@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF "
                   "黑将k@FF 黑士a@FF 黑士a@FF 黑象b@FF 黑象b@FF 黑馬n@FF 黑馬n@FF 黑車r@FF 黑車r@FF 黑砲c@FF 黑砲c@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF ",
          str2[WIDEWCHARSIZE];
+    printf("棋子：\n");
     wchar_t wstr[WIDEWCHARSIZE];
     testPieceString(wstr);
+    wprintf(L"棋子：%s\n", wstr);
+
     wcstombs(str2, wstr, WIDEWCHARSIZE);
 
     //printf("\n%s\n%s\n", str1, str2);

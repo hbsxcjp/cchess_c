@@ -2,7 +2,6 @@
 #include "head/board.h"
 #include "head/piece.h"
 #include "head/tools.h"
-#include "pcre.h"
 
 struct Move {
     Seat fseat, tseat; // 起止位置0x00
@@ -475,7 +474,7 @@ static void readTagRowcolRemark_XQF__(char* tag, int* fcolrow, int* tcolrow, wch
     if (Version <= 10 || (data[2] & 0x20)) {
         char clen[4] = { 0 };
         readBytes__(clen, 4, fin);
-        int RemarkSize = *(__int32*)clen - KeyRMKSize;
+        int RemarkSize = *(__int32_t*)clen - KeyRMKSize;
         if (RemarkSize > 0) {
             int len = RemarkSize + 1;
             char rem[len];
@@ -722,14 +721,14 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
 
     const char* error;
     int erroffset = 0;
-    pcre16* moveReg = pcre16_compile(movePat, 0, &error, &erroffset, NULL);
+    pcre32* moveReg = pcre32_compile((const unsigned int *)movePat, 0, &error, &erroffset, NULL);
     assert(moveReg);
-    pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
+    pcre32* remReg = pcre32_compile((const unsigned int *)remPat, 0, &error, &erroffset, NULL);
     assert(remReg);
 
     wchar_t* moveStr = getWString(fin); // 读取文件内容到字符串
     int ovector[WCHARSIZE] = { 0 },
-        regCount = pcre16_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
+        regCount = pcre32_exec(remReg, NULL, (const unsigned int *)moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
     if (regCount <= 0)
         return;
     if (regCount == 2)
@@ -744,7 +743,7 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     //fflush(stdout);
 
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
-        regCount = pcre16_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
+        regCount = pcre32_exec(moveReg, NULL, (const unsigned int *)tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
             break;
         // 是否有"("
@@ -788,8 +787,8 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
             move = move->pmove;
         }
     free(moveStr);
-    pcre16_free(remReg);
-    pcre16_free(moveReg);
+    pcre32_free(remReg);
+    pcre32_free(moveReg);
 }
 
 static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
@@ -839,7 +838,7 @@ static wchar_t* getRemark_PGN_CC__(wchar_t* remLines[], int remCount, int row, i
     return NULL;
 }
 
-static void addMove_PGN_CC__(Move preMove, Board board, pcre16* moveReg,
+static void addMove_PGN_CC__(Move preMove, Board board, pcre32* moveReg,
     wchar_t* moveLines[], int rowNum, int colNum, int row, int col,
     wchar_t* remLines[], int remCount, bool isOther)
 {
@@ -847,7 +846,7 @@ static void addMove_PGN_CC__(Move preMove, Board board, pcre16* moveReg,
     while (zhStr[0] == L'…')
         zhStr = moveLines[row * colNum + (++col)];
     int regCount = 0, ovector[8]; //OVECCOUNT = 8,
-    regCount = pcre16_exec(moveReg, NULL, zhStr, wcslen(zhStr), 0, 0, ovector, 8);
+    regCount = pcre32_exec(moveReg, NULL, (const unsigned int *)zhStr, wcslen(zhStr), 0, 0, ovector, 8);
     if (regCount <= 0) {
         wchar_t wstr[WIDEWCHARSIZE], fstr[WCHARSIZE]; //, tstr[WCHARSIZE];
         wprintf(L"%d:%d\n%spreMove:%s zhStr:%s\n", __LINE__, regCount, getBoardString(wstr, board),
@@ -887,9 +886,9 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
     const char* error;
     int erroffset = 0;
-    pcre16* moveReg = pcre16_compile(movePat, 0, &error, &erroffset, NULL);
+    pcre32* moveReg = pcre32_compile((const unsigned int *)movePat, 0, &error, &erroffset, NULL);
     assert(moveReg);
-    pcre16* remReg = pcre16_compile(remPat, 0, &error, &erroffset, NULL);
+    pcre32* remReg = pcre32_compile((const unsigned int *)remPat, 0, &error, &erroffset, NULL);
     assert(remReg);
 
     // 设置字符串容量
@@ -931,7 +930,7 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
     int remCount = 0, regCount = 0, ovector[WCHARSIZE] = { 0 };
     wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
     while (wcslen(tempRemStr) > 0) {
-        regCount = pcre16_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr),
+        regCount = pcre32_exec(remReg, NULL, (const unsigned int *)tempRemStr, wcslen(tempRemStr),
             0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
             break;
@@ -964,8 +963,8 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         free(moveLines[i]);
     free(remLines);
     free(moveLines);
-    pcre16_free(remReg);
-    pcre16_free(moveReg);
+    pcre32_free(remReg);
+    pcre32_free(moveReg);
 }
 
 static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
