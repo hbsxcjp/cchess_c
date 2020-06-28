@@ -638,7 +638,7 @@ int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color)
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat)
 {
     wchar_t str[WCHARSIZE];
-    swprintf(seatStr, WCHARSIZE, L"%02x%s", getRowCol_s(seat), getPieString(str, getPiece_s(seat)));
+    swprintf(seatStr, WCHARSIZE, L"%02x%ls", getRowCol_s(seat), getPieString(str, getPiece_s(seat)));
     return seatStr;
 }
 

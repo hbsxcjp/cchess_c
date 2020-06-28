@@ -11,7 +11,6 @@
 #include "head/sha1.h"
 #include "head/tools.h"
 #include <time.h>
-#include "sqlite3.h"
 //#include "head/console.h"
 
 static void test_md5(void)
@@ -56,11 +55,8 @@ static void test_piece_str(void)
     char str1[] = "红帅K@FF 红仕A@FF 红仕A@FF 红相B@FF 红相B@FF 红马N@FF 红马N@FF 红车R@FF 红车R@FF 红炮C@FF 红炮C@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF 红兵P@FF "
                   "黑将k@FF 黑士a@FF 黑士a@FF 黑象b@FF 黑象b@FF 黑馬n@FF 黑馬n@FF 黑車r@FF 黑車r@FF 黑砲c@FF 黑砲c@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF 黑卒p@FF ",
          str2[WIDEWCHARSIZE];
-    printf("棋子：\n");
     wchar_t wstr[WIDEWCHARSIZE];
     testPieceString(wstr);
-    wprintf(L"棋子：%s\n", wstr);
-
     wcstombs(str2, wstr, WIDEWCHARSIZE);
 
     //printf("\n%s\n%s\n", str1, str2);
@@ -113,7 +109,7 @@ static void getBoardStr__(char* str, Board board)
 {
     wchar_t preStr[WCHARSIZE], boardStr[WIDEWCHARSIZE], sufStr[WCHARSIZE], seatStr[WCHARSIZE];
     wchar_t wstr[SUPERWIDEWCHARSIZE];
-    swprintf(wstr, sizeof(wstr), L"%s%s%s%s\n",
+    swprintf(wstr, sizeof(wstr), L"%ls%ls%ls%ls\n",
         getBoardPreString(preStr, board),
         getBoardString(boardStr, board),
         getBoardSufString(sufStr, board),
@@ -384,10 +380,10 @@ static void test_board_putSeats_str(void)
             Piece piece = getPiece_s(pseats[i]);
             Seat seats[BOARDROW * BOARDCOL] = { 0 };
             int count = putSeats(seats, board, true, getKind(piece));
-            appendWstr__(wstr, L"%s=【", getPieString(tmpWstr, piece));
+            appendWstr__(wstr, L"%ls=【", getPieString(tmpWstr, piece));
 
             for (int i = 0; i < count; ++i) {
-                appendWstr__(wstr, L"%s", getSeatString(tmpWstr, seats[i]));
+                appendWstr__(wstr, L"%ls", getSeatString(tmpWstr, seats[i]));
             }
             swprintf(tmpWstr, WIDEWCHARSIZE, L"】%d\n", count);
             wcscat(wstr, tmpWstr);
@@ -415,9 +411,9 @@ static void test_board_liveSeats_str(void)
     for (int color = RED; color <= BLACK; ++color) {
         Seat lvseats[PIECENUM] = { NULL };
         int count = getLiveSeats_bc(lvseats, board, color);
-        appendWstr__(wstr, L"%s：", color == RED ? L"红" : L"黑");
+        appendWstr__(wstr, L"%ls：", color == RED ? L"红" : L"黑");
         for (int i = 0; i < count; ++i) {
-            appendWstr__(wstr, L"%s ", getSeatString(tmpWstr, lvseats[i]));
+            appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr, lvseats[i]));
         }
         swprintf(tmpWstr, WIDEWCHARSIZE, L"count:%d\n", count);
         wcscat(wstr, tmpWstr);
@@ -457,26 +453,26 @@ static void test_board_moveSeats_str(void)
         int count = getLiveSeats_bc(lvseats, board, color);
         for (int i = 0; i < count; ++i) {
             Seat fseat = lvseats[i];
-            appendWstr__(wstr, L"%s >>【", getSeatString(tmpWstr2, fseat));
+            appendWstr__(wstr, L"%ls >>【", getSeatString(tmpWstr2, fseat));
 
             Seat mseats[BOARDROW + BOARDCOL] = { NULL };
             int mcount = moveSeats(mseats, board, fseat);
             for (int i = 0; i < mcount; ++i)
-                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+                appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr2, mseats[i]));
             swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d", mcount);
             wcscat(wstr, tmpWstr1);
 
             wcscat(wstr, L" =【");
             int cmcount = ableMoveSeats(mseats, mcount, board, fseat);
             for (int i = 0; i < cmcount; ++i)
-                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+                appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr2, mseats[i]));
             swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d", cmcount);
             wcscat(wstr, tmpWstr1);
 
             wcscat(wstr, L" +【");
             int kmcount = unableMoveSeats(mseats, mcount, board, fseat);
             for (int i = 0; i < kmcount; ++i)
-                appendWstr__(wstr, L"%s ", getSeatString(tmpWstr2, mseats[i]));
+                appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr2, mseats[i]));
             swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d\n", kmcount);
             wcscat(wstr, tmpWstr1);
         }
@@ -503,7 +499,7 @@ static void writePGN_CCtoStr__(char* str, ChessManual cm)
 {
     wchar_t* wstr = NULL;
     writePGN_CCtoWstr(&wstr, cm);
-    wcstombs(str, wstr, wcslen(wstr) * 3 + 1);
+    wcstombs(str, wstr, (wcslen(wstr) + 1) * sizeof(wchar_t));
     free(wstr);
 }
 
@@ -591,6 +587,7 @@ static void test_chessManual_file(void)
     //    printf("\n%s\n\n%s\n", str3, str4);
     CU_ASSERT_STRING_EQUAL(str3, str4);
 
+    /*
     writeChessManual(cm, "01.bin");
     resetChessManual(&cm, "01.bin");
     writePGN_CCtoStr__(str4, cm);
@@ -623,11 +620,13 @@ static void test_chessManual_file(void)
         writeChessManual(cm, fname);
     }
 
+    //*/
     getChessManualNumStr(str2, cm);
-    //if (strcmp(str1, str2) != 0)
-    //    printf("\n%s\n\n%s\n", str1, str2);
+    if (strcmp(str1, str2) != 0)
+        printf("\n%s\n\n%s\n", str1, str2);
 
     CU_ASSERT_STRING_EQUAL(str1, str2);
+
     delChessManual(cm);
 }
 
@@ -656,7 +655,7 @@ static void test_chessManual_dir(void)
 
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_file", test_chessManual_file },
-    { "test_chessManual_dir", test_chessManual_dir },
+    //{ "test_chessManual_dir", test_chessManual_dir },
     CU_TEST_INFO_NULL,
 };
 
@@ -708,7 +707,7 @@ static CU_SuiteInfo suites[] = {
     { "suite_piece", NULL, NULL, NULL, NULL, tests_piece },
     { "suite_board", NULL, NULL, NULL, NULL, tests_board },
     { "suite_chessManual", NULL, NULL, NULL, NULL, suite_chessManual },
-    { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
+    //{ "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
     CU_SUITE_INFO_NULL,
 };
 

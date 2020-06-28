@@ -24,7 +24,6 @@ printf("AIX\n");
 #include <conio.h>
 #include <io.h>
 #include <windows.h>
-#include "pcre.h"
 //printf("Windows\n");
 #endif
 
