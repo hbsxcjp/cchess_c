@@ -12,7 +12,7 @@
 #define INFOSIZE 32
 
 struct ChessManual {
-    wchar_t* fileName;
+    char* fileName;
     Board board;
     Move rootMove, currentMove; // 根节点、当前节点
     wchar_t* info[INFOSIZE][2];
@@ -60,8 +60,8 @@ ChessManual newChessManual(const char* fileName)
 {
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
-    cm->fileName = malloc((strlen(fileName) + 1) * sizeof(wchar_t));
-    mbstowcs(cm->fileName, fileName, FILENAME_MAX);
+    cm->fileName = malloc(strlen(fileName) + 1);
+    strcpy(cm->fileName, fileName);
     cm->board = newBoard();
     cm->currentMove = cm->rootMove = getRootMove();
     for (int i = 0; i < INFOSIZE; ++i)
@@ -155,8 +155,9 @@ static void setMoveNumZhStr__(ChessManual cm, Move move)
     //*/
 }
 
-extern int Version, KeyRMKSize;
-extern char KeyXYf, KeyXYt, F32Keys[PIECENUM];
+// 供readXQF使用的有关解密钥匙
+int Version = 0, KeyRMKSize = 0;
+unsigned char KeyXYf = 0, KeyXYt = 0, F32Keys[PIECENUM] = { 0 };
 
 static unsigned char calkey__(unsigned char bKey, unsigned char cKey)
 {
@@ -165,23 +166,23 @@ static unsigned char calkey__(unsigned char bKey, unsigned char cKey)
 
 static void readXQF__(ChessManual cm, FILE* fin)
 {
-    char xqfData[1024] = { 0 };
+    unsigned char xqfData[1024] = { 0 };
     fread(xqfData, sizeof(char), 1024, fin);
-    char Signature[3] = { 0 }, headKeyMask, ProductId[4] = { 0 }, //Version, 文件标记'XQ'=$5158/版本/加密掩码/ProductId[4], 产品(厂商的产品号)
+    unsigned char Signature[3] = { 0 }, headKeyMask, ProductId[4] = { 0 }, //Version, 文件标记'XQ'=$5158/版本/加密掩码/ProductId[4], 产品(厂商的产品号)
         headKeyOrA, headKeyOrB, headKeyOrC, headKeyOrD,
-         headKeysSum, headKeyXY, headKeyXYf, headKeyXYt, // 加密的钥匙和/棋子布局位置钥匙/棋谱起点钥匙/棋谱终点钥匙
+                  headKeysSum, headKeyXY, headKeyXYf, headKeyXYt, // 加密的钥匙和/棋子布局位置钥匙/棋谱起点钥匙/棋谱终点钥匙
         headQiziXY[PIECENUM] = { 0 }, // 32个棋子的原始位置
         // 用单字节坐标表示, 将字节变为十进制, 十位数为X(0-8)个位数为Y(0-9),
         // 棋盘的左下角为原点(0, 0). 32个棋子的位置从1到32依次为:
         // 红: 车马相士帅士相马车炮炮兵兵兵兵兵 (位置从右到左, 从下到上)
         // 黑: 车马象士将士象马车炮炮卒卒卒卒卒 (位置从右到左, 从下到上)PlayStepNo[2],
         PlayStepNo[2] = { 0 },
-         headWhoPlay, headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
-         // 该谁下 0-红先, 1-黑先/最终结果 0-未知, 1-红胜 2-黑胜, 3-和棋
+                  headWhoPlay, headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
+                  // 该谁下 0-红先, 1-黑先/最终结果 0-未知, 1-红胜 2-黑胜, 3-和棋
         headCodeA_H[16] = { 0 }, TitleA[65] = { 0 }, TitleB[65] = { 0 }, //对局类型(开,中,残等)
         Event[65] = { 0 }, Date[17] = { 0 }, Site[17] = { 0 }, Red[17] = { 0 }, Black[17] = { 0 },
-         Opening[65] = { 0 }, Redtime[17] = { 0 }, Blktime[17] = { 0 }, Reservedh[33] = { 0 },
-         RMKWriter[17] = { 0 }, Author[17] = { 0 }; //, Other[528]; // 棋谱评论员/文件的作者
+                  Opening[65] = { 0 }, Redtime[17] = { 0 }, Blktime[17] = { 0 }, Reservedh[33] = { 0 },
+                  RMKWriter[17] = { 0 }, Author[17] = { 0 }; //, Other[528]; // 棋谱评论员/文件的作者
     memcpy(Signature, xqfData, 2);
     Version = xqfData[2];
     headKeyMask = xqfData[3];
@@ -263,7 +264,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     }
 
     wchar_t tempStr[WIDEWCHARSIZE] = { 0 };
-    char* values[] = {
+    unsigned char* values[] = {
         TitleA, Event, Date, Site, Red, Black,
         Opening, RMKWriter, Author
     };
@@ -272,7 +273,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"Opening", L"RMKWriter", L"Author"
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
-        mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
+        printf("\nsize:%ld\n%s", strlen((char*)values[i]), (char*)values[i]);
+
+        mbstowcs(tempStr, (char*)values[i], WIDEWCHARSIZE - 1);
         addInfoItem(cm, names[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
@@ -286,7 +289,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 
     fseek(fin, 1024, SEEK_SET);
-    readMove_XQF(&cm->rootMove, cm->board, fin, false);
+    readMove_XQF(&cm->rootMove, cm->board, fin);
 }
 
 static wchar_t* getFENFromCM__(ChessManual cm)
@@ -326,7 +329,7 @@ static void readBin__(ChessManual cm, FILE* fin)
     if (tag & 0x20)
         setRemark(cm->rootMove, readWstring_BIN(fin));
     if (tag & 0x80)
-        readMove_BIN(cm->rootMove, cm->board, fin, false);
+        readMove_BIN(cm->rootMove, cm->board, fin);
 }
 
 static void writeBIN__(FILE* fout, ChessManual cm)
@@ -373,7 +376,7 @@ static void readJSON__(ChessManual cm, FILE* fin)
 
     cJSON* rootMoveJSON = cJSON_GetObjectItem(manualJSON, "rootmove");
     if (rootMoveJSON)
-        readMove_JSON(cm->rootMove, cm->board, rootMoveJSON, false);
+        readMove_JSON(cm->rootMove, cm->board, rootMoveJSON);
     cJSON_Delete(manualJSON);
 }
 

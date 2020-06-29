@@ -64,14 +64,14 @@ wchar_t* getMoveStr(wchar_t* wstr, CMove move);
 wchar_t* getMoveString(wchar_t* wstr, CMove move);
 
 // XQF格式
-void readMove_XQF(Move* rootMove, Board board, FILE* fin, bool isOther);
+void readMove_XQF(Move* rootMove, Board board, FILE* fin);
 // bin格式
 wchar_t* readWstring_BIN(FILE* fin);
-void readMove_BIN(Move rootMove, Board board, FILE* fin, bool isOther);
+void readMove_BIN(Move rootMove, Board board, FILE* fin);
 void writeWstring_BIN(FILE* fout, const wchar_t* wstr);
 void writeMove_BIN(FILE* fout, CMove rootMove);
 // json格式
-void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON, bool isOther);
+void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON);
 void writeMove_JSON(cJSON* rootmoveJSON, CMove rootMove);
 // pgn_iccs/pgn_zh格式
 void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board);

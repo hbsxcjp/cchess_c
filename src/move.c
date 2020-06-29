@@ -443,24 +443,23 @@ wchar_t* getMoveString(wchar_t* wstr, CMove move)
     return wstr;
 }
 
-// 供readXQF使用的有关解密钥匙
-int Version = 0, KeyRMKSize = 0;
-char KeyXYf = 0, KeyXYt = 0, F32Keys[PIECENUM] = { 0 };
+extern int Version, KeyRMKSize;
+extern unsigned char KeyXYf, KeyXYt, F32Keys[PIECENUM];
 
 static unsigned char sub__(unsigned char a, unsigned char b) { return a - b; } // 保持为<256
 
-static void readBytes__(char* bytes, int size, FILE* fin)
+static void readBytes__(unsigned char* bytes, int size, FILE* fin)
 {
     long pos = ftell(fin);
-    fread(bytes, sizeof(char), size, fin);
+    fread(bytes, sizeof(unsigned char), size, fin);
     if (Version > 10) // '字节解密'
         for (int i = 0; i != size; ++i)
             bytes[i] = sub__(bytes[i], F32Keys[(pos + i) % 32]);
 }
 
-static void readTagRowcolRemark_XQF__(char* tag, int* fcolrow, int* tcolrow, wchar_t** remark, FILE* fin)
+static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tcolrow, wchar_t** remark, FILE* fin)
 {
-    char data[4] = { 0 };
+    unsigned char data[4] = { 0 };
     readBytes__(data, 4, fin);
     if (Version <= 10)
         data[2] = (data[2] & 0xF0 ? 0x80 : 0) | (data[2] & 0x0F ? 0x40 : 0);
@@ -472,25 +471,25 @@ static void readTagRowcolRemark_XQF__(char* tag, int* fcolrow, int* tcolrow, wch
     *tcolrow = sub__(data[1], 0X20 + KeyXYt);
 
     if (Version <= 10 || (data[2] & 0x20)) {
-        char clen[4] = { 0 };
+        unsigned char clen[4] = { 0 };
         readBytes__(clen, 4, fin);
-        int RemarkSize = *(__int32_t*)clen - KeyRMKSize;
+        int RemarkSize = *(int*)clen - KeyRMKSize;
         if (RemarkSize > 0) {
             int len = RemarkSize + 1;
-            char rem[len];
+            unsigned char rem[len];
             readBytes__(rem, RemarkSize, fin);
             rem[RemarkSize] = '\x0';
             *remark = malloc(len * sizeof(wchar_t));
             assert(*remark);
-            mbstowcs(*remark, rem, len);
-            //printf("\nsize:%ld\n%s", strlen(rem), rem);
+            int n = mbstowcs(*remark, (char*)rem, len);
+            printf("\nsize:%ld %d %d\n%s", strlen((char*)rem), RemarkSize, n, (char*)rem);
         }
     }
 }
 
 static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
 {
-    char tag = 0;
+    unsigned char tag = 0;
     int fcolrow = 0, tcolrow = 0;
     wchar_t* remark = NULL;
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
@@ -514,9 +513,9 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
         readMove_XQF__(move, board, fin, true);
 }
 
-void readMove_XQF(Move* rootMove, Board board, FILE* fin, bool isOther)
+void readMove_XQF(Move* rootMove, Board board, FILE* fin)
 {
-    char tag = 0;
+    unsigned char tag = 0;
     int fcolrow = 0, tcolrow = 0;
     wchar_t* remark = NULL;
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
@@ -561,7 +560,7 @@ static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
         readMove_BIN__(move, board, fin, true);
 }
 
-void readMove_BIN(Move rootMove, Board board, FILE* fin, bool isOther)
+void readMove_BIN(Move rootMove, Board board, FILE* fin)
 {
     wchar_t* remark = NULL;
     char tag = readMoveTagRemark_BIN__(&remark, fin);
@@ -639,7 +638,7 @@ static void readMove_JSON__(Move preMove, Board board, const cJSON* moveJSON, bo
         readMove_JSON__(move, board, omoveJSON, true);
 }
 
-void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON, bool isOther)
+void readMove_JSON(Move rootMove, Board board, const cJSON* rootMoveJSON)
 {
     setRemark(rootMove, readMoveRemark_JSON__(rootMoveJSON));
     cJSON* nmoveJSON = cJSON_GetObjectItem(rootMoveJSON, "n");
