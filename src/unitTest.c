@@ -587,7 +587,7 @@ static void test_chessManual_file(void)
     //    printf("\n%s\n\n%s\n", str3, str4);
     CU_ASSERT_STRING_EQUAL(str3, str4);
 
-    /*
+    //* 
     writeChessManual(cm, "01.bin");
     resetChessManual(&cm, "01.bin");
     writePGN_CCtoStr__(str4, cm);

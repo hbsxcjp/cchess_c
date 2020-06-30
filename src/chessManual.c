@@ -167,7 +167,7 @@ static unsigned char calkey__(unsigned char bKey, unsigned char cKey)
 static void readXQF__(ChessManual cm, FILE* fin)
 {
     unsigned char xqfData[1024] = { 0 };
-    fread(xqfData, sizeof(char), 1024, fin);
+    fread(xqfData, sizeof(unsigned char), 1024, fin);
     unsigned char Signature[3] = { 0 }, headKeyMask, ProductId[4] = { 0 }, //Version, 文件标记'XQ'=$5158/版本/加密掩码/ProductId[4], 产品(厂商的产品号)
         headKeyOrA, headKeyOrB, headKeyOrC, headKeyOrD,
                   headKeysSum, headKeyXY, headKeyXYf, headKeyXYt, // 加密的钥匙和/棋子布局位置钥匙/棋谱起点钥匙/棋谱终点钥匙
@@ -176,13 +176,13 @@ static void readXQF__(ChessManual cm, FILE* fin)
         // 棋盘的左下角为原点(0, 0). 32个棋子的位置从1到32依次为:
         // 红: 车马相士帅士相马车炮炮兵兵兵兵兵 (位置从右到左, 从下到上)
         // 黑: 车马象士将士象马车炮炮卒卒卒卒卒 (位置从右到左, 从下到上)PlayStepNo[2],
-        PlayStepNo[2] = { 0 },
-                  headWhoPlay, headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
+        PlayStepNo[2] = { 0 }, headWhoPlay, headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
                   // 该谁下 0-红先, 1-黑先/最终结果 0-未知, 1-红胜 2-黑胜, 3-和棋
-        headCodeA_H[16] = { 0 }, TitleA[65] = { 0 }, TitleB[65] = { 0 }, //对局类型(开,中,残等)
+        headCodeA_H[16] = { 0 };
+    char TitleA[65] = { 0 }, TitleB[65] = { 0 }, //对局类型(开,中,残等)
         Event[65] = { 0 }, Date[17] = { 0 }, Site[17] = { 0 }, Red[17] = { 0 }, Black[17] = { 0 },
-                  Opening[65] = { 0 }, Redtime[17] = { 0 }, Blktime[17] = { 0 }, Reservedh[33] = { 0 },
-                  RMKWriter[17] = { 0 }, Author[17] = { 0 }; //, Other[528]; // 棋谱评论员/文件的作者
+         Opening[65] = { 0 }, Redtime[17] = { 0 }, Blktime[17] = { 0 }, Reservedh[33] = { 0 },
+         RMKWriter[17] = { 0 }, Author[17] = { 0 }; //, Other[528]; // 棋谱评论员/文件的作者
     memcpy(Signature, xqfData, 2);
     Version = xqfData[2];
     headKeyMask = xqfData[3];
@@ -203,6 +203,8 @@ static void readXQF__(ChessManual cm, FILE* fin)
     memcpy(PTreePos, xqfData + 56, 4);
     memcpy(Reserved1, xqfData + 60, 4); // = 64 bytes
     memcpy(headCodeA_H, xqfData + 64, 16);
+
+    // 以下为棋局信息
     memcpy(TitleA, xqfData + 80, 64);
     memcpy(TitleB, xqfData + 144, 64);
     memcpy(Event, xqfData + 208, 64);
@@ -222,22 +224,22 @@ static void readXQF__(ChessManual cm, FILE* fin)
     assert(Version <= 18); // L" 这是一个高版本的XQF文件，您需要更高版本的XQStudio来读取这个文件。\n";
 
     // 计算解密数据
-    unsigned char KeyXY, *head_QiziXY = (unsigned char*)headQiziXY; //KeyXYf, KeyXYt, F32Keys[PIECENUM],//int KeyRMKSize = 0;
+    unsigned char KeyXY; //KeyXYf, KeyXYt, F32Keys[PIECENUM],//int KeyRMKSize = 0;
     if (Version <= 10) { // version <= 10 兼容1.0以前的版本
         KeyXY = KeyRMKSize = KeyXYf = KeyXYt = 0;
     } else {
         KeyXY = calkey__(headKeyXY, headKeyXY);
         KeyXYf = calkey__(headKeyXYf, KeyXY);
         KeyXYt = calkey__(headKeyXYt, KeyXYf);
-        KeyRMKSize = ((unsigned char)headKeysSum * 256 + (unsigned char)headKeyXY) % 32000 + 767; // % 65536
+        KeyRMKSize = (headKeysSum * 256 + headKeyXY) % 32000 + 767; // % 65536
         if (Version >= 12) { // 棋子位置循环移动
             unsigned char Qixy[PIECENUM] = { 0 };
-            memcpy(Qixy, head_QiziXY, PIECENUM);
+            memcpy(Qixy, headQiziXY, PIECENUM);
             for (int i = 0; i != PIECENUM; ++i)
-                head_QiziXY[(i + KeyXY + 1) % PIECENUM] = Qixy[i];
+                headQiziXY[(i + KeyXY + 1) % PIECENUM] = Qixy[i];
         }
         for (int i = 0; i != PIECENUM; ++i)
-            head_QiziXY[i] -= KeyXY; // 保持为8位无符号整数，<256
+            headQiziXY[i] -= KeyXY; // 保持为8位无符号整数，<256
     }
     int KeyBytes[4] = {
         (headKeysSum & headKeyMask) | headKeyOrA,
@@ -256,15 +258,14 @@ static void readXQF__(ChessManual cm, FILE* fin)
     wmemset(pieChars, getBlankChar(), SEATNUM);
     const wchar_t QiziChars[] = L"RNBAKABNRCCPPPPPrnbakabnrccppppp"; // QiziXY设定的棋子顺序
     for (int i = 0; i != PIECENUM; ++i) {
-        int xy = head_QiziXY[i];
-        if (xy <= 89)
+        if (headQiziXY[i] <= 89)
             // 用字节坐标表示, 将字节变为十进制,  十位数为X(0-8),个位数为Y(0-9)
             // 棋盘的左下角为原点(0, 0)，需转换成FEN格式：以左上角为原点(0, 0)
-            pieChars[(9 - xy % 10) * 9 + xy / 10] = QiziChars[i];
+            pieChars[(9 - headQiziXY[i] % 10) * 9 + headQiziXY[i] / 10] = QiziChars[i];
     }
 
     wchar_t tempStr[WIDEWCHARSIZE] = { 0 };
-    unsigned char* values[] = {
+    char* values[] = {
         TitleA, Event, Date, Site, Red, Black,
         Opening, RMKWriter, Author
     };
@@ -272,19 +273,21 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
         L"Opening", L"RMKWriter", L"Author"
     };
+    char tstr[WIDEWCHARSIZE];
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
-        printf("\nsize:%ld\n%s", strlen((char*)values[i]), (char*)values[i]);
+        code_convert("gbk", "utf-8", values[i], tstr);
+        printf("\nsize:%ld %s", strlen(tstr), tstr);
+        mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
 
-        mbstowcs(tempStr, (char*)values[i], WIDEWCHARSIZE - 1);
         addInfoItem(cm, names[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    addInfoItem(cm, L"PlayType", PlayType[(int)(headCodeA_H[0])]); // 编码定义存储
+    addInfoItem(cm, L"PlayType", PlayType[headCodeA_H[0]]); // 编码定义存储
     getFEN_pieChars(tempStr, pieChars);
     addInfoItem(cm, L"FEN", wcscat(tempStr, headWhoPlay ? L" -r" : L" -b")); // 转换FEN存储
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    addInfoItem(cm, L"Result", Result[(int)headPlayResult]); // 编码定义存储
-    swprintf(tempStr, WIDEWCHARSIZE, L"%d", (int)Version);
+    addInfoItem(cm, L"Result", Result[headPlayResult]); // 编码定义存储
+    swprintf(tempStr, WIDEWCHARSIZE, L"%d", Version);
     addInfoItem(cm, L"Version", tempStr); // 整数存储
     // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 
