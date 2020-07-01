@@ -215,7 +215,7 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
-void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr)
+void appendWString(wchar_t** pstr, int* size, const wchar_t* wstr)
 {
     int len = wcslen(wstr);
     // 如字符串分配的长度不够，则增加长度
@@ -226,6 +226,7 @@ void writeWString(wchar_t** pstr, int* size, const wchar_t* wstr)
     }
     wcscat(*pstr, wstr);
 }
+
 int makeDir(const char* dirName)
 {
 #ifdef WINVER

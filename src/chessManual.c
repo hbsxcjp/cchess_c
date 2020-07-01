@@ -276,8 +276,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
     char tstr[WIDEWCHARSIZE];
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
         code_convert("gbk", "utf-8", values[i], tstr);
-        printf("\nsize:%ld %s", strlen(tstr), tstr);
         mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
+        //wcstombs(tstr, tempStr, WIDEWCHARSIZE - 1);
+        //printf("\nsize:%ld %s", strlen(tstr), tstr);
 
         addInfoItem(cm, names[i], tempStr);
     }
@@ -447,7 +448,7 @@ void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm)
     infoStr[0] = L'\x0';
     for (int i = 0; i < cm->infoCount; ++i) {
         swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        writeWString(&infoStr, &size, tmpWstr);
+        appendWString(&infoStr, &size, tmpWstr);
     }
     *pinfoStr = infoStr;
 }
@@ -477,11 +478,10 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
 {
     int size = WIDEWCHARSIZE;
-    wchar_t* remarkStr = malloc(size * sizeof(wchar_t));
-    assert(remarkStr);
-    remarkStr[0] = L'\x0';
-    writeRemark_PGN_CC(&remarkStr, &size, cm->rootMove);
-    *premStr = remarkStr;
+    *premStr = malloc(size * sizeof(wchar_t));
+    assert(*premStr);
+    (*premStr)[0] = L'\x0';
+    writeRemark_PGN_CC(premStr, &size, cm->rootMove);
 }
 
 void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
@@ -490,15 +490,11 @@ void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
     writeInfo_PGN_CCtoWstr(&infoStr, cm);
     writeMove_PGN_CCtoWstr(&moveStr, cm);
     writeRemark_PGN_CCtoWstr(&remarkStr, cm);
-
-    wchar_t* wstr = malloc((wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 1) * sizeof(wchar_t));
-    assert(wstr);
-    wcscpy(wstr, infoStr);
-    wcscat(wstr, L"\n");
-    wcscat(wstr, moveStr);
-    wcscat(wstr, L"\n");
-    wcscat(wstr, remarkStr);
-    *pstr = wstr;
+    
+    int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 10; 
+    *pstr = malloc(len * sizeof(wchar_t));
+    assert(*pstr);
+    swprintf(*pstr, len, L"%ls\n%ls\n%ls", infoStr, moveStr, remarkStr);
 
     free(infoStr);
     free(moveStr);

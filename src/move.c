@@ -484,9 +484,10 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
 
             char remc[WIDEWCHARSIZE];
             code_convert("gbk", "utf-8", (char*)rem, remc);
-            printf("\nsize:%ld %s", strlen(remc), remc);
 
             mbstowcs(*remark, remc, len);
+            //wcstombs(remc, *remark, WIDEWCHARSIZE - 1);
+            //printf("\nsize:%ld %s", strlen(remc), remc);
         }
     }
 }
@@ -997,20 +998,12 @@ void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
 
 static void writeRemark_PGN_CC__(wchar_t** pstr, int* size, CMove move)
 {
-    if (getRemark(move)) {
-        int len = wcslen(getRemark(move)) + 30;
-        wchar_t remarkStr[len + 1];
-        swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), getRemark(move));
-        writeWString(pstr, size, remarkStr);
-        /*
-        // 如字符串分配的长度不够，则增加长度
-        if (wcslen(*pstr) + len > *size - 1) {
-            *size += WIDEWCHARSIZE + len;
-            *pstr = realloc(*pstr, *size * sizeof(wchar_t));
-            assert(*pstr);
-        }
-        wcscat(*pstr, remarkStr);
-        //*/
+    const wchar_t* remark = getRemark(move);
+    if (remark != NULL) {
+        int len = wcslen(remark) + 256;
+        wchar_t remarkStr[len];
+        swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), remark);
+        appendWString(pstr, size, remarkStr);
     }
 
     if (hasOther(move))
