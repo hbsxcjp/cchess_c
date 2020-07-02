@@ -748,9 +748,12 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     ChessManual cm = newChessManual(fileName);
 
     char toDirName[FILENAME_MAX], toFileName[FILENAME_MAX];
-    strcpy(toFileName, odata->toDir);
-    strcat(toFileName, fileName + strlen(odata->fromDir)); //替换源目录名
+    //替换源目录名
+    snprintf(toFileName, FILENAME_MAX, "%s/%s", odata->toDir, fileName + strlen(odata->fromDir));
     getDirName(toDirName, toFileName);
+    transFileExtName(fileName, EXTNAMES[odata->tofmt]);
+    snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
+    //printf("%d: %s\n", __LINE__, toFileName);
 
     // 检查并创建(多级)目录
     char tmpDirName[FILENAME_MAX] = { 0 }, *dname, tokseps[] = "\\/";
@@ -761,22 +764,11 @@ static void transFile__(FileInfo fileInfo, void* ptr)
             makeDir(tmpDirName);
             odata->dcount++;
             //printf("%d: makeDir-> %s\n", __LINE__, toDirName);
-            //
         }
         strcat(tmpDirName, "/");
         dname = strtok(NULL, tokseps);
     }
-
-    //char toFileName[FILENAME_MAX];
-    transFileExtName(fileName, EXTNAMES[odata->tofmt]);
-    //snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
-    strcpy(toFileName, toDirName);
-    strcat(toFileName, "/");
-    strcat(toFileName, getFileName(fileName));
-
-    //printf("%d: %s\n", __LINE__, toFileName);
-    //
-
+    
     writeChessManual(cm, toFileName);
     ++odata->fcount;
     odata->movCount += cm->movCount_;
@@ -786,9 +778,9 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     delChessManual(cm);
 }
 
-void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
+void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPrint)
 {
-    char fromDir[FILENAME_MAX], toDir[FILENAME_MAX]; //, curDir[FILENAME_MAX];
+    char fromDir[FILENAME_MAX], toDir[FILENAME_MAX]; 
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     sprintf(toDir, "%s%s", dirName, EXTNAMES[tofmt]);
 
@@ -804,8 +796,9 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt)
     }
     operateDir(fromDir, transFile__, odata, true);
 
-    printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
-        fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
+    if (isPrint)
+        printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
+            fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
 
     free(odata);
 }

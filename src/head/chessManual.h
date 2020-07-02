@@ -52,7 +52,7 @@ void changeChessManual(ChessManual cm, ChangeType ct);
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
 // 批量转换棋局存储格式
-void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt);
+void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPrint);
 
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);

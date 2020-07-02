@@ -479,13 +479,13 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
             unsigned char rem[len];
             readBytes__(rem, RemarkSize, fin);
             rem[RemarkSize] = '\x0';
-            *remark = malloc(len * sizeof(wchar_t));
-            assert(*remark);
-
-            char remc[WIDEWCHARSIZE];
+            char remc[len * 2];
             code_convert("gbk", "utf-8", (char*)rem, remc);
 
+            *remark = malloc(len * sizeof(wchar_t));
+            assert(*remark);
             mbstowcs(*remark, remc, len);
+
             //wcstombs(remc, *remark, WIDEWCHARSIZE - 1);
             //printf("\nsize:%ld %s", strlen(remc), remc);
         }

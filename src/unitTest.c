@@ -85,7 +85,7 @@ static void setBoard__(Board board, wchar_t* FEN)
 static void test_board_FEN_str(void)
 {
     wchar_t pieChars[SEATNUM + 1], pieChars2[SEATNUM + 1], FEN[SEATNUM + 1];
-    char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], str4[SEATNUM + 1];
+    char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], resultStr[SEATNUM + 1];
     Board board = newBoard();
     for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
         setBoard__(board, FENs[i]);
@@ -99,8 +99,8 @@ static void test_board_FEN_str(void)
         // PieChars转换成FEN
         wcstombs(str3, FENs[i], WIDEWCHARSIZE);
         getFEN_pieChars(FEN, pieChars);
-        wcstombs(str4, FEN, WIDEWCHARSIZE);
-        CU_ASSERT_STRING_EQUAL(str3, str4);
+        wcstombs(resultStr, FEN, WIDEWCHARSIZE);
+        CU_ASSERT_STRING_EQUAL(str3, resultStr);
     }
     delBoard(board);
 }
@@ -517,119 +517,118 @@ static char* xqfFileName__ = "01.xqf";
 static void test_chessManual_file(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
-         str2[WIDEWCHARSIZE],
-         *str3 = "[TitleA \"第01局\"]\n"
-                 "[Event \"\"]\n"
-                 "[Date \"\"]\n"
-                 "[Site \"\"]\n"
-                 "[Red \"\"]\n"
-                 "[Black \"\"]\n"
-                 "[Opening \"\"]\n"
-                 "[RMKWriter \"\"]\n"
-                 "[Author \"\"]\n"
-                 "[PlayType \"残局\"]\n"
-                 "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 -b\"]\n"
-                 "[Result \"红胜\"]\n"
-                 "[Version \"18\"]\n"
-                 "\n"
-                 "　开始　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
-                 "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
-                 "马四进三……………………………………………………………………马四进五　\n"
-                 "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "炮４退９…炮４退７……………………………士５进６…卒９进１　炮４退９　\n"
-                 "　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　　　↓　　\n"
-                 "马三进五　马三进五　　　　　　　　　　　马三进二　马三进五　马五进三　\n"
-                 "　　↓　　　　↓　　　　　　　　　　　　　　　　　　　↓　　　　↓　　\n"
-                 "炮４平５　炮４平５…车９平８　　　　　　　　　　　车９进２　炮４平５　\n"
-                 "　　↓　　　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　\n"
-                 "车三平四　马五进三　车三平四　　　　　　　　　　　车三进一　帅五平六　\n"
-                 "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "士５进６　　　　　　士５进６　　　　　　　　　　　　　　　　车９平８　\n"
-                 "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "马五进三　　　　　　马五进三…马五进六　　　　　　　　　　　马三进二　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车８进１　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车三平二　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士５退４　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二进一　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６进１　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二退二　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士６进５　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二平四　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车四平一　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将５平６　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车一平四　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　帅六退一　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　炮５平６　\n"
-                 "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
-                 "\n"
-                 "(1,0): {　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n}\n"
-                 "(12,6): {　　至此，形成少见的高将底炮双士和单车的局面。\r\n}\n"
-                 "(22,6): {　　和棋。\r\n}\n"
-                 "(3,4): {　　叫杀得车。\r\n}\n"
-                 "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。\r\n}\n"
-                 "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n",
-         *str4 = NULL;
+         *pgn_ccStr = "[TitleA \"第01局\"]\n"
+                      "[Event \"\"]\n"
+                      "[Date \"\"]\n"
+                      "[Site \"\"]\n"
+                      "[Red \"\"]\n"
+                      "[Black \"\"]\n"
+                      "[Opening \"\"]\n"
+                      "[RMKWriter \"\"]\n"
+                      "[Author \"\"]\n"
+                      "[PlayType \"残局\"]\n"
+                      "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 -b\"]\n"
+                      "[Result \"红胜\"]\n"
+                      "[Version \"18\"]\n"
+                      "\n"
+                      "　开始　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                      "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                      "马四进三……………………………………………………………………马四进五　\n"
+                      "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "炮４退９…炮４退７……………………………士５进６…卒９进１　炮４退９　\n"
+                      "　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　　　↓　　\n"
+                      "马三进五　马三进五　　　　　　　　　　　马三进二　马三进五　马五进三　\n"
+                      "　　↓　　　　↓　　　　　　　　　　　　　　　　　　　↓　　　　↓　　\n"
+                      "炮４平５　炮４平５…车９平８　　　　　　　　　　　车９进２　炮４平５　\n"
+                      "　　↓　　　　↓　　　　↓　　　　　　　　　　　　　　↓　　　　↓　　\n"
+                      "车三平四　马五进三　车三平四　　　　　　　　　　　车三进一　帅五平六　\n"
+                      "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "士５进６　　　　　　士５进６　　　　　　　　　　　　　　　　车９平８　\n"
+                      "　　↓　　　　　　　　　↓　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "马五进三　　　　　　马五进三…马五进六　　　　　　　　　　　马三进二　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车８进１　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车三平二　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士５退４　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二进一　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６进１　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二退二　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　士６进５　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车二平四　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车四平一　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将５平６　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　车一平四　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　将６平５　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　帅六退一　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　↓　　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　炮５平６　\n"
+                      "　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
+                      "\n"
+                      "(1,0): {　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n}\n"
+                      "(12,6): {　　至此，形成少见的高将底炮双士和单车的局面。\r\n}\n"
+                      "(22,6): {　　和棋。\r\n}\n"
+                      "(3,4): {　　叫杀得车。\r\n}\n"
+                      "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。\r\n}\n"
+                      "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n",
+         *resultStr = NULL;
 
     ChessManual cm = newChessManual(xqfFileName__);
-    writePGN_CCtoStr__(&str4, cm);
-    if (strcmp(str3, str4) != 0) {
-        //printf("\n%s\n\n%s\n", str3, str4);
-        FILE *fstr3 = fopen("str3", "w"), *fstr4 = fopen("str4", "w");
-        fprintf(fstr3, "%s", str3);
-        fprintf(fstr4, "%s", str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    if (strcmp(pgn_ccStr, resultStr) != 0) {
+        //printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+        FILE *fstr3 = fopen("pgn_ccStr", "w"), *fstr4 = fopen("resultStr", "w");
+        fprintf(fstr3, "%s", pgn_ccStr);
+        fprintf(fstr4, "%s", resultStr);
         fclose(fstr3);
         fclose(fstr4);
     }
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
-    //* 
+    //*
     writeChessManual(cm, "01.bin");
     resetChessManual(&cm, "01.bin");
-    writePGN_CCtoStr__(&str4, cm);
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
     writeChessManual(cm, "01.json");
     resetChessManual(&cm, "01.json");
-    writePGN_CCtoStr__(&str4, cm);
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
     writeChessManual(cm, "01.pgn_iccs");
     resetChessManual(&cm, "01.pgn_iccs");
-    writePGN_CCtoStr__(&str4, cm);
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
     writeChessManual(cm, "01.pgn_zh");
     resetChessManual(&cm, "01.pgn_zh");
-    writePGN_CCtoStr__(&str4, cm);
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
     writeChessManual(cm, "01.pgn_cc");
     resetChessManual(&cm, "01.pgn_cc");
-    writePGN_CCtoStr__(&str4, cm);
-    CU_ASSERT_STRING_EQUAL(str3, str4);
-    free(str4);
+    writePGN_CCtoStr__(&resultStr, cm);
+    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(resultStr);
 
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
@@ -638,9 +637,10 @@ static void test_chessManual_file(void)
         writeChessManual(cm, fname);
     }
 
+    char str2[WIDEWCHARSIZE];
     getChessManualNumStr(str2, cm);
-    if (strcmp(str1, str2) != 0)
-        printf("\n%s\n\n%s\n", str1, str2);
+    //if (strcmp(str1, str2) != 0)
+    //    printf("\n%s\n\n%s\n", str1, str2);
 
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //*/
@@ -660,14 +660,15 @@ static int dirNum__ = 2; // 测试目录个数
 static void test_chessManual_dir(void)
 {
     // 调节控制转换目录
-    int fromFmtNum = 1, toFmtNum = 2;
+    int fromFmtNum = 3, toFmtNum = 3; // 6 6 faild?
+    bool isPrint = false; //true
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
-        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt)
-            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt)
+        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt) // XQF..PGN_CC
+            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt) // BIN..PGN_CC
                 if (toFmt != fromFmt)
-                    transDir(dirNames__[dir], fmts[fromFmt], fmts[toFmt]);
+                    transDir(dirNames__[dir], fmts[fromFmt], fmts[toFmt], isPrint);
     }
 }
 

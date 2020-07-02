@@ -331,28 +331,25 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
             continue; //跳过当前目录以及父目录
         }
 
-        char name[512];
-        if (strlen(dirName) + strlen(dp->d_name) + 2 > sizeof(name)) {
-            fprintf(stderr, "dirwalk : name %s %s too long\n", dirName, dp->d_name);
+        char findName[FILENAME_MAX];
+        if (strlen(dirName) + strlen(dp->d_name) + 2 > sizeof(findName)) {
+            fprintf(stderr, "operateDir: name %s/%s too long!\n", dirName, dp->d_name);
         } else {
-            sprintf(name, "%s/%s", dirName, dp->d_name);
-            //(*func)(name);
-
+            snprintf(findName, FILENAME_MAX, "%s/%s", dirName, dp->d_name);
             struct stat stbuf;
-            if (stat(name, &stbuf) == -1) {
-                fprintf(stderr, "file size: open %s failed\n", name);
+            if (stat(findName, &stbuf) == -1) {
+                fprintf(stderr, "file size: open %s failed!\n", findName);
                 return;
             }
 
             //如果是目录且要求递归，则递归调用
             if ((stbuf.st_mode & __S_IFMT) == __S_IFDIR) {
-                //dirwalk(name, print_file_info); //如果是目录遍历下一级目录
                 if (recursive)
-                    operateDir(name, operateFile, ptr, recursive);
+                    operateDir(findName, operateFile, ptr, recursive);
             } else {
-                //printf("%8ld    %s\n", stbuf.st_size, name); //不是目录，打印文件size及name
-                FileInfo fi = newFileInfo__(name, stbuf.st_mode, stbuf.st_size);
+                FileInfo fi = newFileInfo__(findName, stbuf.st_mode, stbuf.st_size);
                 operateFile(fi, ptr);
+                delFileInfo__(fi);
             }
         }
     }
