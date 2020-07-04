@@ -996,11 +996,11 @@ void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
         writeMove_PGN_CC__(moveStr, colNum, getNext(rootMove));
 }
 
-static void writeRemark_PGN_CC__(wchar_t** pstr, int* size, CMove move)
+static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* size, CMove move)
 {
     const wchar_t* remark = getRemark(move);
     if (remark != NULL) {
-        int len = wcslen(remark) + 256;
+        size_t len = wcslen(remark) + 256;
         wchar_t remarkStr[len];
         swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), remark);
         appendWString(pstr, size, remarkStr);
@@ -1012,7 +1012,7 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, int* size, CMove move)
         writeRemark_PGN_CC__(pstr, size, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t** pstr, int* size, CMove rootMove)
+void writeRemark_PGN_CC(wchar_t** pstr, size_t* size, CMove rootMove)
 {
     writeRemark_PGN_CC__(pstr, size, rootMove);
 }

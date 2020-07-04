@@ -246,12 +246,10 @@ Aspects getAspects_fs(const char *fileName)
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
     int mrCount = 0, rowcols = 0, number = 0, weight = 0;
     char fen[SEATNUM];
-    while (fscanf(fin, "%s", fen) == 1)
-    { // 遇到空行(只有字符'\n')则结束
+    while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
         if (fscanf(fin, "%d", &mrCount) != 1)
             continue;
         Aspect asp = putAspect__(asps, fen, strlen(fen) + 1);
-
         for (int i = 0; i < mrCount; ++i)
         {
             if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3)

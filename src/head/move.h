@@ -79,7 +79,7 @@ void writeMove_PGN_ICCSZH(FILE* fout, CMove rootMove, RecFormat fmt);
 // pgn_cc格式
 void readMove_PGN_CC(Move rootMove, FILE* fin, Board board);
 void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove);
-void writeRemark_PGN_CC(wchar_t** premarkStr, int* premSize, CMove rootMove);
+void writeRemark_PGN_CC(wchar_t** premarkStr, size_t* premSize, CMove rootMove);
 
 // 判断给定着法及回合数内，是否未吃一子
 bool isNotEat(Move move, int boutCount); //(未测试)

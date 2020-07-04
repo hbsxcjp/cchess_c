@@ -215,13 +215,21 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
-void appendWString(wchar_t** pstr, int* size, const wchar_t* wstr)
+void appendWString(wchar_t** pstr, size_t* size, const wchar_t* wstr)
 {
-    int len = wcslen(wstr);
+    size_t len = wcslen(wstr);
     // 如字符串分配的长度不够，则增加长度
-    if (wcslen(*pstr) + len > *size - 1) {
+    if (wcslen(*pstr) > *size - len - 1) {
         *size += WIDEWCHARSIZE + len;
-        *pstr = realloc(*pstr, *size * sizeof(wchar_t));
+        /*
+        wchar_t* tstr = malloc(*size * sizeof(wchar_t));
+        assert(tstr);
+        wcscpy(tstr, *pstr);
+        free(*pstr);
+        *pstr = tstr;
+        //*/
+        size_t bytelen = *size * sizeof(wchar_t);
+        *pstr = realloc(*pstr, bytelen);
         assert(*pstr);
     }
     wcscat(*pstr, wstr);
@@ -349,7 +357,6 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
             } else {
                 FileInfo fi = newFileInfo__(findName, stbuf.st_mode, stbuf.st_size);
                 operateFile(fi, ptr);
-                delFileInfo__(fi);
             }
         }
     }
@@ -427,66 +434,3 @@ void testTools(FILE* fout, const char** chessManualDirName, int size, const char
     }
     fprintf(fout, "总共包括:%d个文件。\n", sum);
 }
-
-/*
-#define MAX_PATH 512  //最大文件长度定义为512
-
-// 对目录中所有文件执行print_file_info操作
-void dirwalk(char *dir, void (*func)(char *))
-{
-	char name[MAX_PATH];
-	struct dirent *dp;
-	DIR *dfd;
-	
-	if((dfd = opendir(dir)) == NULL){
-		fprintf(stderr, "dirwalk: can't open %s\n", dir);
-		return;
-	}
-	
-	while((dp = readdir(dfd)) != NULL){ //读目录记录项
-		if(strcmp(dp->d_name, ".") == 0 || strcmp(dp -> d_name, "..") == 0){
-			continue;  //跳过当前目录以及父目录
-		}
-		
-		if(strlen(dir) + strlen(dp -> d_name) + 2 > sizeof(name)){
-			fprintf(stderr, "dirwalk : name %s %s too long\n", dir, dp->d_name);
-		}else{
-			sprintf(name, "%s/%s", dir, dp->d_name);
-			(*func)(name);
-		}
-	}
-	closedir(dfd);
-}
-
-// 打印文件信息
-void print_file_info(char *name)
-{
-	struct stat stbuf;
-	
-	if(stat(name, &stbuf) == -1){
-		fprintf(stderr, "file size: open %s failed\n", name);
-		return;
-	}
-	
-	if((stbuf.st_mode & S_IFMT) == S_IFDIR){ 
-		dirwalk(name, print_file_info);	 //如果是目录遍历下一级目录
-	}else{							
-		printf("%8ld    %s\n", stbuf.st_size, name);//不是目录，打印文件size及name
-	}
-}
-
-int main(int argc, char *argv[])
-{
-	printf("file size    file name\n");
-	if(argc == 1){
-		print_file_info(".");//未加参数执行时，从当前目录开始遍历
-	}else{
-		while(--argc>0){
-			print_file_info(*++argv);
-		}
-	}
-	
-	return 0;
-}
-
-*/

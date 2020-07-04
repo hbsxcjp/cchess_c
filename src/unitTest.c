@@ -655,13 +655,14 @@ static const char* dirNames__[] = {
     "chessManual/中国象棋棋谱大全"
 };
 static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
-static int dirNum__ = 2; // 测试目录个数
+static int dirNum__ = 1; // 测试目录个数
 
 static void test_chessManual_dir(void)
 {
     // 调节控制转换目录
-    int fromFmtNum = 3, toFmtNum = 3; // 6 6 faild?
-    bool isPrint = false; //true
+    int fromFmtNum = 6, toFmtNum = 6; // 6 6 faild?
+    bool isPrint = false; 
+    //bool isPrint = true;
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
@@ -685,19 +686,6 @@ static void test_aspect_file(void)
 
     testAspects(asps);
     delAspects(asps);
-
-    /*
-    sqlite3* db;
-    //char* zErrMsg = 0;
-    int rc = sqlite3_open("test.db", &db);
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-        exit(0);
-    } else {
-        fprintf(stderr, "\nOpened database successfully\n");
-    }
-    sqlite3_close(db);
-    //*/
 }
 
 static void test_aspect_dir(void)
@@ -753,3 +741,16 @@ int unitTest(void)
     CU_cleanup_registry();
     return CU_get_error();
 }
+
+/*
+sqlite3* db;
+//char* zErrMsg = 0;
+int rc = sqlite3_open("test.db", &db);
+if (rc) {
+    fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
+    exit(0);
+} else {
+    fprintf(stderr, "\nOpened database successfully\n");
+}
+sqlite3_close(db);
+//*/

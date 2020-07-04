@@ -442,7 +442,7 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 
 void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm)
 {
-    int size = WIDEWCHARSIZE;
+    size_t size = WIDEWCHARSIZE;
     wchar_t tmpWstr[WIDEWCHARSIZE], *infoStr = malloc(size * sizeof(wchar_t));
     assert(infoStr);
     infoStr[0] = L'\x0';
@@ -477,7 +477,7 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
 
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
 {
-    int size = WIDEWCHARSIZE;
+    size_t size = WIDEWCHARSIZE;
     *premStr = malloc(size * sizeof(wchar_t));
     assert(*premStr);
     (*premStr)[0] = L'\x0';
@@ -797,7 +797,7 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
     operateDir(fromDir, transFile__, odata, true);
 
     if (isPrint)
-        printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
+        printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d",
             fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
 
     free(odata);
