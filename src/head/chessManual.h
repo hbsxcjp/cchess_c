@@ -17,7 +17,7 @@ void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 void delInfoItem(ChessManual cm, const wchar_t* name);
 
 // 将PGN_CC格式的info、move、remark信息写入字符串
-void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm);
+void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm);
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
 void writePGN_CCtoWstr(wchar_t** pStr, ChessManual cm);

@@ -23,6 +23,8 @@
 #define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
 
+#define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
+
 //=================================================================
 //棋子相关的类型
 //=================================================================
@@ -148,5 +150,6 @@ typedef enum
 
 // 演示类型结构
 typedef struct Console *PConsole;
+
 
 #endif

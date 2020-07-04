@@ -69,7 +69,7 @@ void transFileExtName(char* filename, const char* extname);
 wchar_t* getWString(FILE* fin);
 
 // 字符串连接，根据需要重新分配内存空间
-void appendWString(wchar_t** pstr, size_t* size, const wchar_t* wstr);
+void appendWString(wchar_t** pstr, size_t* wstrSize, const wchar_t* wstr);
 
 // 创建目录
 int makeDir(const char* dirName);

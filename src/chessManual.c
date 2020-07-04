@@ -273,8 +273,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
         L"Opening", L"RMKWriter", L"Author"
     };
-    char tstr[WIDEWCHARSIZE];
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
+        size_t len = strlen(values[i]) + 1;
+        char tstr[len * 3];
         code_convert("gbk", "utf-8", values[i], tstr);
         mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
         //wcstombs(tstr, tempStr, WIDEWCHARSIZE - 1);
@@ -360,10 +361,11 @@ static void readJSON__(ChessManual cm, FILE* fin)
 {
     fseek(fin, 0L, SEEK_END); // 定位到文件末尾
     long last = ftell(fin);
-    char* manualString = (char*)calloc(last + 1, sizeof(char));
+    char* manualString = malloc(last + 1);
     assert(manualString);
     fseek(fin, 0L, SEEK_SET); // 定位到文件开始
     fread(manualString, sizeof(char), last, fin);
+    manualString[last] = '\x0';
     cJSON* manualJSON = cJSON_Parse(manualString);
     free(manualString);
 
@@ -371,10 +373,12 @@ static void readJSON__(ChessManual cm, FILE* fin)
     int infoCount = cJSON_GetArraySize(infoJSON);
     for (int i = 0; i < infoCount; ++i) {
         cJSON* keyValueJSON = cJSON_GetArrayItem(infoJSON, i);
-        wchar_t nameValue[2][WCHARSIZE] = { 0 };
-        for (int j = 0; j < 2; ++j)
-            mbstowcs(nameValue[j],
-                cJSON_GetStringValue(cJSON_GetArrayItem(keyValueJSON, j)), WCHARSIZE);
+        wchar_t nameValue[2][WIDEWCHARSIZE] = { 0 };
+        for (int j = 0; j < 2; ++j) {
+            cJSON* kvItem = cJSON_GetArrayItem(keyValueJSON, j);
+            char* str = cJSON_GetStringValue(kvItem);
+            mbstowcs(nameValue[j], str, WIDEWCHARSIZE);
+        }
         addInfoItem(cm, nameValue[0], nameValue[1]);
     }
 
@@ -389,10 +393,13 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     cJSON *manualJSON = cJSON_CreateObject(),
           *infoJSON = cJSON_CreateArray(),
           *rootmoveJSON = cJSON_CreateObject();
+
     for (int i = 0; i < cm->infoCount; ++i) {
-        char name[WCHARSIZE], value[WCHARSIZE];
-        wcstombs(name, cm->info[i][0], WCHARSIZE);
-        wcstombs(value, cm->info[i][1], WCHARSIZE);
+        size_t namelen = wcslen(cm->info[i][0]) * sizeof(wchar_t) + 1,
+               valuelen = wcslen(cm->info[i][1]) * sizeof(wchar_t) + 1;
+        char name[namelen], value[valuelen];
+        wcstombs(name, cm->info[i][0], namelen);
+        wcstombs(value, cm->info[i][1], valuelen);
         cJSON_AddItemToArray(infoJSON,
             cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
     }
@@ -402,8 +409,9 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     cJSON_AddItemToObject(manualJSON, "rootmove", rootmoveJSON);
 
     char* manualString = cJSON_Print(manualJSON);
-    fwrite(manualString, sizeof(char), strlen(manualString) + 1, fout);
-    cJSON_Delete(manualJSON);
+    fwrite(manualString, sizeof(char), strlen(manualString), fout);
+    free(manualString);
+    cJSON_Delete(manualJSON); // 释放自身及所有子对象
 }
 
 static void readInfo_PGN__(ChessManual cm, FILE* fin)
@@ -411,46 +419,56 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
     const char* error;
     int erroffset = 0, infoCount = 0, ovector[10]; //OVECCOUNT = 10,
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
-    pcre32* infoReg = pcre32_compile((const unsigned int*)infoPat, 0, &error, &erroffset, NULL);
+    void* infoReg; // pcre16* or pcre32*
+    if (wc_short)
+        infoReg = pcre16_compile((const unsigned short*)infoPat, 0, &error, &erroffset, NULL);
+    else
+        infoReg = pcre32_compile((const unsigned int*)infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
     wchar_t infoStr[WIDEWCHARSIZE] = { 0 };
     while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
-        infoCount = pcre32_exec(infoReg, NULL, (const unsigned int*)infoStr, wcslen(infoStr),
-            0, 0, ovector, 10);
+        if (wc_short)
+            infoCount = pcre16_exec(infoReg, NULL, (const unsigned short*)infoStr, wcslen(infoStr), 0, 0, ovector, 10);
+        else
+            infoCount = pcre32_exec(infoReg, NULL, (const unsigned int*)infoStr, wcslen(infoStr), 0, 0, ovector, 10);
         if (infoCount < 0)
             continue;
-        wchar_t name[WCHARSIZE] = { 0 }, value[WCHARSIZE] = { 0 };
+        wchar_t name[WIDEWCHARSIZE] = { 0 }, value[WIDEWCHARSIZE] = { 0 };
         wcsncpy(name, infoStr + ovector[2], ovector[3] - ovector[2]);
         wcsncpy(value, infoStr + ovector[4], ovector[5] - ovector[4]);
         addInfoItem(cm, name, value);
     }
-    pcre32_free(infoReg);
+    if (wc_short)
+        pcre16_free(infoReg);
+    else
+        pcre32_free(infoReg);
 }
 
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
     //printf("准备读取info... ");
-    //
     readInfo_PGN__(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     getFENToSetBoard__(cm);
 
     //printf("准备读取move... ");
-    //
-    (fmt == PGN_CC) ? readMove_PGN_CC(cm->rootMove, fin, cm->board) : readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
+    if (fmt == PGN_CC)
+        readMove_PGN_CC(cm->rootMove, fin, cm->board);
+    else
+        readMove_PGN_ICCSZH(cm->rootMove, fin, fmt, cm->board);
 }
 
-void writeInfo_PGN_CCtoWstr(wchar_t** pinfoStr, ChessManual cm)
+void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm)
 {
     size_t size = WIDEWCHARSIZE;
-    wchar_t tmpWstr[WIDEWCHARSIZE], *infoStr = malloc(size * sizeof(wchar_t));
-    assert(infoStr);
-    infoStr[0] = L'\x0';
+    *pinfoStr = malloc(size * sizeof(wchar_t));
+    assert(*pinfoStr);
+    (*pinfoStr)[0] = L'\x0';
+    wchar_t tmpWstr[WIDEWCHARSIZE];
     for (int i = 0; i < cm->infoCount; ++i) {
         swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        appendWString(&infoStr, &size, tmpWstr);
+        appendWString(pinfoStr, &size, tmpWstr);
     }
-    *pinfoStr = infoStr;
 }
 
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
@@ -487,11 +505,11 @@ void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
 void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
 {
     wchar_t *infoStr = NULL, *moveStr = NULL, *remarkStr = NULL;
-    writeInfo_PGN_CCtoWstr(&infoStr, cm);
+    writeInfo_PGNtoWstr(&infoStr, cm);
     writeMove_PGN_CCtoWstr(&moveStr, cm);
     writeRemark_PGN_CCtoWstr(&remarkStr, cm);
-    
-    int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 10; 
+
+    int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 10;
     *pstr = malloc(len * sizeof(wchar_t));
     assert(*pstr);
     swprintf(*pstr, len, L"%ls\n%ls\n%ls", infoStr, moveStr, remarkStr);
@@ -504,24 +522,16 @@ void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
 static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 {
     if (fmt != PGN_CC) {
-        for (int i = 0; i < cm->infoCount; ++i)
-            fwprintf(fout, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        fwprintf(fout, L"\n");
+        wchar_t* infoStr = NULL;
+        writeInfo_PGNtoWstr(&infoStr, cm);
+        fwprintf(fout, L"%ls\n", infoStr);
+        free(infoStr);
         writeMove_PGN_ICCSZH(fout, cm->rootMove, fmt);
     } else {
-        wchar_t* wstr = NULL;
-        writePGN_CCtoWstr(&wstr, cm);
-        fwprintf(fout, L"%ls", wstr);
-        free(wstr);
-
-        /*
-        wchar_t *moveStr = NULL, *remarkStr = NULL;
-        writeMove_PGN_CCtoWstr(&moveStr, cm);
-        writeRemark_PGN_CCtoWstr(&remarkStr, cm);
-        fwprintf(fout, L"%ls\n%ls", moveStr, remarkStr);
-        free(moveStr);
-        free(remarkStr);
-        //*/
+        wchar_t* pstr = NULL;
+        writePGN_CCtoWstr(&pstr, cm);
+        fwprintf(fout, L"%ls", pstr);
+        free(pstr);
     }
 }
 
@@ -768,7 +778,7 @@ static void transFile__(FileInfo fileInfo, void* ptr)
         strcat(tmpDirName, "/");
         dname = strtok(NULL, tokseps);
     }
-    
+
     writeChessManual(cm, toFileName);
     ++odata->fcount;
     odata->movCount += cm->movCount_;
@@ -780,7 +790,7 @@ static void transFile__(FileInfo fileInfo, void* ptr)
 
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPrint)
 {
-    char fromDir[FILENAME_MAX], toDir[FILENAME_MAX]; 
+    char fromDir[FILENAME_MAX], toDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     sprintf(toDir, "%s%s", dirName, EXTNAMES[tofmt]);
 

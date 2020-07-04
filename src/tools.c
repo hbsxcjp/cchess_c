@@ -215,21 +215,20 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
-void appendWString(wchar_t** pstr, size_t* size, const wchar_t* wstr)
+void appendWString(wchar_t** pstr, size_t* wstrSize, const wchar_t* wstr)
 {
     size_t len = wcslen(wstr);
     // 如字符串分配的长度不够，则增加长度
-    if (wcslen(*pstr) > *size - len - 1) {
-        *size += WIDEWCHARSIZE + len;
+    if (wcslen(*pstr) + len > *wstrSize - 1) {
+        *wstrSize += WIDEWCHARSIZE + len;
         /*
-        wchar_t* tstr = malloc(*size * sizeof(wchar_t));
+        wchar_t* tstr = malloc(*wstrSize * sizeof(wchar_t));
         assert(tstr);
         wcscpy(tstr, *pstr);
         free(*pstr);
         *pstr = tstr;
         //*/
-        size_t bytelen = *size * sizeof(wchar_t);
-        *pstr = realloc(*pstr, bytelen);
+        *pstr = realloc(*pstr, *wstrSize * sizeof(wchar_t));
         assert(*pstr);
     }
     wcscat(*pstr, wstr);
@@ -280,7 +279,7 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     iconv_t cd = iconv_open(to_charset, from_charset);
     if (cd == (iconv_t)-1)
         return -1;
-    size_t inlen = strlen(inbuf), outlen = inlen * 2 + 1;
+    size_t inlen = strlen(inbuf), outlen = inlen * 3;
     memset(outbuf, 0, outlen);
     if (iconv(cd, &inbuf, &inlen, &outbuf, &outlen) == (size_t)-1)
         tag = -1;

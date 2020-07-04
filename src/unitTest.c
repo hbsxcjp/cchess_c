@@ -655,14 +655,14 @@ static const char* dirNames__[] = {
     "chessManual/中国象棋棋谱大全"
 };
 static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
-static int dirNum__ = 1; // 测试目录个数
+static int dirNum__ = 2; // 测试目录个数
 
 static void test_chessManual_dir(void)
 {
     // 调节控制转换目录
-    int fromFmtNum = 6, toFmtNum = 6; // 6 6 faild?
-    bool isPrint = false; 
-    //bool isPrint = true;
+    int fromFmtNum = 4, toFmtNum = 6; // 6 6 faild?
+    //bool isPrint = false; 
+    bool isPrint = true;
 
     RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
