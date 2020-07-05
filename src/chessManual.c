@@ -274,9 +274,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"Opening", L"RMKWriter", L"Author"
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
-        size_t len = strlen(values[i]) + 1;
-        char tstr[len * 3];
-        code_convert("gbk", "utf-8", values[i], tstr);
+        size_t len = strlen(values[i]) + 1, outlen = len * 3;
+        char tstr[outlen];
+        code_convert("gbk", "utf-8", values[i], tstr, &outlen);
         mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
         //wcstombs(tstr, tempStr, WIDEWCHARSIZE - 1);
         //printf("\nsize:%ld %s", strlen(tstr), tstr);
@@ -426,6 +426,8 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
         infoReg = pcre32_compile((const unsigned int*)infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
     wchar_t infoStr[WIDEWCHARSIZE] = { 0 };
+
+    //printf("\nline:%d %s", __LINE__, "read info...\n");
     while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
         if (wc_short)
             infoCount = pcre16_exec(infoReg, NULL, (const unsigned short*)infoStr, wcslen(infoStr), 0, 0, ovector, 10);
@@ -446,12 +448,12 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
 
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
-    //printf("准备读取info... ");
+    //printf("\n准备读取info... ");
     readInfo_PGN__(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     getFENToSetBoard__(cm);
 
-    //printf("准备读取move... ");
+    //printf("\n准备读取move... ");
     if (fmt == PGN_CC)
         readMove_PGN_CC(cm->rootMove, fin, cm->board);
     else
@@ -479,6 +481,7 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
     wchar_t* moveStr = malloc((size + 1) * sizeof(wchar_t));
     assert(moveStr);
     wmemset(moveStr, L'　', size);
+    moveStr[size] = L'\x0';
     for (int row = 0; row < rowNum; ++row) {
         moveStr[(row + 1) * colNum - 1] = L'\n';
         //if (row % 2 == 1)
@@ -487,7 +490,6 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
     moveStr[1] = L'开';
     moveStr[2] = L'始';
     moveStr[colNum + 2] = L'↓';
-    moveStr[size] = L'\x0';
 
     writeMove_PGN_CC(moveStr, colNum, cm->rootMove);
     *pmoveStr = moveStr;
@@ -509,7 +511,7 @@ void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
     writeMove_PGN_CCtoWstr(&moveStr, cm);
     writeRemark_PGN_CCtoWstr(&remarkStr, cm);
 
-    int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 10;
+    int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 3; // 两个回车，一个结束符号
     *pstr = malloc(len * sizeof(wchar_t));
     assert(*pstr);
     swprintf(*pstr, len, L"%ls\n%ls\n%ls", infoStr, moveStr, remarkStr);
@@ -752,10 +754,11 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     getFileInfoName(fileName, fileInfo);
     if (!fileIsRight__(fileName))
         return;
-    //printf("%d: %s\n", __LINE__, fileName);
-    //
+    printf("line:%d %s\n", __LINE__, fileName);
+
     OperateDirData odata = (OperateDirData)ptr;
     ChessManual cm = newChessManual(fileName);
+    //printf("\nline:%d %s", __LINE__, fileName);
 
     char toDirName[FILENAME_MAX], toFileName[FILENAME_MAX];
     //替换源目录名
@@ -780,6 +783,8 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     }
 
     writeChessManual(cm, toFileName);
+    //printf("\nline:%d %s\n", __LINE__, toFileName);
+
     ++odata->fcount;
     odata->movCount += cm->movCount_;
     odata->remCount += cm->remCount_;
@@ -802,8 +807,10 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
     odata->tofmt = tofmt;
     if (strlen(toDir) > 0 && access(toDir, 0) != 0) {
         makeDir(toDir);
-        //printf("%d: %s\n", __LINE__, toDir);
+        //printf("\nline:%d %s\n", __LINE__, toDir);
     }
+    //printf("\nline:%d %s -> %s", __LINE__, fromDir, toDir);
+
     operateDir(fromDir, transFile__, odata, true);
 
     if (isPrint)

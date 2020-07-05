@@ -78,7 +78,7 @@ int makeDir(const char* dirName);
 int copyFile(const char* SourceFile, const char* NewFile);
 
 //代码转换:从一种编码转为另一种编码
-int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf);
+int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen);
 
 // 循环目录下文件，调用操作函数
 void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive);

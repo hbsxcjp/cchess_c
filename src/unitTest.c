@@ -589,7 +589,7 @@ static void test_chessManual_file(void)
     ChessManual cm = newChessManual(xqfFileName__);
     writePGN_CCtoStr__(&resultStr, cm);
     if (strcmp(pgn_ccStr, resultStr) != 0) {
-        //printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
         FILE *fstr3 = fopen("pgn_ccStr", "w"), *fstr4 = fopen("resultStr", "w");
         fprintf(fstr3, "%s", pgn_ccStr);
         fprintf(fstr4, "%s", resultStr);
@@ -659,17 +659,16 @@ static int dirNum__ = 2; // 测试目录个数
 
 static void test_chessManual_dir(void)
 {
-    // 调节控制转换目录
-    int fromFmtNum = 4, toFmtNum = 6; // 6 6 faild?
-    //bool isPrint = false; 
+    //bool isPrint = false;
     bool isPrint = true;
-
-    RecFormat fmts[] = { XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC };
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
-        for (int fromFmt = XQF; fromFmt < fromFmtNum; ++fromFmt) // XQF..PGN_CC
-            for (int toFmt = BIN; toFmt < toFmtNum; ++toFmt) // BIN..PGN_CC
-                if (toFmt != fromFmt)
-                    transDir(dirNames__[dir], fmts[fromFmt], fmts[toFmt], isPrint);
+        // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
+        for (RecFormat fromFmt = PGN_ICCS; fromFmt <= PGN_ICCS; ++fromFmt)
+            for (RecFormat toFmt = PGN_ZH; toFmt <= PGN_CC; ++toFmt)
+                if (fromFmt != toFmt) {
+                    //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
+                    transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
+                }
     }
 }
 

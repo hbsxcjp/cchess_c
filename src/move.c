@@ -475,12 +475,12 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
         readBytes__(clen, 4, fin);
         int RemarkSize = *(int*)clen - KeyRMKSize;
         if (RemarkSize > 0) {
-            size_t len = RemarkSize + 1;
+            size_t len = RemarkSize + 1, outlen = len * 3;
             unsigned char rem[len];
             readBytes__(rem, RemarkSize, fin);
             rem[RemarkSize] = '\x0';
-            char remc[len * 3];
-            code_convert("gbk", "utf-8", (char*)rem, remc);
+            char remc[outlen];
+            code_convert("gbk", "utf-8", (char*)rem, remc, &outlen);
 
             *remark = malloc(len * sizeof(wchar_t));
             assert(*remark);
@@ -706,6 +706,8 @@ static wchar_t* getRemark_PGN_ICCSZH__(const wchar_t* tempMoveStr, int remarkSiz
 
 void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
 {
+    //printf("\n准备读取move... ");
+
     bool isPGN_ZH = fmt == PGN_ZH;
     const wchar_t* remStr = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
     wchar_t ICCSZHStr[WCHARSIZE], movePat[WCHARSIZE], remPat[WCHARSIZE];
@@ -1015,25 +1017,25 @@ void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
         writeMove_PGN_CC__(moveStr, colNum, getNext(rootMove));
 }
 
-static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* size, CMove move)
+static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
 {
     const wchar_t* remark = getRemark(move);
     if (remark != NULL) {
         size_t len = wcslen(remark) + 32;
         wchar_t remarkStr[len];
         swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), remark);
-        appendWString(pstr, size, remarkStr);
+        appendWString(pstr, psize, remarkStr);
     }
 
     if (hasOther(move))
-        writeRemark_PGN_CC__(pstr, size, getOther(move));
+        writeRemark_PGN_CC__(pstr, psize, getOther(move));
     if (hasNext(move))
-        writeRemark_PGN_CC__(pstr, size, getNext(move));
+        writeRemark_PGN_CC__(pstr, psize, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t** pstr, size_t* size, CMove rootMove)
+void writeRemark_PGN_CC(wchar_t** pstr, size_t* psize, CMove rootMove)
 {
-    writeRemark_PGN_CC__(pstr, size, rootMove);
+    writeRemark_PGN_CC__(pstr, psize, rootMove);
 }
 
 static bool isStatus__(Move move, int boutCount, bool (*func)(Move))

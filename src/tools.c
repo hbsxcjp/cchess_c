@@ -273,15 +273,15 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
-int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf)
+int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen)
 {
     int tag = 0;
     iconv_t cd = iconv_open(to_charset, from_charset);
     if (cd == (iconv_t)-1)
         return -1;
-    size_t inlen = strlen(inbuf), outlen = inlen * 3;
-    memset(outbuf, 0, outlen);
-    if (iconv(cd, &inbuf, &inlen, &outbuf, &outlen) == (size_t)-1)
+    size_t inlen = strlen(inbuf);
+    memset(outbuf, 0, *outlen);
+    if (iconv(cd, &inbuf, &inlen, &outbuf, outlen) == (size_t)-1)
         tag = -1;
     iconv_close(cd);
     return tag;
