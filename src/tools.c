@@ -1,5 +1,7 @@
 #include "head/tools.h"
 
+#define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
+
 typedef struct FileInfo {
     char* name;
     int attrib;
@@ -215,23 +217,36 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
-void appendWString(wchar_t** pstr, size_t* wstrSize, const wchar_t* wstr)
+wchar_t* supper_wcscat(wchar_t* wstr1, size_t* wstrSize, const wchar_t* wstr2)
 {
-    size_t len = wcslen(wstr);
     // 如字符串分配的长度不够，则增加长度
-    if (wcslen(*pstr) + len > *wstrSize - 1) {
-        *wstrSize += WIDEWCHARSIZE + len;
-        /*
-        wchar_t* tstr = malloc(*wstrSize * sizeof(wchar_t));
-        assert(tstr);
-        wcscpy(tstr, *pstr);
-        free(*pstr);
-        *pstr = tstr;
-        //*/
-        *pstr = realloc(*pstr, *wstrSize * sizeof(wchar_t));
-        assert(*pstr);
+    size_t len = wcslen(wstr1) + wcslen(wstr2) + 1;
+    if (len > *wstrSize) {
+        //assert(!"SUPERWIDEWCHARSIZE 还小了, 奇怪！");
+        *wstrSize = len + WIDEWCHARSIZE;
+        wstr1 = realloc(wstr1, *wstrSize * sizeof(wchar_t));
+        assert(wstr1);
     }
-    wcscat(*pstr, wstr);
+    return wcscat(wstr1, wstr2);
+}
+
+void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s)
+{
+    if (wc_short)
+        return pcre16_compile((const unsigned short*)wstr, n, error, erroffset, s);
+    else
+        return pcre32_compile((const unsigned int*)wstr, n, error, erroffset, s);
+}
+
+int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int size)
+{
+    return (wc_short ? pcre16_exec(reg, p, (const unsigned short*)wstr, len, x, y, ovector, size)
+                     : pcre32_exec(reg, p, (const unsigned int*)wstr, len, x, y, ovector, size));
+}
+
+void pcrewch_free(void* reg)
+{
+    wc_short ? pcre16_free(reg) : pcre32_free(reg);
 }
 
 int makeDir(const char* dirName)

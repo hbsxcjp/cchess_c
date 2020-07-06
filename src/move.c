@@ -720,23 +720,14 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
 
     const char* error;
     int erroffset = 0;
-    void *moveReg, *remReg;
-    if (wc_short) {
-        moveReg = pcre16_compile((const unsigned short*)movePat, 0, &error, &erroffset, NULL);
-        remReg = pcre16_compile((const unsigned short*)remPat, 0, &error, &erroffset, NULL);
-    } else {
-        moveReg = pcre32_compile((const unsigned int*)movePat, 0, &error, &erroffset, NULL);
-        remReg = pcre32_compile((const unsigned int*)remPat, 0, &error, &erroffset, NULL);
-    }
+    void *moveReg = pcrewch_compile(movePat, 0, &error, &erroffset, NULL),
+         *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
     assert(moveReg);
     assert(remReg);
 
     wchar_t* moveStr = getWString(fin); // 读取文件内容到字符串
-    int ovector[WCHARSIZE] = { 0 }, regCount;
-    if (wc_short)
-        regCount = pcre16_exec(remReg, NULL, (const unsigned short*)moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
-    else
-        regCount = pcre32_exec(remReg, NULL, (const unsigned int*)moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
+    int ovector[WCHARSIZE] = { 0 },
+        regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
     if (regCount <= 0)
         return;
     if (regCount == 2)
@@ -750,10 +741,7 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     //printf("读取moveStr... \n");
 
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
-        if (wc_short)
-            regCount = pcre16_exec(moveReg, NULL, (const unsigned short*)tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
-        else
-            regCount = pcre32_exec(moveReg, NULL, (const unsigned int*)tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
+        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
             break;
         // 是否有"("
@@ -797,13 +785,8 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
             move = move->pmove;
         }
     free(moveStr);
-    if (wc_short) {
-        pcre16_free(remReg);
-        pcre16_free(moveReg);
-    } else {
-        pcre32_free(remReg);
-        pcre32_free(moveReg);
-    }
+    pcrewch_free(remReg);
+    pcrewch_free(moveReg);
 }
 
 static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
@@ -850,15 +833,15 @@ static wchar_t* getRemark_PGN_CC__(wchar_t* remLines[], int remCount, int row, i
     return NULL;
 }
 
-static void addMove_PGN_CC__(Move preMove, Board board, pcre32* moveReg,
+static void addMove_PGN_CC__(Move preMove, Board board, void* moveReg,
     wchar_t* moveLines[], int rowNum, int colNum, int row, int col,
     wchar_t* remLines[], int remCount, bool isOther)
 {
     wchar_t* zhStr = moveLines[row * colNum + col];
     while (zhStr[0] == L'…')
         zhStr = moveLines[row * colNum + (++col)];
-    int regCount = 0, ovector[8]; //OVECCOUNT = 8,
-    regCount = pcre32_exec(moveReg, NULL, (const unsigned int*)zhStr, wcslen(zhStr), 0, 0, ovector, 8);
+    int ovector[8],
+        regCount = pcrewch_exec(moveReg, NULL, zhStr, wcslen(zhStr), 0, 0, ovector, 8);
     if (regCount <= 0) {
         wchar_t wstr[WIDEWCHARSIZE], fstr[WCHARSIZE]; //, tstr[WCHARSIZE];
         wprintf(L"%d:%d\n%spreMove:%ls zhStr:%ls\n", __LINE__, regCount, getBoardString(wstr, board),
@@ -898,14 +881,8 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
     const char* error;
     int erroffset = 0;
-    void *moveReg, *remReg;
-    if (wc_short) {
-        moveReg = pcre16_compile((const unsigned short*)movePat, 0, &error, &erroffset, NULL);
-        remReg = pcre16_compile((const unsigned short*)remPat, 0, &error, &erroffset, NULL);
-    } else {
-        moveReg = pcre32_compile((const unsigned int*)movePat, 0, &error, &erroffset, NULL);
-        remReg = pcre32_compile((const unsigned int*)remPat, 0, &error, &erroffset, NULL);
-    }
+    void *moveReg = pcrewch_compile(movePat, 0, &error, &erroffset, NULL),
+         *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
     assert(moveReg);
     assert(remReg);
 
@@ -920,7 +897,7 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
     fseek(fin, start, SEEK_SET); // 回到开始
     while (fgetws(lineStr, lineSize, fin) && lineStr[0] != L'\n') { // 空行截止
         ++rowNum;
-        fgetws(lineStr, lineSize, fin); // 有间隔行则弃掉，且行数加1
+        fgetws(lineStr, lineSize, fin); // 间隔行则弃掉
     }
     while (fgetws(lineStr, lineSize, fin))
         ++remArrayLen;
@@ -948,12 +925,7 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
     int remCount = 0, regCount = 0, ovector[WCHARSIZE] = { 0 };
     wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
     while (wcslen(tempRemStr) > 0) {
-        if (wc_short)
-            regCount = pcre16_exec(remReg, NULL, (const unsigned short*)tempRemStr, wcslen(tempRemStr),
-                0, 0, ovector, WCHARSIZE);
-        else
-            regCount = pcre32_exec(remReg, NULL, (const unsigned int*)tempRemStr, wcslen(tempRemStr),
-                0, 0, ovector, WCHARSIZE);
+        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, WCHARSIZE);
         if (regCount <= 0)
             break;
         int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
@@ -985,13 +957,8 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         free(moveLines[i]);
     free(remLines);
     free(moveLines);
-    if (wc_short) {
-        pcre16_free(remReg);
-        pcre16_free(moveReg);
-    } else {
-        pcre32_free(remReg);
-        pcre32_free(moveReg);
-    }
+    pcrewch_free(remReg);
+    pcrewch_free(moveReg);
 }
 
 static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
@@ -1024,7 +991,7 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
         size_t len = wcslen(remark) + 32;
         wchar_t remarkStr[len];
         swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), remark);
-        appendWString(pstr, psize, remarkStr);
+        *pstr = supper_wcscat(*pstr, psize, remarkStr);
     }
 
     if (hasOther(move))

@@ -23,8 +23,6 @@
 #define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
 
-#define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
-
 //=================================================================
 //棋子相关的类型
 //=================================================================

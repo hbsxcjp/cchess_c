@@ -94,7 +94,7 @@ void delChessManual(ChessManual cm)
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
 {
     int count = cm->infoCount, nameLen = wcslen(name) + 1;
-    if (count == INFOSIZE || nameLen == 0)
+    if (count == INFOSIZE || nameLen == 1)
         return;
     cm->info[count][0] = malloc(nameLen * sizeof(wchar_t));
     assert(cm->info[count][0]);
@@ -417,33 +417,26 @@ static void writeJSON__(FILE* fout, ChessManual cm)
 static void readInfo_PGN__(ChessManual cm, FILE* fin)
 {
     const char* error;
-    int erroffset = 0, infoCount = 0, ovector[10]; //OVECCOUNT = 10,
+    int erroffset = 0, infoCount = 0, offsetArray[10]; //OVECCOUNT = 10,
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
-    void* infoReg; // pcre16* or pcre32*
-    if (wc_short)
-        infoReg = pcre16_compile((const unsigned short*)infoPat, 0, &error, &erroffset, NULL);
-    else
-        infoReg = pcre32_compile((const unsigned int*)infoPat, 0, &error, &erroffset, NULL);
+    void* infoReg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
     wchar_t infoStr[WIDEWCHARSIZE] = { 0 };
 
     //printf("\nline:%d %s", __LINE__, "read info...\n");
     while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
-        if (wc_short)
-            infoCount = pcre16_exec(infoReg, NULL, (const unsigned short*)infoStr, wcslen(infoStr), 0, 0, ovector, 10);
-        else
-            infoCount = pcre32_exec(infoReg, NULL, (const unsigned int*)infoStr, wcslen(infoStr), 0, 0, ovector, 10);
+        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, offsetArray, 10);
         if (infoCount < 0)
             continue;
-        wchar_t name[WIDEWCHARSIZE] = { 0 }, value[WIDEWCHARSIZE] = { 0 };
-        wcsncpy(name, infoStr + ovector[2], ovector[3] - ovector[2]);
-        wcsncpy(value, infoStr + ovector[4], ovector[5] - ovector[4]);
+        int nlen = offsetArray[3] - offsetArray[2], vlen = offsetArray[5] - offsetArray[4];
+        wchar_t name[nlen + 1], value[vlen + 1];
+        wcsncpy(name, infoStr + offsetArray[2], nlen);
+        wcsncpy(value, infoStr + offsetArray[4], vlen);
+        name[nlen] = L'\x0';
+        value[vlen] = L'\x0';
         addInfoItem(cm, name, value);
     }
-    if (wc_short)
-        pcre16_free(infoReg);
-    else
-        pcre32_free(infoReg);
+    pcrewch_free(infoReg);
 }
 
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
@@ -469,7 +462,7 @@ void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm)
     wchar_t tmpWstr[WIDEWCHARSIZE];
     for (int i = 0; i < cm->infoCount; ++i) {
         swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        appendWString(pinfoStr, &size, tmpWstr);
+        *pinfoStr = supper_wcscat(*pinfoStr, &size, tmpWstr);
     }
 }
 
@@ -754,7 +747,7 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     getFileInfoName(fileName, fileInfo);
     if (!fileIsRight__(fileName))
         return;
-    printf("line:%d %s\n", __LINE__, fileName);
+    //printf("line:%d %s\n", __LINE__, fileName);
 
     OperateDirData odata = (OperateDirData)ptr;
     ChessManual cm = newChessManual(fileName);
