@@ -340,8 +340,11 @@ static const wchar_t* getICCS(wchar_t* ICCSStr, CMove move)
     if (isRootMove(move))
         wcscpy(ICCSStr, L"0000");
     else
-        swprintf(ICCSStr, 6, L"%lc%d%lc%d", getCol_s(move->fseat) + L'a', getRow_s(move->fseat),
-            getCol_s(move->tseat) + L'a', getRow_s(move->tseat));
+        swprintf(ICCSStr, 5, L"%lc%d%lc%d",
+            getCol_s(move->fseat) + L'a',
+            getRow_s(move->fseat),
+            getCol_s(move->tseat) + L'a',
+            getRow_s(move->tseat));
     return ICCSStr;
 }
 
@@ -411,7 +414,7 @@ void undoMove(CMove move)
 static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
 {
     wstr[0] = L'\x0';
-    wchar_t iccs[6];
+    wchar_t iccs[6] = { 0 };
     if (move)
         swprintf(wstr, WCHARSIZE, L"%02x->%02x %ls %ls@%lc",
             getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS(iccs, move), move->zhStr,
@@ -696,10 +699,9 @@ static wchar_t* getRemark_PGN_ICCSZH__(const wchar_t* tempMoveStr, int remarkSiz
 {
     wchar_t* remark = NULL;
     if (remarkSize > 0) {
-        remark = malloc((remarkSize + 1) * sizeof(wchar_t));
+        remark = calloc(remarkSize + 1, sizeof(wchar_t));
         assert(remark);
         wcsncpy(remark, tempMoveStr, remarkSize);
-        remark[remarkSize] = L'\x0';
     }
     return remark;
 }
@@ -712,10 +714,11 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     const wchar_t* remStr = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
     wchar_t ICCSZHStr[WCHARSIZE], movePat[WCHARSIZE], remPat[WCHARSIZE];
     if (isPGN_ZH)
-        swprintf(ICCSZHStr, WCHARSIZE, L"([%ls%ls%ls%ls%ls]{4})", PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
+        swprintf(ICCSZHStr, WCHARSIZE, L"%ls%ls%ls%ls%ls",
+            PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
     else
-        swprintf(ICCSZHStr, WCHARSIZE, L"([abcdefghi\\d]{4})");
-    swprintf(movePat, WCHARSIZE, L"(\\()?(?:[\\d\\.\\s]+)%ls%ls(?:[\\s\\n]*(\\)+))?", ICCSZHStr, remStr); // 可能存在多个右括号
+        swprintf(ICCSZHStr, WCHARSIZE, L"abcdefghi\\d");
+    swprintf(movePat, WCHARSIZE, L"(\\()?(?:[\\d\\.\\s]+)([%ls]{4})%ls(?:[\\s\\n]*(\\)+))?", ICCSZHStr, remStr); // 可能存在多个右括号
     swprintf(remPat, WCHARSIZE, L"%ls1\\.", remStr);
 
     const char* error;
@@ -726,12 +729,11 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     assert(remReg);
 
     wchar_t* moveStr = getWString(fin); // 读取文件内容到字符串
-    int ovector[WCHARSIZE] = { 0 },
-        regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, WCHARSIZE);
+    int ovector[30] = { 0 },
+        regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30);
     if (regCount <= 0)
         return;
-    if (regCount == 2)
-        setRemark(rootMove, getRemark_PGN_ICCSZH__(moveStr + ovector[2], ovector[3] - ovector[2])); // 赋值一个动态分配内存的指针
+    setRemark(rootMove, getRemark_PGN_ICCSZH__(moveStr + ovector[2], ovector[3] - ovector[2])); // 赋值一个动态分配内存的指针
 
     Move move = NULL,
          preMove = rootMove,
@@ -741,7 +743,7 @@ void readMove_PGN_ICCSZH(Move rootMove, FILE* fin, RecFormat fmt, Board board)
     //printf("读取moveStr... \n");
 
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
-        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, WCHARSIZE);
+        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, 30);
         if (regCount <= 0)
             break;
         // 是否有"("
@@ -797,12 +799,12 @@ static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
 
 static void writeMove_PGN_ICCSZH__(FILE* fout, Move move, bool isPGN_ZH, bool isOther)
 {
-    wchar_t boutStr[WCHARSIZE], iccs_zhStr[6];
+    wchar_t boutStr[WCHARSIZE], iccs_zhStr[6] = { 0 };
     swprintf(boutStr, WCHARSIZE, L"%d. ", (getNextNo(move) + 1) / 2);
     bool isEven = getNextNo(move) % 2 == 0;
     fwprintf(fout, L"%ls%ls%ls%ls ",
         (isOther ? L"(" : L""),
-        (isOther ? boutStr : (isEven ? L" " : boutStr)),
+        (isOther || !isEven ? boutStr : L" "),
         (isOther && isEven ? L"... " : L""),
         (isPGN_ZH ? getZhStr(move) : getICCS(iccs_zhStr, move)));
     writeRemark_PGN_ICCSZH__(fout, move);
@@ -840,8 +842,9 @@ static void addMove_PGN_CC__(Move preMove, Board board, void* moveReg,
     wchar_t* zhStr = moveLines[row * colNum + col];
     while (zhStr[0] == L'…')
         zhStr = moveLines[row * colNum + (++col)];
-    int ovector[8],
-        regCount = pcrewch_exec(moveReg, NULL, zhStr, wcslen(zhStr), 0, 0, ovector, 8);
+    int ovector[9],
+        regCount = pcrewch_exec(moveReg, NULL, zhStr, wcslen(zhStr), 0, 0, ovector, 9);
+    /*调试用
     if (regCount <= 0) {
         wchar_t wstr[WIDEWCHARSIZE], fstr[WCHARSIZE]; //, tstr[WCHARSIZE];
         wprintf(L"%d:%d\n%spreMove:%ls zhStr:%ls\n", __LINE__, regCount, getBoardString(wstr, board),
@@ -856,6 +859,7 @@ static void addMove_PGN_CC__(Move preMove, Board board, void* moveReg,
         }
         fflush(stdout);
     }
+    //*/
     assert(regCount > 0);
 
     wchar_t lastwc = zhStr[4];
@@ -922,10 +926,10 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
     assert(rowNum == rowIndex);
 
     // 读取注解字符串
-    int remCount = 0, regCount = 0, ovector[WCHARSIZE] = { 0 };
+    int remCount = 0, regCount = 0, ovector[30] = { 0 };
     wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
     while (wcslen(tempRemStr) > 0) {
-        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, WCHARSIZE);
+        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, 30);
         if (regCount <= 0)
             break;
         int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
