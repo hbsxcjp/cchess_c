@@ -205,15 +205,27 @@ void transFileExtName(char* fileName, const char* extname)
 
 wchar_t* getWString(FILE* fin)
 {
+    wchar_t* wstr = NULL;
+    if (!feof(fin)) {
+        size_t size = WIDEWCHARSIZE;
+        wchar_t lineStr[WIDEWCHARSIZE];
+        wstr = malloc(size * sizeof(wchar_t));
+        while (fgetws(lineStr, WIDEWCHARSIZE, fin) != NULL)
+            supper_wcscat(wstr, &size, lineStr);
+    }
+    /*
     long start = ftell(fin);
     fseek(fin, 0, SEEK_END);
     long end = ftell(fin);
     fseek(fin, start, SEEK_SET);
-    wchar_t* wstr = malloc((end - start + 1) * sizeof(wchar_t));
-    int index = 0;
-    while (!feof(fin))
-        wstr[index++] = fgetwc(fin);
-    wstr[index] = L'\x0';
+    if (start != -1 && end != -1) {
+        wstr = malloc((end - start + 1) * sizeof(wchar_t));
+        int index = 0;
+        while (!feof(fin))
+            wstr[index++] = fgetwc(fin);
+        wstr[index] = L'\x0';
+    }
+    //*/
     return wstr;
 }
 
@@ -238,8 +250,8 @@ void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* errof
         return pcre32_compile((const unsigned int*)wstr, n, error, erroffset, s);
 }
 
-// 返回值 <0:表示匹配发生error，==0:没有匹配上，>0:返回匹配到的元素数量
 /*
+// 返回值 <0:表示匹配发生error，==0:没有匹配上，>0:返回匹配到的元素数量
 ovector是一个int型数组，其长度必须设定为3的倍数，若为3n，则最多返回n个元素，显然有rc<=n
 其中ovector[0],[1]为整个匹配上的字符串的首尾偏移；其他[2*i][2*i+1]为对应第i个匹配上的子串的偏移,
 子串意思是正则表达式中被第i个()捕获的字符串，计数貌似是按照(出现的顺序。
@@ -383,6 +395,7 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
             } else {
                 FileInfo fi = newFileInfo__(findName, stbuf.st_mode, stbuf.st_size);
                 operateFile(fi, ptr);
+                delFileInfo__(fi);
             }
         }
     }

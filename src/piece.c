@@ -176,5 +176,5 @@ void testPieceString(wchar_t* wstr)
     wstr[0] = L'\x0';
     Pieces pieces = newPieces();
     piecesMap(pieces, printPiece__, wstr);
-    free(pieces);
+    delPieces(pieces);
 }
