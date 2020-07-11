@@ -274,10 +274,16 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"Opening", L"RMKWriter", L"Author"
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
-        size_t len = strlen(values[i]) + 1, outlen = len * 3;
+        size_t len = strlen(values[i]) + 1;
+
+#ifdef __linux
+        size_t outlen = len * 3;
         char tstr[outlen];
         code_convert("gbk", "utf-8", values[i], tstr, &outlen);
         mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
+#else
+        mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
+#endif
         //wcstombs(tstr, tempStr, WIDEWCHARSIZE - 1);
         //printf("\nsize:%ld %s", strlen(tstr), tstr);
 
@@ -456,13 +462,12 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm)
 {
     size_t size = WIDEWCHARSIZE;
-    *pinfoStr = malloc(size * sizeof(wchar_t));
+    *pinfoStr = calloc(size, sizeof(wchar_t));
     assert(*pinfoStr);
-    (*pinfoStr)[0] = L'\x0';
     wchar_t tmpWstr[WIDEWCHARSIZE];
     for (int i = 0; i < cm->infoCount; ++i) {
         swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        *pinfoStr = supper_wcscat(*pinfoStr, &size, tmpWstr);
+        supper_wcscat(pinfoStr, &size, tmpWstr);
     }
 }
 

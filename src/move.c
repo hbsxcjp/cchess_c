@@ -487,17 +487,21 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
         readBytes__(clen, 4, fin);
         int RemarkSize = *(int*)clen - KeyRMKSize;
         if (RemarkSize > 0) {
-            size_t len = RemarkSize + 1, outlen = len * 3;
+            size_t len = RemarkSize + 1;
             unsigned char rem[len];
             readBytes__(rem, RemarkSize, fin);
             rem[RemarkSize] = '\x0';
+
+            *remark = calloc(len, sizeof(wchar_t));
+            assert(*remark);
+#ifdef __linux
+            size_t outlen = len * 4;
             char remc[outlen];
             code_convert("gbk", "utf-8", (char*)rem, remc, &outlen);
-
-            *remark = malloc(len * sizeof(wchar_t));
-            assert(*remark);
             mbstowcs(*remark, remc, len);
-
+#else
+            mbstowcs(*remark, rem, len);
+#endif
             //wcstombs(remc, *remark, WIDEWCHARSIZE - 1);
             //printf("\nsize:%ld %s", strlen(remc), remc);
         }
@@ -546,7 +550,7 @@ wchar_t* readWstring_BIN(FILE* fin)
 {
     int len = 0;
     fread(&len, sizeof(int), 1, fin);
-    wchar_t* wstr = malloc(len * sizeof(wchar_t));
+    wchar_t* wstr = calloc(len, sizeof(wchar_t));
     assert(wstr);
     fread(wstr, sizeof(wchar_t), len, fin);
     return wstr;
@@ -632,7 +636,7 @@ static wchar_t* readMoveRemark_JSON__(const cJSON* moveJSON)
     cJSON* remarkJSON = cJSON_GetObjectItem(moveJSON, "r");
     if (remarkJSON) {
         int len = strlen(remarkJSON->valuestring) + 1;
-        remark = malloc(len * sizeof(wchar_t));
+        remark = calloc(len, sizeof(wchar_t));
         assert(remark);
         mbstowcs(remark, remarkJSON->valuestring, len);
     }
@@ -708,10 +712,9 @@ static wchar_t* getRemark_PGN_ICCSZH__(const wchar_t* tempMoveStr, int remarkSiz
 {
     wchar_t* remark = NULL;
     if (remarkSize > 0) {
-        remark = malloc((remarkSize + 1) * sizeof(wchar_t));
+        remark = calloc((remarkSize + 1), sizeof(wchar_t));
         assert(remark);
         wcsncpy(remark, tempMoveStr, remarkSize);
-        remark[remarkSize] = L'\x0';
     }
     return remark;
 }
@@ -910,18 +913,17 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         return;
     while (fgetws(lineStr, lineSize, fin))
         ++remArrayLen;
-    wchar_t **moveLines = malloc((rowNum * colNum) * sizeof(wchar_t*)),
-            **remLines = malloc(remArrayLen * sizeof(wchar_t*));
+    wchar_t **moveLines = calloc((rowNum * colNum), sizeof(wchar_t*)),
+            **remLines = calloc(remArrayLen, sizeof(wchar_t*));
     fseek(fin, start, SEEK_SET); // 回到开始
 
     // 读取着法字符串
     while (fgetws(lineStr, lineSize, fin) && lineStr[0] != L'\n') { // 空行截止
         //wprintf(L"%d: %ls", __LINE__, lineStr);
         for (int col = 0; col < colNum; ++col) {
-            wchar_t* zhStr = malloc(6 * sizeof(wchar_t));
+            wchar_t* zhStr = calloc(6, sizeof(wchar_t));
             assert(zhStr);
             wcsncpy(zhStr, lineStr + col * 5, 5);
-            zhStr[5] = L'\x0';
             moveLines[rowIndex * colNum + col] = zhStr;
             //wprintf(L"%d: %ls\n", __LINE__, moveLines[rowNum * colNum + col]);
         }
@@ -947,8 +949,8 @@ void readMove_PGN_CC(Move rootMove, FILE* fin, Board board)
         if (regCount <= 0)
             break;
         int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
-        wchar_t *rcKey = malloc((rclen + 1) * sizeof(wchar_t)),
-                *remark = malloc((remlen + 1) * sizeof(wchar_t));
+        wchar_t *rcKey = calloc((rclen + 1), sizeof(wchar_t)),
+                *remark = calloc((remlen + 1), sizeof(wchar_t));
         assert(rcKey);
         assert(remark);
         wcsncpy(rcKey, tempRemStr + ovector[2], rclen);
@@ -1009,7 +1011,7 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
         size_t len = wcslen(remark) + 32;
         wchar_t remarkStr[len];
         swprintf(remarkStr, len, L"(%d,%d): {%ls}\n", getNextNo(move), getCC_ColNo(move), remark);
-        *pstr = supper_wcscat(*pstr, psize, remarkStr);
+        supper_wcscat(pstr, psize, remarkStr);
     }
 
     if (hasOther(move))

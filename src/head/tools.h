@@ -65,12 +65,11 @@ const char* getExtName(const char* filename);
 // 转换文件的扩展名
 void transFileExtName(char* filename, const char* extname);
 
+// 字符串连接，根据需要重新分配内存空间
+void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
+
 // 从文件当前指针至尾部获取宽字符串
 wchar_t* getWString(FILE* fin);
-
-// 字符串连接，根据需要重新分配内存空间
-wchar_t* supper_wcscat(wchar_t* wstr1, size_t* wstrSize, const wchar_t* wstr2);
-void appendWString(wchar_t** pstr, size_t* wstrSize, const wchar_t* wstr);
 
 // 针对wchar_t的pcre包装函数
 void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s);

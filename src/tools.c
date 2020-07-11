@@ -203,43 +203,30 @@ void transFileExtName(char* fileName, const char* extname)
     strcat(fileName, extname);
 }
 
+void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
+{
+    // 如字符串分配的长度不够，则增加长度
+    size_t len = wcslen(*pwstr) + wcslen(wstr) + 1;
+    if (len > *size) {
+        *size = len + WIDEWCHARSIZE;
+        *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
+        assert(*pwstr);
+    }
+    wcscat(*pwstr, wstr);
+}
+
 wchar_t* getWString(FILE* fin)
 {
     wchar_t* wstr = NULL;
     if (!feof(fin)) {
         size_t size = WIDEWCHARSIZE;
         wchar_t lineStr[WIDEWCHARSIZE];
-        wstr = malloc(size * sizeof(wchar_t));
+        wstr = calloc(size, sizeof(wchar_t));
+        assert(wstr);
         while (fgetws(lineStr, WIDEWCHARSIZE, fin) != NULL)
-            supper_wcscat(wstr, &size, lineStr);
+            supper_wcscat(&wstr, &size, lineStr);
     }
-    /*
-    long start = ftell(fin);
-    fseek(fin, 0, SEEK_END);
-    long end = ftell(fin);
-    fseek(fin, start, SEEK_SET);
-    if (start != -1 && end != -1) {
-        wstr = malloc((end - start + 1) * sizeof(wchar_t));
-        int index = 0;
-        while (!feof(fin))
-            wstr[index++] = fgetwc(fin);
-        wstr[index] = L'\x0';
-    }
-    //*/
     return wstr;
-}
-
-wchar_t* supper_wcscat(wchar_t* wstr1, size_t* wstrSize, const wchar_t* wstr2)
-{
-    // 如字符串分配的长度不够，则增加长度
-    size_t len = wcslen(wstr1) + wcslen(wstr2) + 1;
-    if (len > *wstrSize) {
-        //assert(!"SUPERWIDEWCHARSIZE 还小了, 奇怪！");
-        *wstrSize = len + WIDEWCHARSIZE;
-        wstr1 = realloc(wstr1, *wstrSize * sizeof(wchar_t));
-        assert(wstr1);
-    }
-    return wcscat(wstr1, wstr2);
 }
 
 void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s)
