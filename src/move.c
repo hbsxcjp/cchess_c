@@ -494,6 +494,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
 
             *remark = calloc(len, sizeof(wchar_t));
             assert(*remark);
+            
 #ifdef __linux
             size_t outlen = len * 4;
             char remc[outlen];

@@ -10,18 +10,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 //printf("Linux\n");
-#endif
-#ifdef __sun
-#ifdef __sparc
-printf("Sun SPARC\n");
 #else
-printf("Sun X86\n");
-#endif
-#endif
-#ifdef _AIX
-printf("AIX\n");
-#endif
-#ifdef WINVER
+//#ifdef WINVER
 #include <conio.h>
 #include <io.h>
 #include <windows.h>
@@ -82,8 +72,10 @@ int makeDir(const char* dirName);
 // 复制文件
 int copyFile(const char* SourceFile, const char* NewFile);
 
+#ifdef __linux
 //代码转换:从一种编码转为另一种编码
 int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen);
+#endif
 
 // 循环目录下文件，调用操作函数
 void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive);

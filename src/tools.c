@@ -4,7 +4,7 @@
 
 typedef struct FileInfo {
     char* name;
-    int attrib;
+    unsigned int attrib;
     unsigned long size;
 } * FileInfo;
 
@@ -262,10 +262,10 @@ void pcrewch_free(void* reg)
 
 int makeDir(const char* dirName)
 {
-#ifdef WINVER
-    return mkdir(dirName);
-#else
+#ifdef __linux
     return mkdir(dirName, S_IRWXU);
+#else
+    return mkdir(dirName);
 #endif
 }
 
@@ -299,6 +299,7 @@ int copyFile(const char* SourceFile, const char* NewFile)
     }
 }
 
+#ifdef __linux
 int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen)
 {
     int tag = 0;
@@ -312,6 +313,7 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     iconv_close(cd);
     return tag;
 }
+#endif
 
 static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)
 {
@@ -387,31 +389,35 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
         }
     }
     closedir(dfd);
-#endif
+    //#endif
 
-#ifdef WINVER
+#else
+    //#ifdef _WIN32
     long hFile = 0; //文件句柄
-    struct _finddata_t fileinfo = { 0 }; //文件信息
+    struct _finddata_t wfileinfo = { 0 }; //文件信息
     char findName[FILENAME_MAX];
     snprintf(findName, FILENAME_MAX, "%s/*", dirName);
     //printf("%d: %s\n", __LINE__, findName);
     //fflush(stdout);
-    if ((hFile = _findfirst(findName, &fileinfo)) == -1)
+    if ((hFile = _findfirst(findName, &wfileinfo)) == -1)
         return;
 
     do {
-        if (strcmp(fileinfo.name, ".") == 0 || strcmp(fileinfo.name, "..") == 0)
+        if (strcmp(wfileinfo.name, ".") == 0 || strcmp(wfileinfo.name, "..") == 0)
             continue;
-        snprintf(findName, FILENAME_MAX, "%s/%s", dirName, fileinfo.name);
+        snprintf(findName, FILENAME_MAX, "%s/%s", dirName, wfileinfo.name);
         //如果是目录且要求递归，则递归调用
-        if (fileinfo.attrib & _A_SUBDIR) {
+        if (wfileinfo.attrib & _A_SUBDIR) {
             if (recursive)
                 operateDir(findName, operateFile, ptr, recursive);
         } else {
-            strcpy(fileinfo.name, findName);
-            operateFile(&fileinfo, ptr);
+            //strcpy(wfileinfo.name, findName);
+            //operateFile(&fileinfo, ptr);
+            FileInfo fi = newFileInfo__(findName, wfileinfo.attrib, wfileinfo.size);
+            operateFile(fi, ptr);
+            delFileInfo__(fi);
         }
-    } while (_findnext(hFile, &fileinfo) == 0);
+    } while (_findnext(hFile, &wfileinfo) == 0);
     _findclose(hFile);
 #endif
 }
