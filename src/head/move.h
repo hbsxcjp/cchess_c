@@ -29,8 +29,9 @@ bool hasSimplePre(CMove move);
 bool hasOther(CMove move);
 bool hasPreOther(CMove move);
 bool isRootMove(CMove move);
+
 // 判断着法是否相同
-bool isSameMove(CMove lmove, CMove pmove);
+bool isSameRowCol(CMove lmove, CMove pmove);
 // 判断着法是否连通（是直接前后着关系，而不是平行的变着关系）
 bool isConnected(CMove lmove, CMove pmove);
 
@@ -89,5 +90,7 @@ bool isContinuousKill(Move move, int boutCount); //(未测试)
 bool isContinuousWillKill(Move move, int boutCount); //(未测试)
 // 凡走子连续追捉一子或数子，而形成循环者，称为“长捉”
 bool isContinuousCatch(Move move, int boutCount); //(未测试)
+
+bool rootmove_equal(CMove rootmove0, CMove rootmove1);
 
 #endif

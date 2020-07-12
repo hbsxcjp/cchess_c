@@ -57,4 +57,6 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);
 
+bool chessManual_equal(ChessManual cm0, ChessManual cm1);
+
 #endif

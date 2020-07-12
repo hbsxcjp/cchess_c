@@ -46,8 +46,6 @@ inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_
 inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
 inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
 
-bool isSameSeat(CSeat aseat, CSeat bseat) { return getRowCol_s(aseat) == getRowCol_s(bseat); }
-
 Board newBoard(void)
 {
     Board board = malloc(sizeof(struct Board));
@@ -719,4 +717,32 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
         L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
     };
     return wcscpy(sufStr, SUFSTR[board->bottomColor]);
+}
+
+bool seat_equal(CSeat seat0, CSeat seat1)
+{
+    return ((seat0 == NULL && seat1 == NULL)
+        || (seat0 && seat1
+            && seat0->row == seat1->row
+            && seat0->col == seat1->col
+            && piece_equal(seat0->piece, seat1->piece)));
+}
+
+bool board_equal(Board board0, Board board1)
+{
+    if (board0 == NULL && board1 == NULL)
+        return true;
+    // 其中有一个为空指针
+    if (!(board0 && board1))
+        return false;
+
+    if (board0->bottomColor != board1->bottomColor)
+        return false;
+
+    for (int r = 0; r < BOARDROW; ++r)
+        for (int c = 0; c < BOARDCOL; ++c)
+            if (!piece_equal(getPiece_rc(board0, r, c), getPiece_rc(board1, r, c)))
+                return false;
+                
+    return true;
 }

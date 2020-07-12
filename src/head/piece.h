@@ -65,6 +65,8 @@ int getLiveSeats_cs(Seat* seats, Pieces pieces, PieceColor color);
 // 取得表示棋子表示字符串的名称
 wchar_t* getPieString(wchar_t* pieStr, CPiece piece);
 
+bool piece_equal(CPiece pie0, CPiece pie1);
+
 void testPieceString(wchar_t* wstr);
 
 #endif

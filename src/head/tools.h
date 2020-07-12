@@ -35,7 +35,7 @@ unsigned int DJBHash(const wchar_t* wstr);
 unsigned int SDBMHash(const wchar_t* wstr);
 
 // 比较相同长度的字节串是否相等
-bool charIsSame(const char* dst, const char* src, int len);
+bool str_equal(const char* dst, const char* src, int len);
 
 // 取得hash的字符串表示
 void hashToStr(char* str, unsigned char* hash, int length);
@@ -78,11 +78,12 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
 #endif
 
 // 循环目录下文件，调用操作函数
-void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive);
+void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, bool recursive);
 
 // 新建删除文件信息结构组
 FileInfos newFileInfos(void);
 void delFileInfos(FileInfos fileInfos);
+
 // 提取目录下的文件信息
 void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive);
 void getFileInfoName(char* fileName, FileInfo fileInfo);

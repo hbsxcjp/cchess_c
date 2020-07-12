@@ -27,7 +27,7 @@ int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);
 
 // 判断位置是否相同
-bool isSameSeat(CSeat aseat, CSeat bseat);
+//bool isSameSeat(CSeat aseat, CSeat bseat);
 
 // 根据行、列值获取seat
 Seat getSeat_rc(Board board, int row, int col);
@@ -109,5 +109,8 @@ wchar_t* getBoardPreString(wchar_t* preStr, CBoard board);
 // 棋盘下边标识字符串
 wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board);
 
+bool seat_equal(CSeat seat0, CSeat seat1);
+
+bool board_equal(Board board0, Board board1);
 
 #endif

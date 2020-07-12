@@ -171,6 +171,14 @@ static void printPiece__(Piece piece, void* wstr)
     wcscat(wstr, L" ");
 }
 
+bool piece_equal(CPiece pie0, CPiece pie1)
+{
+    return ((pie0 == NULL && pie1 == NULL)
+        || (pie0 && pie1
+            && pie0->color == pie1->color
+            && pie0->kind == pie1->kind));
+}
+
 void testPieceString(wchar_t* wstr)
 {
     wstr[0] = L'\x0';

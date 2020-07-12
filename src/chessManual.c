@@ -746,7 +746,7 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
     goTo(cm, cmove);
 }
 
-static void transFile__(FileInfo fileInfo, void* ptr)
+static void transFile__(FileInfo fileInfo, OperateDirData odata)
 {
     char fileName[FILENAME_MAX];
     getFileInfoName(fileName, fileInfo);
@@ -754,7 +754,7 @@ static void transFile__(FileInfo fileInfo, void* ptr)
         return;
     //printf("line:%d %s\n", __LINE__, fileName);
 
-    OperateDirData odata = (OperateDirData)ptr;
+    //OperateDirData odata = (OperateDirData)ptr;
     ChessManual cm = newChessManual(fileName);
     //printf("\nline:%d %s", __LINE__, fileName);
 
@@ -762,8 +762,7 @@ static void transFile__(FileInfo fileInfo, void* ptr)
     //替换源目录名
     snprintf(toFileName, FILENAME_MAX, "%s/%s", odata->toDir, fileName + strlen(odata->fromDir));
     getDirName(toDirName, toFileName);
-    transFileExtName(fileName, EXTNAMES[odata->tofmt]);
-    snprintf(toFileName, FILENAME_MAX, "%s/%s", toDirName, getFileName(fileName));
+    transFileExtName(toFileName, EXTNAMES[odata->tofmt]);
     //printf("%d: %s\n", __LINE__, toFileName);
 
     // 检查并创建(多级)目录
@@ -809,7 +808,7 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
     }
     //printf("\nline:%d %s -> %s", __LINE__, fromDir, toDir);
 
-    operateDir(fromDir, transFile__, odata, true);
+    operateDir(fromDir, (void (*)(void*, void*))transFile__, odata, true);
 
     if (isPrint)
         printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d",
@@ -822,4 +821,35 @@ void getChessManualNumStr(char* str, ChessManual cm)
 {
     snprintf(str, WIDEWCHARSIZE, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
+}
+
+bool chessManual_equal(ChessManual cm0, ChessManual cm1)
+{
+    if (cm0 == NULL && cm1 == NULL)
+        return true;
+    // 其中有一个为空指针
+    if (!(cm0 && cm1))
+        return false;
+
+    if (!(cm0->infoCount == cm1->infoCount
+            && cm0->movCount_ == cm1->movCount_
+            && cm0->remCount_ == cm1->remCount_
+            && cm0->maxRemLen_ == cm1->maxRemLen_
+            && cm0->maxRow_ == cm1->maxRow_
+            && cm0->maxCol_ == cm1->maxCol_))
+        return false;
+
+    for (int i = 0; i < cm0->infoCount; ++i) {
+        for (int j = 0; j < 2; ++j)
+            if (wcscmp(cm0->info[i][j], cm1->info[i][j]) != 0)
+                return false;
+    }
+
+    if (!board_equal(cm0->board, cm1->board))
+        return false;
+
+    if (!rootmove_equal(cm0->rootMove, cm1->rootMove))
+        return false;
+
+    return true;
 }

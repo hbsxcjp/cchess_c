@@ -659,8 +659,8 @@ static int dirNum__ = 2; // 测试目录个数
 
 static void test_chessManual_dir(void)
 {
-    bool isPrint = false;
-    //bool isPrint = true;
+    //bool isPrint = false;
+    bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
         for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)

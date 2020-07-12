@@ -108,7 +108,7 @@ unsigned int SDBMHash(const wchar_t* wstr)
     return hash;
 }
 
-bool charIsSame(const char* dst, const char* src, int len)
+bool str_equal(const char* dst, const char* src, int len)
 {
     for (int i = 0; i < len; ++i)
         if (dst[i] != src[i])
@@ -165,11 +165,11 @@ wchar_t* wtrim(wchar_t* wstr)
 // 返回指向目录与文件的分界字符指针，如不存在则返回NULL
 static char* getSplitChar__(const char* fileName)
 {
-    char* sp0 = strrchr(fileName, '/');
-    char* sp1 = strrchr(fileName, '\\');
+    char *sp0 = strrchr(fileName, '/'),
+         *sp1 = strrchr(fileName, '\\');
     // 两个符号都存在，则返回较后的那个
     if (sp0 && sp1)
-        return sp0 - fileName > sp1 - fileName ? sp0 : sp1;
+        return sp0 > sp1 ? sp0 : sp1;
     return sp0 ? sp0 : sp1;
 }
 
@@ -197,9 +197,11 @@ const char* getExtName(const char* fileName)
 
 void transFileExtName(char* fileName, const char* extname)
 {
-    char* sp = strrchr(fileName, '.');
-    if (sp != NULL)
-        *sp = '\0';
+    char *sp0 = strrchr(fileName, '.'),
+         *sp1 = getSplitChar__(fileName);
+    // 有文件扩展名，且无目录名或扩展点字符指针大于目录分界字符指针
+    if (sp0 != NULL && (sp1 == NULL || sp0 > sp1))
+        *sp0 = '\0';
     strcat(fileName, extname);
 }
 
@@ -350,7 +352,7 @@ void delFileInfos(FileInfos fileInfos)
     free(fileInfos);
 }
 
-void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* ptr, bool recursive)
+void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, bool recursive)
 {
 #ifdef __linux
     struct dirent* dp;
@@ -422,9 +424,9 @@ void operateDir(const char* dirName, void operateFile(FileInfo, void*), void* pt
 #endif
 }
 
-static void addFileInfos__(FileInfo fileInfo, void* ptr)
+static void addFileInfos__(FileInfo fileInfo, FileInfos fileInfos)
 {
-    FileInfos fileInfos = (FileInfos)ptr;
+    //FileInfos fileInfos = (FileInfos)ptr;
     if (fileInfos->count == fileInfos->size) {
         fileInfos->size += fileInfos->size;
         fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
@@ -438,7 +440,7 @@ static void addFileInfos__(FileInfo fileInfo, void* ptr)
 
 void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
 {
-    operateDir(dirName, addFileInfos__, fileInfos, recursive);
+    operateDir(dirName, (void (*)(void*, void*))addFileInfos__, fileInfos, recursive);
 }
 
 void getFileInfoName(char* fileName, FileInfo fileInfo)

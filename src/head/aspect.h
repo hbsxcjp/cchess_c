@@ -51,6 +51,8 @@ void analyzeAspects(char* fileName, CAspects aspects);
 // 检查局面Hash数据文件与局面文本数据文件是否完全一致
 void checkAspectHash(char* libFileName, char* md5FileName);
 
+bool aspects_equal(Aspects asps0, Aspects asps1);
+
 void testAspects(CAspects asps);
 
 #endif

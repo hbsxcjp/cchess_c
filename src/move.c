@@ -164,7 +164,7 @@ inline bool hasSimplePre(CMove move) { return move->pmove; }
 inline bool hasOther(CMove move) { return move->omove; }
 inline bool hasPreOther(CMove move) { return hasSimplePre(move) && move == move->pmove->omove; }
 inline bool isRootMove(CMove move) { return move->pmove == NULL; }
-inline bool isSameMove(CMove lmove, CMove pmove) { return getRowCols_m(lmove) == getRowCols_m(pmove); }
+inline bool isSameRowCol(CMove lmove, CMove pmove) { return getRowCols_m(lmove) == getRowCols_m(pmove); }
 bool isConnected(CMove lmove, CMove pmove)
 {
     assert(pmove);
@@ -494,7 +494,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
 
             *remark = calloc(len, sizeof(wchar_t));
             assert(*remark);
-            
+
 #ifdef __linux
             size_t outlen = len * 4;
             char remc[outlen];
@@ -1050,3 +1050,40 @@ bool isContinuousWillKill(Move move, int boutCount) { return isStatus__(move, bo
 
 static bool isCatch__(Move move) { return move->catch; }
 bool isContinuousCatch(Move move, int boutCount) { return isStatus__(move, boutCount, isCatch__); }
+
+static bool move_equal__(CMove move0, CMove move1)
+{
+    return ((move0 == NULL && move1 == NULL)
+        || (move0 && move1
+            && isSameRowCol(move0, move1)
+            && piece_equal(move0->tpiece, move1->tpiece)
+            && ((move0->remark == NULL && move1->remark == NULL)
+                || (move0->remark && move1->remark
+                    && wcscmp(move0->remark, move1->remark) == 0))
+            && wcscmp(move0->zhStr, move1->zhStr) == 0
+            && move0->kill == move1->kill
+            && move0->willKill == move1->willKill
+            && move0->catch == move1->catch
+            && move0->nextNo_ == move1->nextNo_
+            && move0->otherNo_ == move1->otherNo_
+            && move0->CC_ColNo_ == move1->CC_ColNo_));
+}
+
+static bool move_equalMap__(CMove move0, CMove move1)
+{
+    if (!move_equal__(move0, move1))
+        return false;
+
+    if (!move_equalMap__(getNext(move0), getNext(move1)))
+        return false;
+        
+    if (!move_equalMap__(getOther(move0), getOther(move1)))
+        return false;
+
+    return true;
+}
+
+bool rootmove_equal(CMove rootmove0, CMove rootmove1)
+{
+    return move_equalMap__(rootmove0, rootmove1);
+}
