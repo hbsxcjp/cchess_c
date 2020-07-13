@@ -2,18 +2,6 @@
 
 #define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
 
-typedef struct FileInfo {
-    char* name;
-    unsigned int attrib;
-    unsigned long size;
-} * FileInfo;
-
-typedef struct FileInfos {
-    FileInfo* fis;
-    int size;
-    int count;
-} * FileInfos;
-
 bool isPrime(int n)
 {
     if (n <= 3)
@@ -67,16 +55,16 @@ unsigned int BKDRHash_c(const char* src, int size)
     return (hash & 0x7FFFFFFF);
 }
 
-unsigned int BKDRHash_s(const wchar_t* wstr)
+unsigned int BKDRHash_w(const wchar_t* wstr)
 {
-    //*
+    /*
     int len = wcslen(wstr) * 2;
     char str[len + 1];
     wcstombs(str, wstr, len);
     return BKDRHash_c(str, strlen(str));
     //*/
 
-    /*
+    //*
     unsigned int seed = 131; // 31 131 1313 13131 131313 etc..
     unsigned int hash = 0;
 
@@ -108,7 +96,7 @@ unsigned int SDBMHash(const wchar_t* wstr)
     return hash;
 }
 
-bool str_equal(const char* dst, const char* src, int len)
+bool chars_equal(const char* dst, const char* src, int len)
 {
     for (int i = 0; i < len; ++i)
         if (dst[i] != src[i])
@@ -426,16 +414,13 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
 
 static void addFileInfos__(FileInfo fileInfo, FileInfos fileInfos)
 {
-    //FileInfos fileInfos = (FileInfos)ptr;
     if (fileInfos->count == fileInfos->size) {
-        fileInfos->size += fileInfos->size;
+        fileInfos->size *= 2;
         fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
         assert(fileInfos->fis);
     }
-    //FileInfo fi = malloc(sizeof(struct _finddata_t));
-    //*fi = *fileInfo; //复制结构
-    //fileInfos->fis[fileInfos->count++] = fi;
-    fileInfos->fis[fileInfos->count++] = fileInfo;
+
+    fileInfos->fis[fileInfos->count++] = newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size);
 }
 
 void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
@@ -443,28 +428,19 @@ void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
     operateDir(dirName, (void (*)(void*, void*))addFileInfos__, fileInfos, recursive);
 }
 
-void getFileInfoName(char* fileName, FileInfo fileInfo)
-{
-    strcpy(fileName, fileInfo->name);
-}
-
-// 测试函数
-void testTools(FILE* fout, const char** chessManualDirName, int size, const char* ext)
+void writeFileInfos(FILE* fout, const char* dirName)
 {
     fprintf(fout, "\n");
     int sum = 0;
-    for (int i = 0; i < size; ++i) {
-        FileInfos fileInfos = newFileInfos();
+    FileInfos fileInfos = newFileInfos();
+    getFileInfos(fileInfos, dirName, true);
 
-        char dirName[FILENAME_MAX];
-        sprintf(dirName, "%s%s", chessManualDirName[i], ext);
-        getFileInfos(fileInfos, dirName, true);
-        for (int i = 0; i < fileInfos->count; ++i)
-            fprintf(fout, "attr:%2u size:%lu %s\n", fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
-        sum += fileInfos->count;
-        fprintf(fout, "%s 包含: %d个文件。\n\n", chessManualDirName[i], fileInfos->count);
+    for (int i = 0; i < fileInfos->count; ++i)
+        fprintf(fout, "attr:%4x size:%lu %s\n", fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
+    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, fileInfos->count);
 
-        delFileInfos(fileInfos);
-    }
+    sum += fileInfos->count;
+    delFileInfos(fileInfos);
+
     fprintf(fout, "总共包括:%d个文件。\n", sum);
 }

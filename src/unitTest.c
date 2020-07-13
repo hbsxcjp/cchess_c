@@ -13,6 +13,15 @@
 #include <time.h>
 //#include "head/console.h"
 
+static const char* dirNames__[] = {
+    "chessManual/示例文件",
+    "chessManual/象棋杀着大全",
+    "chessManual/疑难文件",
+    "chessManual/中国象棋棋谱大全"
+};
+static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
+static int dirNum__ = 2; // 测试目录个数
+
 static void test_md5(void)
 {
     unsigned char str[] = "admin", str1[] = "21232f297a57a5a743894a0e4a801fc3";
@@ -44,9 +53,26 @@ static void test_sha1(void)
     //testsha1();
 }
 
+static void test_fileInfos(void)
+{
+    FILE* fout = fopen("fnames", "w");
+    char dirName[FILENAME_MAX];
+
+    extern const char* EXTNAMES[];
+    for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
+        // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
+        for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt) {
+            sprintf(dirName, "%s%s", dirNames__[dir], EXTNAMES[fromFmt]);
+            writeFileInfos(fout, dirName);
+        }
+    }
+    fclose(fout);
+}
+
 static CU_TestInfo tests_tools[] = {
     { "test_md5", test_md5 },
     { "test_sha1", test_sha1 },
+    { "test_fileInfos", test_fileInfos },
     CU_TEST_INFO_NULL,
 };
 
@@ -86,9 +112,12 @@ static void test_board_FEN_str(void)
 {
     wchar_t pieChars[SEATNUM + 1], pieChars2[SEATNUM + 1], FEN[SEATNUM + 1];
     char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], resultStr[SEATNUM + 1];
-    Board board = newBoard();
+    Board board = newBoard(), board1 = newBoard();
     for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
         setBoard__(board, FENs[i]);
+        setBoard__(board1, FENs[i]);
+        // board对象相同比较
+        assert(board_equal(board, board1));
 
         getPieChars_FEN(pieChars, FENs[i]);
         wcstombs(str1, pieChars, WIDEWCHARSIZE);
@@ -103,6 +132,7 @@ static void test_board_FEN_str(void)
         CU_ASSERT_STRING_EQUAL(str3, resultStr);
     }
     delBoard(board);
+    delBoard(board1);
 }
 
 static void getBoardStr__(char* str, Board board)
@@ -648,24 +678,15 @@ static void test_chessManual_file(void)
     delChessManual(cm);
 }
 
-static const char* dirNames__[] = {
-    "chessManual/示例文件",
-    "chessManual/象棋杀着大全",
-    "chessManual/疑难文件",
-    "chessManual/中国象棋棋谱大全"
-};
-static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
-static int dirNum__ = 2; // 测试目录个数
-
 static void test_chessManual_dir(void)
 {
-    //bool isPrint = false;
-    bool isPrint = true;
+    bool isPrint = false;
+    //bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
         for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
             for (RecFormat toFmt = BIN; toFmt <= PGN_CC; ++toFmt)
-                if (fromFmt != toFmt) {// && fromFmt != PGN_ICCS
+                if (fromFmt != toFmt) { // && fromFmt != PGN_ICCS
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
                 }

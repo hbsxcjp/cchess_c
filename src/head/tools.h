@@ -19,9 +19,17 @@
 #endif
 
 // 文件信息结构数组指针
-//typedef struct _finddata_t* FileInfo;
-typedef struct FileInfo* FileInfo;
-typedef struct FileInfos* FileInfos;
+typedef struct FileInfo {
+    char* name;
+    unsigned int attrib;
+    unsigned long size;
+} * FileInfo;
+
+typedef struct FileInfos {
+    FileInfo* fis;
+    int size;
+    int count;
+} * FileInfos;
 
 bool isPrime(int n);
 int getPrimes(int* primes, int bitCount);
@@ -30,12 +38,12 @@ int getPrime(int size);
 
 // 哈希函数
 unsigned int BKDRHash_c(const char* src, int size);
-unsigned int BKDRHash_s(const wchar_t* wstr);
+unsigned int BKDRHash_w(const wchar_t* wstr);
 unsigned int DJBHash(const wchar_t* wstr);
 unsigned int SDBMHash(const wchar_t* wstr);
 
 // 比较相同长度的字节串是否相等
-bool str_equal(const char* dst, const char* src, int len);
+bool chars_equal(const char* dst, const char* src, int len);
 
 // 取得hash的字符串表示
 void hashToStr(char* str, unsigned char* hash, int length);
@@ -86,9 +94,8 @@ void delFileInfos(FileInfos fileInfos);
 
 // 提取目录下的文件信息
 void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive);
-void getFileInfoName(char* fileName, FileInfo fileInfo);
 
 // 测试函数
-void testTools(FILE* fout, const char** chessManualDirName, int size, const char* ext);
+void writeFileInfos(FILE* fout, const char* dirName);
 
 #endif

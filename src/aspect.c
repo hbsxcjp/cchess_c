@@ -139,7 +139,7 @@ inline static Aspect* getLastAspect__(CAspects asps, const char* key, int klen)
 static Aspect getAspect__(CAspects asps, const char* key, int klen)
 {
     Aspect asp = *getLastAspect__(asps, key, klen);
-    while (asp && !str_equal(asp->key, key, klen))
+    while (asp && !chars_equal(asp->key, key, klen))
         asp = asp->forward;
     return asp;
 }
@@ -280,12 +280,9 @@ void appendAspects_file(Aspects asps, const char* fileName)
     delChessManual(cm);
 }
 
-// 使用void*参数，目的是使其可以作为operateDir调用的函数参数
 static void appendAspects_fileInfo__(FileInfo fileInfo, Aspects asps)
 {
-    char fileName[FILENAME_MAX];
-    getFileInfoName(fileName, fileInfo);
-    appendAspects_file(asps, fileName);
+    appendAspects_file(asps, fileInfo->name);
     //printf("%d: %s\n", __LINE__, fileInfo->name);
 }
 
@@ -544,8 +541,8 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
 
     if (!(asp0->klen == asp1->klen
             && asp0->mrCount == asp1->mrCount
-            && asp0->key && asp1->key
-            && str_equal(asp0->key, asp1->key, asp0->klen)))
+            && (asp0->key && asp1->key)
+            && chars_equal(asp0->key, asp1->key, asp0->klen)))
         return false;
 
     MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;

@@ -80,6 +80,7 @@ inline Seat getSeat_rc(Board board, int row, int col)
     assert(isValidRow__(row) && isValidCol__(col));
     return &board->seats[row][col];
 }
+
 inline Seat getSeat_rowcol(Board board, int rowcol) { return getSeat_rc(board, getRow_rowcol(rowcol), getCol_rowcol(rowcol)); }
 
 inline Piece getPiece_s(CSeat seat) { return seat->piece; }
@@ -89,8 +90,7 @@ inline Piece getPiece_rowcol(Board board, int rowcol) { return getPiece_s(getSea
 // 置入某棋盘内某位置一个棋子
 static void setPiece_s__(Seat seat, Piece piece)
 {
-    if (seat)
-        setSeat(seat->piece = piece, seat);
+    setSeat(seat->piece = piece, seat);
 }
 
 // 置入某棋盘内某行、某列位置一个棋子
@@ -153,7 +153,8 @@ static void resetPiece__(Piece piece, void* ptr)
 {
     Seat seat = getSeat_p(piece);
     setNullSeat(piece);
-    setPiece_s__(seat, getBlankPiece());
+    if (seat)
+        setPiece_s__(seat, getBlankPiece());
 }
 
 void resetBoard(Board board)
@@ -581,8 +582,10 @@ static void exchangePiece__(Piece piece, void* ptr)
          othSeat = getSeat_p(othPiece);
     setNullSeat(piece);
     setNullSeat(othPiece);
-    setPiece_s__(seat, othPiece);
-    setPiece_s__(othSeat, piece);
+    if (seat)
+        setPiece_s__(seat, othPiece);
+    if (othSeat)
+        setPiece_s__(othSeat, piece);
 }
 
 void changeBoard(Board board, ChangeType ct)
@@ -721,17 +724,16 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
 
 bool seat_equal(CSeat seat0, CSeat seat1)
 {
-    return ((seat0 == NULL && seat1 == NULL)
-        || (seat0 && seat1
-            && seat0->row == seat1->row
-            && seat0->col == seat1->col
-            && piece_equal(seat0->piece, seat1->piece)));
+    return (seat0->row == seat1->row && seat0->col == seat1->col
+        && piece_equal(seat0->piece, seat1->piece)
+        && ((seat0->piece == getBlankPiece() && seat1->piece == getBlankPiece())
+            || (getSeat_p(seat0->piece) == seat0 && getSeat_p(seat1->piece) == seat1)));
 }
 
 bool board_equal(Board board0, Board board1)
 {
-    if (board0 == NULL && board1 == NULL)
-        return true;
+    //if (board0 == NULL && board1 == NULL)
+    //    return true;
     // 其中有一个为空指针
     if (!(board0 && board1))
         return false;
@@ -741,8 +743,8 @@ bool board_equal(Board board0, Board board1)
 
     for (int r = 0; r < BOARDROW; ++r)
         for (int c = 0; c < BOARDCOL; ++c)
-            if (!piece_equal(getPiece_rc(board0, r, c), getPiece_rc(board1, r, c)))
+            if (!seat_equal(getSeat_rc(board0, r, c), getSeat_rc(board1, r, c)))
                 return false;
-                
+
     return true;
 }

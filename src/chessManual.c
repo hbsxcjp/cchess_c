@@ -25,7 +25,7 @@ typedef struct OperateDirData {
     RecFormat fromfmt, tofmt;
 } * OperateDirData;
 
-static const char* EXTNAMES[] = {
+const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
 static const char FILETAG[] = "learnchess";
@@ -748,8 +748,7 @@ void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
 
 static void transFile__(FileInfo fileInfo, OperateDirData odata)
 {
-    char fileName[FILENAME_MAX];
-    getFileInfoName(fileName, fileInfo);
+    const char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
         return;
     //printf("line:%d %s\n", __LINE__, fileName);

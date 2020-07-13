@@ -173,16 +173,21 @@ static void printPiece__(Piece piece, void* wstr)
 
 bool piece_equal(CPiece pie0, CPiece pie1)
 {
-    return ((pie0 == NULL && pie1 == NULL)
-        || (pie0 && pie1
-            && pie0->color == pie1->color
-            && pie0->kind == pie1->kind));
+    return (pie0->color == pie1->color && pie0->kind == pie1->kind);
 }
 
 void testPieceString(wchar_t* wstr)
 {
     wstr[0] = L'\x0';
-    Pieces pieces = newPieces();
+    Pieces pieces = newPieces(), pieces1 = newPieces();
     piecesMap(pieces, printPiece__, wstr);
+
+    for (int c = RED; c < NOTCOLOR; ++c)
+        for (int k = KING; k < NOTKIND; ++k) {
+            Piece apiece = getPieces__(pieces, c, k),
+                  apiece1 = getPieces__(pieces1, c, k);
+            assert(piece_equal(apiece, apiece1));
+        }
+
     delPieces(pieces);
 }
