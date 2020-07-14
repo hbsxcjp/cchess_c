@@ -542,19 +542,25 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
     if (!(asp0->klen == asp1->klen
             && asp0->mrCount == asp1->mrCount
             && (asp0->key && asp1->key)
-            && chars_equal(asp0->key, asp1->key, asp0->klen)))
+            && chars_equal(asp0->key, asp1->key, asp0->klen))) {
+        printf("\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
     while (mr0 && mr1) {
-        if (!(moveRec_equal__(mr0, mr1)))
+        if (!(moveRec_equal__(mr0, mr1))) {
+            printf("\n%d %s", __LINE__, __FILE__);
             return false;
+        }
         mr0 = mr0->forward;
         mr1 = mr1->forward;
     }
     // mr0、mr1未同时抵达终点（空指针）
-    if (mr0 != NULL || mr1 != NULL)
+    if (mr0 != NULL || mr1 != NULL) {
+        printf("\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     return true;
 }
@@ -569,8 +575,10 @@ bool aspects_equal(Aspects asps0, Aspects asps1)
 
     if (!(asps0->size == asps1->size
             && asps0->aspCount == asps1->aspCount
-            && asps0->movCount && asps1->movCount))
+            && asps0->movCount && asps1->movCount)) {
+        printf("\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     for (int i = 0; i < asps0->size; ++i) {
         Aspect asp0 = asps0->rootAsps[i],
@@ -578,14 +586,18 @@ bool aspects_equal(Aspects asps0, Aspects asps1)
         if (asp0 == NULL && asp1 == NULL)
             continue;
         while (asp0 && asp1) {
-            if (!(aspect_equal__(asp0, asp1)))
+            if (!(aspect_equal__(asp0, asp1))) {
+                printf("\n%d %s", __LINE__, __FILE__);
                 return false;
+            }
             asp0 = asp0->forward;
             asp1 = asp1->forward;
         }
         // asp0、asp1未同时抵达终点（空指针）
-        if (asp0 != NULL || asp1 != NULL)
+        if (asp0 != NULL || asp1 != NULL) {
+            printf("\n%d %s", __LINE__, __FILE__);
             return false;
+        }
     }
 
     return true;
@@ -594,7 +606,10 @@ bool aspects_equal(Aspects asps0, Aspects asps1)
 void testAspects(CAspects asps)
 {
     assert(asps);
-    char *show = "show", *log = "log", *libs = "libs", *hash = "hash";
+    char *show = "chessManual/show",
+         *log = "chessManual/log",
+         *libs = "chessManual/libs",
+         *hash = "chessManual/hash";
     writeAspectShow(show, asps);
     //printf("\nwriteAspectShow OK!\n");
 

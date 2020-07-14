@@ -59,7 +59,7 @@ static void test_sha1(void)
 
 static void test_fileInfos(void)
 {
-    FILE* fout = fopen("fnames", "w");
+    FILE* fout = fopen("chessManual/fnames", "w");
     char dirName[FILENAME_MAX];
 
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
@@ -669,10 +669,21 @@ static CU_TestInfo suite_chessManual[] = {
 
 static void test_aspect_file(void)
 {
+    char *libs = "chessManual/libs",
+         *hash = "chessManual/hash";
+
     Aspects asps = newAspects(FEN_MovePtr, 0);
     appendAspects_file(asps, xqfFileName__);
-
     testAspects(asps);
+
+    storeAspectFEN(libs, asps);
+    storeAspectHash(hash, asps);
+    Aspects aspsl = getAspects_fs(libs),
+            aspsh = getAspects_fb(hash);
+    CU_ASSERT_TRUE(aspects_equal(aspsl, aspsh));
+
+    delAspects(aspsl);
+    delAspects(aspsh);
     delAspects(asps);
 }
 
@@ -688,6 +699,7 @@ static void test_aspect_dir(void)
     }
 
     testAspects(asps);
+
     delAspects(asps);
 }
 
