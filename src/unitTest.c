@@ -14,7 +14,7 @@
 //#include "head/console.h"
 
 extern const char* EXTNAMES[];
-static char* xqfFileName__ = "01.xqf";
+static char* xqfFileName__ = "chessManual/01.xqf";
 
 static const char* dirNames__[] = {
     "chessManual/示例文件",
@@ -615,7 +615,7 @@ static void test_chessManual_xqf(void)
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
-        sprintf(fname, "01%d.pgn_cc", ct);
+        sprintf(fname, "chessManual/01%d.pgn_cc", ct);
         writeChessManual(cm, fname);
     }
 
@@ -635,7 +635,7 @@ static void test_chessManual_otherExt(void)
 
     char fileName[FILENAME_MAX];
     for (RecFormat fmt = BIN; fmt <= PGN_CC; ++fmt) {
-        sprintf(fileName, "01%s", EXTNAMES[fmt]);
+        sprintf(fileName, "chessManual/01%s", EXTNAMES[fmt]);
         writeChessManual(cm, fileName);
         resetChessManual(&cm1, fileName);
         CU_ASSERT_TRUE(chessManual_equal(cm, cm1));
