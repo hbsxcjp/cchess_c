@@ -173,6 +173,7 @@ static void printPiece__(Piece piece, void* wstr)
 
 bool piece_equal(CPiece pie0, CPiece pie1)
 {
+    // piece空棋子不为NULL，而是getBlankPiece()
     return (pie0->color == pie1->color && pie0->kind == pie1->kind);
 }
 

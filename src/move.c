@@ -23,7 +23,7 @@ static Move newMove__()
     Move move = malloc(sizeof(struct Move));
     assert(move);
     move->fseat = move->tseat = NULL;
-    move->tpiece = NULL;
+    move->tpiece = getBlankPiece();
     move->remark = NULL;
     wcscpy(move->zhStr, L"0000");
     move->kill = move->willKill = move->catch = false;
@@ -1053,30 +1053,32 @@ bool isContinuousCatch(Move move, int boutCount) { return isStatus__(move, boutC
 
 static bool move_equal__(CMove move0, CMove move1)
 {
-    return ((move0 == NULL && move1 == NULL)
-        || (move0 && move1
-            && isSameRowCol(move0, move1)
-            && piece_equal(move0->tpiece, move1->tpiece)
-            && ((move0->remark == NULL && move1->remark == NULL)
-                || (move0->remark && move1->remark
-                    && wcscmp(move0->remark, move1->remark) == 0))
-            && wcscmp(move0->zhStr, move1->zhStr) == 0
-            && move0->kill == move1->kill
-            && move0->willKill == move1->willKill
-            && move0->catch == move1->catch
-            && move0->nextNo_ == move1->nextNo_
-            && move0->otherNo_ == move1->otherNo_
-            && move0->CC_ColNo_ == move1->CC_ColNo_));
+    return (move0 && move1
+        && seat_equal(move0->fseat, move1->fseat)
+        && seat_equal(move0->tseat, move1->tseat)
+        && piece_equal(move0->tpiece, move1->tpiece)
+        && ((move0->remark == NULL && move1->remark == NULL)
+            || (move0->remark && move1->remark
+                && wcscmp(move0->remark, move1->remark) == 0))
+        && wcscmp(move0->zhStr, move1->zhStr) == 0
+        && move0->kill == move1->kill
+        && move0->willKill == move1->willKill
+        && move0->catch == move1->catch
+        && move0->nextNo_ == move1->nextNo_
+        && move0->otherNo_ == move1->otherNo_
+        && move0->CC_ColNo_ == move1->CC_ColNo_);
 }
 
 static bool move_equalMap__(CMove move0, CMove move1)
 {
-    if (!move_equal__(move0, move1))
+    if (move0 == NULL && move1 == NULL)
+        return true;
+    else if (!move_equal__(move0, move1))
         return false;
 
     if (!move_equalMap__(getNext(move0), getNext(move1)))
         return false;
-        
+
     if (!move_equalMap__(getOther(move0), getOther(move1)))
         return false;
 
@@ -1085,5 +1087,10 @@ static bool move_equalMap__(CMove move0, CMove move1)
 
 bool rootmove_equal(CMove rootmove0, CMove rootmove1)
 {
+    if (!((rootmove0->remark == NULL && rootmove1->remark == NULL)
+            || (rootmove0->remark && rootmove1->remark
+                && wcscmp(rootmove0->remark, rootmove1->remark) == 0)))
+        return false;
+
     return move_equalMap__(rootmove0, rootmove1);
 }

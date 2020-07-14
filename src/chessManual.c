@@ -60,8 +60,12 @@ ChessManual newChessManual(const char* fileName)
 {
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
-    cm->fileName = malloc(strlen(fileName) + 1);
-    strcpy(cm->fileName, fileName);
+    if (fileName == NULL)
+        cm->fileName = NULL;
+    else {
+        cm->fileName = malloc(strlen(fileName) + 1);
+        strcpy(cm->fileName, fileName);
+    }
     cm->board = newBoard();
     cm->currentMove = cm->rootMove = getRootMove();
     for (int i = 0; i < INFOSIZE; ++i)
@@ -827,28 +831,38 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     if (cm0 == NULL && cm1 == NULL)
         return true;
     // 其中有一个为空指针
-    if (!(cm0 && cm1))
+    if (!(cm0 && cm1)) {
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     if (!(cm0->infoCount == cm1->infoCount
             && cm0->movCount_ == cm1->movCount_
             && cm0->remCount_ == cm1->remCount_
             && cm0->maxRemLen_ == cm1->maxRemLen_
             && cm0->maxRow_ == cm1->maxRow_
-            && cm0->maxCol_ == cm1->maxCol_))
+            && cm0->maxCol_ == cm1->maxCol_)) {
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     for (int i = 0; i < cm0->infoCount; ++i) {
         for (int j = 0; j < 2; ++j)
-            if (wcscmp(cm0->info[i][j], cm1->info[i][j]) != 0)
+            if (wcscmp(cm0->info[i][j], cm1->info[i][j]) != 0) {
+                printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
                 return false;
+            }
     }
 
-    if (!board_equal(cm0->board, cm1->board))
+    if (!board_equal(cm0->board, cm1->board)) {
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
-    if (!rootmove_equal(cm0->rootMove, cm1->rootMove))
+    if (!rootmove_equal(cm0->rootMove, cm1->rootMove)) {
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
+    }
 
     return true;
 }

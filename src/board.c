@@ -724,16 +724,18 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
 
 bool seat_equal(CSeat seat0, CSeat seat1)
 {
-    return (seat0->row == seat1->row && seat0->col == seat1->col
-        && piece_equal(seat0->piece, seat1->piece)
-        && ((seat0->piece == getBlankPiece() && seat1->piece == getBlankPiece())
-            || (getSeat_p(seat0->piece) == seat0 && getSeat_p(seat1->piece) == seat1)));
+    return ((seat0 == NULL && seat1 == NULL)
+        || (seat0 && seat1
+            && seat0->row == seat1->row && seat0->col == seat1->col
+            && piece_equal(seat0->piece, seat1->piece)
+            && ((seat0->piece == getBlankPiece() && seat1->piece == getBlankPiece())
+                || (getSeat_p(seat0->piece) == seat0 && getSeat_p(seat1->piece) == seat1))));
 }
 
 bool board_equal(Board board0, Board board1)
 {
-    //if (board0 == NULL && board1 == NULL)
-    //    return true;
+    if (board0 == NULL && board1 == NULL)
+        return true;
     // 其中有一个为空指针
     if (!(board0 && board1))
         return false;

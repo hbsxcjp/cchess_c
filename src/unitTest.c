@@ -13,12 +13,16 @@
 #include <time.h>
 //#include "head/console.h"
 
+extern const char* EXTNAMES[];
+static char* xqfFileName__ = "01.xqf";
+
 static const char* dirNames__[] = {
     "chessManual/示例文件",
     "chessManual/象棋杀着大全",
     "chessManual/疑难文件",
     "chessManual/中国象棋棋谱大全"
 };
+
 static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
 static int dirNum__ = 2; // 测试目录个数
 
@@ -58,7 +62,6 @@ static void test_fileInfos(void)
     FILE* fout = fopen("fnames", "w");
     char dirName[FILENAME_MAX];
 
-    extern const char* EXTNAMES[];
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
         for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt) {
@@ -117,7 +120,7 @@ static void test_board_FEN_str(void)
         setBoard__(board, FENs[i]);
         setBoard__(board1, FENs[i]);
         // board对象相同比较
-        assert(board_equal(board, board1));
+        CU_ASSERT_TRUE(board_equal(board, board1));
 
         getPieChars_FEN(pieChars, FENs[i]);
         wcstombs(str1, pieChars, WIDEWCHARSIZE);
@@ -525,26 +528,7 @@ static CU_TestInfo tests_board[] = {
     CU_TEST_INFO_NULL,
 };
 
-static void writePGN_CCtoStr__(char** str, ChessManual cm)
-{
-    wchar_t* wstr = NULL;
-    writePGN_CCtoWstr(&wstr, cm);
-
-    int len = (wcslen(wstr) + 1) * sizeof(wchar_t);
-    *str = malloc(len);
-    wcstombs(*str, wstr, len);
-
-    //char tstr[WIDEWCHARSIZE];
-    //wcstombs(tstr, remarkStr, WIDEWCHARSIZE - 1);
-    //printf("\nsize:%ld %s", strlen(tstr), tstr);
-    //printf("\n%s\n%d %s", str, __LINE__, __FILE__);
-
-    free(wstr);
-}
-
-static char* xqfFileName__ = "01.xqf";
-
-static void test_chessManual_file(void)
+static void test_chessManual_xqf(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
          *pgn_ccStr = "[TitleA \"第01局\"]\n"
@@ -613,57 +597,25 @@ static void test_chessManual_file(void)
                       "(22,6): {　　和棋。\r\n}\n"
                       "(3,4): {　　叫杀得车。\r\n}\n"
                       "(3,0): {　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。\r\n}\n"
-                      "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n",
-         *resultStr = NULL;
+                      "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n";
 
     ChessManual cm = newChessManual(xqfFileName__);
-    writePGN_CCtoStr__(&resultStr, cm);
-    if (strcmp(pgn_ccStr, resultStr) != 0) {
-        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
-        FILE *fstr3 = fopen("pgn_ccStr", "w"), *fstr4 = fopen("resultStr", "w");
-        fprintf(fstr3, "%s", pgn_ccStr);
-        fprintf(fstr4, "%s", resultStr);
-        fclose(fstr3);
-        fclose(fstr4);
-    }
-    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
-    free(resultStr);
 
-    //*
-    writeChessManual(cm, "01.bin");
-    resetChessManual(&cm, "01.bin");
-    writePGN_CCtoStr__(&resultStr, cm);
-    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
-    free(resultStr);
+    char* resultStr = NULL;
+    wchar_t* wstr = NULL;
+    writePGN_CCtoWstr(&wstr, cm);
+    int len = (wcslen(wstr) + 1) * sizeof(wchar_t);
+    resultStr = malloc(len);
+    wcstombs(resultStr, wstr, len);
 
-    writeChessManual(cm, "01.json");
-    resetChessManual(&cm, "01.json");
-    writePGN_CCtoStr__(&resultStr, cm);
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
-    free(resultStr);
-
-    writeChessManual(cm, "01.pgn_iccs");
-    resetChessManual(&cm, "01.pgn_iccs");
-    writePGN_CCtoStr__(&resultStr, cm);
-    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
-    free(resultStr);
-
-    writeChessManual(cm, "01.pgn_zh");
-    resetChessManual(&cm, "01.pgn_zh");
-    writePGN_CCtoStr__(&resultStr, cm);
-    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
-    free(resultStr);
-
-    writeChessManual(cm, "01.pgn_cc");
-    resetChessManual(&cm, "01.pgn_cc");
-    writePGN_CCtoStr__(&resultStr, cm);
-    CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
+    free(wstr);
     free(resultStr);
 
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
-        sprintf(fname, "01_%d.pgn_cc", ct);
+        sprintf(fname, "01%d.pgn_cc", ct);
         writeChessManual(cm, fname);
     }
 
@@ -671,11 +623,26 @@ static void test_chessManual_file(void)
     getChessManualNumStr(str2, cm);
     //if (strcmp(str1, str2) != 0)
     //    printf("\n%s\n\n%s\n", str1, str2);
-
     CU_ASSERT_STRING_EQUAL(str1, str2);
-    //*/
 
     delChessManual(cm);
+}
+
+static void test_chessManual_otherExt(void)
+{
+    ChessManual cm = newChessManual(xqfFileName__),
+                cm1 = newChessManual(NULL); //""
+
+    char fileName[FILENAME_MAX];
+    for (RecFormat fmt = BIN; fmt <= PGN_CC; ++fmt) {
+        sprintf(fileName, "01%s", EXTNAMES[fmt]);
+        writeChessManual(cm, fileName);
+        resetChessManual(&cm1, fileName);
+        CU_ASSERT_TRUE(chessManual_equal(cm, cm1));
+    }
+
+    delChessManual(cm);
+    delChessManual(cm1);
 }
 
 static void test_chessManual_dir(void)
@@ -694,7 +661,8 @@ static void test_chessManual_dir(void)
 }
 
 static CU_TestInfo suite_chessManual[] = {
-    { "test_chessManual_file", test_chessManual_file },
+    { "test_chessManual_xqf", test_chessManual_xqf },
+    { "test_chessManual_otherExt", test_chessManual_otherExt },
     { "test_chessManual_dir", test_chessManual_dir },
     CU_TEST_INFO_NULL,
 };
