@@ -46,13 +46,11 @@ void storeAspectFEN(char* fileName, CAspects aspects);
 // 存储局面MD5数据(二进制文件)，仅读取数据
 void storeAspectHash(char* fileName, CAspects aspects);
 
-// 分析局面库储存状况
+// 分析局面库并储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
-// 检查局面Hash数据文件与局面文本数据文件是否完全一致
-void checkAspectHash(char* libFileName, char* md5FileName);
-
-bool aspects_equal(Aspects asps0, Aspects asps1);
-
-void testAspects(CAspects asps);
+// 检查两种不同格式（后一种是Hash_MRValue）数据文件的数据记录是否一致
+void aspects_mr_equal(CAspects asps0, CAspects aspsh);
+// 检查两种相同格式的数据文件的数据记录是否一致
+bool aspects_equal(CAspects asps0, CAspects asps1);
 
 #endif

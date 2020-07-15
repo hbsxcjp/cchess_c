@@ -413,7 +413,7 @@ static void delAspectAnalysis__(AspectAnalysis aa)
     free(aa);
 }
 
-static void checkApendArray__(int** array, int* size, int* count, int value)
+static void checkAppendArray__(int** array, int* size, int* count, int value)
 {
     if (*count >= *size) {
         *size += *size;
@@ -431,13 +431,13 @@ static void calMoveNumber__(MoveRec mr, void* ana)
     }
     //*/
     //assert(mr->number);
-    checkApendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
+    checkAppendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
 }
 
 static void calMoveRecCount__(Aspect asp, void* ana)
 {
     AspectAnalysis aa = (AspectAnalysis)ana;
-    checkApendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, asp->mrCount);
+    checkAppendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, asp->mrCount);
 }
 
 static void calWriteOut__(FILE* fout, const char* entry, int* number, int size, int count)
@@ -472,7 +472,7 @@ void analyzeAspects(char* fileName, CAspects asps)
         int count = 1;
         while ((asp = asp->forward))
             count++;
-        checkApendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
+        checkAppendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
     }
     aspectsMap__(asps, calMoveRecCount__, aa, calMoveNumber__, aa);
 
@@ -487,41 +487,6 @@ void analyzeAspects(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void aspectCmp__(Aspect asp, void* oasps)
-{
-    //printf("check:%s ", asp->key);
-    unsigned char hash[HashSize];
-    getHashFun(hash, (const unsigned char*)asp->key);
-    Aspect oasp = getAspect__(oasps, (char*)hash, HashSize);
-
-    assert(oasp);
-    MoveRec mr = asp->rootMR, omr = oasp->rootMR;
-    while (mr) {
-        assert(omr);
-        /*
-        if (!(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight)) {
-            printf("0x%04hx %d %d - 0x%04hx %d %d \n", mr->rowcols, mr->number, mr->weight, omr->rowcols, omr->number, omr->weight);
-        }
-        //*/
-        assert(mr->number);
-        assert(mr->rowcols == omr->rowcols && mr->number == omr->number && mr->weight == omr->weight);
-
-        mr = mr->forward;
-        omr = omr->forward;
-    }
-    //printf("ok!\n");
-}
-
-// 检查局面Hash数据文件与局面文本数据文件是否完全一致
-void checkAspectHash(char* libFileName, char* md5FileName)
-{
-    Aspects asps = getAspects_fs(libFileName),
-            oasps = getAspects_fb(md5FileName);
-    aspectsMap__(asps, aspectCmp__, oasps, NULL, NULL);
-    delAspects(asps);
-    delAspects(oasps);
-}
-
 static bool moveRec_equal__(MoveRec mr0, MoveRec mr1)
 {
     return ((mr0 == NULL && mr1 == NULL)
@@ -529,6 +494,35 @@ static bool moveRec_equal__(MoveRec mr0, MoveRec mr1)
             && mr0->rowcols == mr1->rowcols
             && mr0->number == mr1->number
             && mr0->weight == mr1->weight));
+}
+
+void aspects_mr_equal(CAspects asps0, CAspects aspsh)
+{
+    assert(asps0 && aspsh);
+    int aspCount = 0, mrCount = 0;
+    for (int i = 0; i < asps0->size; ++i) {
+        Aspect asp0 = asps0->rootAsps[i], preAsp = NULL;
+        if (!asp0)
+            continue;
+        do {
+            preAsp = asp0->forward;
+            unsigned char hash[HashSize];
+            getHashFun(hash, (const unsigned char*)asp0->key);
+            Aspect asp1 = getAspect__(aspsh, (char*)hash, HashSize);
+            assert(asp1);
+            aspCount++;
+
+            assert(asp0->rootMR);
+            MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
+            assert(mr0 && mr1);
+            do {
+                assert(moveRec_equal__(mr0, mr1));
+                mrCount++;
+            } while ((mr0 = mr0->forward) && (mr1 = mr1->forward));
+        } while ((asp0 = preAsp));
+    }
+    assert(aspCount == asps0->aspCount);
+    assert(mrCount == asps0->movCount);
 }
 
 static bool aspect_equal__(Aspect asp0, Aspect asp1)
@@ -541,7 +535,7 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
 
     if (!(asp0->klen == asp1->klen
             && asp0->mrCount == asp1->mrCount
-            && (asp0->key && asp1->key)
+            && asp0->key && asp1->key
             && chars_equal(asp0->key, asp1->key, asp0->klen))) {
         printf("\n%d %s", __LINE__, __FILE__);
         return false;
@@ -565,7 +559,7 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
     return true;
 }
 
-bool aspects_equal(Aspects asps0, Aspects asps1)
+bool aspects_equal(CAspects asps0, CAspects asps1)
 {
     if (asps0 == NULL && asps1 == NULL)
         return true;
@@ -580,58 +574,26 @@ bool aspects_equal(Aspects asps0, Aspects asps1)
         return false;
     }
 
+    int aspCount = 0;
     for (int i = 0; i < asps0->size; ++i) {
-        Aspect asp0 = asps0->rootAsps[i],
-               asp1 = asps1->rootAsps[i];
-        if (asp0 == NULL && asp1 == NULL)
+        Aspect asp0 = asps0->rootAsps[i], asp1 = NULL;
+        if (asp0 == NULL)
             continue;
-        while (asp0 && asp1) {
+
+        do {
+            asp1 = getAspect__(asps1, asp0->key, asp0->klen);
+            assert(asp1);
             if (!(aspect_equal__(asp0, asp1))) {
                 printf("\n%d %s", __LINE__, __FILE__);
                 return false;
             }
-            asp0 = asp0->forward;
-            asp1 = asp1->forward;
-        }
-        // asp0、asp1未同时抵达终点（空指针）
-        if (asp0 != NULL || asp1 != NULL) {
-            printf("\n%d %s", __LINE__, __FILE__);
-            return false;
-        }
+            aspCount++;
+        } while ((asp0 = asp0->forward));
+    }
+    if (aspCount != asps0->aspCount) {
+        printf("\n%d %s", __LINE__, __FILE__);
+        return false;
     }
 
     return true;
-}
-
-void testAspects(CAspects asps)
-{
-    assert(asps);
-    char *show = "chessManual/show",
-         *log = "chessManual/log",
-         *libs = "chessManual/libs",
-         *hash = "chessManual/hash";
-    writeAspectShow(show, asps);
-    //printf("\nwriteAspectShow OK!\n");
-
-    analyzeAspects(log, asps);
-    storeAspectFEN(libs, asps);
-    //printf("storeAspectFEN OK!\n");
-
-    Aspects aspsl = getAspects_fs(libs);
-    //printf("getAspects_fs OK!\n");
-
-    analyzeAspects(log, aspsl);
-    storeAspectHash(hash, aspsl);
-    //printf("storeAspectHash OK!\n");
-
-    delAspects(aspsl);
-
-    Aspects aspsh = getAspects_fb(hash);
-    //printf("getAspects_fb OK!\n");
-
-    analyzeAspects(log, aspsh);
-    checkAspectHash(libs, hash);
-    //printf("checkAspectHash OK!\n");
-
-    delAspects(aspsh);
 }

@@ -668,23 +668,40 @@ static CU_TestInfo suite_chessManual[] = {
     CU_TEST_INFO_NULL,
 };
 
-static void test_aspect_file(void)
+static void testAspects__(CAspects asps)
 {
-    char *libs = "chessManual/libs",
+    assert(asps);
+    char *show = "chessManual/show",
+         *log = "chessManual/log",
+         *libs = "chessManual/libs",
          *hash = "chessManual/hash";
 
+    //writeAspectShow(show, asps);
+    storeAspectFEN(libs, asps);
+    //analyzeAspects(log, asps);
+
+    Aspects asps0 = getAspects_fs(libs),
+            asps1 = getAspects_fs(libs);
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
+    //analyzeAspects(log, asps0);
+    delAspects(asps0);
+    delAspects(asps1);
+
+    storeAspectHash(hash, asps);
+    asps0 = getAspects_fb(hash),
+    asps1 = getAspects_fb(hash);
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
+    //analyzeAspects(log, asps0);
+    delAspects(asps0);
+    delAspects(asps1);
+}
+
+static void test_aspect_file(void)
+{
     Aspects asps = newAspects(FEN_MovePtr, 0);
     appendAspects_file(asps, xqfFileName__);
-    testAspects(asps);
+    testAspects__(asps);
 
-    storeAspectFEN(libs, asps);
-    storeAspectHash(hash, asps);
-    Aspects aspsl = getAspects_fs(libs),
-            aspsh = getAspects_fb(hash);
-    CU_ASSERT_TRUE(aspects_equal(aspsl, aspsh));
-
-    delAspects(aspsl);
-    delAspects(aspsh);
     delAspects(asps);
 }
 
@@ -698,8 +715,7 @@ static void test_aspect_dir(void)
 
         appendAspects_dir(asps, fromDir);
     }
-
-    testAspects(asps);
+    testAspects__(asps);
 
     delAspects(asps);
 }
