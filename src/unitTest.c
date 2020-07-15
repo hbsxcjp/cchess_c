@@ -639,6 +639,7 @@ static void test_chessManual_otherExt(void)
         writeChessManual(cm, fileName);
         resetChessManual(&cm1, fileName);
         CU_ASSERT_TRUE(chessManual_equal(cm, cm1));
+        //printf("\n%d %s ok.", __LINE__, fileName);
     }
 
     delChessManual(cm);
