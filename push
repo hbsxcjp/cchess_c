@@ -1,3 +1,5 @@
+#! /bin/bash
+
 git status
 git add src/*.c src/head/*.h Makefile push
 git commit -am "push commit"
