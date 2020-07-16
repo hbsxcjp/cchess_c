@@ -676,22 +676,22 @@ static void testAspects__(CAspects asps)
          *libs = "chessManual/libs",
          *hash = "chessManual/hash";
 
-    //writeAspectShow(show, asps);
-    storeAspectFEN(libs, asps);
-    //analyzeAspects(log, asps);
+    writeAspectShow(show, asps);
+    analyzeAspects(log, asps);
 
+    storeAspectFEN(libs, asps);
     Aspects asps0 = getAspects_fs(libs),
             asps1 = getAspects_fs(libs);
+    analyzeAspects(log, asps0);
     CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
-    //analyzeAspects(log, asps0);
     delAspects(asps0);
     delAspects(asps1);
 
     storeAspectHash(hash, asps);
     asps0 = getAspects_fb(hash),
     asps1 = getAspects_fb(hash);
+    analyzeAspects(log, asps0);
     CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
-    //analyzeAspects(log, asps0);
     delAspects(asps0);
     delAspects(asps1);
 }

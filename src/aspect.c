@@ -22,15 +22,17 @@ struct Aspect {
 struct Aspects {
     int size;
     double loadfactor;
-    int aspCount, movCount;
+    int aspCount, mrCount;
     Aspect* rootAsps;
     SourceType st; // 数据源类型，决定Aspect的express字段解释（fen or hash）
 };
 
+typedef struct NumArray {
+    int *num, size, count;
+} * NumArray;
+
 struct AspectAnalysis {
-    int *mNumber, mSize, mCount; // 着法发生次数
-    int *lmNumber, lmSize, lmCount; // 同一局面下着法个数
-    int *laNumber, laSize, laCount; // 同一哈希值下局面个数
+    NumArray move, mr, asp; // 棋谱着法、局面下着法、局面
 };
 
 static const char ASPLIB_MARK[] = "AspectLib";
@@ -82,7 +84,7 @@ Aspects newAspects(SourceType st, int size)
     size = getPrime(size);
     Aspects asps = malloc(sizeof(struct Aspects));
     asps->size = size;
-    asps->aspCount = asps->movCount = 0;
+    asps->aspCount = asps->mrCount = 0;
     asps->loadfactor = 0.85;
     asps->rootAsps = malloc(size * sizeof(Aspect*));
     for (int i = 0; i < size; ++i)
@@ -111,9 +113,9 @@ static void aspectsMap__(CAspects asps, void applyAsp(Aspect, void*), void* aspA
 {
     assert(asps);
     assert(applyAsp && aspArg);
+    Aspect asp, preAsp;
     for (int i = 0; i < asps->size; ++i) {
-        Aspect asp = asps->rootAsps[i], preAsp;
-        if (!asp)
+        if ((asp = asps->rootAsps[i]) == NULL)
             continue;
         while (asp) {
             preAsp = asp->forward;
@@ -221,7 +223,7 @@ static void appendAspects_mb__(Move move, Board board, void* asps)
         asp = putAspect__(asps, fen, strlen(fen) + 1);
 
     putMoveRec_MP__(asp, move);
-    ((Aspects)asps)->movCount++;
+    ((Aspects)asps)->mrCount++;
 }
 
 Aspects getAspects_fs(const char* fileName)
@@ -241,7 +243,7 @@ Aspects getAspects_fs(const char* fileName)
             if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3)
                 break;
             putMoveRec_MR__(asp, rowcols, number, weight);
-            asps->movCount++;
+            asps->mrCount++;
         }
     }
     fclose(fin);
@@ -253,20 +255,15 @@ Aspects getAspects_fb(const char* fileName)
     Aspects asps = newAspects(Hash_MRValue, 0);
     FILE* fin = fopen(fileName, "rb");
     char hash[HashSize];
-    int mrCount = 0;
-    while (true) {
-        if (fread(hash, HashSize, 1, fin) != 1)
-            break;
-        if (fread(&mrCount, sizeof(int), 1, fin) != 1)
-            break;
+    int mrCount = 0, mrValue[3];
+    while ((fread(hash, HashSize, 1, fin) == 1)
+        && (fread(&mrCount, sizeof(int), 1, fin) == 1)) {
         Aspect asp = putAspect__(asps, hash, HashSize);
-
-        int mrValue[3];
         for (int i = 0; i < mrCount; ++i) {
             if (fread(&mrValue, sizeof(int), 3, fin) != 3)
                 break;
             putMoveRec_MR__(asp, mrValue[0], mrValue[1], mrValue[2]);
-            asps->movCount++;
+            asps->mrCount++;
         }
     }
     fclose(fin);
@@ -326,7 +323,7 @@ void writeAspectShow(char* fileName, CAspects asps)
     //printf("%d: %s\n", __LINE__, fileName);
 
     fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.2f SourceType:%d】\n",
-        asps->size, asps->aspCount, asps->movCount, (double)asps->aspCount / asps->size, asps->st);
+        asps->size, asps->aspCount, asps->mrCount, (double)asps->aspCount / asps->size, asps->st);
     fclose(fout);
 }
 
@@ -354,7 +351,7 @@ void storeAspectFEN(char* fileName, CAspects asps)
 static void writeMoveRecHash__(MoveRec mr, void* fout)
 {
     // 排除重复标记的着法
-    if (mr->number) {
+    if (mr->number > 0) {
         fwrite(&mr->rowcols, sizeof(int), 1, fout);
         fwrite(&mr->number, sizeof(int), 1, fout);
         fwrite(&mr->weight, sizeof(int), 1, fout);
@@ -365,6 +362,8 @@ static void writeAspectHash__(Aspect asp, void* fout)
 {
     fwrite(asp->key, asp->klen, 1, fout);
     fwrite(&asp->mrCount, sizeof(int), 1, fout);
+    
+    assert(asp->rootMR && asp->rootMR->number > 0);
 }
 
 static void copyMoveRec__(MoveRec mr, void* asp)
@@ -379,7 +378,9 @@ static void copyAspectHash__(Aspect asp, void* hasps)
     getHashFun(hash, (unsigned char*)asp->key);
     Aspect hasp = putAspect__(hasps, (char*)hash, HashSize);
 
-    moveRecMap__(asp->rootMR, copyMoveRec__, hasp); // 参数hasp不能在aspectsMap__函数调用时提供，因此只能在这里调用moveRecMap__
+    // 参数hasp不能在aspectsMap__函数调用时提供，因此只能在这里调用moveRecMap__
+    assert(asp->rootMR);
+    moveRecMap__(asp->rootMR, copyMoveRec__, hasp);
 }
 
 void storeAspectHash(char* fileName, CAspects asps)
@@ -387,7 +388,7 @@ void storeAspectHash(char* fileName, CAspects asps)
     FILE* fout = fopen(fileName, "wb");
     Aspects hasps = newAspects(Hash_MRValue, asps->size);
     aspectsMap__(asps, copyAspectHash__, hasps, NULL, NULL); // 转换存储格式
-    hasps->movCount = asps->movCount;
+    hasps->mrCount = asps->mrCount;
 
     aspectsMap__(hasps, writeAspectHash__, fout, writeMoveRecHash__, fout);
     delAspects(hasps);
@@ -397,67 +398,78 @@ void storeAspectHash(char* fileName, CAspects asps)
 static AspectAnalysis newAspectAnalysis__(void)
 {
     AspectAnalysis aa = malloc(sizeof(struct AspectAnalysis));
-    aa->mSize = aa->lmSize = aa->laSize = 2 << 9;
-    aa->mCount = aa->lmCount = aa->laCount = 0;
-    aa->mNumber = malloc(aa->mSize * sizeof(int));
-    aa->lmNumber = malloc(aa->lmSize * sizeof(int));
-    aa->laNumber = malloc(aa->laSize * sizeof(int));
+    aa->move = malloc(sizeof(struct NumArray));
+    aa->mr = malloc(sizeof(struct NumArray));
+    aa->asp = malloc(sizeof(struct NumArray));
+    aa->move->size = aa->mr->size = aa->asp->size = 2 << 9;
+    aa->move->count = aa->mr->count = aa->asp->count = 0;
+    aa->move->num = malloc(aa->move->size * sizeof(int));
+    aa->mr->num = malloc(aa->mr->size * sizeof(int));
+    aa->asp->num = malloc(aa->asp->size * sizeof(int));
     return aa;
 }
 
 static void delAspectAnalysis__(AspectAnalysis aa)
 {
-    free(aa->mNumber);
-    free(aa->lmNumber);
-    free(aa->laNumber);
+    free(aa->move->num);
+    free(aa->mr->num);
+    free(aa->asp->num);
+    free(aa->move);
+    free(aa->mr);
+    free(aa->asp);
     free(aa);
 }
 
-static void checkAppendArray__(int** array, int* size, int* count, int value)
+static void checkAppendArray__(NumArray na, int value)
 {
-    if (*count >= *size) {
-        *size += *size;
-        *array = realloc(*array, *size * sizeof(int));
+    if (na->count >= na->size) {
+        na->size *= 2;
+        na->num = realloc(na->num, na->size * sizeof(int));
     }
-    (*array)[(*count)++] = value;
+    na->num[na->count++] = value;
 }
 
-static void calMoveNumber__(MoveRec mr, void* ana)
+static void calMoveNumber__(MoveRec mr, AspectAnalysis aa)
 {
-    AspectAnalysis aa = (AspectAnalysis)ana;
-    /*
-    if (!mr->number) {
-        printf("0x%04x %u %u ", mr->rowcols, mr->number, mr->weight);
-    }
-    //*/
-    //assert(mr->number);
-    checkAppendArray__(&aa->mNumber, &aa->mSize, &aa->mCount, mr->number);
+    checkAppendArray__(aa->move, mr->number);
 }
 
-static void calMoveRecCount__(Aspect asp, void* ana)
+static void calMRNumber__(Aspect asp, AspectAnalysis aa)
 {
-    AspectAnalysis aa = (AspectAnalysis)ana;
-    checkAppendArray__(&aa->lmNumber, &aa->lmSize, &aa->lmCount, asp->mrCount);
+    checkAppendArray__(aa->mr, asp->mrCount);
 }
 
-static void calWriteOut__(FILE* fout, const char* entry, int* number, int size, int count)
+static void calAspNumber__(Aspect asp, AspectAnalysis aa)
 {
-    if (count <= 0 || size <= 0)
+    int count = 1;
+    while ((asp = asp->forward))
+        count++;
+    checkAppendArray__(aa->asp, count);
+}
+
+static void calWriteOut__(FILE* fout, const char* entry, NumArray na)
+{
+    if (na->count <= 0 || na->size <= 0)
         return;
     int imax = 0, total = 0;
-    for (int i = 0; i < count; ++i) {
-        imax = fmax(imax, number[i]);
-        total += number[i];
+    for (int i = 0; i < na->count; ++i) {
+        imax = fmax(imax, (na->num)[i]);
+        total += (na->num)[i];
     }
-    double ave = (double)total / count, scale = 1.0 * count / size, varinace = 0, difference = 0, stdDiff = 0;
-    for (int i = 0; i < count; ++i) {
-        difference = number[i] - ave;
+    double ave = (double)total / na->count,
+           scale = 1.0 * na->count / na->size,
+           varinace = 0, difference = 0;
+    // 计算方差
+    for (int i = 0; i < na->count; ++i) {
+        difference = (na->num)[i] - ave;
         varinace += difference * difference;
     }
-    varinace /= count - 1;
-    stdDiff = sqrt(varinace);
+    varinace /= na->count - 1;
+
+    // 计算均方差
+    double stdDiff = sqrt(varinace);
     fprintf(fout, "分析%8s => total:%d max:%d ave:%.4f 方差:%.4f 标准差:%.4f 【数组 %d/%d=%.4f】\n",
-        entry, total, imax, ave, varinace, stdDiff, count, size, scale);
+        entry, total, imax, ave, varinace, stdDiff, na->count, na->size, scale);
 }
 
 void analyzeAspects(char* fileName, CAspects asps)
@@ -465,22 +477,16 @@ void analyzeAspects(char* fileName, CAspects asps)
     assert(asps);
     FILE* fout = fopen(fileName, "a");
     AspectAnalysis aa = newAspectAnalysis__();
-    for (int i = 0; i < asps->size; ++i) {
-        Aspect asp = asps->rootAsps[i];
-        if (asp == NULL)
-            continue;
-        int count = 1;
-        while ((asp = asp->forward))
-            count++;
-        checkAppendArray__(&aa->laNumber, &aa->laSize, &aa->laCount, count);
-    }
-    aspectsMap__(asps, calMoveRecCount__, aa, calMoveNumber__, aa);
+    printf("\n%d %s", __LINE__, __FILE__);
+    aspectsMap__(asps, (void (*)(Aspect, void*))calAspNumber__, aa, NULL, NULL);
+    printf("\n%d %s", __LINE__, __FILE__);
+    aspectsMap__(asps, (void (*)(Aspect, void*))calMRNumber__, aa, (void (*)(MoveRec, void*))calMoveNumber__, aa);
 
     fprintf(fout, "分析 aspects => 局面:%d 着法:%d  SourceType:%d 【数组 %d/%d=%.4f】\n",
-        asps->aspCount, asps->movCount, asps->st, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
-    calWriteOut__(fout, "moveNum", aa->mNumber, aa->mSize, aa->mCount);
-    calWriteOut__(fout, "mrNum", aa->lmNumber, aa->lmSize, aa->lmCount);
-    calWriteOut__(fout, "aspNum", aa->laNumber, aa->laSize, aa->laCount);
+        asps->aspCount, asps->mrCount, asps->st, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
+    calWriteOut__(fout, "moveNum", aa->move);
+    calWriteOut__(fout, "mrNum", aa->mr);
+    calWriteOut__(fout, "aspNum", aa->asp);
     fprintf(fout, "\n");
 
     delAspectAnalysis__(aa);
@@ -522,7 +528,7 @@ void aspects_mr_equal(CAspects asps0, CAspects aspsh)
         } while ((asp0 = preAsp));
     }
     assert(aspCount == asps0->aspCount);
-    assert(mrCount == asps0->movCount);
+    assert(mrCount == asps0->mrCount);
 }
 
 static bool aspect_equal__(Aspect asp0, Aspect asp1)
@@ -569,7 +575,7 @@ bool aspects_equal(CAspects asps0, CAspects asps1)
 
     if (!(asps0->size == asps1->size
             && asps0->aspCount == asps1->aspCount
-            && asps0->movCount && asps1->movCount)) {
+            && asps0->mrCount && asps1->mrCount)) {
         printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
