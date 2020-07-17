@@ -36,8 +36,6 @@ void appendAspects_file(Aspects aspects, const char* fileName);
 void appendAspects_dir(Aspects aspects, const char* dirName);
 
 int getAspects_length(Aspects aspects);
-// 取得局面循环着法的距离
-//int getLoopBoutCount(CAspects aspects, const wchar_t* FEN);
 
 // 输出局面字符串，仅查看(应在Move对象的生命周期内调用)
 void writeAspectShow(char* fileName, CAspects aspects);
@@ -49,8 +47,8 @@ void storeAspectHash(char* fileName, CAspects aspects);
 // 分析局面库并储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
 // 检查两种不同格式（后一种是Hash_MRValue）数据文件的数据记录是否一致
-void aspects_mr_equal(CAspects asps0, CAspects aspsh);
-// 检查两种相同格式的数据文件的数据记录是否一致
-bool aspects_equal(CAspects asps0, CAspects asps1);
+bool aspects_mr_equal(CAspects aspsf, CAspects aspsh);
+// 检查数据文件的数据记录是否一致 isSame: 格式是否相同；如不同，则asps0:FEN_MRValue, asps1:Hash_MRValue
+bool aspects_equal(CAspects asps0, CAspects asps1, bool isSame);
 
 #endif

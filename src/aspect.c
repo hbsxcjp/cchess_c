@@ -13,8 +13,8 @@ struct MoveRec {
 
 struct Aspect {
     char* key; // 局面表示的指针
-    int klen;
-    int mrCount;
+    int klen; // 字符长度
+    int mrCount; // 本局面下着法数
     MoveRec rootMR;
     Aspect forward;
 };
@@ -104,9 +104,9 @@ void delAspects(Aspects asps)
 
 static void moveRecMap__(MoveRec mr, void applyMr(MoveRec, void*), void* mrArg)
 {
-    do
+    do {
         applyMr(mr, mrArg);
-    while ((mr = mr->forward));
+    } while ((mr = mr->forward));
 }
 
 static void aspectsMap__(CAspects asps, void applyAsp(Aspect, void*), void* aspArg, void applyMr(MoveRec, void*), void* mrArg)
@@ -144,25 +144,6 @@ static Aspect getAspect__(CAspects asps, const char* key, int klen)
     while (asp && !chars_equal(asp->key, key, klen))
         asp = asp->forward;
     return asp;
-}
-
-static void putMoveRec_MP__(Aspect asp, CMove move)
-{
-    MoveRec pmr = asp->rootMR, mr = newMoveRec__(getRowCols_m(move), 1, 0);
-    // 允许存在相同着法，需对number作出标记
-    while (pmr) {
-        if (mr->rowcols == pmr->rowcols) {
-            mr->number += pmr->number;
-            pmr->number = 0; // 标记重复，存储为FEN_MRValue, Hash_MRValue格式时该mr被过滤
-            asp->mrCount--; // 与函数尾部的递增抵消，即不增不减
-            break; // 不需再往前推，因为如有重复在此之前也已标记重复
-        }
-        pmr = pmr->forward;
-    }
-    // 插入方式
-    mr->forward = asp->rootMR;
-    asp->rootMR = mr;
-    asp->mrCount++;
 }
 
 static void putMoveRec_MR__(Aspect asp, int rowcols, int number, int weight)
@@ -219,55 +200,26 @@ static void appendAspects_mb__(Move move, Board board, void* asps)
     char fen[SEATNUM];
     wcstombs(fen, FEN, SEATNUM);
     Aspect asp = getAspect__(asps, fen, strlen(fen) + 1);
-    if (!asp)
+    if (asp == NULL)
         asp = putAspect__(asps, fen, strlen(fen) + 1);
 
-    putMoveRec_MP__(asp, move);
+    int rowcols = getRowCols_m(move);
+    MoveRec mr = asp->rootMR;
+    while (mr) {
+        // 未找到相同着法，调增number后退出
+        if (mr->rowcols == rowcols) {
+            mr->number++;
+            return;
+        }
+        mr = mr->forward;
+    }
+    // 未找到相同着法，插入新着法记录
+    mr = newMoveRec__(rowcols, 1, 0);
+    mr->forward = asp->rootMR;
+    asp->rootMR = mr;
+    asp->mrCount++;
+
     ((Aspects)asps)->mrCount++;
-}
-
-Aspects getAspects_fs(const char* fileName)
-{
-    Aspects asps = newAspects(FEN_MRValue, 0);
-    FILE* fin = fopen(fileName, "r");
-    char tag[FILENAME_MAX];
-    fscanf(fin, "%s", tag);
-    assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
-    int mrCount = 0, rowcols = 0, number = 0, weight = 0;
-    char fen[SEATNUM];
-    while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
-        if (fscanf(fin, "%d", &mrCount) != 1)
-            continue;
-        Aspect asp = putAspect__(asps, fen, strlen(fen) + 1);
-        for (int i = 0; i < mrCount; ++i) {
-            if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3)
-                break;
-            putMoveRec_MR__(asp, rowcols, number, weight);
-            asps->mrCount++;
-        }
-    }
-    fclose(fin);
-    return asps;
-}
-
-Aspects getAspects_fb(const char* fileName)
-{
-    Aspects asps = newAspects(Hash_MRValue, 0);
-    FILE* fin = fopen(fileName, "rb");
-    char hash[HashSize];
-    int mrCount = 0, mrValue[3];
-    while ((fread(hash, HashSize, 1, fin) == 1)
-        && (fread(&mrCount, sizeof(int), 1, fin) == 1)) {
-        Aspect asp = putAspect__(asps, hash, HashSize);
-        for (int i = 0; i < mrCount; ++i) {
-            if (fread(&mrValue, sizeof(int), 3, fin) != 3)
-                break;
-            putMoveRec_MR__(asp, mrValue[0], mrValue[1], mrValue[2]);
-            asps->mrCount++;
-        }
-    }
-    fclose(fin);
-    return asps;
 }
 
 void appendAspects_file(Aspects asps, const char* fileName)
@@ -288,22 +240,55 @@ void appendAspects_dir(Aspects asps, const char* dirName)
     operateDir(dirName, (void (*)(void*, void*))appendAspects_fileInfo__, asps, true);
 }
 
-int getAspects_length(Aspects asps) { return asps->aspCount; }
-
-/*
-int getLoopBoutCount(CAspects asps, const wchar_t* FEN)
+Aspects getAspects_fs(const char* fileName)
 {
-    int boutCount = 0;
-    MoveRec lmr = getMoveRec__(asps, FEN, FEN_MovePtr), mr = lmr;
-    if (lmr && lmr->move)
-        while ((mr = mr->forward))
-            if (isSameMove(lmr->move, mr->move) && isConnected(lmr->move, mr->move)) {
-                boutCount = (getNextNo(lmr->move) - getNextNo(lmr->move)) / 2;
+    Aspects asps = newAspects(FEN_MRValue, 0);
+    FILE* fin = fopen(fileName, "r");
+    char tag[FILENAME_MAX];
+    fscanf(fin, "%s", tag);
+    assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
+    int mrCount = 0, rowcols = 0, number = 0, weight = 0;
+    char fen[SEATNUM];
+    while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
+        if (fscanf(fin, "%d", &mrCount) != 1)
+            continue;
+        Aspect asp = putAspect__(asps, fen, strlen(fen) + 1);
+        for (int i = 0; i < mrCount; ++i) {
+            if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3) {
+                //printf("\n%d %s", __LINE__, __FILE__);
                 break;
             }
-    return boutCount;
+            putMoveRec_MR__(asp, rowcols, number, weight);
+            asps->mrCount++;
+        }
+    }
+    fclose(fin);
+    return asps;
 }
-//*/
+
+Aspects getAspects_fb(const char* fileName)
+{
+    Aspects asps = newAspects(Hash_MRValue, 0);
+    FILE* fin = fopen(fileName, "rb");
+    char hash[HashSize];
+    int mrCount = 0, mrValue[3];
+    while ((fread(hash, HashSize, 1, fin) == 1)
+        && (fread(&mrCount, sizeof(int), 1, fin) == 1)) {
+        Aspect asp = putAspect__(asps, hash, HashSize);
+        for (int i = 0; i < mrCount; ++i) {
+            if (fread(&mrValue[0], sizeof(int), 3, fin) != 3) {
+                //printf("\n%d %s", __LINE__, __FILE__);
+                break;
+            }
+            putMoveRec_MR__(asp, mrValue[0], mrValue[1], mrValue[2]);
+            asps->mrCount++;
+        }
+    }
+    fclose(fin);
+    return asps;
+}
+
+int getAspects_length(Aspects asps) { return asps->aspCount; }
 
 static void printfMoveRecShow__(MoveRec mr, void* fout)
 {
@@ -317,20 +302,18 @@ static void printfAspectShow__(Aspect asp, void* fout)
 
 void writeAspectShow(char* fileName, CAspects asps)
 {
-    assert(asps->st == FEN_MovePtr);
+    assert(asps->st == FEN_MRValue);
     FILE* fout = fopen(fileName, "w");
     aspectsMap__(asps, printfAspectShow__, fout, printfMoveRecShow__, fout);
-    //printf("%d: %s\n", __LINE__, fileName);
 
-    fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.2f SourceType:%d】\n",
+    fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.4f SourceType:%d】\n",
         asps->size, asps->aspCount, asps->mrCount, (double)asps->aspCount / asps->size, asps->st);
     fclose(fout);
 }
 
 static void printfMoveRecFEN__(MoveRec mr, void* fout)
 {
-    if (mr->number)
-        fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
+    fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
 }
 
 static void printfAspectFEN__(Aspect asp, void* fout)
@@ -350,20 +333,15 @@ void storeAspectFEN(char* fileName, CAspects asps)
 
 static void writeMoveRecHash__(MoveRec mr, void* fout)
 {
-    // 排除重复标记的着法
-    if (mr->number > 0) {
-        fwrite(&mr->rowcols, sizeof(int), 1, fout);
-        fwrite(&mr->number, sizeof(int), 1, fout);
-        fwrite(&mr->weight, sizeof(int), 1, fout);
-    }
+    fwrite(&mr->rowcols, sizeof(int), 1, fout);
+    fwrite(&mr->number, sizeof(int), 1, fout);
+    fwrite(&mr->weight, sizeof(int), 1, fout);
 }
 
 static void writeAspectHash__(Aspect asp, void* fout)
 {
     fwrite(asp->key, asp->klen, 1, fout);
     fwrite(&asp->mrCount, sizeof(int), 1, fout);
-    
-    assert(asp->rootMR && asp->rootMR->number > 0);
 }
 
 static void copyMoveRec__(MoveRec mr, void* asp)
@@ -385,6 +363,8 @@ static void copyAspectHash__(Aspect asp, void* hasps)
 
 void storeAspectHash(char* fileName, CAspects asps)
 {
+    assert(asps->st <= FEN_MRValue);
+
     FILE* fout = fopen(fileName, "wb");
     Aspects hasps = newAspects(Hash_MRValue, asps->size);
     aspectsMap__(asps, copyAspectHash__, hasps, NULL, NULL); // 转换存储格式
@@ -420,7 +400,7 @@ static void delAspectAnalysis__(AspectAnalysis aa)
     free(aa);
 }
 
-static void checkAppendArray__(NumArray na, int value)
+static void appendNumArray__(NumArray na, int value)
 {
     if (na->count >= na->size) {
         na->size *= 2;
@@ -431,20 +411,12 @@ static void checkAppendArray__(NumArray na, int value)
 
 static void calMoveNumber__(MoveRec mr, AspectAnalysis aa)
 {
-    checkAppendArray__(aa->move, mr->number);
+    appendNumArray__(aa->move, mr->number);
 }
 
 static void calMRNumber__(Aspect asp, AspectAnalysis aa)
 {
-    checkAppendArray__(aa->mr, asp->mrCount);
-}
-
-static void calAspNumber__(Aspect asp, AspectAnalysis aa)
-{
-    int count = 1;
-    while ((asp = asp->forward))
-        count++;
-    checkAppendArray__(aa->asp, count);
+    appendNumArray__(aa->mr, asp->mrCount);
 }
 
 static void calWriteOut__(FILE* fout, const char* entry, NumArray na)
@@ -477,9 +449,17 @@ void analyzeAspects(char* fileName, CAspects asps)
     assert(asps);
     FILE* fout = fopen(fileName, "a");
     AspectAnalysis aa = newAspectAnalysis__();
-    printf("\n%d %s", __LINE__, __FILE__);
-    aspectsMap__(asps, (void (*)(Aspect, void*))calAspNumber__, aa, NULL, NULL);
-    printf("\n%d %s", __LINE__, __FILE__);
+
+    Aspect asp;
+    for (int i = 0; i < asps->size; ++i) {
+        if ((asp = asps->rootAsps[i])) {
+            int count = 0;
+            do
+                count++;
+            while ((asp = asp->forward));
+            appendNumArray__(aa->asp, count);
+        }
+    }
     aspectsMap__(asps, (void (*)(Aspect, void*))calMRNumber__, aa, (void (*)(MoveRec, void*))calMoveNumber__, aa);
 
     fprintf(fout, "分析 aspects => 局面:%d 着法:%d  SourceType:%d 【数组 %d/%d=%.4f】\n",
@@ -502,12 +482,12 @@ static bool moveRec_equal__(MoveRec mr0, MoveRec mr1)
             && mr0->weight == mr1->weight));
 }
 
-void aspects_mr_equal(CAspects asps0, CAspects aspsh)
+bool aspects_mr_equal(CAspects aspsf, CAspects aspsh)
 {
-    assert(asps0 && aspsh);
+    assert(aspsf && aspsh);
     int aspCount = 0, mrCount = 0;
-    for (int i = 0; i < asps0->size; ++i) {
-        Aspect asp0 = asps0->rootAsps[i], preAsp = NULL;
+    for (int i = 0; i < aspsf->size; ++i) {
+        Aspect asp0 = aspsf->rootAsps[i], preAsp = NULL;
         if (!asp0)
             continue;
         do {
@@ -543,14 +523,14 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
             && asp0->mrCount == asp1->mrCount
             && asp0->key && asp1->key
             && chars_equal(asp0->key, asp1->key, asp0->klen))) {
-        printf("\n%d %s", __LINE__, __FILE__);
+        //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
     MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
     while (mr0 && mr1) {
         if (!(moveRec_equal__(mr0, mr1))) {
-            printf("\n%d %s", __LINE__, __FILE__);
+            //printf("\n%d %s", __LINE__, __FILE__);
             return false;
         }
         mr0 = mr0->forward;
@@ -558,14 +538,14 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
     }
     // mr0、mr1未同时抵达终点（空指针）
     if (mr0 != NULL || mr1 != NULL) {
-        printf("\n%d %s", __LINE__, __FILE__);
+        //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
     return true;
 }
 
-bool aspects_equal(CAspects asps0, CAspects asps1)
+bool aspects_equal(CAspects asps0, CAspects asps1, bool isSame)
 {
     if (asps0 == NULL && asps1 == NULL)
         return true;
@@ -576,7 +556,7 @@ bool aspects_equal(CAspects asps0, CAspects asps1)
     if (!(asps0->size == asps1->size
             && asps0->aspCount == asps1->aspCount
             && asps0->mrCount && asps1->mrCount)) {
-        printf("\n%d %s", __LINE__, __FILE__);
+        //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
@@ -590,14 +570,14 @@ bool aspects_equal(CAspects asps0, CAspects asps1)
             asp1 = getAspect__(asps1, asp0->key, asp0->klen);
             assert(asp1);
             if (!(aspect_equal__(asp0, asp1))) {
-                printf("\n%d %s", __LINE__, __FILE__);
+                //printf("\n%d %s", __LINE__, __FILE__);
                 return false;
             }
             aspCount++;
         } while ((asp0 = asp0->forward));
     }
     if (aspCount != asps0->aspCount) {
-        printf("\n%d %s", __LINE__, __FILE__);
+        //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
 

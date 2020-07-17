@@ -677,28 +677,30 @@ static void testAspects__(CAspects asps)
          *hash = "chessManual/hash";
 
     writeAspectShow(show, asps);
-    analyzeAspects(log, asps);
-
+    
     storeAspectFEN(libs, asps);
     Aspects asps0 = getAspects_fs(libs),
             asps1 = getAspects_fs(libs);
     analyzeAspects(log, asps0);
-    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
-    delAspects(asps0);
-    delAspects(asps1);
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps1, true));
 
     storeAspectHash(hash, asps);
-    asps0 = getAspects_fb(hash),
-    asps1 = getAspects_fb(hash);
-    analyzeAspects(log, asps0);
-    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
+    Aspects asps3 = getAspects_fb(hash),
+            asps4 = getAspects_fb(hash);
+    analyzeAspects(log, asps3);
+    CU_ASSERT_TRUE(aspects_equal(asps3, asps4, true));
+
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps3, false));
+
     delAspects(asps0);
     delAspects(asps1);
+    delAspects(asps3);
+    delAspects(asps4);
 }
 
 static void test_aspect_file(void)
 {
-    Aspects asps = newAspects(FEN_MovePtr, 0);
+    Aspects asps = newAspects(FEN_MRValue, 0);
     appendAspects_file(asps, xqfFileName__);
     testAspects__(asps);
 
@@ -707,7 +709,7 @@ static void test_aspect_file(void)
 
 static void test_aspect_dir(void)
 {
-    Aspects asps = newAspects(FEN_MovePtr, 0);
+    Aspects asps = newAspects(FEN_MRValue, 0);
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", dirNames__[dir], ".xqf");

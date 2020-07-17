@@ -35,16 +35,14 @@
 #define PIECENUM (PIECECOLORNUM * SIDEPIECENUM)
 
 // 棋子颜色类型
-typedef enum
-{
+typedef enum {
     RED,
     BLACK,
     NOTCOLOR
 } PieceColor;
 
 // 棋子种类类型
-typedef enum
-{
+typedef enum {
     KING,
     ADVISOR,
     BISHOP,
@@ -56,10 +54,10 @@ typedef enum
 } PieceKind;
 
 // 棋子指针类型（不透明）
-typedef struct Piece *Piece;
-typedef const struct Piece *CPiece;
-typedef struct Pieces *Pieces;
-typedef const struct Pieces *CPieces;
+typedef struct Piece* Piece;
+typedef const struct Piece* CPiece;
+typedef struct Pieces* Pieces;
+typedef const struct Pieces* CPieces;
 
 //=================================================================
 //棋盘相关的类型
@@ -72,27 +70,25 @@ typedef const struct Pieces *CPieces;
 #define SEATNUM (BOARDROW * BOARDCOL)
 
 // 棋盘变换类型
-typedef enum
-{
+typedef enum {
     EXCHANGE,
     ROTATE,
     SYMMETRY
 } ChangeType;
 
 // 棋盘位置类型
-typedef struct Seat *Seat;
-typedef const struct Seat *CSeat;
+typedef struct Seat* Seat;
+typedef const struct Seat* CSeat;
 // 一副棋盘结构类型
-typedef struct Board *Board;
-typedef const struct Board *CBoard;
+typedef struct Board* Board;
+typedef const struct Board* CBoard;
 
 //=================================================================
 //棋局相关的类型
 //=================================================================
 
 // 棋局存储类型
-typedef enum
-{
+typedef enum {
     XQF,
     BIN,
     JSON,
@@ -103,37 +99,34 @@ typedef enum
 } RecFormat;
 
 // 局面存储类型
-typedef enum
-{
-    FEN_MovePtr,
+typedef enum {
+    //FEN_MovePtr,
     FEN_MRValue,
     Hash_MRValue
 } SourceType;
 
 // 着法类型
-typedef struct Move *Move;
-typedef const struct Move *CMove;
+typedef struct Move* Move;
+typedef const struct Move* CMove;
 // 局面记录类型
-typedef struct Aspects *Aspects;
-typedef const struct Aspects *CAspects;
+typedef struct Aspects* Aspects;
+typedef const struct Aspects* CAspects;
 // 棋局类型
-typedef struct ChessManual *ChessManual;
-typedef const struct ChessManual *CChessManual;
+typedef struct ChessManual* ChessManual;
+typedef const struct ChessManual* CChessManual;
 
 //=================================================================
 //棋局演示相关的类型
 //=================================================================
 // 区域主题颜色配置类型
-typedef enum
-{
+typedef enum {
     SIMPLE,
     SHOWY,
     //HIGHLIGHT
 } Thema;
 
 // 控制台焦点区域类型
-typedef enum
-{
+typedef enum {
     MOVEA,
     CURMOVEA,
     BOARDA,
@@ -143,11 +136,10 @@ typedef enum
     MENUA,
     DECAREA, // 代表递减
     INCAREA, // 代表递增
-    OLDAREA  // 代表旧区域
+    OLDAREA // 代表旧区域
 } Area;
 
 // 演示类型结构
-typedef struct Console *PConsole;
-
+typedef struct Console* PConsole;
 
 #endif
