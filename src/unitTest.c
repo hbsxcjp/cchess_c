@@ -672,30 +672,31 @@ static void testAspects__(CAspects asps)
 {
     assert(asps);
     char *show = "chessManual/show",
-         *log = "chessManual/log",
          *libs = "chessManual/libs",
-         *hash = "chessManual/hash";
+         *hash = "chessManual/hash",
+         *log = "chessManual/log";
 
     writeAspectShow(show, asps);
-    
     storeAspectFEN(libs, asps);
+    storeAspectHash(hash, asps);
+
     Aspects asps0 = getAspects_fs(libs),
             asps1 = getAspects_fs(libs);
     analyzeAspects(log, asps0);
     CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
 
-    storeAspectHash(hash, asps);
-    Aspects asps3 = getAspects_fb(hash),
-            asps4 = getAspects_fb(hash);
-    analyzeAspects(log, asps3);
-    CU_ASSERT_TRUE(aspects_equal(asps3, asps4));
+    Aspects asps2 = getAspects_fb(hash),
+            asps3 = getAspects_fb(hash);
+    analyzeAspects(log, asps2);
+    CU_ASSERT_TRUE(aspects_equal(asps2, asps3));
 
-    CU_ASSERT_TRUE(aspects_equal(asps0, asps3));
+    // 不同格式进行比较
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps2));
 
     delAspects(asps0);
     delAspects(asps1);
+    delAspects(asps2);
     delAspects(asps3);
-    delAspects(asps4);
 }
 
 static void test_aspect_file(void)
