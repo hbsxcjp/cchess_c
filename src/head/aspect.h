@@ -22,7 +22,7 @@ typedef struct Aspect* Aspect;
 typedef struct AspectAnalysis* AspectAnalysis;
 
 // 新建、删除局面类型
-Aspects newAspects(SourceType st, int size);
+Aspects newAspects(AspFormat st, int size);
 void delAspects(Aspects aspects);
 
 // 读取局面数据文件加入局面类型
@@ -46,9 +46,8 @@ void storeAspectHash(char* fileName, CAspects aspects);
 
 // 分析局面库并储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
-// 检查两种不同格式（后一种是Hash_MRValue）数据文件的数据记录是否一致
-bool aspects_mr_equal(CAspects aspsf, CAspects aspsh);
-// 检查数据文件的数据记录是否一致 isSame: 格式是否相同；如不同，则asps0:FEN_MRValue, asps1:Hash_MRValue
-bool aspects_equal(CAspects asps0, CAspects asps1, bool isSame);
+
+// 检查数据文件的数据记录是否一致 
+bool aspects_equal(CAspects asps0, CAspects asps1);
 
 #endif

@@ -1,6 +1,7 @@
 #include "head/tools.h"
-
+  
 #define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
+
 
 bool isPrime(int n)
 {
@@ -347,7 +348,7 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
     DIR* dfd;
 
     if ((dfd = opendir(dirName)) == NULL) {
-        fprintf(stderr, "dirwalk: can't open %s\n", dirName);
+        fprintf(stderr, "operateDir: can't open %s\n", dirName);
         return;
     }
 
@@ -363,7 +364,7 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
             snprintf(findName, FILENAME_MAX, "%s/%s", dirName, dp->d_name);
             struct stat stbuf;
             if (stat(findName, &stbuf) == -1) {
-                fprintf(stderr, "file size: open %s failed!\n", findName);
+                fprintf(stderr, "operateDir: open %s failed!\n", findName);
                 return;
             }
 

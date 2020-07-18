@@ -103,7 +103,7 @@ typedef enum {
     //FEN_MovePtr,
     FEN_MRValue,
     Hash_MRValue
-} SourceType;
+} AspFormat;
 
 // 着法类型
 typedef struct Move* Move;

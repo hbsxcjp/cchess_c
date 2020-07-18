@@ -24,7 +24,7 @@ struct Aspects {
     double loadfactor;
     int aspCount, mrCount;
     Aspect* rootAsps;
-    SourceType st; // 数据源类型，决定Aspect的express字段解释（fen or hash）
+    AspFormat aspFormat; // 数据源类型，决定Aspect的express字段解释（fen or hash）
 };
 
 typedef struct NumArray {
@@ -79,7 +79,7 @@ static void delAspect__(Aspect asp)
     }
 }
 
-Aspects newAspects(SourceType st, int size)
+Aspects newAspects(AspFormat aspFormat, int size)
 {
     size = getPrime(size);
     Aspects asps = malloc(sizeof(struct Aspects));
@@ -89,7 +89,7 @@ Aspects newAspects(SourceType st, int size)
     asps->rootAsps = malloc(size * sizeof(Aspect*));
     for (int i = 0; i < size; ++i)
         asps->rootAsps[i] = NULL;
-    asps->st = st;
+    asps->aspFormat = aspFormat;
     return asps;
 }
 
@@ -170,7 +170,7 @@ static void loadAspect__(Aspect asp, void* asps)
 // 源局面(指针数组下内容)全面迁移至新局面
 static void reloadLastAspects__(Aspects asps, int minSize)
 {
-    Aspects tmpAsps = newAspects(asps->st, minSize);
+    Aspects tmpAsps = newAspects(asps->aspFormat, minSize);
     aspectsMap__(asps, loadAspect__, tmpAsps, NULL, NULL);
 
     asps->size = tmpAsps->size;
@@ -302,12 +302,12 @@ static void printfAspectShow__(Aspect asp, void* fout)
 
 void writeAspectShow(char* fileName, CAspects asps)
 {
-    assert(asps->st == FEN_MRValue);
+    assert(asps->aspFormat == FEN_MRValue);
     FILE* fout = fopen(fileName, "w");
     aspectsMap__(asps, printfAspectShow__, fout, printfMoveRecShow__, fout);
 
-    fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.4f SourceType:%d】\n",
-        asps->size, asps->aspCount, asps->mrCount, (double)asps->aspCount / asps->size, asps->st);
+    fprintf(fout, "\n【数组 大小:%d 局面数(使用):%d 着法数:%d 填充因子:%5.4f AspFormat:%d】\n",
+        asps->size, asps->aspCount, asps->mrCount, (double)asps->aspCount / asps->size, asps->aspFormat);
     fclose(fout);
 }
 
@@ -323,10 +323,11 @@ static void printfAspectFEN__(Aspect asp, void* fout)
 
 void storeAspectFEN(char* fileName, CAspects asps)
 {
-    assert(asps->st <= FEN_MRValue);
+    assert(asps->aspFormat <= FEN_MRValue);
     FILE* fout = fopen(fileName, "w");
     fprintf(fout, "%s\n", ASPLIB_MARK);
     aspectsMap__(asps, printfAspectFEN__, fout, printfMoveRecFEN__, fout);
+    fprintf(fout, "\n");
 
     fclose(fout);
 }
@@ -363,7 +364,7 @@ static void copyAspectHash__(Aspect asp, void* hasps)
 
 void storeAspectHash(char* fileName, CAspects asps)
 {
-    assert(asps->st <= FEN_MRValue);
+    assert(asps->aspFormat <= FEN_MRValue);
 
     FILE* fout = fopen(fileName, "wb");
     Aspects hasps = newAspects(Hash_MRValue, asps->size);
@@ -453,17 +454,18 @@ void analyzeAspects(char* fileName, CAspects asps)
     Aspect asp;
     for (int i = 0; i < asps->size; ++i) {
         if ((asp = asps->rootAsps[i])) {
-            int count = 0;
-            do
+            int count = 1;
+            while ((asp = asp->forward))
                 count++;
-            while ((asp = asp->forward));
+            // 加入单链表的局面个数
             appendNumArray__(aa->asp, count);
         }
     }
+    // 加入单链表的着法记录个数、每个着法重复次数
     aspectsMap__(asps, (void (*)(Aspect, void*))calMRNumber__, aa, (void (*)(MoveRec, void*))calMoveNumber__, aa);
 
-    fprintf(fout, "分析 aspects => 局面:%d 着法:%d  SourceType:%d 【数组 %d/%d=%.4f】\n",
-        asps->aspCount, asps->mrCount, asps->st, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
+    fprintf(fout, "分析 aspects => 局面:%d 着法:%d  AspFormat:%d 【数组 %d/%d=%.4f】\n",
+        asps->aspCount, asps->mrCount, asps->aspFormat, asps->aspCount, asps->size, (double)asps->aspCount / asps->size);
     calWriteOut__(fout, "moveNum", aa->move);
     calWriteOut__(fout, "mrNum", aa->mr);
     calWriteOut__(fout, "aspNum", aa->asp);
@@ -482,36 +484,7 @@ static bool moveRec_equal__(MoveRec mr0, MoveRec mr1)
             && mr0->weight == mr1->weight));
 }
 
-bool aspects_mr_equal(CAspects aspsf, CAspects aspsh)
-{
-    assert(aspsf && aspsh);
-    int aspCount = 0, mrCount = 0;
-    for (int i = 0; i < aspsf->size; ++i) {
-        Aspect asp0 = aspsf->rootAsps[i], preAsp = NULL;
-        if (!asp0)
-            continue;
-        do {
-            preAsp = asp0->forward;
-            unsigned char hash[HashSize];
-            getHashFun(hash, (const unsigned char*)asp0->key);
-            Aspect asp1 = getAspect__(aspsh, (char*)hash, HashSize);
-            assert(asp1);
-            aspCount++;
-
-            assert(asp0->rootMR);
-            MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
-            assert(mr0 && mr1);
-            do {
-                assert(moveRec_equal__(mr0, mr1));
-                mrCount++;
-            } while ((mr0 = mr0->forward) && (mr1 = mr1->forward));
-        } while ((asp0 = preAsp));
-    }
-    assert(aspCount == asps0->aspCount);
-    assert(mrCount == asps0->mrCount);
-}
-
-static bool aspect_equal__(Aspect asp0, Aspect asp1)
+static bool aspect_equal__(Aspect asp0, Aspect asp1, bool isSame)
 {
     if (asp0 == NULL && asp1 == NULL)
         return true;
@@ -519,15 +492,18 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
     if (!(asp0 && asp1))
         return false;
 
-    if (!(asp0->klen == asp1->klen
-            && asp0->mrCount == asp1->mrCount
-            && asp0->key && asp1->key
-            && chars_equal(asp0->key, asp1->key, asp0->klen))) {
+    if (!(asp0->mrCount == asp1->mrCount
+            && (!isSame
+                // 以下为isSame为真时进行比较
+                || (asp0->klen == asp1->klen
+                    && asp0->key && asp1->key
+                    && chars_equal(asp0->key, asp1->key, asp0->klen))))) {
         //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
     MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
+    assert(mr0 && mr1);
     while (mr0 && mr1) {
         if (!(moveRec_equal__(mr0, mr1))) {
             //printf("\n%d %s", __LINE__, __FILE__);
@@ -545,7 +521,7 @@ static bool aspect_equal__(Aspect asp0, Aspect asp1)
     return true;
 }
 
-bool aspects_equal(CAspects asps0, CAspects asps1, bool isSame)
+bool aspects_equal(CAspects asps0, CAspects asps1)
 {
     if (asps0 == NULL && asps1 == NULL)
         return true;
@@ -561,15 +537,27 @@ bool aspects_equal(CAspects asps0, CAspects asps1, bool isSame)
     }
 
     int aspCount = 0;
+    bool isSame = asps0->aspFormat == asps1->aspFormat;
+    // 格式不相同，且前一个为Hash格式则需更换
+    if (!isSame && (asps0->aspFormat == Hash_MRValue)) {
+        CAspects tmpAsps = asps0;
+        asps0 = asps1;
+        asps1 = tmpAsps;
+    }
     for (int i = 0; i < asps0->size; ++i) {
         Aspect asp0 = asps0->rootAsps[i], asp1 = NULL;
         if (asp0 == NULL)
             continue;
 
         do {
-            asp1 = getAspect__(asps1, asp0->key, asp0->klen);
-            assert(asp1);
-            if (!(aspect_equal__(asp0, asp1))) {
+            if (isSame)
+                asp1 = getAspect__(asps1, asp0->key, asp0->klen);
+            else {
+                unsigned char hash[HashSize];
+                getHashFun(hash, (const unsigned char*)asp0->key);
+                asp1 = getAspect__(asps1, (char*)hash, HashSize);
+            }
+            if (!(aspect_equal__(asp0, asp1, isSame))) {
                 //printf("\n%d %s", __LINE__, __FILE__);
                 return false;
             }

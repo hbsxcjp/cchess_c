@@ -682,15 +682,15 @@ static void testAspects__(CAspects asps)
     Aspects asps0 = getAspects_fs(libs),
             asps1 = getAspects_fs(libs);
     analyzeAspects(log, asps0);
-    CU_ASSERT_TRUE(aspects_equal(asps0, asps1, true));
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
 
     storeAspectHash(hash, asps);
     Aspects asps3 = getAspects_fb(hash),
             asps4 = getAspects_fb(hash);
     analyzeAspects(log, asps3);
-    CU_ASSERT_TRUE(aspects_equal(asps3, asps4, true));
+    CU_ASSERT_TRUE(aspects_equal(asps3, asps4));
 
-    CU_ASSERT_TRUE(aspects_equal(asps0, asps3, false));
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps3));
 
     delAspects(asps0);
     delAspects(asps1);
