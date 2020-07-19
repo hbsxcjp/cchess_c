@@ -114,6 +114,8 @@ typedef const struct Aspects* CAspects;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
 typedef const struct ChessManual* CChessManual;
+typedef struct Play* Play;
+typedef const struct Play* CPlay;
 
 //=================================================================
 //棋局演示相关的类型

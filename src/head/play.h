@@ -2,31 +2,24 @@
 #define PLAY_H
 
 #include "chessManual.h"
-
-// 添加/删除一个info条目
-void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
-void delInfoItem(ChessManual cm, const wchar_t* name);
+#include "move.h"
 
 // 前进一步
-void go(ChessManual cm);
+void go(Play play);
 // 前进到变着
-void goOther(ChessManual cm);
-void goEnd(ChessManual cm);
+void goOther(Play play);
+void goEnd(Play play);
 // 前进至指定move
-void goTo(ChessManual cm, Move move);
+void goTo(Play play, Move move);
 
 // 后退一步
-void back(ChessManual cm);
-void backNext(ChessManual cm);
-void backOther(ChessManual cm);
-void backFirst(ChessManual cm);
+void back(Play play);
+void backNext(Play play);
+void backOther(Play play);
+void backFirst(Play play);
 // 后退至指定move
-void backTo(ChessManual cm, Move move);
+void backTo(Play play, Move move);
 // 前进或后退数步
-void goInc(ChessManual cm, int inc);
-
-// 转变棋局实例
-void changeChessManual(ChessManual cm, ChangeType ct);
-
+void goInc(Play play, int inc);
 
 #endif

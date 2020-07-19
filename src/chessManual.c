@@ -14,7 +14,7 @@
 struct ChessManual {
     char* fileName;
     Board board;
-    Move rootMove, currentMove; // 根节点、当前节点
+    Move rootMove;
     wchar_t* info[INFOSIZE][2];
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
@@ -72,7 +72,7 @@ ChessManual newChessManual(const char* fileName)
         strcpy(cm->fileName, fileName);
     }
     cm->board = newBoard();
-    cm->currentMove = cm->rootMove = getRootMove();
+    cm->rootMove = newMove();
     for (int i = 0; i < INFOSIZE; ++i)
         for (int j = 0; j < 2; ++j)
             cm->info[i][j] = NULL;
@@ -95,10 +95,12 @@ void delChessManual(ChessManual cm)
     for (int i = 0; i < cm->infoCount; ++i)
         for (int j = 0; j < 2; ++j)
             free(cm->info[i][j]);
-    delRootMove(cm->rootMove);
+    delMove(cm->rootMove);
     delBoard(cm->board);
     free(cm);
 }
+
+Move getRootMove(ChessManual cm) { return cm->rootMove; }
 
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
 {
@@ -149,7 +151,7 @@ static void setMoveNumZhStr__(ChessManual cm, Move move)
 
     // 先深度搜索
     setMoveZhStr(move, cm->board);
-    
+
     //wprintf(L"%ls ", __LINE__, getZhStr(move));
 
     doMove(move);
@@ -1074,7 +1076,7 @@ void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
     *pstr = malloc(len * sizeof(wchar_t));
     assert(*pstr);
     swprintf(*pstr, len, L"%ls\n%ls\n%ls", infoStr, moveStr, remarkStr);
-    
+
     free(infoStr);
     free(moveStr);
     free(remarkStr);
@@ -1105,7 +1107,7 @@ void readChessManual__(ChessManual cm, const char* fileName)
     if (!fileIsRight__(fileName))
         return;
     RecFormat fmt = getRecFormat__(getExtName(fileName));
- 
+
     FILE* fin = fopen(fileName, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
     if (fin == NULL)
         return;
@@ -1143,7 +1145,7 @@ void writeChessManual(ChessManual cm, const char* fileName)
 {
     if (!fileIsRight__(fileName))
         return;
- 
+
     RecFormat fmt = getRecFormat__(getExtName(fileName));
     FILE* fout = fopen(fileName,
         (fmt == XQF || fmt == BIN || fmt == JSON) ? "wb" : "w");
@@ -1266,12 +1268,8 @@ void moveMap(ChessManual cm, void apply(Move, Board, void*), void* ptr)
     moveMap__(getNext(cm->rootMove), cm->board, apply, ptr);
 }
 
-/*
 void changeChessManual(ChessManual cm, ChangeType ct)
 {
-    Move curMove = cm->currentMove;
-    backFirst(cm);
-
     // info未更改
     changeBoard(cm->board, ct);
     Move firstMove = getNext(cm->rootMove);
@@ -1283,10 +1281,9 @@ void changeChessManual(ChessManual cm, ChangeType ct)
             setMoveNumZhStr__(cm, firstMove);
         }
     }
-
-    goTo(cm, curMove);
 }
 
+/*
 void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove)
 {
     Move cmove = cm->currentMove, moves[WIDEWCHARSIZE];

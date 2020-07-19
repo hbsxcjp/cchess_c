@@ -8,6 +8,7 @@
 #include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
+#include "head/play.h"
 #include "head/sha1.h"
 #include "head/tools.h"
 #include <time.h>
@@ -612,7 +613,7 @@ static void test_chessManual_xqf(void)
     free(wstr);
     free(resultStr);
 
-    /*
+    //*
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];

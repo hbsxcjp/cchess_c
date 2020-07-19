@@ -13,9 +13,11 @@ ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 // 删除chessManual
 void delChessManual(ChessManual cm);
 
+Move getRootMove(ChessManual cm);
+
 // 添加/删除一个info条目
-//void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
-//void delInfoItem(ChessManual cm, const wchar_t* name);
+void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
+void delInfoItem(ChessManual cm, const wchar_t* name);
 
 // 将PGN_CC格式的info、move、remark信息写入字符串
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm);
@@ -53,7 +55,8 @@ void goInc(ChessManual cm, int inc);
 void moveMap(ChessManual cm, void apply(Move, Board, void*), void* ptr);
 
 // 转变棋局实例
-//void changeChessManual(ChessManual cm, ChangeType ct);
+void changeChessManual(ChessManual cm, ChangeType ct);
+
 // 某着从头至尾的着法图示
 //void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 

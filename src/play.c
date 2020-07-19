@@ -1,101 +1,101 @@
 #include "head/play.h"
 
-void go(ChessManual cm)
+struct Play {
+    ChessManual cm;
+    Move curMove;
+};
+
+Play newPlay(const char* fileName)
 {
-    if (hasNext(cm->currentMove)) {
-        cm->currentMove = getNext(cm->currentMove);
-        doMove(cm->currentMove);
+    Play play = malloc(sizeof(struct Play));
+    assert(play);
+    play->cm = newChessManual(fileName);
+    play->curMove = getRootMove(play->cm);
+    return play;
+}
+
+void delPlay(Play play)
+{
+    delChessManual(play->cm);
+    free(play);
+}
+
+void go(Play play)
+{
+    if (getNext(play->curMove)) {
+        play->curMove = getNext(play->curMove);
+        doMove(play->curMove);
     }
 }
 
-void goOther(ChessManual cm)
+void goOther(Play play)
 {
-    if (hasOther(cm->currentMove)) {
-        undoMove(cm->currentMove);
-        cm->currentMove = getOther(cm->currentMove);
-        doMove(cm->currentMove);
+    if (getOther(play->curMove)) {
+        undoMove(play->curMove);
+        play->curMove = getOther(play->curMove);
+        doMove(play->curMove);
     }
 }
 
-void goEnd(ChessManual cm)
+void goEnd(Play play)
 {
-    while (hasNext(cm->currentMove))
-        go(cm);
+    while (getNext(play->curMove))
+        go(play);
 }
 
-void goTo(ChessManual cm, Move move)
+void goTo(Play play, Move move)
 {
-    cm->currentMove = move;
+    play->curMove = move;
     Move preMoves[getNextNo(move)];
     int count = getPreMoves(preMoves, move);
     for (int i = 0; i < count; ++i)
         doMove(preMoves[i]);
 }
 
-static void doBack__(ChessManual cm)
+static void doBack__(Play play)
 {
-    undoMove(cm->currentMove);
-    cm->currentMove = getSimplePre(cm->currentMove);
+    undoMove(play->curMove);
+    play->curMove = getSimplePre(play->curMove);
 }
 
-void back(ChessManual cm)
+void back(Play play)
 {
-    if (hasPreOther(cm->currentMove))
-        backOther(cm);
-    else if (hasSimplePre(cm->currentMove))
-        doBack__(cm);
+    if (hasPreOther(play->curMove))
+        backOther(play);
+    else if (getSimplePre(play->curMove))
+        doBack__(play);
 }
 
-void backNext(ChessManual cm)
+void backNext(Play play)
 {
-    if (hasSimplePre(cm->currentMove) && !hasPreOther(cm->currentMove))
-        doBack__(cm);
+    if (getSimplePre(play->curMove) && !hasPreOther(play->curMove))
+        doBack__(play);
 }
 
-void backOther(ChessManual cm)
+void backOther(Play play)
 {
-    if (hasPreOther(cm->currentMove)) {
-        doBack__(cm); // 变着回退
-        doMove(cm->currentMove); // 前变执行
+    if (hasPreOther(play->curMove)) {
+        doBack__(play); // 变着回退
+        doMove(play->curMove); // 前变执行
     }
 }
 
-void backFirst(ChessManual cm)
+void backFirst(Play play)
 {
-    while (hasSimplePre(cm->currentMove))
-        back(cm);
+    while (getSimplePre(play->curMove))
+        back(play);
 }
 
-void backTo(ChessManual cm, Move move)
+void backTo(Play play, Move move)
 {
-    while (hasSimplePre(cm->currentMove) && cm->currentMove != move)
-        back(cm);
+    while (getSimplePre(play->curMove) && play->curMove != move)
+        back(play);
 }
 
-void goInc(ChessManual cm, int inc)
+void goInc(Play play, int inc)
 {
     int count = abs(inc);
-    void (*func)(ChessManual) = inc > 0 ? go : back;
+    void (*func)(Play) = inc > 0 ? go : back;
     while (count-- > 0)
-        func(cm);
-}
-
-void changeChessManual(ChessManual cm, ChangeType ct)
-{
-    Move curMove = cm->currentMove;
-    backFirst(cm);
-
-    // info未更改
-    changeBoard(cm->board, ct);
-    Move firstMove = getNext(cm->rootMove);
-    if (firstMove) {
-        if (ct != EXCHANGE)
-            changeMove(firstMove, cm->board, ct);
-        if (ct == EXCHANGE || ct == SYMMETRY) {
-            cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
-            setMoveNumZhStr__(cm, firstMove);
-        }
-    }
-
-    goTo(cm, curMove);
+        func(play);
 }

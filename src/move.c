@@ -13,7 +13,7 @@ struct Move {
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 
-static Move newMove__()
+Move newMove()
 {
     Move move = malloc(sizeof(struct Move));
     assert(move);
@@ -27,7 +27,7 @@ static Move newMove__()
     return move;
 }
 
-static void delMove__(Move move)
+void delMove(Move move)
 {
     if (move == NULL)
         return;
@@ -35,12 +35,9 @@ static void delMove__(Move move)
          nmove = move->nmove;
     free(move->remark);
     free(move);
-    delMove__(omove);
-    delMove__(nmove);
+    delMove(omove);
+    delMove(nmove);
 }
-
-Move getRootMove() { return newMove__(); }
-void delRootMove(Move rootMove) { delMove__(rootMove); }
 
 inline Move getSimplePre(CMove move) { return move->pmove; }
 
@@ -60,7 +57,7 @@ void cutMove(Move move)
         move->pmove->omove = NULL;
     else if (getSimplePre(move))
         move->pmove->nmove = NULL;
-    delMove__(move);
+    delMove(move);
 }
 
 int getPreMoves(Move* moves, Move move)
@@ -206,7 +203,7 @@ static void setMoveSeat_iccs__(Move move, Board board, const wchar_t* iccsStr)
 
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    Move move = newMove__();
+    Move move = newMove();
     switch (fmt) {
     case XQF:
     case BIN:

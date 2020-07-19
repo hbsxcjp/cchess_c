@@ -7,7 +7,7 @@ CFLAGS = -Wall -std=c11 -fexec-charset=utf-8 -g #gbk
 LDFLAGS = -lm -lpcre32 -lsqlite3 -lcunit #lib/pdcurses.a -lpcre32
 SP = src/
 OP = obj/
-OBJS = $(OP)sha1.o $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)unitTest.o $(OP)main.o # $(OP)console.o  $(OP)play.o
+OBJS = $(OP)sha1.o $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)play.o $(OP)unitTest.o $(OP)main.o # $(OP)console.o
 FIXEDOBJ = $(OP)cJSON.o # 固定的目标文件，一般只编译一次
 
 a: $(OBJS) $(FIXEDOBJ)

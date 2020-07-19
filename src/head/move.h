@@ -4,9 +4,9 @@
 #include "base.h"
 
 // 新建根着法
-Move getRootMove();
-// 删除rootMove的所有下着move、变着move及自身
-void delRootMove(Move rootMove);
+Move newMove();
+// 删除move的所有下着move、变着move及自身
+void delMove(Move move);
 
 // 取得简单前着（数据内部表示的前个链接），可能是前着，也可能是前变着
 Move getSimplePre(CMove move);
