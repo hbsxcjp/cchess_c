@@ -98,6 +98,11 @@ int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
 // 取得活的强棋子位置
 int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color);
 
+// 设置着法的起止位置
+void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
+// 设置着法的中文字符串
+void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat);
+
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);
 // 输出某棋盘局面的文本字符串，长度小于1024

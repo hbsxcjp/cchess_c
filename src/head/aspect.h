@@ -25,9 +25,9 @@ typedef struct AspectAnalysis* AspectAnalysis;
 Aspects newAspects(AspFormat st, int size);
 void delAspects(Aspects aspects);
 
-// 读取局面数据文件加入局面类型
+// 读取局面数据文件加入局面库类型
 Aspects getAspects_fs(const char* fileName);
-// 读取局面MD5数据文件加入局面类型
+// 读取局面MD5数据文件加入局面库类型
 Aspects getAspects_fb(const char* fileName);
 
 // 存储文件到局面记录库
@@ -37,11 +37,11 @@ void appendAspects_dir(Aspects aspects, const char* dirName);
 
 int getAspects_length(Aspects aspects);
 
-// 输出局面字符串，仅查看(应在Move对象的生命周期内调用)
+// 输出局面字符串，仅供查看
 void writeAspectShow(char* fileName, CAspects aspects);
 // 存储局面数据，可查看可读取数据
 void storeAspectFEN(char* fileName, CAspects aspects);
-// 存储局面MD5数据(二进制文件)，仅读取数据
+// 存储局面hash数据(二进制文件)，仅读取数据
 void storeAspectHash(char* fileName, CAspects aspects);
 
 // 分析局面库并储存状况

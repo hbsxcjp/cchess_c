@@ -612,12 +612,14 @@ static void test_chessManual_xqf(void)
     free(wstr);
     free(resultStr);
 
+    /*
     for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
         sprintf(fname, "chessManual/01%d.pgn_cc", ct);
         writeChessManual(cm, fname);
     }
+    //*/
 
     char str2[WIDEWCHARSIZE];
     getChessManualNumStr(str2, cm);
@@ -721,6 +723,20 @@ static void test_aspect_dir(void)
     testAspects__(asps);
 
     delAspects(asps);
+
+    //*
+    sqlite3* db;
+    //char* zErrMsg = 0;
+    int rc = sqlite3_open("test.db", &db);
+    SQLITE_OK;
+    if (rc) {
+        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
+        //exit(0);
+    } else {
+        fprintf(stderr, "Opened database successfully. ");
+    }
+    sqlite3_close(db);
+    //*/
 }
 
 static CU_TestInfo suite_aspect[] = {
@@ -761,16 +777,3 @@ int unitTest(void)
     CU_cleanup_registry();
     return CU_get_error();
 }
-
-/*
-sqlite3* db;
-//char* zErrMsg = 0;
-int rc = sqlite3_open("test.db", &db);
-if (rc) {
-    fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-    exit(0);
-} else {
-    fprintf(stderr, "\nOpened database successfully\n");
-}
-sqlite3_close(db);
-//*/

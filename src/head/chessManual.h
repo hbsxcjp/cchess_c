@@ -2,6 +2,7 @@
 #define CHESSMANUAL_H
 
 #include "base.h"
+#include "cJSON.h"
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -13,11 +14,15 @@ ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 void delChessManual(ChessManual cm);
 
 // 添加/删除一个info条目
-void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
-void delInfoItem(ChessManual cm, const wchar_t* name);
+//void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
+//void delInfoItem(ChessManual cm, const wchar_t* name);
 
 // 将PGN_CC格式的info、move、remark信息写入字符串
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm);
+
+void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove);
+void writeRemark_PGN_CC(wchar_t** premarkStr, size_t* premSize, CMove rootMove);
+
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
 void writePGN_CCtoWstr(wchar_t** pStr, ChessManual cm);
@@ -25,7 +30,7 @@ void writePGN_CCtoWstr(wchar_t** pStr, ChessManual cm);
 // 从chessManual存储到文件
 void writeChessManual(ChessManual cm, const char* fileName);
 
-// 前进一步
+/*/ 前进一步
 void go(ChessManual cm);
 // 前进到变着
 void goOther(ChessManual cm);
@@ -42,14 +47,15 @@ void backFirst(ChessManual cm);
 void backTo(ChessManual cm, Move move);
 // 前进或后退数步
 void goInc(ChessManual cm, int inc);
+//*/
 
 // 遍历每个着法
 void moveMap(ChessManual cm, void apply(Move, Board, void*), void* ptr);
 
 // 转变棋局实例
-void changeChessManual(ChessManual cm, ChangeType ct);
+//void changeChessManual(ChessManual cm, ChangeType ct);
 // 某着从头至尾的着法图示
-void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
+//void writeAllMoveStr(FILE* fout, ChessManual cm, const Move amove);
 
 // 批量转换棋局存储格式
 void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPrint);

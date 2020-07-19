@@ -9,7 +9,9 @@ struct Piece {
 
 // 一副棋子
 struct Pieces {
-    Piece piece[PIECECOLORNUM][PIECEKINDNUM]; //某种棋子首地址
+    // 某种棋子首地址
+    Piece piece[PIECECOLORNUM][PIECEKINDNUM];
+    // 某种棋子个数
     int count[PIECEKINDNUM];
 };
 
