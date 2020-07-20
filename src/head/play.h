@@ -19,7 +19,9 @@ void backOther(Play play);
 void backFirst(Play play);
 // 后退至指定move
 void backTo(Play play, Move move);
+
 // 前进或后退数步
 void goInc(Play play, int inc);
+
 
 #endif

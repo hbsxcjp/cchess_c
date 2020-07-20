@@ -664,10 +664,28 @@ static void test_chessManual_dir(void)
     }
 }
 
+static void test_chessManual_sqlite(void)
+{
+    //*
+    sqlite3* db;
+    //char* zErrMsg = 0;
+    int rc = sqlite3_open("test.db", &db);
+    SQLITE_OK;
+    if (rc) {
+        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
+        //exit(0);
+    } else {
+        fprintf(stderr, "Opened database successfully. ");
+    }
+    sqlite3_close(db);
+    //*/
+}
+
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_xqf", test_chessManual_xqf },
     { "test_chessManual_otherExt", test_chessManual_otherExt },
     { "test_chessManual_dir", test_chessManual_dir },
+    { "test_chessManual_sqlite", test_chessManual_sqlite },
     CU_TEST_INFO_NULL,
 };
 
@@ -724,25 +742,20 @@ static void test_aspect_dir(void)
     testAspects__(asps);
 
     delAspects(asps);
-
-    //*
-    sqlite3* db;
-    //char* zErrMsg = 0;
-    int rc = sqlite3_open("test.db", &db);
-    SQLITE_OK;
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-        //exit(0);
-    } else {
-        fprintf(stderr, "Opened database successfully. ");
-    }
-    sqlite3_close(db);
-    //*/
 }
 
 static CU_TestInfo suite_aspect[] = {
     { "test_aspect_file", test_aspect_file },
     { "test_aspect_dir", test_aspect_dir },
+    CU_TEST_INFO_NULL,
+};
+
+static void test_play_file(void)
+{
+}
+
+static CU_TestInfo suite_play[] = {
+    { "test_play_file", test_play_file },
     CU_TEST_INFO_NULL,
 };
 
@@ -752,6 +765,7 @@ static CU_SuiteInfo suites[] = {
     { "suite_board", NULL, NULL, NULL, NULL, tests_board },
     { "suite_chessManual", NULL, NULL, NULL, NULL, suite_chessManual },
     { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
+    { "suite_play", NULL, NULL, NULL, NULL, suite_play },
     CU_SUITE_INFO_NULL,
 };
 

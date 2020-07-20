@@ -45,6 +45,7 @@ void goEnd(Play play)
 
 void goTo(Play play, Move move)
 {
+    assert(move);
     play->curMove = move;
     Move preMoves[getNextNo(move)];
     int count = getPreMoves(preMoves, move);
