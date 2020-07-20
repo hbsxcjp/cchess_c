@@ -127,32 +127,19 @@ inline Seat getSeat_p(CPiece piece) { return piece->seat; }
 
 inline void setSeat(Piece piece, Seat seat) { piece->seat = seat; }
 
-inline static bool isNotNullSeat__(Piece piece) { return getSeat_p(piece); }
-
-inline static bool isNotNullSeat_stronge__(Piece piece) { return getSeat_p(piece) && isStronge(piece); }
-
-static int filterLiveSeats__(Seat* seats, Pieces pieces, PieceColor color, bool (*func)(Piece))
+int getLiveSeats_pieces(Seat* seats, Pieces pieces, PieceColor color)
 {
     int count = 0;
     for (int k = KING; k < NOTKIND; ++k) {
         Piece apiece = getPieces__(pieces, color, k);
         for (int i = 0; i < pieces->count[k]; ++i) {
             Piece piece = apiece + i;
-            if (func(piece))
-                seats[count++] = getSeat_p(piece);
+            Seat seat = getSeat_p(piece);
+            if (seat)
+                seats[count++] = seat;
         }
     }
     return count;
-}
-
-int getLiveSeats_c(Seat* seats, Pieces pieces, PieceColor color)
-{
-    return filterLiveSeats__(seats, pieces, color, isNotNullSeat__);
-}
-
-int getLiveSeats_cs(Seat* seats, Pieces pieces, PieceColor color)
-{
-    return filterLiveSeats__(seats, pieces, color, isNotNullSeat_stronge__);
 }
 
 wchar_t* getPieString(wchar_t* pieStr, CPiece piece)

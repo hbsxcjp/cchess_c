@@ -60,11 +60,8 @@ bool isBottomSide(CBoard board, PieceColor color);
 // 取得某方将帅的位置seat
 Seat getKingSeat(Board board, PieceColor color);
 
-// 按给定参数查找活的棋子
-int getLiveSeats_cn(Seat* seats, Board board, PieceColor color, wchar_t name);
-int getLiveSeats_cnc(Seat* seats, Board board, PieceColor color, wchar_t name, int col);
-// 取得某方"兵"的棋子位置seats
-int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name);
+// 取得活的棋子位置
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
 
 // 是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
 bool isKill(Board board, PieceColor color);
@@ -93,9 +90,6 @@ Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 
 // 按某种变换类型变换棋盘局面
 void changeBoard(Board board, ChangeType ct);
-
-// 取得活的棋子位置（仅测试使用）
-int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
 
 // 设置着法的起止位置
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);

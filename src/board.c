@@ -227,9 +227,9 @@ inline bool isBottomSide(CBoard board, PieceColor color) { return board->bottomC
 
 Seat getKingSeat(Board board, PieceColor color) { return getSeat_p(getKingPiece(board->pieces, color)); }
 
-inline static bool isName__(Seat seat, wchar_t name, int col) { return getPieName(getPiece_s(seat)) == name; }
+//inline static bool isName__(Seat seat, wchar_t name, int col) { return getPieName(getPiece_s(seat)) == name; }
 
-inline static bool isNameCol__(Seat seat, wchar_t name, int col) { return isName__(seat, name, col) && getCol_s(seat) == col; }
+//inline static bool isNameCol__(Seat seat, wchar_t name, int col) { return isName__(seat, name, col) && getCol_s(seat) == col; }
 
 static int seatCmp__(const void* first, const void* second)
 {
@@ -241,11 +241,18 @@ static int seatCmp__(const void* first, const void* second)
         return rowdiff;
 }
 
-static int filterLiveSeats__(Seat* seats, int count, bool (*func)(Seat, wchar_t, int), wchar_t name, int col)
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color)
 {
-    int index = 0;
+    return getLiveSeats_pieces(seats, board->pieces, color);
+}
+
+static int getLiveSeats_bcnc__(Seat* seats, Board board, PieceColor color, wchar_t name, int col)
+{
+    int index = 0,
+        count = getLiveSeats_bc(seats, board, color);
     while (index < count) {
-        if (func(seats[index], name, col))
+        if (getPieName(getPiece_s(seats[index])) == name
+            && (col == INT32_MAX || col == getCol_s(seats[index])))
             ++index;
         else
             seats[index] = seats[--count];
@@ -254,22 +261,15 @@ static int filterLiveSeats__(Seat* seats, int count, bool (*func)(Seat, wchar_t,
     return index;
 }
 
-int getLiveSeats_cn(Seat* seats, Board board, PieceColor color, wchar_t name)
+static int getLiveSeats_bcn__(Seat* seats, Board board, PieceColor color, wchar_t name)
 {
-    int count = getLiveSeats_c(seats, board->pieces, color);
-    return filterLiveSeats__(seats, count, isName__, name, 0);
+    return getLiveSeats_bcnc__(seats, board, color, name, INT32_MAX);
 }
 
-int getLiveSeats_cnc(Seat* seats, Board board, PieceColor color, wchar_t name, int col)
-{
-    int count = getLiveSeats_c(seats, board->pieces, color);
-    return filterLiveSeats__(seats, count, isNameCol__, name, col);
-}
-
-int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t name)
+static int getSortPawnLiveSeats__(Seat* seats, Board board, PieceColor color, wchar_t name)
 {
     Seat pawnSeats[SIDEPIECENUM] = { NULL };
-    int liveCount = getLiveSeats_cn(pawnSeats, board, color, name),
+    int liveCount = getLiveSeats_bcn__(pawnSeats, board, color, name),
         colCount[BOARDCOL] = { 0 };
     Seat colSeats[BOARDCOL][BOARDROW] = { NULL };
     for (int i = 0; i < liveCount; ++i) {
@@ -294,8 +294,10 @@ int getSortPawnLiveSeats(Seat* seats, Board board, PieceColor color, wchar_t nam
 bool isKill(Board board, PieceColor color)
 {
     Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int count = getLiveSeats_cs(seats, board->pieces, getOtherColor(color));
+    int count = getLiveSeats_bc(seats, board, getOtherColor(color));
     for (int i = 0; i < count; ++i) {
+        if (!isStronge(getPiece_s(seats[i])))
+            continue;
         int mcount = moveSeats(mseats, board, seats[i]);
         for (int m = 0; m < mcount; ++m)
             // 本方将帅位置在对方强子可走位置范围内
@@ -329,7 +331,7 @@ bool isFace(Board board, PieceColor color)
 bool isUnableMove(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int count = getLiveSeats_c(fseats, board->pieces, color);
+    int count = getLiveSeats_bc(fseats, board, color);
     for (int i = 0; i < count; ++i)
         if (moveSeats(mseats, board, fseats[i]) > 0)
             return false;
@@ -670,11 +672,6 @@ void changeBoard(Board board, ChangeType ct)
     }
 }
 
-int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color)
-{
-    return getLiveSeats_c(seats, board->pieces, color);
-}
-
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
@@ -689,7 +686,7 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
     Seat seats[SIDEPIECENUM] = { NULL };
 
     if (isPieceName(name)) { // 棋子名
-        count = getLiveSeats_cnc(seats,
+        count = getLiveSeats_bcnc__(seats,
             board, color, name, getCol__(isBottom, getNum__(color, zhStr[1])));
         if (count == 0) {
             wchar_t wstr[WIDEWCHARSIZE];
@@ -701,8 +698,8 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
         index = (count == 2 && movDir == -1) ? 1 : 0; // movDir == -1：表示底退、顶进
     } else { // 非棋子名
         name = zhStr[1];
-        count = isPawnPieceName(name) ? getSortPawnLiveSeats(seats, board, color, name)
-                                      : getLiveSeats_cn(seats, board, color, name);
+        count = isPawnPieceName(name) ? getSortPawnLiveSeats__(seats, board, color, name)
+                                      : getLiveSeats_bcn__(seats, board, color, name);
         index = getIndex_ch__(isBottom, count, zhStr[0]);
     }
 
@@ -747,11 +744,11 @@ void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat)
         trow = getRow_s(tseat), tcol = getCol_s(tseat);
     bool isBottom = isBottomSide(board, color);
     Seat seats[SIDEPIECENUM] = { 0 };
-    int count = getLiveSeats_cnc(seats, board, color, name, fcol);
+    int count = getLiveSeats_bcnc__(seats, board, color, name, fcol);
 
     if (count > 1 && isStronge(fpiece)) { // 马车炮兵
         if (getKind(fpiece) == PAWN)
-            count = getSortPawnLiveSeats(seats, board, color, name);
+            count = getSortPawnLiveSeats__(seats, board, color, name);
         int index = 0;
         while (fseat != seats[index])
             ++index;
