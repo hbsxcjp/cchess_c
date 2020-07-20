@@ -59,6 +59,7 @@ bool isBottomSide(CBoard board, PieceColor color);
 
 // 取得某方将帅的位置seat
 Seat getKingSeat(Board board, PieceColor color);
+
 // 按给定参数查找活的棋子
 int getLiveSeats_cn(Seat* seats, Board board, PieceColor color, wchar_t name);
 int getLiveSeats_cnc(Seat* seats, Board board, PieceColor color, wchar_t name, int col);
@@ -93,10 +94,8 @@ Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 // 按某种变换类型变换棋盘局面
 void changeBoard(Board board, ChangeType ct);
 
-// 取得活的棋子位置
+// 取得活的棋子位置（仅测试使用）
 int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
-// 取得活的强棋子位置
-int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color);
 
 // 设置着法的起止位置
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);

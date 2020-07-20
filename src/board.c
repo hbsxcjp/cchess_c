@@ -196,7 +196,7 @@ wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
 static void resetPiece__(Piece piece, void* ptr)
 {
     Seat seat = getSeat_p(piece);
-    setNullSeat(piece);
+    setSeat(piece, NULL);
     if (seat)
         setPiece_s__(seat, getBlankPiece());
 }
@@ -609,7 +609,7 @@ int unableMoveSeats(Seat* seats, int count, Board board, Seat fseat)
 Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece)
 {
     Piece tpiece = getPiece_s(tseat);
-    setNullSeat(tpiece);
+    setSeat(tpiece, NULL);
     setPiece_s__(tseat, getPiece_s(fseat));
     setPiece_s__(fseat, eatPiece);
     return tpiece;
@@ -624,8 +624,8 @@ static void exchangePiece__(Piece piece, void* ptr)
     Piece othPiece = getOtherPiece(pieces, piece);
     Seat seat = getSeat_p(piece),
          othSeat = getSeat_p(othPiece);
-    setNullSeat(piece);
-    setNullSeat(othPiece);
+    setSeat(piece, NULL);
+    setSeat(othPiece, NULL);
     if (seat)
         setPiece_s__(seat, othPiece);
     if (othSeat)
@@ -646,8 +646,8 @@ void changeBoard(Board board, ChangeType ct)
                 int othRow = getOtherRow_r(row), othCol = getOtherCol_c(col);
                 Piece piece = getPiece_rc(board, row, col),
                       othPiece = getPiece_rc(board, othRow, othCol);
-                setNullSeat(piece);
-                setNullSeat(othPiece);
+                setSeat(piece, NULL);
+                setSeat(othPiece, NULL);
                 setPiece_rc__(board, row, col, othPiece);
                 setPiece_rc__(board, othRow, othCol, piece);
             }
@@ -659,8 +659,8 @@ void changeBoard(Board board, ChangeType ct)
                 int othCol = getOtherCol_c(col);
                 Piece piece = getPiece_rc(board, row, col),
                       othPiece = getPiece_rc(board, row, othCol);
-                setNullSeat(piece);
-                setNullSeat(othPiece);
+                setSeat(piece, NULL);
+                setSeat(othPiece, NULL);
                 setPiece_rc__(board, row, col, othPiece);
                 setPiece_rc__(board, row, othCol, piece);
             }
@@ -673,11 +673,6 @@ void changeBoard(Board board, ChangeType ct)
 int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color)
 {
     return getLiveSeats_c(seats, board->pieces, color);
-}
-
-int getLiveSeats_bcs(Seat* seats, CBoard board, PieceColor color)
-{
-    return getLiveSeats_cs(seats, board->pieces, color);
 }
 
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)

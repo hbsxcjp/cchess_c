@@ -54,7 +54,6 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch);
 //  取得棋子所在的位置
 Seat getSeat_p(CPiece piece);
 // 设置棋子的位置
-void setNullSeat(Piece piece);
 void setSeat(Piece piece, Seat seat);
 
 // 取得活的棋子位置

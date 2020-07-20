@@ -30,7 +30,7 @@ Pieces newPieces(void)
                 Piece piece = apiece + i;
                 piece->color = c;
                 piece->kind = k;
-                setNullSeat(piece);
+                setSeat(piece, NULL);
 
                 wchar_t wstr[120];
                 char str[120];
@@ -125,32 +125,35 @@ Piece getPiece_ch(Pieces pieces, wchar_t ch)
 
 inline Seat getSeat_p(CPiece piece) { return piece->seat; }
 
-inline void setNullSeat(Piece piece) { piece->seat = NULL; }
-
 inline void setSeat(Piece piece, Seat seat) { piece->seat = seat; }
 
-inline static bool isNotNullSeat__(Seat seat, Piece piece) { return seat; }
+inline static bool isNotNullSeat__(Piece piece) { return getSeat_p(piece); }
 
-inline static bool isNotNullSeat_stronge__(Seat seat, Piece piece) { return seat && isStronge(piece); }
+inline static bool isNotNullSeat_stronge__(Piece piece) { return getSeat_p(piece) && isStronge(piece); }
 
-static int filterLiveSeats__(Seat* seats, Pieces pieces, PieceColor color, bool (*func)(Seat, Piece))
+static int filterLiveSeats__(Seat* seats, Pieces pieces, PieceColor color, bool (*func)(Piece))
 {
     int count = 0;
     for (int k = KING; k < NOTKIND; ++k) {
         Piece apiece = getPieces__(pieces, color, k);
         for (int i = 0; i < pieces->count[k]; ++i) {
             Piece piece = apiece + i;
-            Seat seat = getSeat_p(piece);
-            if (func(seat, piece))
-                seats[count++] = seat;
+            if (func(piece))
+                seats[count++] = getSeat_p(piece);
         }
     }
     return count;
 }
 
-int getLiveSeats_c(Seat* seats, Pieces pieces, PieceColor color) { return filterLiveSeats__(seats, pieces, color, isNotNullSeat__); }
+int getLiveSeats_c(Seat* seats, Pieces pieces, PieceColor color)
+{
+    return filterLiveSeats__(seats, pieces, color, isNotNullSeat__);
+}
 
-int getLiveSeats_cs(Seat* seats, Pieces pieces, PieceColor color) { return filterLiveSeats__(seats, pieces, color, isNotNullSeat_stronge__); }
+int getLiveSeats_cs(Seat* seats, Pieces pieces, PieceColor color)
+{
+    return filterLiveSeats__(seats, pieces, color, isNotNullSeat_stronge__);
+}
 
 wchar_t* getPieString(wchar_t* pieStr, CPiece piece)
 {
