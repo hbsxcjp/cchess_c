@@ -6,7 +6,7 @@
 struct Move {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
-    wchar_t* fen;
+    //wchar_t* fen; // 局面字符串
     wchar_t* remark; // 注解
     wchar_t zhStr[6]; // 着法名称
     bool kill, willKill, catch; // 将、杀、捉
@@ -20,7 +20,7 @@ Move newMove()
     assert(move);
     move->fseat = move->tseat = NULL;
     move->tpiece = getBlankPiece();
-    move->fen = NULL;
+    //move->fen = NULL;
     move->remark = NULL;
     wcscpy(move->zhStr, L"0000");
     move->kill = move->willKill = move->catch = false;
@@ -35,7 +35,7 @@ void delMove(Move move)
         return;
     Move omove = move->omove,
          nmove = move->nmove;
-    free(move->fen);
+    //free(move->fen);
     free(move->remark);
     free(move);
     delMove(omove);
@@ -126,7 +126,7 @@ bool isConnected(CMove lmove, CMove pmove)
         lmove = getPre(lmove);
     return lmove;
 }
-
+/*
 static void setFEN__(Move move, Board board)
 {
     wchar_t FEN[SEATNUM];
@@ -135,6 +135,7 @@ static void setFEN__(Move move, Board board)
     move->fen = malloc((wcslen(FEN) + 1) * sizeof(wchar_t));
     wcscpy(move->fen, FEN);
 }
+//*/
 
 void setRemark(Move move, wchar_t* remark)
 {
@@ -224,8 +225,8 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         getSeats_zh(&move->fseat, &move->tseat, board, wstr);
         break;
     }
+    //setFEN__(move, board);
     //setRemark_addMove__(preMove, move, remark, isOther);
-    setFEN__(move, board);
     setRemark(move, remark);
     isOther ? setMoveOther__(preMove, move) : setMoveNext__(preMove, move);
 

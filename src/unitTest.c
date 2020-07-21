@@ -5,6 +5,7 @@
 #include "head/base.h"
 #include "head/board.h"
 #include "head/chessManual.h"
+#include "head/ecco.h"
 #include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
@@ -666,7 +667,7 @@ static void test_chessManual_dir(void)
 
 static void test_chessManual_sqlite(void)
 {
-    //*
+    /*
     sqlite3* db;
     //char* zErrMsg = 0;
     int rc = sqlite3_open("test.db", &db);
@@ -679,6 +680,7 @@ static void test_chessManual_sqlite(void)
     }
     sqlite3_close(db);
     //*/
+    eccoInit();
 }
 
 static CU_TestInfo suite_chessManual[] = {
