@@ -667,19 +667,6 @@ static void test_chessManual_dir(void)
 
 static void test_chessManual_sqlite(void)
 {
-    /*
-    sqlite3* db;
-    //char* zErrMsg = 0;
-    int rc = sqlite3_open("test.db", &db);
-    SQLITE_OK;
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
-        //exit(0);
-    } else {
-        fprintf(stderr, "Opened database successfully. ");
-    }
-    sqlite3_close(db);
-    //*/
     eccoInit();
 }
 
