@@ -3,6 +3,6 @@
 
 #include "base.h"
 
-void eccoInit(void);
+void eccoInit(char* dbName);
 
 #endif
