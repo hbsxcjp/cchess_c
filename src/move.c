@@ -14,6 +14,10 @@ struct Move {
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 
+struct MoveRec {
+    char text[WCHARSIZE];
+};
+
 Move newMove()
 {
     Move move = malloc(sizeof(struct Move));

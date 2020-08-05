@@ -108,14 +108,15 @@ typedef enum {
 // 着法类型
 typedef struct Move* Move;
 typedef const struct Move* CMove;
+
+typedef struct MoveRec* MoveRec;
+
 // 局面记录类型
 typedef struct Aspects* Aspects;
 typedef const struct Aspects* CAspects;
 // 棋局类型
 typedef struct ChessManual* ChessManual;
 typedef const struct ChessManual* CChessManual;
-typedef struct Play* Play;
-typedef const struct Play* CPlay;
 
 //=================================================================
 //棋局演示相关的类型
@@ -140,6 +141,9 @@ typedef enum {
     INCAREA, // 代表递增
     OLDAREA // 代表旧区域
 } Area;
+
+typedef struct Play* Play;
+typedef const struct Play* CPlay;
 
 // 演示类型结构
 typedef struct Console* PConsole;
