@@ -1,7 +1,6 @@
 #include "head/tools.h"
-  
-#define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
 
+#define wc_short (sizeof(wchar_t) == sizeof(unsigned short))
 
 bool isPrime(int n)
 {
@@ -198,7 +197,7 @@ void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
 {
     // 如字符串分配的长度不够，则增加长度
     size_t len = wcslen(*pwstr) + wcslen(wstr) + 1;
-    if (len > *size) {
+    if (*size < len) {
         *size = len + WIDEWCHARSIZE;
         *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
         assert(*pwstr);
