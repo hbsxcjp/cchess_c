@@ -35,21 +35,8 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
         return;
 
     // 提取插入记录的字符串
-    const char* error;
-    int erroffset = 0;
-    void* snReg[] = {
-        pcrewch_compile(L"([A-E])．(\\S+)(?=\\(共)(\\S+(?=\\n))", 0, &error, &erroffset, NULL),
-        //pcrewch_compile(L"([A-E]\\d)．(\\S+)(?=[\\n　]*[A-E]\\d．)", 0, &error, &erroffset, NULL),
-        pcrewch_compile(L"([A-E]\\d)．(\\S+)(?=\\n|\\(共)([\\s\\S]+?(?=[A-E]\\d{2}．))", 0, &error, &erroffset, NULL),
-
-        //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)(?=\\n)", 0, &error, &erroffset, NULL),
-        //pcrewch_compile(L"([A-E][\\d]{2})．([\\S]+)\n([\\s\\S]+?(?=[A-Z][\\d]{2}．))?", 0, &error, &erroffset, NULL),
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\n([\\s\\S]*?(?=[A-E]\\d+．))?", 0, &error, &erroffset, NULL),
-    };
-
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t *wInsertValuesSql = malloc(size * sizeof(wchar_t)),
-            //snStr[WIDEWCHARSIZE] = { 0 },
             lineStr[WIDEWCHARSIZE] = { 0 },
             *tempWstr,
             wtblName[WCHARSIZE], sn[5], name[WCHARSIZE], moveStr[WIDEWCHARSIZE];
@@ -57,9 +44,19 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     wInsertValuesSql[0] = L'\x0';
     mbstowcs(wtblName, tblName, WCHARSIZE);
     int snlen, namelen, moveStrlen, ovector[30], endOffset = wcslen(fileWstring);
+
+    const char* error;
+    int erroffset = 0;
+    void* snReg[] = {
+        pcrewch_compile(L"([A-E])．(\\S+)(?=\\(共)(\\S+(?=\\n))", 0, &error, &erroffset, NULL),
+        // \\s不包含"　"(全角空格)
+        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))((?![\\s　]+[A-E]\\d．)[\\s\\S]*?(?=\\n+[A-E]\\d{2}．))",
+            0, &error, &erroffset, NULL),
+        pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
+            0, &error, &erroffset, NULL),
+    };
     for (int i = 0; i < sizeof(snReg) / sizeof(snReg[0]); ++i) {
         assert(snReg[i]);
-        printf("%d: %d\n", __LINE__, i);
 
         int firstOffset = 0;
         while (firstOffset < endOffset) {
@@ -72,39 +69,31 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
             wcsncpy(sn, tempWstr + ovector[2], snlen);
             sn[snlen] = L'\x0';
 
-            // 如果sn还没有出现
-            //if (wcsstr(snStr, sn) == NULL) {
-            //    wcscat(snStr, sn);
+            namelen = ovector[5] - ovector[4];
+            wcsncpy(name, tempWstr + ovector[4], namelen);
+            name[namelen] = L'\x0';
+            if (wcscmp(name, L"空") == 0) {
+                name[0] = L'\x0';
+                moveStr[0] = L'\x0';
+            } else {
+                moveStrlen = ovector[7] - ovector[6];
+                wcsncpy(moveStr, tempWstr + ovector[6], moveStrlen);
+                moveStr[moveStrlen] = L'\x0';
+            }
 
-                namelen = ovector[5] - ovector[4];
-                wcsncpy(name, tempWstr + ovector[4], namelen);
-                name[namelen] = L'\x0';
-                if (wcscmp(name, L"空") == 0)
-                    name[0] = L'\x0';
-
-                //if (i <2) {
-                    moveStrlen = ovector[7] - ovector[6];
-                    wcsncpy(moveStr, tempWstr + ovector[6], moveStrlen);
-                    moveStr[moveStrlen] = L'\x0';
-                //} else
-                //    moveStr[0] = L'\x0';
-
-                swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, MOVESTR) "
-                                                 "VALUES ('%ls', '%ls', '%ls' );\n",
-                    wtblName, sn, name, moveStr);
-                supper_wcscat(&wInsertValuesSql, &size, lineStr);
-            //}
+            swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, MOVESTR) "
+                                             "VALUES ('%ls', '%ls', '%ls' );\n",
+                wtblName, sn, name, moveStr);
+            supper_wcscat(&wInsertValuesSql, &size, lineStr);
             firstOffset += ovector[1];
         }
-        printf("%d: %d\n", __LINE__, i);
         pcrewch_free(snReg[i]);
     }
 
     size = wcslen(wInsertValuesSql) * sizeof(wchar_t) + 1;
     *insertValuesSql = malloc(size);
     wcstombs(*insertValuesSql, wInsertValuesSql, size);
-    //printf("wsize:%ld size:%ld\n%s\n", wcslen(wInsertValuesSql), strlen(*insertValuesSql), *insertValuesSql);
-    printf("wsize:%ld size:%ld\n", wcslen(wInsertValuesSql), strlen(*insertValuesSql));
+    //printf("wsize:%ld size:%ld\n", wcslen(wInsertValuesSql), strlen(*insertValuesSql));
 
     free(wInsertValuesSql);
     free(fileWstring);
