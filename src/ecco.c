@@ -38,23 +38,29 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t *wInsertValuesSql = malloc(size * sizeof(wchar_t)),
             lineStr[WIDEWCHARSIZE] = { 0 },
+            outWstring[SUPERWIDEWCHARSIZE] = { 0 },
             *tempWstr,
-            wtblName[WCHARSIZE], sn[5], name[WCHARSIZE], moveStr[WIDEWCHARSIZE];
+            wtblName[WCHARSIZE], sn[5], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
     assert(wInsertValuesSql);
     wInsertValuesSql[0] = L'\x0';
     mbstowcs(wtblName, tblName, WCHARSIZE);
-    int snlen, namelen, moveStrlen, ovector[30], endOffset = wcslen(fileWstring);
+    int snlen, namelen, numslen, moveStrlen, ovector[30], endOffset = wcslen(fileWstring);
 
     const char* error;
     int erroffset = 0;
     void* snReg[] = {
-        pcrewch_compile(L"([A-E])．(\\S+)(?=\\(共)(\\S+(?=\\n))", 0, &error, &erroffset, NULL),
+        pcrewch_compile(L"([A-E])．(\\S+)(\\(共[\\s\\S]+?局\\))", 0, &error, &erroffset, NULL),
         // \\s不包含"　"(全角空格)
-        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))((?![\\s　]+[A-E]\\d．)[\\s\\S]*?(?=\\n+[A-E]\\d{2}．))",
+        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?![\\s　]+[A-E]\\d．)(\\n|\\(共[\\s\\S]+?局\\))([\\s\\S]*?)(?=\\n+[A-E]\\d{2}．)",
             0, &error, &erroffset, NULL),
-        pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
-            0, &error, &erroffset, NULL),
+
+        //pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
+        //    0, &error, &erroffset, NULL),
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+(?=\\n))(?![A-E]\\d)([\\s\\S]*?)(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．)",
+            0, &error, &erroffset, NULL)
     };
+    // B2. C0. D1. D2. D3. D4. moveStr
+    // C20 C30 C61 C72局面 =
     for (int i = 0; i < sizeof(snReg) / sizeof(snReg[0]); ++i) {
         assert(snReg[i]);
 
@@ -74,16 +80,26 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
             name[namelen] = L'\x0';
             if (wcscmp(name, L"空") == 0) {
                 name[0] = L'\x0';
+                nums[0] = L'\x0';
                 moveStr[0] = L'\x0';
             } else {
-                moveStrlen = ovector[7] - ovector[6];
-                wcsncpy(moveStr, tempWstr + ovector[6], moveStrlen);
-                moveStr[moveStrlen] = L'\x0';
+                numslen = ovector[i < 2 ? 7 : 9] - ovector[i < 2 ? 6 : 8];
+                wcsncpy(nums, tempWstr + ovector[i < 2 ? 6 : 8], numslen);
+                nums[numslen] = L'\x0';
+
+                if (i > 0) {
+                    moveStrlen = ovector[i < 2 ? 9 : 7] - ovector[i < 2 ? 8 : 6];
+                    wcsncpy(moveStr, tempWstr + ovector[i < 2 ? 8 : 6], moveStrlen);
+                }
+                moveStr[i == 0 ? 0 : moveStrlen] = L'\x0';
             }
 
-            swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, MOVESTR) "
-                                             "VALUES ('%ls', '%ls', '%ls' );\n",
-                wtblName, sn, name, moveStr);
+            swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
+                                             "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
+                wtblName, sn, name, nums, moveStr);
+            if (i == 1 && wcslen(moveStr) > 0)
+                wcscat(outWstring, lineStr);
+
             supper_wcscat(&wInsertValuesSql, &size, lineStr);
             firstOffset += ovector[1];
         }
@@ -95,14 +111,15 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     wcstombs(*insertValuesSql, wInsertValuesSql, size);
     //printf("wsize:%ld size:%ld\n", wcslen(wInsertValuesSql), strlen(*insertValuesSql));
 
-    free(wInsertValuesSql);
-    free(fileWstring);
-
     //* 输出字符串，检查用
     FILE* fout = fopen("chessManual/eccolib", "w");
-    fprintf(fout, *insertValuesSql);
+    //fwprintf(fout, outWstring);
+    fwprintf(fout, wInsertValuesSql);
     fclose(fout);
     //*/
+
+    free(wInsertValuesSql);
+    free(fileWstring);
 }
 
 // 初始化开局类型编码名称
@@ -131,6 +148,7 @@ static void initLib__(sqlite3* db)
     sprintf(tempSql, "CREATE TABLE %s("
                      "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                      "SN TEXT NOT NULL,"
+                     "NUMS TEXT NOT NULL,"
                      "NAME TEXT NOT NULL,"
                      "MOVESTR TEXT);",
         tblName);
