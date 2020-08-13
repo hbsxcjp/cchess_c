@@ -49,14 +49,15 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     const char* error;
     int erroffset = 0;
     void* snReg[] = {
-        pcrewch_compile(L"([A-E])．(\\S+)(\\(共[\\s\\S]+?局\\))", 0, &error, &erroffset, NULL),
+        pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &erroffset, NULL),
         // \\s不包含"　"(全角空格)
-        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?![\\s　]+[A-E]\\d．)(\\n|\\(共[\\s\\S]+?局\\))([\\s\\S]*?)(?=\\n+[A-E]\\d{2}．)",
+        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
+                        "\\s*?([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
             0, &error, &erroffset, NULL),
 
         //pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
         //    0, &error, &erroffset, NULL),
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+(?=\\n))(?![A-E]\\d)([\\s\\S]*?)(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．)",
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\n+(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
             0, &error, &erroffset, NULL)
     };
     // B2. C0. D1. D2. D3. D4. moveStr
