@@ -8,12 +8,12 @@ static int callCount__(void* count, int argc, char** argv, char** azColName)
     return 0;
 }
 
-static int getRecCount__(sqlite3* db, char* tblName, char* whereSql)
+static int getRecCount__(sqlite3* db, char* tblName, char* where)
 {
     // 查找表
     char tempSql[WCHARSIZE], *zErrMsg = 0;
     int count = 0;
-    sprintf(tempSql, "SELECT count(*) FROM %s %s;", tblName, whereSql);
+    sprintf(tempSql, "SELECT count(*) FROM %s %s;", tblName, where);
     int rc = sqlite3_exec(db, tempSql, callCount__, &count, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Get RecCount error: %s\n", zErrMsg);
@@ -37,9 +37,9 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     // 提取插入记录的字符串
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t *wInsertValuesSql = malloc(size * sizeof(wchar_t)),
-            lineStr[WIDEWCHARSIZE] = { 0 },
-            outWstring[SUPERWIDEWCHARSIZE] = { 0 },
             *tempWstr,
+            lineStr[WIDEWCHARSIZE],
+            outWstring[SUPERWIDEWCHARSIZE] = { 0 },
             wtblName[WCHARSIZE], sn[5], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
     assert(wInsertValuesSql);
     wInsertValuesSql[0] = L'\x0';
@@ -47,21 +47,25 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     int snlen, namelen, numslen, moveStrlen, ovector[30], endOffset = wcslen(fileWstring);
 
     const char* error;
-    int erroffset = 0;
+    int errorffset = 0;
     void* snReg[] = {
-        pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &erroffset, NULL),
+        pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
         // \\s不包含"　"(全角空格)
         pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-                        "\\s*?([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
-            0, &error, &erroffset, NULL),
+                        "([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
+            0, &error, &errorffset, NULL),
 
         //pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
-        //    0, &error, &erroffset, NULL),
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\n+(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
-            0, &error, &erroffset, NULL)
+        //    0, &error, &errorffset, NULL),
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\s+"
+                        "(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
+            0, &error, &errorffset, NULL)
     };
     // B2. C0. D1. D2. D3. D4. moveStr
     // C20 C30 C61 C72局面 =
+    void* equalEccoReg = pcrewch_compile(L"\\s*([A-E]\\d{2})局面 =([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
+        0, &error, &errorffset, NULL);
+
     for (int i = 0; i < sizeof(snReg) / sizeof(snReg[0]); ++i) {
         assert(snReg[i]);
 
