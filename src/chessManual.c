@@ -675,7 +675,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
 static void readInfo_PGN__(ChessManual cm, FILE* fin)
 {
     const char* error;
-    int erroffset = 0, infoCount = 0, offsetArray[10]; //OVECCOUNT = 10,
+    int erroffset = 0, infoCount = 0, offsetArray[30]; //OVECCOUNT = 10,
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
     void* infoReg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
@@ -683,29 +683,16 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
 
     //printf("\nline:%d %s", __LINE__, "read info...\n");
     while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
-        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, offsetArray, 10);
+        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, offsetArray, 30);
         if (infoCount < 0)
             continue;
-        int nlen = offsetArray[3] - offsetArray[2], vlen = offsetArray[5] - offsetArray[4];
-        wchar_t name[nlen + 1], value[vlen + 1];
-        wcsncpy(name, infoStr + offsetArray[2], nlen);
-        wcsncpy(value, infoStr + offsetArray[4], vlen);
-        name[nlen] = L'\x0';
-        value[vlen] = L'\x0';
+
+        wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
+        copySubStr(name, infoStr, offsetArray[2], offsetArray[3]);
+        copySubStr(value, infoStr, offsetArray[4], offsetArray[5]);
         addInfoItem(cm, name, value);
     }
     pcrewch_free(infoReg);
-}
-
-static wchar_t* getRemark_PGN_ICCSZH__(const wchar_t* tempMoveStr, int remarkSize)
-{
-    wchar_t* remark = NULL;
-    if (remarkSize > 0) {
-        remark = calloc((remarkSize + 1), sizeof(wchar_t));
-        assert(remark);
-        wcsncpy(remark, tempMoveStr, remarkSize);
-    }
-    return remark;
 }
 
 static void readMove_PGN_ICCSZH__(Move rootMove, FILE* fin, RecFormat fmt, Board board)
@@ -737,7 +724,8 @@ static void readMove_PGN_ICCSZH__(Move rootMove, FILE* fin, RecFormat fmt, Board
         regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30);
     if (regCount <= 0)
         return;
-    setRemark(rootMove, getRemark_PGN_ICCSZH__(moveStr + ovector[2], ovector[3] - ovector[2])); // 赋值一个动态分配内存的指针
+
+    setRemark(rootMove, getSubStr(moveStr, ovector[2], ovector[3])); // 赋值一个动态分配内存的指针
 
     Move move = NULL,
          preMove = rootMove,
@@ -756,13 +744,12 @@ static void readMove_PGN_ICCSZH__(Move rootMove, FILE* fin, RecFormat fmt, Board
                 undoMove(preMove); // 回退前变着，以准备执行本变着
         }
         // 提取字符串
-        int iccs_zhSize = ovector[5] - ovector[4];
-        assert(iccs_zhSize == 4);
-        wchar_t iccs_zhStr[6] = { 0 };
-        wcsncpy(iccs_zhStr, tempMoveStr + ovector[4], iccs_zhSize);
+        wchar_t iccs_zhStr[6];
+        copySubStr(iccs_zhStr, tempMoveStr, ovector[4], ovector[5]);
+
         // 添加生成着法
         move = addMove(preMove, board, iccs_zhStr, fmt,
-            getRemark_PGN_ICCSZH__(tempMoveStr + ovector[6], ovector[7] - ovector[6]), isOther);
+            getSubStr(tempMoveStr, ovector[6], ovector[7]), isOther);
 
         if (isPGN_ZH)
             doMove(move); // 执行本着或本变着
@@ -878,10 +865,7 @@ static void readMove_PGN_CC__(Move rootMove, FILE* fin, Board board)
     while (fgetws(lineStr, lineSize, fin) && lineStr[0] != L'\n') { // 空行截止
         //wprintf(L"%d: %ls", __LINE__, lineStr);
         for (int col = 0; col < colNum; ++col) {
-            wchar_t* zhStr = calloc(6, sizeof(wchar_t));
-            assert(zhStr);
-            wcsncpy(zhStr, lineStr + col * 5, 5);
-            moveLines[rowIndex * colNum + col] = zhStr;
+            moveLines[rowIndex * colNum + col] = getSubStr(lineStr, col * 5, col * 5 + 5);
             //wprintf(L"%d: %ls\n", __LINE__, moveLines[rowNum * colNum + col]);
         }
         ++rowIndex;
@@ -905,15 +889,14 @@ static void readMove_PGN_CC__(Move rootMove, FILE* fin, Board board)
         regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, 30);
         if (regCount <= 0)
             break;
-        int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
-        wchar_t *rcKey = calloc((rclen + 1), sizeof(wchar_t)),
-                *remark = calloc((remlen + 1), sizeof(wchar_t));
+        //int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
+        wchar_t *rcKey = malloc((ovector[3] - ovector[2] + 1) * sizeof(wchar_t)),
+                *remark = malloc((ovector[5] - ovector[4] + 1) * sizeof(wchar_t));
         assert(rcKey);
         assert(remark);
-        wcsncpy(rcKey, tempRemStr + ovector[2], rclen);
-        wcsncpy(remark, tempRemStr + ovector[4], remlen);
-        rcKey[rclen] = L'\x0';
-        remark[remlen] = L'\x0';
+        copySubStr(rcKey, tempRemStr, ovector[2], ovector[3]);
+        copySubStr(remark, tempRemStr, ovector[4], ovector[5]);
+
         remLines[remCount * 2] = rcKey;
         remLines[remCount * 2 + 1] = remark;
         //wprintf(L"%d: %ls: %ls\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);

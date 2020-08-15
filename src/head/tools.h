@@ -69,6 +69,10 @@ void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
 // 从文件当前指针至尾部获取宽字符串
 wchar_t* getWString(FILE* fin);
 
+// 从一个字符串中提取子字符串
+void copySubStr(wchar_t* subStr, const wchar_t* srcWstr, int first, int last);
+wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last);
+
 // 针对wchar_t的pcre包装函数
 void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s);
 int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int size);

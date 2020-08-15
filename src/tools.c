@@ -219,6 +219,24 @@ wchar_t* getWString(FILE* fin)
     return wstr;
 }
 
+void copySubStr(wchar_t* subStr, const wchar_t* srcWstr, int first, int last)
+{
+    int len = last - first;
+    wcsncpy(subStr, srcWstr + first, len);
+    subStr[len] = L'\x0';
+}
+
+wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last)
+{
+    wchar_t* subStr = NULL;
+    if (last - first > 0) {
+        subStr = malloc((last - first + 1) * sizeof(wchar_t));
+        assert(subStr);
+        copySubStr(subStr, srcWstr, first, last);
+    }
+    return subStr;
+}
+
 void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s)
 {
     if (wc_short)

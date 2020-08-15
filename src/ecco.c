@@ -40,11 +40,11 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
             *tempWstr,
             lineStr[WIDEWCHARSIZE],
             outWstring[SUPERWIDEWCHARSIZE] = { 0 },
-            wtblName[WCHARSIZE], sn[5], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
+            wtblName[WCHARSIZE], sn[10], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
     assert(wInsertValuesSql);
     wInsertValuesSql[0] = L'\x0';
     mbstowcs(wtblName, tblName, WCHARSIZE);
-    int snlen, namelen, numslen, moveStrlen, ovector[30], endOffset = wcslen(fileWstring);
+    int ovector[30], endOffset = wcslen(fileWstring);
 
     const char* error;
     int errorffset = 0;
@@ -54,17 +54,16 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
         pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
                         "([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
             0, &error, &errorffset, NULL),
-
-        //pcrewch_compile(L"([A-E][\\d]{2})．(\\S+(?=\\n))(?:\\n?((?![A-E]\\d)[\\s\\S]*?(?=\\n+上|\\n+[A-E]\\d{1,2}．)))",
-        //    0, &error, &errorffset, NULL),
         pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\s+"
                         "(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
-            0, &error, &errorffset, NULL)
+            0, &error, &errorffset, NULL),
+
+        pcrewch_compile(L"([A-E]\\d{2}局面) =([\\s\\S\\n]*?)\\s*[A-E]\\d{2}．",
+            0, &error, &errorffset, NULL),
     };
     // B2. C0. D1. D2. D3. D4. moveStr
-    // C20 C30 C61 C72局面 =
-    void* equalEccoReg = pcrewch_compile(L"\\s*([A-E]\\d{2})局面 =([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
-        0, &error, &errorffset, NULL);
+    // 查找C20 C30 C61 C72局面
+    void* eqReg = pcrewch_compile(L"([A-E]\\d{2})局面 =", 0, &error, &errorffset, NULL);
 
     for (int i = 0; i < sizeof(snReg) / sizeof(snReg[0]); ++i) {
         assert(snReg[i]);
@@ -75,28 +74,30 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
             if (pcrewch_exec(snReg[i], NULL, tempWstr, endOffset - firstOffset, 0, 0, ovector, 30) <= 0)
                 break;
 
-            snlen = ovector[3] - ovector[2];
-            assert(snlen < 4);
-            wcsncpy(sn, tempWstr + ovector[2], snlen);
-            sn[snlen] = L'\x0';
+            copySubStr(sn, tempWstr, ovector[2], ovector[3]);
+            if (i < 3) {
+                copySubStr(name, tempWstr, ovector[4], ovector[5]);
 
-            namelen = ovector[5] - ovector[4];
-            wcsncpy(name, tempWstr + ovector[4], namelen);
-            name[namelen] = L'\x0';
-            if (wcscmp(name, L"空") == 0) {
-                name[0] = L'\x0';
-                nums[0] = L'\x0';
-                moveStr[0] = L'\x0';
-            } else {
-                numslen = ovector[i < 2 ? 7 : 9] - ovector[i < 2 ? 6 : 8];
-                wcsncpy(nums, tempWstr + ovector[i < 2 ? 6 : 8], numslen);
-                nums[numslen] = L'\x0';
+                if (wcscmp(name, L"空") == 0) {
+                    name[0] = L'\x0';
+                    nums[0] = L'\x0';
+                    moveStr[0] = L'\x0';
+                } else { // i=0,1,2
+                    copySubStr(nums, tempWstr, ovector[i < 2 ? 6 : 8], ovector[i < 2 ? 7 : 9]);
 
-                if (i > 0) {
-                    moveStrlen = ovector[i < 2 ? 9 : 7] - ovector[i < 2 ? 8 : 6];
-                    wcsncpy(moveStr, tempWstr + ovector[i < 2 ? 8 : 6], moveStrlen);
+                    if (i > 0) { // i=1,2
+                        copySubStr(moveStr, tempWstr, ovector[i < 2 ? 8 : 6], ovector[i < 2 ? 9 : 7]);
+                        // 筛除 C20 C30局面字符串
+                        int ovec[9];
+                        if (pcrewch_exec(eqReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovec, 9) > 0)
+                            moveStr[0] = L'\x0';
+                    } else
+                        moveStr[0] = L'\x0';
                 }
-                moveStr[i == 0 ? 0 : moveStrlen] = L'\x0';
+            } else { // i=3
+                wcscpy(name, sn);
+                nums[0] = L'\x0';
+                copySubStr(moveStr, tempWstr, ovector[4], ovector[5]);
             }
 
             swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
