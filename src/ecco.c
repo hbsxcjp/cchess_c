@@ -129,7 +129,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
 }
 
 // 初始化开局类型编码名称
-static void initLib__(sqlite3* db)
+static void writeStrLib__(sqlite3* db)
 {
     char *tblName = "eccolib", tempSql[WCHARSIZE], *zErrMsg = 0;
     int rc;
@@ -154,9 +154,10 @@ static void initLib__(sqlite3* db)
     sprintf(tempSql, "CREATE TABLE %s("
                      "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                      "SN TEXT NOT NULL,"
-                     "NUMS TEXT NOT NULL,"
-                     "NAME TEXT NOT NULL,"
-                     "MOVESTR TEXT);",
+                     "NUMS TEXT,"
+                     "NAME TEXT,"
+                     "MOVESTR TEXT,"
+                     "MOVEROWCOL TEXT);",
         tblName);
     rc = sqlite3_exec(db, tempSql, NULL, NULL, &zErrMsg);
     if (rc != SQLITE_OK) {
@@ -190,7 +191,7 @@ void eccoInit(char* dbName)
     } else {
         //fprintf(stderr, "\nOpened database successfully. \n");
 
-        initLib__(db);
+        writeStrLib__(db);
     }
 
     sqlite3_close(db);
