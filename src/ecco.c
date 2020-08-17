@@ -35,7 +35,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
         return;
 
     // 提取插入记录的字符串
-    size_t size = SUPERWIDEWCHARSIZE;
+    size_t size = 6 * SUPERWIDEWCHARSIZE;
     wchar_t *wInsertValuesSql = malloc(size * sizeof(wchar_t)),
             *tempWstr,
             lineStr[WIDEWCHARSIZE],
@@ -50,7 +50,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     int errorffset = 0;
     void* snReg[] = {
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
-        // \\s不包含"　"(全角空格)
+        // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
         pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
                         "([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
             0, &error, &errorffset, NULL),
@@ -58,12 +58,10 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
                         "(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
             0, &error, &errorffset, NULL),
 
-        pcrewch_compile(L"([A-E]\\d{2}局面) =([\\s\\S\\n]*?)\\s*[A-E]\\d{2}．",
+        // C20 C30 C61 C72局面
+        pcrewch_compile(L"([A-E]\\d{2}局面) =([\\s\\S\n]*?(?=\\s*[A-E]\\d{2}．))?",
             0, &error, &errorffset, NULL),
     };
-    // B2. C0. D1. D2. D3. D4. moveStr
-    // 查找C20 C30 C61 C72局面
-    void* eqReg = pcrewch_compile(L"([A-E]\\d{2})局面 =", 0, &error, &errorffset, NULL);
 
     for (int i = 0; i < sizeof(snReg) / sizeof(snReg[0]); ++i) {
         assert(snReg[i]);
@@ -75,29 +73,23 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
                 break;
 
             copySubStr(sn, tempWstr, ovector[2], ovector[3]);
-            if (i < 3) {
-                copySubStr(name, tempWstr, ovector[4], ovector[5]);
+            name[0] = L'\x0';
+            nums[0] = L'\x0';
+            moveStr[0] = L'\x0';
+            copySubStr(i < 3 ? name : moveStr, tempWstr, ovector[4], ovector[5]);
 
-                if (wcscmp(name, L"空") == 0) {
-                    name[0] = L'\x0';
-                    nums[0] = L'\x0';
-                    moveStr[0] = L'\x0';
-                } else { // i=0,1,2
+            if (i < 3) {
+                if (wcscmp(name, L"空") != 0) { // i=0,1,2
                     copySubStr(nums, tempWstr, ovector[i < 2 ? 6 : 8], ovector[i < 2 ? 7 : 9]);
 
-                    if (i > 0) { // i=1,2
+                    if (i > 0) // i=1,2
                         copySubStr(moveStr, tempWstr, ovector[i < 2 ? 8 : 6], ovector[i < 2 ? 9 : 7]);
-                        // 筛除 C20 C30局面字符串
-                        int ovec[9];
-                        if (pcrewch_exec(eqReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovec, 9) > 0)
-                            moveStr[0] = L'\x0';
-                    } else
+                    // 筛除 C20 C30局面字符串
+                    int ovec[9];
+                    if (i == 1 && pcrewch_exec(snReg[3], NULL, moveStr, wcslen(moveStr), 0, 0, ovec, 9) > 0)
                         moveStr[0] = L'\x0';
-                }
-            } else { // i=3
-                wcscpy(name, sn);
-                nums[0] = L'\x0';
-                copySubStr(moveStr, tempWstr, ovector[4], ovector[5]);
+                } else
+                    name[0] = L'\x0';
             }
 
             swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
@@ -119,7 +111,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
 
     //* 输出字符串，检查用
     FILE* fout = fopen("chessManual/eccolib", "w");
-    //fwprintf(fout, outWstring);
+    fwprintf(fout, outWstring);
     fwprintf(fout, wInsertValuesSql);
     fclose(fout);
     //*/

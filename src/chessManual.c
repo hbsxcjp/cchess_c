@@ -225,7 +225,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
             code_convert("gbk", "utf-8", (char*)rem, remc, &outlen);
             mbstowcs(*remark, remc, len);
 #else
-            mbstowcs(*remark, rem, len);
+            mbstowcs(*remark, (char*)rem, len);
 #endif
             //wcstombs(remc, *remark, WIDEWCHARSIZE - 1);
             //printf("\nsize:%ld %s", strlen(remc), remc);
@@ -367,9 +367,8 @@ static void readXQF__(ChessManual cm, FILE* fin)
         L"Opening", L"RMKWriter", L"Author"
     };
     for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
-        size_t len = strlen(values[i]) + 1;
-
 #ifdef __linux
+        size_t len = strlen(values[i]) + 1;
         size_t outlen = len * 3;
         char tstr[outlen];
         code_convert("gbk", "utf-8", values[i], tstr, &outlen);

@@ -1,3 +1,31 @@
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('B2', '中炮对左三步虎(不包括转列炮)', '共74+66+60=200局', '
+
+1. 炮二平五，马８进７　m. ……，车９平８　n. ……，炮８平９(此前可以走卒３进１和卒７进１) 	　' );
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C0', '中炮对屏风马(一)', '共67+61+43=171局', '
+
+1. 炮二平五，马８进７　n. ……，马２进３／
+1. 炮二平五，马２进３　n. ……，马８进７
+(此前可走车９平８、卒７进１和卒３进１)
+	　' );
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('D1', '顺炮直车对缓开车', '共85+55+54=194局', '
+
+1. 炮二平五，炮８平５　2. 马二进三，马８进７　3. 车一平二 	　' );
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('D2', '顺炮直车对横车', '共116+78+72=266局', '
+
+1. 炮二平五，炮８平５　2. 马二进三，马８进７　3. 车一平二，车９进１
+1. 炮二平五，炮８平５　2. 马二进三，车９进１　3. 车一平二，马８进７
+	　' );
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('D3', '中炮对左炮封车转列炮', '共71+62+59=192局，列炮局共162+125+120=407局', '
+
+其中：中炮进三兵对左炮封车转列炮(D31~D36)
+1. 炮二平五，马８进７　2. 马二进三，车９平８　3. 车一平二，炮８进４
+4. 兵三进一，炮２平５
+	　' );
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('D4', '中炮对左三步虎转列炮', '共43+19+32=94局', '
+
+1. 炮二平五，马８进７　l. ……，车９平８　m. ……，炮８平９
+n. ……，炮２平５(此前可以走车８进５、卒３进１和卒７进１)
+	　' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('A', '非中炮类开局(不包括仙人指路局)', '共573+634+362=1569局，非中炮类开局共1220+1263+755=3238局', '' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('B', '中炮对反宫马及其他', '共360+299+279=938局，中炮类开局共1808+1777+1374=4959局', '' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C', '中炮对屏风马', '共1018+1181+813=3012局', '' );
@@ -763,22 +791,22 @@ INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('E96', '', '', '' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('E97', '', '', '' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('E98', '', '', '' );
 INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('E99', '', '', '' );
-INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C20局面', 'C20局面', '', '“中炮过河车七路马对屏风马两头蛇”局面
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C20局面', '', '', '“中炮过河车七路马对屏风马两头蛇”局面
 1. 炮二平五，马２进３／马８进７
 红方：炮二平五、马二进三、车一平二、车二进六、马八进七，不分先后；
 黑方：马８进７、车９平８、卒７进１、马２进３、卒３进１，不分先后
 	　' );
-INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C30局面', 'C30局面', '', '“中炮过河车互进七兵对屏风马”局面
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C30局面', '', '', '“中炮过河车互进七兵对屏风马”局面
 1. 炮二平五，马２进３／马８进７
 红方：炮二平五、马二进三、车一平二、车二进六、兵七进一，不分先后
 黑方：马８进７、车９平８、卒７进１、马２进３，不分先后
 	　' );
-INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C61局面', 'C61局面', '', '“五七炮对屏风马进７卒”局面
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C61局面', '', '', '“五七炮对屏风马进７卒”局面
 1. 炮二平五，马２进３／马８进７
 红方：炮二平五、马二进三、车一平二、马八进九、炮八平七，不分先后；
 黑方：马８进７、车９平８、卒７进１、马２进３，不分先后
 	　' );
-INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C72局面', 'C72局面', '', '“五七炮互进三兵对屏风马边卒右马外盘河”局面
+INSERT INTO eccolib (SN, NAME, NUMS, MOVESTR) VALUES ('C72局面', '', '', '“五七炮互进三兵对屏风马边卒右马外盘河”局面
 1. 炮二平五，马２进３／马８进７
 红方：炮二平五、马二进三、车一平二、兵三进一，马八进九、炮八平七；
 黑方：马８进７、车９平８、马２进３、卒３进１、卒１进１、马３进２；
