@@ -11,10 +11,10 @@ static int callCount__(void* count, int argc, char** argv, char** azColName)
 static int getRecCount__(sqlite3* db, char* tblName, char* where)
 {
     // 查找表
-    char tempSql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WCHARSIZE], *zErrMsg = 0;
     int count = 0;
-    sprintf(tempSql, "SELECT count(*) FROM %s %s;", tblName, where);
-    int rc = sqlite3_exec(db, tempSql, callCount__, &count, &zErrMsg);
+    sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
+    int rc = sqlite3_exec(db, sql, callCount__, &count, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Get RecCount error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
@@ -39,8 +39,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
     wchar_t *wInsertValuesSql = malloc(size * sizeof(wchar_t)),
             *tempWstr,
             lineStr[WIDEWCHARSIZE],
-            outWstring[SUPERWIDEWCHARSIZE] = { 0 },
-            wtblName[WCHARSIZE], sn[10], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
+        wtblName[WCHARSIZE], sn[10], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
     assert(wInsertValuesSql);
     wInsertValuesSql[0] = L'\x0';
     mbstowcs(wtblName, tblName, WCHARSIZE);
@@ -59,7 +58,7 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
             0, &error, &errorffset, NULL),
 
         // C20 C30 C61 C72局面
-        pcrewch_compile(L"([A-E]\\d{2}局面) =([\\s\\S\n]*?(?=\\s*[A-E]\\d{2}．))?",
+        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?(?=\\s*[A-E]\\d{2}．))?",
             0, &error, &errorffset, NULL),
     };
 
@@ -90,13 +89,12 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
                         moveStr[0] = L'\x0';
                 } else
                     name[0] = L'\x0';
-            }
-
-            swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
-                                             "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
-                wtblName, sn, name, nums, moveStr);
-            if (i == 1 && wcslen(moveStr) > 0)
-                wcscat(outWstring, lineStr);
+                swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
+                                                 "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
+                    wtblName, sn, name, nums, moveStr);
+            } else
+                swprintf(lineStr, WIDEWCHARSIZE, L"UPDATE %ls SET MOVESTR = '%ls' WHERE SN = '%ls';\n",
+                    wtblName, moveStr, sn);
 
             supper_wcscat(&wInsertValuesSql, &size, lineStr);
             firstOffset += ovector[1];
@@ -111,7 +109,6 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
 
     //* 输出字符串，检查用
     FILE* fout = fopen("chessManual/eccolib", "w");
-    fwprintf(fout, outWstring);
     fwprintf(fout, wInsertValuesSql);
     fclose(fout);
     //*/
@@ -121,19 +118,19 @@ static void getInsertValuesSql__(char** insertValuesSql, char* tblName, char* fi
 }
 
 // 初始化开局类型编码名称
-static void writeStrLib__(sqlite3* db)
+static void writeStrLib__(sqlite3* db, char* tblName)
 {
-    char *tblName = "eccolib", tempSql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WCHARSIZE], *zErrMsg = 0;
     int rc;
-    sprintf(tempSql, "WHERE type = 'table' AND name = '%s'", tblName);
-    if (getRecCount__(db, "sqlite_master", tempSql) > 0) {
+    sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
+    if (getRecCount__(db, "sqlite_master", sql) > 0) {
         // 查找表记录
         //if (getRecCount__(db, tblName, "") == 555)
         //    return;
 
         // 删除表
-        sprintf(tempSql, "DROP TABLE %s;", tblName);
-        rc = sqlite3_exec(db, tempSql, NULL, NULL, &zErrMsg);
+        sprintf(sql, "DROP TABLE %s;", tblName);
+        rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
         if (rc != SQLITE_OK) {
             fprintf(stderr, "Delete table error: %s\n", zErrMsg);
             sqlite3_free(zErrMsg);
@@ -143,15 +140,15 @@ static void writeStrLib__(sqlite3* db)
     }
 
     // 创建表
-    sprintf(tempSql, "CREATE TABLE %s("
-                     "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                     "SN TEXT NOT NULL,"
-                     "NUMS TEXT,"
-                     "NAME TEXT,"
-                     "MOVESTR TEXT,"
-                     "MOVEROWCOL TEXT);",
+    sprintf(sql, "CREATE TABLE %s("
+                 "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                 "SN TEXT NOT NULL,"
+                 "NUMS TEXT,"
+                 "NAME TEXT,"
+                 "MOVESTR TEXT,"
+                 "MOVEROWCOL TEXT);",
         tblName);
-    rc = sqlite3_exec(db, tempSql, NULL, NULL, &zErrMsg);
+    rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "Create table error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
@@ -168,10 +165,36 @@ static void writeStrLib__(sqlite3* db)
         sqlite3_free(zErrMsg);
     } else {
         fprintf(stdout, "Values inserted successfully.\n");
-
         fprintf(stdout, "Inserted values count: %d\n", getRecCount__(db, tblName, ""));
     }
     free(insertValuesSql);
+}
+
+// 处理查询记录
+static int callStrings__(void* count, int argc, char** argv, char** azColName)
+{
+
+    for (int i = 0; i < argc; ++i) {
+        printf("%s\t", argv[i]);
+    }
+    printf("\n");
+    ++*(int*)count;
+    return 0;
+}
+
+static void updateStrLib__(sqlite3* db, char* tblName)
+{
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    int count = 0;
+    sprintf(sql, "SELECT SN, MOVESTR FROM %s "
+                 "WHERE LENGTH(SN) = 2 AND LENGTH(MOVESTR) > 0;",
+        tblName);
+    int rc = sqlite3_exec(db, sql, callStrings__, &count, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "Get getTemplate error: %s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+    } else
+        printf("Table name: %s, callString__ record count: %d\n", tblName, count);
 }
 
 void eccoInit(char* dbName)
@@ -182,8 +205,10 @@ void eccoInit(char* dbName)
         fprintf(stderr, "\nCan't open database: %s\n", sqlite3_errmsg(db));
     } else {
         //fprintf(stderr, "\nOpened database successfully. \n");
+        char* tblName = "eccolib";
 
-        writeStrLib__(db);
+        writeStrLib__(db, tblName);
+        updateStrLib__(db, tblName);
     }
 
     sqlite3_close(db);
