@@ -125,8 +125,8 @@ static void writeStrLib__(sqlite3* db, char* tblName)
     sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
     if (getRecCount__(db, "sqlite_master", sql) > 0) {
         // 查找表记录
-        //if (getRecCount__(db, tblName, "") == 555)
-        //    return;
+        if (getRecCount__(db, tblName, "") == 555)
+            return;
 
         // 删除表
         sprintf(sql, "DROP TABLE %s;", tblName);
