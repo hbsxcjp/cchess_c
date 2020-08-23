@@ -65,23 +65,14 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
     return 0;
 }
 
-static void getEccoSql__(char** insertEccoSql, char* tblName, wchar_t* fileWstring)
+// 提取插入记录的字符串
+static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring)
 {
-    // 提取插入记录的字符串
-    size_t size = SUPERWIDEWCHARSIZE, num0 = 555, num1 = 4, num = num0 + num1;
-    wchar_t *wInsertEccoSql = malloc(size * sizeof(wchar_t)),
-            *tempWstr,
-            lineStr[WIDEWCHARSIZE],
-            wtblName[WCHARSIZE],
-            sn[num][10], name[num][WCHARSIZE], nums[num][WCHARSIZE], moveStr[num][WIDEWCHARSIZE];
-    assert(wInsertEccoSql);
-    wInsertEccoSql[0] = L'\x0';
-    mbstowcs(wtblName, tblName, WCHARSIZE);
-    int ovector[30], endOffset = wcslen(fileWstring), index = 0;
-
     const char* error;
-    int errorffset = 0;
-    void* reg[] = {
+    int errorffset, ovector[30], endOffset = wcslen(fileWstring), index = 0,
+                                 num0 = 555, num1 = 4, num = num0 + num1;
+    wchar_t *tempWstr, sn[num][10], name[num][WCHARSIZE], nums[num][WCHARSIZE], moveStr[num][WIDEWCHARSIZE];
+    void* regs[] = {
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
         // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
         pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
@@ -95,17 +86,20 @@ static void getEccoSql__(char** insertEccoSql, char* tblName, wchar_t* fileWstri
         pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=\\s*[A-E]\\d{2}．)",
             0, &error, &errorffset, NULL),
     };
-
-    for (int i = 0; i < sizeof(reg) / sizeof(reg[0]); ++i) {
-        assert(reg[i]);
+    for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i) {
+        assert(regs[i]);
 
         int firstOffset = 0;
         while (firstOffset < endOffset) {
             tempWstr = fileWstring + firstOffset;
-            if (pcrewch_exec(reg[i], NULL, tempWstr, endOffset - firstOffset, 0, 0, ovector, 30) <= 0)
+            if (pcrewch_exec(regs[i], NULL, tempWstr, endOffset - firstOffset, 0, 0, ovector, 30) <= 0)
                 break;
 
+            assert(index < num);
             copySubStr(sn[index], tempWstr, ovector[2], ovector[3]);
+            name[index][0] = L'\x0';
+            nums[index][0] = L'\x0';
+            moveStr[index][0] = L'\x0';
             copySubStr(i < 3 ? name[index] : moveStr[index], tempWstr, ovector[4], ovector[5]);
 
             if (i < 3) {
@@ -120,105 +114,49 @@ static void getEccoSql__(char** insertEccoSql, char* tblName, wchar_t* fileWstri
             firstOffset += ovector[1];
             index++;
         }
-        pcrewch_free(reg[i]);
+        pcrewch_free(regs[i]);
     }
+    assert(index == num);
 
+    // 修正C20 C30 C61 C72局面
+    for (int i = num0; i < num; ++i) // 555-558
+        for (int j = 0; j < num0; ++j)
+            if (wcscmp(sn[j], sn[i]) == 0) {
+                wcscpy(moveStr[j], moveStr[i]);
+                break;
+            }
+
+    // 修正moveStr
+    void* reg = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL);
+    for (int i = 0; i < num0; ++i) {
+        int count = 0;
+        if (wcslen(sn[i]) != 3
+            || (count = pcrewch_exec(reg, NULL, moveStr[i], wcslen(moveStr[i]), 0, 0, ovector, 30)) <= 0)
+            continue;
+
+        fwprintf(fout, L"line:%d count:%d.\n%ls\t%ls\n", __LINE__, count, sn[i], moveStr[i]);
+
+    }
+    
+
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t wtblName[WCHARSIZE], lineStr[WIDEWCHARSIZE],
+        *wInitEccoSql = malloc(size * sizeof(wchar_t));
+    assert(wInitEccoSql);
+    wInitEccoSql[0] = L'\x0';
+    mbstowcs(wtblName, tblName, WCHARSIZE);
     for (int i = 0; i < num0; ++i) {
         swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
                                          "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
             wtblName, sn[i], name[i], nums[i], moveStr[i]);
-        supper_wcscat(&wInsertEccoSql, &size, lineStr);
+        supper_wcscat(&wInitEccoSql, &size, lineStr);
     }
+    //fwprintf(fout, wInitEccoSql);
 
-    for (int i = num0; i < num1; ++i) {
-        swprintf(lineStr, WIDEWCHARSIZE, L"UPDATE %ls SET MOVESTR = '%ls' WHERE SN = '%ls';\n",
-            wtblName, moveStr[i], sn[i]);
-        supper_wcscat(&wInsertEccoSql, &size, lineStr);
-    }
-
-    size = wcslen(wInsertEccoSql) * sizeof(wchar_t) + 1;
-    *insertEccoSql = malloc(size);
-    wcstombs(*insertEccoSql, wInsertEccoSql, size);
-    //printf("wsize:%ld size:%ld\n", wcslen(wInsertEccoSql), strlen(*insertEccoSql));
-
-    fprintf(fout, *insertEccoSql);
-    free(wInsertEccoSql);
-    free(fileWstring);
-}
-
-static void getInsertEccoSql__(char** insertEccoSql, char* tblName, wchar_t* fileWstring)
-{
-    // 提取插入记录的字符串
-    size_t size = 6 * SUPERWIDEWCHARSIZE;
-    wchar_t *wInsertEccoSql = malloc(size * sizeof(wchar_t)),
-            *tempWstr,
-            lineStr[WIDEWCHARSIZE],
-            wtblName[WCHARSIZE], sn[10], name[WCHARSIZE], nums[WCHARSIZE], moveStr[WIDEWCHARSIZE];
-    assert(wInsertEccoSql);
-    wInsertEccoSql[0] = L'\x0';
-    mbstowcs(wtblName, tblName, WCHARSIZE);
-    int ovector[30], endOffset = wcslen(fileWstring);
-
-    const char* error;
-    int errorffset = 0;
-    void* reg[] = {
-        pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
-        // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
-        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-                        "([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
-            0, &error, &errorffset, NULL),
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\s+"
-                        "(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
-            0, &error, &errorffset, NULL),
-
-        // C20 C30 C61 C72局面
-        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=\\s*[A-E]\\d{2}．)",
-            0, &error, &errorffset, NULL),
-    };
-
-    for (int i = 0; i < sizeof(reg) / sizeof(reg[0]); ++i) {
-        assert(reg[i]);
-
-        int firstOffset = 0;
-        while (firstOffset < endOffset) {
-            tempWstr = fileWstring + firstOffset;
-            if (pcrewch_exec(reg[i], NULL, tempWstr, endOffset - firstOffset, 0, 0, ovector, 30) <= 0)
-                break;
-
-            copySubStr(sn, tempWstr, ovector[2], ovector[3]);
-            name[0] = L'\x0';
-            nums[0] = L'\x0';
-            moveStr[0] = L'\x0';
-            copySubStr(i < 3 ? name : moveStr, tempWstr, ovector[4], ovector[5]);
-
-            if (i < 3) {
-                if (wcscmp(name, L"空") != 0) { // i=0,1,2
-                    copySubStr(nums, tempWstr, ovector[i < 2 ? 6 : 8], ovector[i < 2 ? 7 : 9]);
-
-                    if (i > 0) // i=1,2
-                        copySubStr(moveStr, tempWstr, ovector[i < 2 ? 8 : 6], ovector[i < 2 ? 9 : 7]);
-                } else
-                    name[0] = L'\x0';
-                swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
-                                                 "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
-                    wtblName, sn, name, nums, moveStr);
-            } else
-                swprintf(lineStr, WIDEWCHARSIZE, L"UPDATE %ls SET MOVESTR = '%ls' WHERE SN = '%ls';\n",
-                    wtblName, moveStr, sn);
-
-            supper_wcscat(&wInsertEccoSql, &size, lineStr);
-            firstOffset += ovector[1];
-        }
-        pcrewch_free(reg[i]);
-    }
-
-    size = wcslen(wInsertEccoSql) * sizeof(wchar_t) + 1;
-    *insertEccoSql = malloc(size);
-    wcstombs(*insertEccoSql, wInsertEccoSql, size);
-    //printf("wsize:%ld size:%ld\n", wcslen(wInsertEccoSql), strlen(*insertEccoSql));
-
-    fprintf(fout, *insertEccoSql);
-    free(wInsertEccoSql);
+    size = wcslen(wInitEccoSql) * sizeof(wchar_t) + 1;
+    *initEccoSql = malloc(size);
+    wcstombs(*initEccoSql, wInitEccoSql, size);
+    free(wInitEccoSql);
     free(fileWstring);
 }
 
@@ -229,18 +167,17 @@ static void initEccoTable__(sqlite3* db, char* tblName, char* colNames, wchar_t*
         return;
 
     // 获取插入记录字符串，并插入
-    char* insertEccoSql = NULL;
-    getInsertEccoSql__(&insertEccoSql, tblName, fileWstring);
+    char *initEccoSql = NULL, *zErrMsg;
+    getEccoSql__(&initEccoSql, tblName, fileWstring);
 
-    char* zErrMsg;
-    int rc = sqlite3_exec(db, insertEccoSql, NULL, NULL, &zErrMsg);
+    int rc = sqlite3_exec(db, initEccoSql, NULL, NULL, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "\nTable %s operate error: %s", tblName, zErrMsg);
         sqlite3_free(zErrMsg);
     } else
         fprintf(stdout, "\nTable %s have records: %d\n", tblName, getRecCount__(db, tblName, ""));
 
-    free(insertEccoSql);
+    free(initEccoSql);
 }
 
 static bool isMatch__(const char* str, const void* reg)
@@ -261,14 +198,7 @@ static int updateMoveStr__(void* arg, int argc, char** argv, char** azColName)
     if (!isMatch__(argv[1], reg))
         return 0;
 
-    //char sql[WCHARSIZE], str[WIDEWCHARSIZE];
-    //sprintf(sql, "SELECT MOVESTR FROM %s WHERE SN = %s;", tblName, argv[0]);
-    //sqlite3_exec(db, sql, getFieldStr__, str, NULL);
-
-    fprintf(fout, "%s\t%s\n", argv[0], argv[1]);
-    //fprintf(fout, "%s\t%s\n%s\n", argv[0], argv[1], str);
-
-    //reg = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL);
+    //fprintf(fout, "%s\t%s\n", argv[0], argv[1]);
     return 0;
 }
 
@@ -306,7 +236,8 @@ void eccoInit(char* dbName)
                           "MOVESTR TEXT,"
                           "MOVEROWCOL TEXT";
         initEccoTable__(db, tblName, colNames, fileWstring);
-        //updateEccoField__(db, tblName);
+
+        updateEccoField__(db, tblName);
     }
 
     sqlite3_close(db);
