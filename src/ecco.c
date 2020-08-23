@@ -11,12 +11,13 @@ static int callCount__(void* count, int argc, char** argv, char** azColName)
     return 0;
 }
 
-// 获取单一查询记录(字符串)
+/*// 获取单一查询记录(字符串)
 static int getFieldStr__(void* str, int argc, char** argv, char** azColName)
 {
     strcpy(str, argv[0]);
     return 0;
 }
+//*/
 
 static int getRecCount__(sqlite3* db, char* tblName, char* where)
 {
@@ -69,30 +70,31 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
 static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring)
 {
     const char* error;
-    int errorffset, ovector[30], endOffset = wcslen(fileWstring), index = 0,
-                                 num0 = 555, num1 = 4, num = num0 + num1;
+    int errorffset, ovector[30],
+        first, last = wcslen(fileWstring), index = 0,
+               num0 = 555, num1 = 4, num = num0 + num1;
     wchar_t *tempWstr, sn[num][10], name[num][WCHARSIZE], nums[num][WCHARSIZE], moveStr[num][WIDEWCHARSIZE];
     void* regs[] = {
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
         // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
         pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-                        "([\\s\\S]*?)(?=\\s+[A-E]\\d{2}．))",
+                        "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",
             0, &error, &errorffset, NULL),
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)\\s+"
-                        "(?:(?![A-E]\\d)([\\s\\S]*?)\\s*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
+                        "(?:(?![A-E]\\d)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=\\s+上|\\s+[A-E]\\d{0,2}．))?",
             0, &error, &errorffset, NULL),
 
         // C20 C30 C61 C72局面
-        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=\\s*[A-E]\\d{2}．)",
+        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
             0, &error, &errorffset, NULL),
     };
     for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i) {
         assert(regs[i]);
 
-        int firstOffset = 0;
-        while (firstOffset < endOffset) {
-            tempWstr = fileWstring + firstOffset;
-            if (pcrewch_exec(regs[i], NULL, tempWstr, endOffset - firstOffset, 0, 0, ovector, 30) <= 0)
+        first = 0;
+        while (first < last) {
+            tempWstr = fileWstring + first;
+            if (pcrewch_exec(regs[i], NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
                 break;
 
             assert(index < num);
@@ -111,7 +113,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
                 } else
                     name[index][0] = L'\x0';
             }
-            firstOffset += ovector[1];
+            first += ovector[1];
             index++;
         }
         pcrewch_free(regs[i]);
@@ -127,17 +129,46 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             }
 
     // 修正moveStr
-    void* reg = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL);
-    for (int i = 0; i < num0; ++i) {
-        int count = 0;
-        if (wcslen(sn[i]) != 3
-            || (count = pcrewch_exec(reg, NULL, moveStr[i], wcslen(moveStr[i]), 0, 0, ovector, 30)) <= 0)
+    int No = 0;
+    void *reg0 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
+         *reg1 = pcrewch_compile(L"([2-9a-z]. [\\n\\S]+(?:[，　]+[\\n\\S]*?(?=[2-9a-z].))?)", 0, &error, &errorffset, NULL);
+    // ([2-9a-z]. )([^，\s]+)(，[\n\S]+)?
+
+    wchar_t tsn[10], fmoveStr[WIDEWCHARSIZE], move[WCHARSIZE]; //tmoveStr[WIDEWCHARSIZE],
+    for (int i = 55; i < num0; ++i) { // wcslen(sn[i]) == 3  有74项
+        if (pcrewch_exec(reg0, NULL, moveStr[i], wcslen(moveStr[i]), 0, 0, ovector, 30) <= 0)
             continue;
 
-        fwprintf(fout, L"line:%d count:%d.\n%ls\t%ls\n", __LINE__, count, sn[i], moveStr[i]);
+        // 取得替换模板字符串
+        wcscpy(tsn, sn[i]);
+        if (tsn[0] == L'C')
+            tsn[1] = L'0'; // C0-C9 => C0
+        tsn[2] = L'\x0';
+        if (wcscmp(tsn, L"D5") == 0)
+            wcscpy(tsn, L"D51"); // D5_ => D51
+        for (int j = 0; j < num0; ++j)
+            if (wcscmp(sn[j], tsn) == 0) {
+                wcscpy(fmoveStr, moveStr[j]);
+                break;
+            }
 
+        fwprintf(fout, L"No:%d\n%ls\t%ls\n\n", No++, sn[i], moveStr[i]);
+        first = 0;
+        last = wcslen(moveStr[i]);
+        while (first < last) {
+            tempWstr = moveStr[i] + first;
+            if (pcrewch_exec(reg1, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
+                break;
+
+            copySubStr(move, tempWstr, ovector[2], ovector[3]);
+
+            //fwprintf(fout, L"%ls\n", move);
+            first += ovector[1];
+        }
+        fwprintf(fout, L"\nfmoveStr:%ls\n", fmoveStr);
     }
-    
+    pcrewch_free(reg0);
+    pcrewch_free(reg1);
 
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t wtblName[WCHARSIZE], lineStr[WIDEWCHARSIZE],
