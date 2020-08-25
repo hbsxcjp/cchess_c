@@ -131,8 +131,9 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
     // 修正moveStr
     int No = 0;
     void *reg0 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
-         *reg1 = pcrewch_compile(L"([2-9a-z]. [\\n\\S]+(?:[，　]+[\\n\\S]*?(?=[2-9a-z].))?)", 0, &error, &errorffset, NULL);
-    // ([2-9a-z]. )([^，\s]+)(，[\n\S]+)?
+         *reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
+             0, &error, &errorffset, NULL);
+    // ([2-9a-z]. ?)([^，a-z\f\r\t\v]+)(，[^　／a-z\f\r\t\v]+)?
 
     wchar_t tsn[10], fmoveStr[WIDEWCHARSIZE], move[WCHARSIZE]; //tmoveStr[WIDEWCHARSIZE],
     for (int i = 55; i < num0; ++i) { // wcslen(sn[i]) == 3  有74项
@@ -152,7 +153,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
                 break;
             }
 
-        fwprintf(fout, L"No:%d\n%ls\t%ls\n\n", No++, sn[i], moveStr[i]);
+        //fwprintf(fout, L"No:%d\n%ls\t%ls\n\n", No++, sn[i], moveStr[i]);
         first = 0;
         last = wcslen(moveStr[i]);
         while (first < last) {
@@ -165,7 +166,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             //fwprintf(fout, L"%ls\n", move);
             first += ovector[1];
         }
-        fwprintf(fout, L"\nfmoveStr:%ls\n", fmoveStr);
+        //fwprintf(fout, L"\nfmoveStr:%ls\n", fmoveStr);
     }
     pcrewch_free(reg0);
     pcrewch_free(reg1);
@@ -182,7 +183,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             wtblName, sn[i], name[i], nums[i], moveStr[i]);
         supper_wcscat(&wInitEccoSql, &size, lineStr);
     }
-    //fwprintf(fout, wInitEccoSql);
+    fwprintf(fout, wInitEccoSql);
 
     size = wcslen(wInitEccoSql) * sizeof(wchar_t) + 1;
     *initEccoSql = malloc(size);
