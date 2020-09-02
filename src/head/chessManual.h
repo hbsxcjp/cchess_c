@@ -46,6 +46,9 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);
 
+// 取得棋谱的着法字符串(iccs)
+const char* getIccsStr(char* iccsStr, ChessManual cm);
+
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
 #endif

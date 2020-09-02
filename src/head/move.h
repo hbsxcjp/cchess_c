@@ -45,7 +45,8 @@ int getToRowCol_m(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
 const wchar_t* getZhStr(CMove move);
-const wchar_t* getICCS(wchar_t* ICCSStr, CMove move);
+const char* getIccs_s(char* iccs, CMove move);
+const wchar_t* getICCS(wchar_t* iccs, CMove move);
 
 // 检测是否存在一个XQF文件存储时的错误
 bool isXQFStoreError(CMove move, int frow, int fcol, int trow, int tcol);

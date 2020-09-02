@@ -1175,7 +1175,7 @@ void changeChessManual(ChessManual cm, ChangeType ct)
     if (getNext(cm->rootMove)) {
         if (ct != EXCHANGE)
             changeMove(getNext(cm->rootMove), cm->board, ct);
-        if (ct == EXCHANGE || ct == SYMMETRY)
+        if (ct == EXCHANGE || ct == SYMMETRY_H || ct == SYMMETRY_V)
             setMoveNumZhStr(cm);
     }
 }
@@ -1254,6 +1254,18 @@ void getChessManualNumStr(char* str, ChessManual cm)
 {
     snprintf(str, WIDEWCHARSIZE, "%s: movCount:%d remCount:%d remLenMax:%d maxRow:%d maxCol:%d\n",
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
+}
+
+const char* getIccsStr(char* iccsStr, ChessManual cm)
+{
+    char iccs[6];
+    CMove tmove = cm->rootMove;
+    iccsStr[0] = '\x0';
+    while ((tmove = getNext(tmove)) != NULL) {
+        strcat(iccsStr, getIccs_s(iccs, tmove));
+        strcat(iccsStr, " ");
+    }
+    return iccsStr;
 }
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1)

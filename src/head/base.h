@@ -73,7 +73,8 @@ typedef const struct Pieces* CPieces;
 typedef enum {
     EXCHANGE,
     ROTATE,
-    SYMMETRY
+    SYMMETRY_H,
+    SYMMETRY_V
 } ChangeType;
 
 // 棋盘位置类型

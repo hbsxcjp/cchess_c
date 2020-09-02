@@ -655,7 +655,7 @@ void changeBoard(Board board, ChangeType ct)
             }
         board->bottomColor = !(board->bottomColor);
         break;
-    case SYMMETRY:
+    case SYMMETRY_H:
         for (int row = 0; row < BOARDROW; ++row)
             for (int col = 0; col < BOARDCOL / 2; ++col) {
                 int othCol = getOtherCol_c(col);
@@ -666,6 +666,19 @@ void changeBoard(Board board, ChangeType ct)
                 setPiece_rc__(board, row, col, othPiece);
                 setPiece_rc__(board, row, othCol, piece);
             }
+        break;
+    case SYMMETRY_V:
+        for (int row = 0; row < BOARDROW / 2; ++row)
+            for (int col = 0; col < BOARDCOL; ++col) {
+                int othRow = getOtherRow_r(row);
+                Piece piece = getPiece_rc(board, row, col),
+                      othPiece = getPiece_rc(board, othRow, col);
+                setSeat(piece, NULL);
+                setSeat(othPiece, NULL);
+                setPiece_rc__(board, row, col, othPiece);
+                setPiece_rc__(board, othRow, col, piece);
+            }
+        board->bottomColor = !(board->bottomColor);
         break;
     default:
         break;

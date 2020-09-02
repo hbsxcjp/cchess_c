@@ -343,7 +343,7 @@ static void test_board_change_str(void)
     Board board = newBoard();
     setBoard__(board, FENs[1]); // 选择第2个FEN
 
-    for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
+    for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         changeBoard(board, ct);
         getBoardStr__(str2, board);
         //if (strcmp(str1[ct], str2) != 0)
@@ -614,8 +614,11 @@ static void test_chessManual_xqf(void)
     free(wstr);
     free(resultStr);
 
+    char iccsStr[WIDEWCHARSIZE];
+    printf("\n%s\n", getIccsStr(iccsStr, cm));
+
     //*
-    for (int ct = EXCHANGE; ct <= SYMMETRY; ++ct) {
+    for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
         sprintf(fname, "chessManual/01%d.pgn_cc", ct);

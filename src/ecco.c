@@ -143,10 +143,10 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
         // 取得替换模板字符串
         wcscpy(tsn, sn[i]);
         if (tsn[0] == L'C')
-            tsn[1] = L'0'; // C0-C9 => C0
+            tsn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
         tsn[2] = L'\x0';
         if (wcscmp(tsn, L"D5") == 0)
-            wcscpy(tsn, L"D51"); // D5_ => D51
+            wcscpy(tsn, L"D51"); // D5 => D51
         for (int j = 0; j < num0; ++j)
             if (wcscmp(sn[j], tsn) == 0) {
                 wcscpy(fmoveStr, moveStr[j]);
