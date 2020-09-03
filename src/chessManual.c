@@ -1258,11 +1258,11 @@ void getChessManualNumStr(char* str, ChessManual cm)
 
 const char* getIccsStr(char* iccsStr, ChessManual cm)
 {
-    char iccs[6];
-    CMove tmove = cm->rootMove;
     iccsStr[0] = '\x0';
-    while ((tmove = getNext(tmove)) != NULL) {
-        for (ChangeType ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
+    char iccs[6];
+    for (ChangeType ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
+        CMove tmove = cm->rootMove;
+        while ((tmove = getNext(tmove)) != NULL) {
             strcat(iccsStr, getOtherIccs_m(iccs, tmove, cm->board, ct));
             strcat(iccsStr, " ");
         }
