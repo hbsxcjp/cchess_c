@@ -187,23 +187,24 @@ int getRowCols_m(CMove move) { return (getFromRowCol_m(move) << 8) | getToRowCol
 
 const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
-const char* getIccs_s(char* iccs, CMove move)
+const char* getIccs_m(char* iccs, CMove move)
 {
     if (isRootMove(move))
         iccs[0] = '\x0';
     else
-        sprintf(iccs, "%c%d%c%d",
-            getCol_s(move->fseat) + 'a',
-            getRow_s(move->fseat),
-            getCol_s(move->tseat) + 'a',
-            getRow_s(move->tseat));
+        getIccs_s(iccs, move->fseat, move->tseat);
     return iccs;
+}
+
+const char* getOtherIccs_m(char* iccs, CMove move, Board board, ChangeType ct)
+{
+    return getIccs_s(iccs, getOtherSeat(board, move->fseat, ct), getOtherSeat(board, move->tseat, ct));
 }
 
 const wchar_t* getICCS(wchar_t* iccs, CMove move)
 {
     char str[6];
-    mbstowcs(iccs, getIccs_s(str, move), 6);
+    mbstowcs(iccs, getIccs_m(str, move), 6);
     return iccs;
 }
 
@@ -256,18 +257,8 @@ void changeMove(Move move, Board board, ChangeType ct)
 {
     if (move == NULL)
         return;
-    Seat fseat = move->fseat, tseat = move->tseat;
-    if (ct == ROTATE) {
-        move->fseat = getSeat_rc(board, getOtherRow_s(fseat), getOtherCol_s(fseat));
-        move->tseat = getSeat_rc(board, getOtherRow_s(tseat), getOtherCol_s(tseat));
-    } else if (ct == SYMMETRY_H) {
-        move->fseat = getSeat_rc(board, getRow_s(fseat), getOtherCol_s(fseat));
-        move->tseat = getSeat_rc(board, getRow_s(tseat), getOtherCol_s(tseat));
-    } else if (ct == SYMMETRY_V) {
-        move->fseat = getSeat_rc(board, getOtherRow_s(fseat), getCol_s(fseat));
-        move->tseat = getSeat_rc(board, getOtherRow_s(tseat), getCol_s(tseat));
-    }
-    //如ct==EXCHANGE, 则交换棋子，位置不需要更改
+    move->fseat = getOtherSeat(board, move->fseat, ct);
+    move->tseat = getOtherSeat(board, move->tseat, ct);
 
     changeMove(move->omove, board, ct);
     changeMove(move->nmove, board, ct);

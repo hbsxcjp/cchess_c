@@ -41,11 +41,20 @@ static bool isValidCol__(int col) { return col >= ColLowIndex_ && col <= ColUpIn
 inline int getRow_s(CSeat seat) { return seat->row; }
 inline int getCol_s(CSeat seat) { return seat->col; }
 
-inline int getOtherRow_r(int row) { return BOARDROW - 1 - row; }
-inline int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
+int getOtherRow_r(int row) { return BOARDROW - 1 - row; }
+int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
 
-inline int getOtherRow_s(CSeat seat) { return getOtherRow_r(getRow_s(seat)); }
-inline int getOtherCol_s(CSeat seat) { return getOtherCol_c(getCol_s(seat)); }
+Seat getOtherSeat(Board board, Seat seat, ChangeType ct)
+{
+    if (ct == ROTATE)
+        return getSeat_rc(board, getOtherRow_r(getRow_s(seat)), getOtherCol_c(getCol_s(seat)));
+    else if (ct == SYMMETRY_H)
+        return getSeat_rc(board, getRow_s(seat), getOtherCol_c(getCol_s(seat)));
+    else if (ct == SYMMETRY_V)
+        return getSeat_rc(board, getOtherRow_r(getRow_s(seat)), getCol_s(seat));
+    else //如ct==EXCHANGE, 则位置不需要更改
+        return seat;
+}
 
 inline int getRowCol_rc(int row, int col) { return (row << 4) | col; }
 inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_s(seat)); }
@@ -636,53 +645,24 @@ static void exchangePiece__(Piece piece, void* ptr)
 
 void changeBoard(Board board, ChangeType ct)
 {
-    switch (ct) {
-    case EXCHANGE: {
-        struct Board boardBak = *board; // 复制结构
+    if (ct == EXCHANGE) {
+        // 复制结构, 以保存和使用最初的位置棋子布局
+        struct Board boardBak = *board;
         piecesMap(boardBak.pieces, exchangePiece__, boardBak.pieces);
-        board->bottomColor = !(board->bottomColor);
-    } break;
-    case ROTATE:
-        for (int row = 0; row < BOARDROW / 2; ++row)
-            for (int col = 0; col < BOARDCOL; ++col) {
-                int othRow = getOtherRow_r(row), othCol = getOtherCol_c(col);
-                Piece piece = getPiece_rc(board, row, col),
-                      othPiece = getPiece_rc(board, othRow, othCol);
-                setSeat(piece, NULL);
-                setSeat(othPiece, NULL);
-                setPiece_rc__(board, row, col, othPiece);
-                setPiece_rc__(board, othRow, othCol, piece);
+    } else { // BOTATE, SYMMETRY_H, SYMMETRY_V
+        int rowLimit = ct == SYMMETRY_H ? BOARDROW : BOARDROW / 2,
+            colLimit = ct == SYMMETRY_H ? BOARDCOL / 2 : BOARDCOL;
+        for (int row = 0; row < rowLimit; ++row)
+            for (int col = 0; col < colLimit; ++col) {
+                Seat seat = getSeat_rc(board, row, col),
+                     othSeat = getOtherSeat(board, seat, ct);
+                Piece piece = getPiece_s(seat);
+                setPiece_s__(seat, getPiece_s(othSeat));
+                setPiece_s__(othSeat, piece);
             }
-        board->bottomColor = !(board->bottomColor);
-        break;
-    case SYMMETRY_H:
-        for (int row = 0; row < BOARDROW; ++row)
-            for (int col = 0; col < BOARDCOL / 2; ++col) {
-                int othCol = getOtherCol_c(col);
-                Piece piece = getPiece_rc(board, row, col),
-                      othPiece = getPiece_rc(board, row, othCol);
-                setSeat(piece, NULL);
-                setSeat(othPiece, NULL);
-                setPiece_rc__(board, row, col, othPiece);
-                setPiece_rc__(board, row, othCol, piece);
-            }
-        break;
-    case SYMMETRY_V:
-        for (int row = 0; row < BOARDROW / 2; ++row)
-            for (int col = 0; col < BOARDCOL; ++col) {
-                int othRow = getOtherRow_r(row);
-                Piece piece = getPiece_rc(board, row, col),
-                      othPiece = getPiece_rc(board, othRow, col);
-                setSeat(piece, NULL);
-                setSeat(othPiece, NULL);
-                setPiece_rc__(board, row, col, othPiece);
-                setPiece_rc__(board, othRow, col, piece);
-            }
-        board->bottomColor = !(board->bottomColor);
-        break;
-    default:
-        break;
     }
+    if (ct != SYMMETRY_H)
+        board->bottomColor = !(board->bottomColor);
 }
 
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
@@ -780,6 +760,16 @@ void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat)
     getSeats_zh(&tmpfseat, &tmptseat, board, zhStr);
     assert(fseat == tmpfseat && tseat == tmptseat);
     //*/
+}
+
+const char* getIccs_s(char* iccs, Seat fseat, Seat tseat)
+{
+    sprintf(iccs, "%c%d%c%d",
+        getCol_s(fseat) + 'a',
+        getRow_s(fseat),
+        getCol_s(tseat) + 'a',
+        getRow_s(tseat));
+    return iccs;
 }
 
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat)

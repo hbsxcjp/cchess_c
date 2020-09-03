@@ -12,13 +12,8 @@ void delBoard(Board board);
 int getRow_s(CSeat seat);
 int getCol_s(CSeat seat);
 
-// 获取对称行列值
-int getOtherRow_r(int row);
-int getOtherCol_c(int col);
-
-// 获取对称行列值
-int getOtherRow_s(CSeat seat);
-int getOtherCol_s(CSeat seat);
+// 获取相对位置的Seat
+Seat getOtherSeat(Board board, Seat seat, ChangeType ct);
 
 // 获取行列整数值
 int getRowCol_rc(int row, int col);
@@ -95,6 +90,9 @@ void changeBoard(Board board, ChangeType ct);
 void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
 // 设置着法的中文字符串
 void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat);
+
+// 获取位置的iccs描述字符串
+const char* getIccs_s(char* iccs, Seat fseat, Seat tseat);
 
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);

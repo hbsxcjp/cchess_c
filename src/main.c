@@ -5,9 +5,9 @@
 int main(int argc, char const* argv[])
 {
     char* oldlocale = setlocale(LC_ALL, NULL);
-    setlocale(LC_ALL, "");
-    //char* newlocale = setlocale(LC_ALL, "");
-    //printf("old:%s new:%s\n", oldlocale, newlocale);
+    //setlocale(LC_ALL, "");
+    char* newlocale = setlocale(LC_ALL, "");
+    printf("old:%s\nnew:%s\n", oldlocale, newlocale);
 
     setbuf(stdout, NULL);
     unitTest();

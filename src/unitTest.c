@@ -346,10 +346,12 @@ static void test_board_change_str(void)
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         changeBoard(board, ct);
         getBoardStr__(str2, board);
-        //if (strcmp(str1[ct], str2) != 0)
-        //    printf("%s\n%s\n", str1[ct], str2);
 
-        CU_ASSERT_STRING_EQUAL(str1[ct], str2);
+        ChangeType tct = ct == SYMMETRY_V ? EXCHANGE : ct; // 经过一轮循环后，恢复到最初布局
+        //if (strcmp(str1[tct], str2) != 0)
+        //    printf("%s\n%s\n", str1[tct], str2);
+
+        CU_ASSERT_STRING_EQUAL(str1[tct], str2);
     }
     delBoard(board);
 }
