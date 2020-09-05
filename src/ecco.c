@@ -167,7 +167,7 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
                     free(moveStr);
                     break;
                 }
-            fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
+            //fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
         }
     }
     pcrewch_free(reg_s);
