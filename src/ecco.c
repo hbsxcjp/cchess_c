@@ -173,6 +173,11 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
     pcrewch_free(reg_s);
     pcrewch_free(reg_p);
 }
+// 读取开局着法内容至数据表
+static void formatMoveStr__(wchar_t*** tables_g, int recordCount)
+{
+
+}
 
 static void testGetFields__(wchar_t* fileWstring)
 {
@@ -180,6 +185,9 @@ static void testGetFields__(wchar_t* fileWstring)
     int group = 4, record[group], field[group];
     wchar_t*** tables[group];
     getSplitFields__(tables, record, field, fileWstring);
+
+    // 三级局面moveStr字符串规范化
+    formatMoveStr__(tables[2], record[2]);
 
     //*reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
     //    0, &error, &errorffset, NULL);
