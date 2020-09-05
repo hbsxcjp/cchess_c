@@ -1,4 +1,5 @@
 #include "head/ecco.h"
+#include "head/chessManual.h"
 #include "head/tools.h"
 
 //* 输出字符串，检查用
@@ -66,6 +67,83 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
     return 0;
 }
 
+// 格式化C20 C30 C61 C72局面字符串
+static void formatSituation__(wchar_t* preMoveStr, wchar_t* situaStr)
+{
+    const char* error;
+    int errorffset, ovector[30];
+    void* reg0 = pcrewch_compile(L"([\\s\\S]+)红方：([\\s\\S]+)黑方：([\\s\\S]+)",
+        0, &error, &errorffset, NULL);
+    if (pcrewch_exec(reg0, NULL, situaStr, wcslen(situaStr), 0, 0, ovector, 30) != 4)
+        return;
+    pcrewch_free(reg0);
+
+    int group = 3, mCount[group];
+    wchar_t splitStr[3][WCHARSIZE], ZhWChars[WCHARSIZE], mStr[WCHARSIZE], *tempWstr,
+        move[group][30][10];
+    getZhWChars(ZhWChars);
+    swprintf(mStr, WCHARSIZE, L"([%ls]{4}(?:／[%ls]{4})*)(?=[，、；\\s　]|$)", ZhWChars, ZhWChars);
+    void* reg_m = pcrewch_compile(mStr, 0, &error, &errorffset, NULL);
+    for (int i = 0; i < group; ++i) {
+        copySubStr(splitStr[i], situaStr, ovector[2 * i + 2], ovector[2 * i + 3]);
+
+        //fwprintf(fout, L"split %d: %ls\nmove: ", i, splitStr[i]);
+        int first = 0, last = wcslen(splitStr[i]), index = 0;
+        while (first < last) {
+            tempWstr = splitStr[i] + first;
+            if (pcrewch_exec(reg_m, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
+                break;
+
+            copySubStr(move[i][index++], tempWstr, ovector[2], ovector[3]);
+            first += ovector[1];
+            //fwprintf(fout, L"%ls\t", move[i][index - 1]);
+        }
+        mCount[i] = index;
+        //fwprintf(fout, L"\t%d\n", mCount[i]);
+    }
+    pcrewch_free(reg_m);
+
+    int boutIndex = 0;
+    bool isBoutFirst = true;
+    preMoveStr[0] = L'\x0';
+    // 写入第一部分着法
+    for (int i = 0; i < mCount[0]; ++i) {
+        if (isBoutFirst) {
+            swprintf(mStr, WCHARSIZE, L"%d. ", ++boutIndex);
+            wcscat(preMoveStr, mStr);
+        }
+        wcscat(preMoveStr, move[0][i]);
+        wcscat(preMoveStr, L" ");
+        isBoutFirst = !isBoutFirst;
+    }
+    // 写入第二、三部分着法
+    wchar_t rbStr[2][WCHARSIZE] = { 0 };
+    for (int g = 1; g < group; ++g) {
+        for (int i = 0; i < mCount[1]; ++i) {
+            // 红棋第1着不参与
+            if ((g == 1 && i == 0) || (g == 2 && i >= mCount[2]))
+                continue;
+            wcscat(rbStr[g - 1], move[g][i]);
+            wcscat(rbStr[g - 1], L"／");
+        }
+        rbStr[g - 1][wcslen(rbStr[g - 1]) - 1] = L'\x0';
+    }
+    for (int i = 1; i < mCount[1]; ++i) {
+        swprintf(mStr, WCHARSIZE, L"%d. ", ++boutIndex);
+        wcscat(preMoveStr, mStr);
+
+        wcscat(preMoveStr, rbStr[0]);
+        wcscat(preMoveStr, L" ");
+        // 黑方也有相同着数
+        if (i < mCount[2]) {
+            wcscat(preMoveStr, rbStr[1]);
+            wcscat(preMoveStr, L" ");
+        }
+    }
+
+    //fwprintf(fout, L"preMoveStr:%ls\n", preMoveStr);
+}
+
 // 读取开局着法内容至数据表
 static void getSplitFields__(wchar_t**** tables, int* record, int* field, const wchar_t* wstring)
 {
@@ -105,18 +183,18 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
             assert(count - 1 <= field[g]);
             tables[g][recIndex] = calloc(field[g], sizeof(wchar_t*));
 
-            fwprintf(fout, L"%d:\t", recIndex);
+            //fwprintf(fout, L"%d:\t", recIndex);
             for (int f = 0; f < count - 1; ++f) {
                 int start = ovector[2 * f + 2], end = ovector[2 * f + 3];
                 wchar_t* mStr = malloc((end - start + 1) * sizeof(wchar_t));
                 copySubStr(mStr, tempWstr, start, end);
                 tables[g][recIndex][f] = mStr;
 
-                fwprintf(fout, L"%ls\t", mStr);
+                //fwprintf(fout, L"%ls\t", mStr);
             }
             first += ovector[1];
 
-            fwprintf(fout, L"\n");
+            //fwprintf(fout, L"\n");
             recIndex++;
         }
         record[g] = recIndex;
@@ -140,14 +218,18 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
                 sn[2] = L'2'; // C73 => C72
             for (int ir = 0; ir < record[3]; ++ir) {
                 if (wcscmp(tables[3][ir][0], sn) == 0) {
-                    tables[2][r][2] = malloc((wcslen(tables[3][ir][1]) + wcslen(moveStr) + 2) * sizeof(wchar_t));
-                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", tables[3][ir][1], moveStr);
+                    wchar_t preMoveStr[WCHARSIZE];
+                    // 格式化字符串
+                    formatSituation__(preMoveStr, tables[3][ir][1]);
+                    tables[2][r][2] = malloc((wcslen(preMoveStr) + wcslen(moveStr) + 2) * sizeof(wchar_t));
+                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", preMoveStr, moveStr);
                     free(moveStr);
                     break;
                 }
             }
             fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
         }
+
         // 处理 前置省略的着法 有74项
         else if (pcrewch_exec(reg_p, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
             // 取得替换模板字符串编号
@@ -173,10 +255,16 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
     pcrewch_free(reg_s);
     pcrewch_free(reg_p);
 }
-// 读取开局着法内容至数据表
+
+//
 static void formatMoveStr__(wchar_t*** tables_g, int recordCount)
 {
-
+    //wchar_t situation[] = L"局面开始：";
+    for (int r = 0; r < recordCount; ++r) {
+        //  char* nextStr = NULL;
+        //if ((nextStr = strstr(tables_g[r][2], situation)) != NULL) {
+        //}
+    }
 }
 
 static void testGetFields__(wchar_t* fileWstring)

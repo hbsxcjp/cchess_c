@@ -694,6 +694,13 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
     pcrewch_free(infoReg);
 }
 
+wchar_t* getZhWChars(wchar_t* ZhWChars)
+{
+    swprintf(ZhWChars, WCHARSIZE, L"%ls%ls%ls%ls%ls",
+        PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
+    return ZhWChars;
+}
+
 static void readMove_PGN_ICCSZH__(Move rootMove, FILE* fin, RecFormat fmt, Board board)
 {
     //printf("\n读取文件内容到字符串... ");
@@ -703,13 +710,9 @@ static void readMove_PGN_ICCSZH__(Move rootMove, FILE* fin, RecFormat fmt, Board
 
     bool isPGN_ZH = fmt == PGN_ZH;
     const wchar_t* remStr = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
-    wchar_t ICCSZHStr[WCHARSIZE], movePat[WCHARSIZE], remPat[WCHARSIZE];
-    if (isPGN_ZH)
-        swprintf(ICCSZHStr, WCHARSIZE, L"%ls%ls%ls%ls%ls",
-            PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
-    else
-        swprintf(ICCSZHStr, WCHARSIZE, L"abcdefghi\\d");
-    swprintf(movePat, WCHARSIZE, L"(\\()?(?:[\\d\\.\\s]+)([%ls]{4})%ls(?:[\\s\\n]*(\\)+))?", ICCSZHStr, remStr); // 可能存在多个右括号
+    wchar_t ZhWChars[WCHARSIZE], movePat[WCHARSIZE], remPat[WCHARSIZE];
+    swprintf(movePat, WCHARSIZE, L"(\\()?(?:[\\d\\.\\s]+)([%ls]{4})%ls(?:[\\s\\n]*(\\)+))?",
+        isPGN_ZH ? getZhWChars(ZhWChars) : L"a-i\\d", remStr); // 可能存在多个右括号
     swprintf(remPat, WCHARSIZE, L"%ls1\\.", remStr);
 
     const char* error;

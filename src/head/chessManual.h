@@ -14,6 +14,9 @@ void delChessManual(ChessManual cm);
 
 Move getRootMove(ChessManual cm);
 
+// 取得正则表达式所需的中文字符组
+wchar_t* getZhWChars(wchar_t* ZhWChars);
+
 // 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 void delInfoItem(ChessManual cm, const wchar_t* name);
