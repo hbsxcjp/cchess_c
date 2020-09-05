@@ -196,7 +196,7 @@ const char* getIccs_m(char* iccs, CMove move)
     return iccs;
 }
 
-const char* getOtherIccs_m(char* iccs, CMove move, Board board, ChangeType ct)
+const char* getIccs_mt(char* iccs, CMove move, Board board, ChangeType ct)
 {
     return getIccs_s(iccs, getOtherSeat(board, move->fseat, ct), getOtherSeat(board, move->tseat, ct));
 }

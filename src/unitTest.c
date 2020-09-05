@@ -616,8 +616,8 @@ static void test_chessManual_xqf(void)
     free(wstr);
     free(resultStr);
 
-    char iccsStr[WIDEWCHARSIZE];
-    printf("\n%s\n", getIccsStr(iccsStr, cm));
+    //char iccsStr[WIDEWCHARSIZE];
+    //printf("\n%s\n", getIccsStr(iccsStr, cm));
 
     //*
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
@@ -672,7 +672,8 @@ static void test_chessManual_dir(void)
 
 static void test_chessManual_sqlite(void)
 {
-    eccoInit("chess.db");
+    //eccoInit("chess.db");
+    testEcco();
 }
 
 static CU_TestInfo suite_chessManual[] = {

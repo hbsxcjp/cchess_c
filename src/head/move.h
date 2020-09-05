@@ -46,7 +46,7 @@ int getToRowCol_m(CMove move);
 int getRowCols_m(CMove move);
 const wchar_t* getZhStr(CMove move);
 const char* getIccs_m(char* iccs, CMove move);
-const char* getOtherIccs_m(char* iccs, CMove move, Board board, ChangeType ct);
+const char* getIccs_mt(char* iccs, CMove move, Board board, ChangeType ct);
 const wchar_t* getICCS(wchar_t* iccs, CMove move);
 
 // 检测是否存在一个XQF文件存储时的错误

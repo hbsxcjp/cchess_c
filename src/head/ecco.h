@@ -5,4 +5,6 @@
 
 void eccoInit(char* dbName);
 
+void testEcco(void);
+
 #endif

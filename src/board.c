@@ -52,7 +52,7 @@ Seat getOtherSeat(Board board, Seat seat, ChangeType ct)
         return getSeat_rc(board, getRow_s(seat), getOtherCol_c(getCol_s(seat)));
     else if (ct == SYMMETRY_V)
         return getSeat_rc(board, getOtherRow_r(getRow_s(seat)), getCol_s(seat));
-    else //如ct==EXCHANGE, 则位置不需要更改
+    else // ct==EXCHANGE, 则位置不需要更改
         return seat;
 }
 

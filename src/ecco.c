@@ -49,8 +49,8 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
             fprintf(stderr, "\nTable %s deleted error: %s", tblName, zErrMsg);
             sqlite3_free(zErrMsg);
             return -1;
-        } else
-            fprintf(stdout, "\nTable %s deleted successfully.", tblName);
+        } // else
+        // fprintf(stdout, "\nTable %s deleted successfully.", tblName);
     }
 
     // 创建表
@@ -60,10 +60,155 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
         fprintf(stderr, "\nTable %s created error: %s", tblName, zErrMsg);
         sqlite3_free(zErrMsg);
         return -1;
-    } else
-        fprintf(stdout, "\nTable %s created successfully.", tblName);
+    } //else
+    //fprintf(stdout, "\nTable %s created successfully.", tblName);
 
     return 0;
+}
+
+// 读取开局着法内容至数据表
+static void getSplitFields__(wchar_t**** tables, int* record, int* field, const wchar_t* wstring)
+{
+    // 根据正则表达式分解字符串，获取字段内容
+    const char* error;
+    int errorffset, fieldCount[] = { 3, 4, 4, 2 }, last = wcslen(wstring), ovector[30];
+    void* regs[] = {
+        // field: sn name nums
+        pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)",
+            0, &error, &errorffset, NULL),
+        // field: sn name nums moveStr
+        // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
+        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
+                        "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",
+            0, &error, &errorffset, NULL),
+        // field: sn name moveStr nums
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
+                        "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
+            0, &error, &errorffset, NULL),
+        // field: sn_name moveStr
+        // C20 C30 C61 C72局面
+        pcrewch_compile(L"([A-E]\\d\\d局面) =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
+            0, &error, &errorffset, NULL)
+    };
+    const wchar_t* tempWstr;
+    for (int g = 0; g < sizeof(regs) / sizeof(regs[0]); ++g) {
+        tables[g] = malloc(THOUSAND * sizeof(wchar_t**));
+        field[g] = fieldCount[g];
+        int first = 0, recIndex = 0;
+        while (first < last) {
+            tempWstr = wstring + first;
+            int count = pcrewch_exec(regs[g], NULL, tempWstr, last - first, 0, 0, ovector, 30);
+            if (count <= 0)
+                break;
+
+            assert(recIndex < THOUSAND);
+            assert(count - 1 <= field[g]);
+            tables[g][recIndex] = calloc(field[g], sizeof(wchar_t*));
+
+            fwprintf(fout, L"%d:\t", recIndex);
+            for (int f = 0; f < count - 1; ++f) {
+                int start = ovector[2 * f + 2], end = ovector[2 * f + 3];
+                wchar_t* mStr = malloc((end - start + 1) * sizeof(wchar_t));
+                copySubStr(mStr, tempWstr, start, end);
+                tables[g][recIndex][f] = mStr;
+
+                fwprintf(fout, L"%ls\t", mStr);
+            }
+            first += ovector[1];
+
+            fwprintf(fout, L"\n");
+            recIndex++;
+        }
+        record[g] = recIndex;
+        pcrewch_free(regs[g]);
+    }
+
+    // 修正处理moveStr字段
+    int no = 0;
+    wchar_t sn[WCHARSIZE], *moveStr;
+    void *reg_s = pcrewch_compile(L"从([A-E]\\d\\d局面)开始：", 0, &error, &errorffset, NULL),
+         *reg_p = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL);
+    for (int r = 0; r < record[2]; ++r) {
+        moveStr = tables[2][r][2];
+        if (moveStr == NULL)
+            continue;
+
+        // 处理三级局面的 C20 C30 C61 C72局面 有40项
+        if (pcrewch_exec(reg_s, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
+            copySubStr(sn, moveStr, ovector[2], ovector[3]);
+            if (wcscmp(sn, L"C73局面") == 0)
+                sn[2] = L'2'; // C73 => C72
+            for (int ir = 0; ir < record[3]; ++ir) {
+                if (wcscmp(tables[3][ir][0], sn) == 0) {
+                    tables[2][r][2] = malloc((wcslen(tables[3][ir][1]) + wcslen(moveStr) + 2) * sizeof(wchar_t));
+                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", tables[3][ir][1], moveStr);
+                    free(moveStr);
+                    break;
+                }
+            }
+            fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
+        }
+        // 处理 前置省略的着法 有74项
+        else if (pcrewch_exec(reg_p, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
+            // 取得替换模板字符串编号
+            wcscpy(sn, tables[2][r][0]);
+            if (sn[0] == L'C')
+                sn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
+            sn[2] = L'\x0';
+            if (wcscmp(sn, L"D5") == 0)
+                wcscpy(sn, L"D51"); // D51 => D5
+
+            int level = wcslen(sn) - 1;
+            for (int ir = 0; ir < record[level]; ++ir)
+                if (wcscmp(tables[level][ir][0], sn) == 0) {
+                    wchar_t* tempStr = tables[level][ir][level == 1 ? 3 : 2];
+                    tables[2][r][2] = malloc((wcslen(tempStr) + wcslen(moveStr) + 2) * sizeof(wchar_t));
+                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", tempStr, moveStr);
+                    free(moveStr);
+                    break;
+                }
+            fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
+        }
+    }
+    pcrewch_free(reg_s);
+    pcrewch_free(reg_p);
+}
+
+static void testGetFields__(wchar_t* fileWstring)
+{
+    // 读取全部所需的字符串数组
+    int group = 4, record[group], field[group];
+    wchar_t*** tables[group];
+    getSplitFields__(tables, record, field, fileWstring);
+
+    //*reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
+    //    0, &error, &errorffset, NULL);
+
+    /*
+        int first = 0, last = wcslen(moveStr);
+        while (first < last) {
+            wchar_t move[WCHARSIZE], *tempWstr = moveStr + first;
+            if (pcrewch_exec(reg1, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
+                break;
+
+            //copySubStr(move, tempWstr, ovector[2], ovector[3]);
+
+            //fwprintf(fout, L"%ls\n", move);
+            first += ovector[1];
+        }
+        //*/
+
+    //pcrewch_free(reg1);
+
+    // 释放资源
+    for (int g = 0; g < group; ++g) {
+        for (int r = 0; r < record[g]; ++r) {
+            for (int f = 0; f < field[g]; ++f)
+                free(tables[g][r][f]);
+            free(tables[g][r]);
+        }
+        free(tables[g]);
+    }
 }
 
 // 提取插入记录的字符串
@@ -85,7 +230,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             0, &error, &errorffset, NULL),
 
         // C20 C30 C61 C72局面
-        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
+        pcrewch_compile(L"([A-E]\\d\\d?局面) =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
             0, &error, &errorffset, NULL),
     };
     for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i) {
@@ -114,29 +259,33 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
                     name[index][0] = L'\x0';
             }
             first += ovector[1];
+
+            //fwprintf(fout, L"%d\t%ls\t%ls\t%ls\t%ls\n", index, sn[index], name[index], nums[index], moveStr[index]);
             index++;
         }
         pcrewch_free(regs[i]);
     }
     assert(index == num);
 
-    // 修正C20 C30 C61 C72局面
+    /*/ 修正C20 C30 C61 C72局面
     for (int i = num0; i < num; ++i) // 555-558
         for (int j = 0; j < num0; ++j)
             if (wcscmp(sn[j], sn[i]) == 0) {
                 wcscpy(moveStr[j], moveStr[i]);
                 break;
             }
+            //*/
 
     // 修正moveStr
-    int No = 0;
+    //int No = 0;
     void *reg0 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
          *reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
              0, &error, &errorffset, NULL);
     // ([2-9a-z]. ?)([^，a-z\f\r\t\v]+)(，[^　／a-z\f\r\t\v]+)?
 
+    // wcslen(sn[i]) == 3  有74项
     wchar_t tsn[10], fmoveStr[WIDEWCHARSIZE], move[WCHARSIZE]; //tmoveStr[WIDEWCHARSIZE],
-    for (int i = 55; i < num0; ++i) { // wcslen(sn[i]) == 3  有74项
+    for (int i = 55; i < num0; ++i) {
         if (pcrewch_exec(reg0, NULL, moveStr[i], wcslen(moveStr[i]), 0, 0, ovector, 30) <= 0)
             continue;
 
@@ -146,7 +295,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             tsn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
         tsn[2] = L'\x0';
         if (wcscmp(tsn, L"D5") == 0)
-            wcscpy(tsn, L"D51"); // D5 => D51
+            wcscpy(tsn, L"D51"); // D51 => D5
         for (int j = 0; j < num0; ++j)
             if (wcscmp(sn[j], tsn) == 0) {
                 wcscpy(fmoveStr, moveStr[j]);
@@ -183,13 +332,12 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             wtblName, sn[i], name[i], nums[i], moveStr[i]);
         supper_wcscat(&wInitEccoSql, &size, lineStr);
     }
-    fwprintf(fout, wInitEccoSql);
+    //fwprintf(fout, wInitEccoSql);
 
     size = wcslen(wInitEccoSql) * sizeof(wchar_t) + 1;
     *initEccoSql = malloc(size);
     wcstombs(*initEccoSql, wInitEccoSql, size);
     free(wInitEccoSql);
-    free(fileWstring);
 }
 
 // 初始化开局类型编码名称
@@ -248,18 +396,17 @@ static void updateEccoField__(sqlite3* db, char* tblName)
 
 void eccoInit(char* dbName)
 {
+    fout = fopen("chessManual/eccolib", "w");
     // 读取开局库源文件内容
     FILE* fin = fopen("chessManual/eccolib_src", "r");
-    fout = fopen("chessManual/eccolib", "w");
+    wchar_t* fileWstring = getWString(fin);
+    assert(fileWstring);
 
     sqlite3* db = NULL;
     int rc = sqlite3_open(dbName, &db);
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        wchar_t* fileWstring = getWString(fin);
-        assert(fileWstring);
-
         char* tblName = "ecco";
         char colNames[] = "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
                           "SN TEXT NOT NULL,"
@@ -271,9 +418,23 @@ void eccoInit(char* dbName)
 
         updateEccoField__(db, tblName);
     }
-
     sqlite3_close(db);
 
+    free(fileWstring);
+    fclose(fin);
+    fclose(fout);
+}
+
+void testEcco(void)
+{
+    fout = fopen("chessManual/eccolib", "w");
+    FILE* fin = fopen("chessManual/eccolib_src", "r");
+    wchar_t* fileWstring = getWString(fin);
+    assert(fileWstring);
+
+    testGetFields__(fileWstring);
+
+    free(fileWstring);
     fclose(fin);
     fclose(fout);
 }

@@ -1263,7 +1263,7 @@ const char* getIccsStr(char* iccsStr, ChessManual cm)
     for (ChangeType ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         CMove tmove = cm->rootMove;
         while ((tmove = getNext(tmove)) != NULL) {
-            strcat(iccsStr, getOtherIccs_m(iccs, tmove, cm->board, ct));
+            strcat(iccsStr, getIccs_mt(iccs, tmove, cm->board, ct));
             strcat(iccsStr, " ");
         }
         strcat(iccsStr, "\n");
