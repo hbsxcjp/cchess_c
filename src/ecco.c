@@ -68,7 +68,7 @@ static int createTable__(sqlite3* db, char* tblName, char* colNames)
 }
 
 // 格式化C20 C30 C61 C72局面字符串
-static void formatSituation__(wchar_t* preMoveStr, wchar_t* situaStr)
+static void formatPreMoveStr__(wchar_t* preMoveStr, wchar_t* situaStr)
 {
     const char* error;
     int errorffset, ovector[30];
@@ -142,6 +142,15 @@ static void formatSituation__(wchar_t* preMoveStr, wchar_t* situaStr)
     }
 
     //fwprintf(fout, L"preMoveStr:%ls\n", preMoveStr);
+}
+
+// 加入前置字符串
+static void joinPreMoveStr__(wchar_t** pmoveStr, wchar_t* preMoveStr)
+{
+    wchar_t* moveStr = *pmoveStr;
+    *pmoveStr = malloc((wcslen(preMoveStr) + wcslen(moveStr) + 2) * sizeof(wchar_t));
+    swprintf(*pmoveStr, WIDEWCHARSIZE, L"%ls\n%ls", preMoveStr, moveStr);
+    free(moveStr);
 }
 
 // 读取开局着法内容至数据表
@@ -220,10 +229,8 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
                 if (wcscmp(tables[3][ir][0], sn) == 0) {
                     wchar_t preMoveStr[WCHARSIZE];
                     // 格式化字符串
-                    formatSituation__(preMoveStr, tables[3][ir][1]);
-                    tables[2][r][2] = malloc((wcslen(preMoveStr) + wcslen(moveStr) + 2) * sizeof(wchar_t));
-                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", preMoveStr, moveStr);
-                    free(moveStr);
+                    formatPreMoveStr__(preMoveStr, tables[3][ir][1]);
+                    joinPreMoveStr__(&tables[2][r][2], preMoveStr);
                     break;
                 }
             }
@@ -238,19 +245,17 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
                 sn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
             sn[2] = L'\x0';
             if (wcscmp(sn, L"D5") == 0)
-                wcscpy(sn, L"D51"); // D51 => D5
+                wcscpy(sn, L"D51"); // D5 => D51
 
             int level = wcslen(sn) - 1;
             for (int ir = 0; ir < record[level]; ++ir)
                 if (wcscmp(tables[level][ir][0], sn) == 0) {
-                    wchar_t* tempStr = tables[level][ir][level == 1 ? 3 : 2];
-                    tables[2][r][2] = malloc((wcslen(tempStr) + wcslen(moveStr) + 2) * sizeof(wchar_t));
-                    swprintf(tables[2][r][2], WIDEWCHARSIZE, L"%ls\n%ls", tempStr, moveStr);
-                    free(moveStr);
+                    joinPreMoveStr__(&tables[2][r][2], tables[level][ir][level == 1 ? 3 : 2]);
                     break;
                 }
-            //fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
+            fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
         }
+        //fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
     }
     pcrewch_free(reg_s);
     pcrewch_free(reg_p);
@@ -259,8 +264,9 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
 //
 static void formatMoveStr__(wchar_t*** tables_g, int recordCount)
 {
-    //wchar_t situation[] = L"局面开始：";
     for (int r = 0; r < recordCount; ++r) {
+        // 处理L"／\n", 同时处理重复编号着法
+
         //  char* nextStr = NULL;
         //if ((nextStr = strstr(tables_g[r][2], situation)) != NULL) {
         //}
