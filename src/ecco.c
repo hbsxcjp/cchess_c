@@ -124,12 +124,12 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
 }
 
 // 格式化处理tables[2][r][2]=>moveStr字段
-static void formatMoveStrs__(wchar_t*** tables_g, int recordCount)
+static void formatMoveStrs__(wchar_t**** tables, int* record)
 {
     const char* error;
     int errorffset, ovector[30], no = 0, bIndex = 0;
     wchar_t bout[100][3] = { 0 }, firstMove[100][WCHARSIZE] = { 0 }, // second[100][WCHARSIZE] = { 0 },
-        ZhWChars[WCHARSIZE], mStr[WCHARSIZE], bmStr[WCHARSIZE], split[] = L"(?:[，、；\\s　和]|$)";
+        ZhWChars[WCHARSIZE], mStr[WCHARSIZE], bmStr[WCHARSIZE], *split = L"(?:[，、；\\s　和]|$)";
     getZhWChars(ZhWChars);
     swprintf(mStr, WCHARSIZE, L"([%ls]{4}(?:／[%ls]{4})*|……)%ls", ZhWChars, ZhWChars, split);
     swprintf(bmStr, WCHARSIZE, L"([\\da-z]. )%ls(?:%ls)?", mStr, mStr);
@@ -139,13 +139,12 @@ static void formatMoveStrs__(wchar_t*** tables_g, int recordCount)
          *reg_p1 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
          *reg_r = pcrewch_compile(L"([\\s\\S]+)红方：([\\s\\S]+)黑方：([\\s\\S]+)\\n",
              0, &error, &errorffset, NULL);
-    for (int r = 0; r < recordCount; ++r) {
-        wchar_t* moveStr = tables_g[r][2];
+    for (int r = 0; r < record[2]; ++r) {
+        wchar_t* moveStr = tables[2][r][2];
         if (moveStr == NULL)
             continue;
 
-        /*
-        // 处理moveStr字段的前置简述
+        // 处理moveStr字段的前置简述 有40+74=114项
         wchar_t sn[10], *preMoveStr = NULL;
         if (pcrewch_exec(reg_p0, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
             // 处理三级局面的 C20 C30 C61 C72局面 有40项
@@ -182,6 +181,7 @@ static void formatMoveStrs__(wchar_t*** tables_g, int recordCount)
             fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, sn, tables[2][r][0], tables[2][r][2]);
         }
 
+        /*
         // 格式化处理着法描述字符串
         // ————"红方：黑方："
         if (pcrewch_exec(reg_r, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) == 4) {
@@ -245,16 +245,14 @@ static void formatMoveStrs__(wchar_t*** tables_g, int recordCount)
                 }
             }
         }
-
-
-        pcrewch_free(reg_m);
-        pcrewch_free(reg_bm);
-        pcrewch_free(reg_p0);
-        pcrewch_free(reg_p1);
-        pcrewch_free(reg_r);
-    //*/
-        fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, tables_g[r][0], tables_g[r][1], tables_g[r][2]);
+        //*/
+        fwprintf(fout, L"%d:\t%ls\t%ls\t%ls\n", no++, tables[2][r][0], tables[2][r][1], tables[2][r][2]);
     }
+    pcrewch_free(reg_m);
+    pcrewch_free(reg_bm);
+    pcrewch_free(reg_p0);
+    pcrewch_free(reg_p1);
+    pcrewch_free(reg_r);
 }
 
 static void testGetFields__(wchar_t* fileWstring)
@@ -264,7 +262,7 @@ static void testGetFields__(wchar_t* fileWstring)
     wchar_t*** tables[group];
     getSplitFields__(tables, record, field, fileWstring);
 
-    formatMoveStrs__(tables[2], record[2]);
+    formatMoveStrs__(tables, record);
     //*reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
     //    0, &error, &errorffset, NULL);
 
@@ -349,6 +347,8 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
         }
         pcrewch_free(regs[i]);
     }
+    if (index != num)
+        printf("index:%d num:%d.\n", index, num);
     assert(index == num);
 
     /*/ 修正C20 C30 C61 C72局面
@@ -485,7 +485,7 @@ void eccoInit(char* dbName)
     FILE* fin = fopen("chessManual/eccolib_src", "r");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
-
+    
     sqlite3* db = NULL;
     int rc = sqlite3_open(dbName, &db);
     if (rc) {
@@ -515,6 +515,7 @@ void testEcco(void)
     FILE* fin = fopen("chessManual/eccolib_src", "r");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
+    fwprintf(fout, L"%ls", fileWstring);
 
     testGetFields__(fileWstring);
 
