@@ -1,10 +1,18 @@
 # 参考《C语言核心技术》第19章
 
+#ifdef __linux
+FEXEC_CHARSET = uft-8
+LPCRE = -lpcre32
+#else
+FEXEC_CHARSET = GBK
+LPCRE = -lpcre16
+#endif
+
 CC = gcc
 #CFLAGS = -Wall -std=c11
-CFLAGS = -Wall -std=c11 -fexec-charset=utf-8 -g #gbk
+CFLAGS = -Wall -std=c11 -finput-charset=utf-8 -fexec-charset=$(FEXEC_CHARSET) -g # GBK utf-8
 #LDFLAGS = -L/C/msys64/mingw64/lib -lpcre16 # /C/msys64/mingw64/lib/libpcre16.a
-LDFLAGS = -lm -lpcre32 -lsqlite3 -lcunit #lib/pdcurses.a -lpcre32
+LDFLAGS = -lm -lcunit LPCRE #lib/pdcurses.a -lpcre32
 SP = src/
 OP = obj/
 OBJS = $(OP)sha1.o $(OP)md5.o $(OP)tools.o $(OP)piece.o $(OP)board.o $(OP)move.o $(OP)aspect.o $(OP)chessManual.o $(OP)play.o $(OP)ecco.o $(OP)unitTest.o $(OP)main.o # $(OP)console.o
