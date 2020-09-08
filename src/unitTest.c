@@ -679,7 +679,7 @@ static void test_chessManual_sqlite(void)
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_xqf", test_chessManual_xqf },
     { "test_chessManual_otherExt", test_chessManual_otherExt },
-    { "test_chessManual_dir", test_chessManual_dir },
+    //{ "test_chessManual_dir", test_chessManual_dir },
     { "test_chessManual_sqlite", test_chessManual_sqlite },
     CU_TEST_INFO_NULL,
 };
