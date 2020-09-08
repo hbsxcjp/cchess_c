@@ -667,7 +667,7 @@ static void test_chessManual_dir(void)
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
                 }
-     }
+    }
 }
 
 static void test_chessManual_sqlite(void)
