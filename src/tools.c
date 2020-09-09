@@ -196,9 +196,8 @@ void transFileExtName(char* fileName, const char* extname)
 void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
 {
     // 如字符串分配的长度不够，则增加长度
-    size_t len = wcslen(*pwstr) + wcslen(wstr) + 1;
-    if (*size < len) {
-        *size = len + WIDEWCHARSIZE;
+    if (*size < wcslen(*pwstr) + wcslen(wstr) + 1) {
+        *size = *size * 2 + wcslen(wstr) + 1;
         *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
         assert(*pwstr);
     }

@@ -5,68 +5,6 @@
 //* 输出字符串，检查用
 static FILE* fout;
 
-// 获取查询记录结果的数量
-static int callCount__(void* count, int argc, char** argv, char** azColName)
-{
-    *(int*)count = (argv[0] ? atoi(argv[0]) : 0);
-    return 0;
-}
-
-/*// 获取单一查询记录(字符串)
-static int getFieldStr__(void* str, int argc, char** argv, char** azColName)
-{
-    strcpy(str, argv[0]);
-    return 0;
-}
-//*/
-
-static int getRecCount__(sqlite3* db, char* tblName, char* where)
-{
-    // 查找表
-    char sql[WCHARSIZE], *zErrMsg = 0;
-    int count = 0;
-    sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
-    int rc = sqlite3_exec(db, sql, callCount__, &count, &zErrMsg);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
-        sqlite3_free(zErrMsg);
-        return -1;
-    }
-
-    return count;
-}
-
-// 初始化表
-static int createTable__(sqlite3* db, char* tblName, char* colNames)
-{
-    char sql[WCHARSIZE], *zErrMsg = 0;
-    int rc;
-    sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
-    if (getRecCount__(db, "sqlite_master", sql) > 0) {
-        // 删除表
-        sprintf(sql, "DROP TABLE %s;", tblName);
-        rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
-        if (rc != SQLITE_OK) {
-            fprintf(stderr, "\nTable %s deleted error: %s", tblName, zErrMsg);
-            sqlite3_free(zErrMsg);
-            return -1;
-        } // else
-        // fprintf(stdout, "\nTable %s deleted successfully.", tblName);
-    }
-
-    // 创建表
-    sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
-    rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s created error: %s", tblName, zErrMsg);
-        sqlite3_free(zErrMsg);
-        return -1;
-    } //else
-    //fprintf(stdout, "\nTable %s created successfully.", tblName);
-
-    return 0;
-}
-
 // 读取开局着法内容至数据表
 static void getSplitFields__(wchar_t**** tables, int* record, int* field, const wchar_t* wstring)
 {
@@ -252,6 +190,10 @@ static void formatMoveStrs__(wchar_t*** tables_g, int record)
          *reg_bm = pcrewch_compile(bmsStr, 0, &error, &errorffset, NULL),
          *reg_sp = pcrewch_compile(L"([\\s\\S]+)红方：([\\s\\S]+)黑方：([\\s\\S]+)\\n",
              0, &error, &errorffset, NULL);
+    fwprintf(fout, L"%ls\n\n", split);
+    fwprintf(fout, L"%ls\n\n", ZhWChars);
+    fwprintf(fout, L"%ls\n\n", mStr);
+    fwprintf(fout, L"%ls\n\n", msStr);
     fwprintf(fout, L"%ls\n\n", bmsStr);
 
     for (int r = 0; r < record; ++r) {
@@ -344,6 +286,68 @@ static void testGetFields__(wchar_t* fileWstring)
         }
         free(tables[g]);
     }
+}
+
+// 获取查询记录结果的数量
+static int callCount__(void* count, int argc, char** argv, char** azColName)
+{
+    *(int*)count = (argv[0] ? atoi(argv[0]) : 0);
+    return 0;
+}
+
+/*// 获取单一查询记录(字符串)
+static int getFieldStr__(void* str, int argc, char** argv, char** azColName)
+{
+    strcpy(str, argv[0]);
+    return 0;
+}
+//*/
+
+static int getRecCount__(sqlite3* db, char* tblName, char* where)
+{
+    // 查找表
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    int count = 0;
+    sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
+    int rc = sqlite3_exec(db, sql, callCount__, &count, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -1;
+    }
+
+    return count;
+}
+
+// 初始化表
+static int createTable__(sqlite3* db, char* tblName, char* colNames)
+{
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    int rc;
+    sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
+    if (getRecCount__(db, "sqlite_master", sql) > 0) {
+        // 删除表
+        sprintf(sql, "DROP TABLE %s;", tblName);
+        rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
+        if (rc != SQLITE_OK) {
+            fprintf(stderr, "\nTable %s deleted error: %s", tblName, zErrMsg);
+            sqlite3_free(zErrMsg);
+            return -1;
+        } // else
+        // fprintf(stdout, "\nTable %s deleted successfully.", tblName);
+    }
+
+    // 创建表
+    sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
+    rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s created error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -1;
+    } //else
+    //fprintf(stdout, "\nTable %s created successfully.", tblName);
+
+    return 0;
 }
 
 // 提取插入记录的字符串
@@ -564,15 +568,31 @@ void eccoInit(char* dbName)
 
 void testEcco(void)
 {
-    fout = fopen("chessManual/eccolib", "w");
+    fout = fopen("chessManual/eccolib", "w");   
     FILE* fin = fopen("chessManual/eccolib_src", "r");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
-    //fwprintf(fout, L"%ls", fileWstring);
+    fwprintf(fout, L"%ls", fileWstring);
+    fclose(fin);
 
+/*
+#ifndef __linux
+    // 地域设置，使字符编码设置为utf-8
+    char* oldlocale = setlocale(LC_ALL, NULL);
+    //setlocale(LC_ALL, "C");
+    char* newlocale = setlocale(LC_ALL, "");
+    printf("old:%s\nnew:%s\n", oldlocale, newlocale);
+#endif
+//*/
     testGetFields__(fileWstring);
 
+/*
+#ifndef __linux
+    // 结束地域设置
+    setlocale(LC_ALL, oldlocale);
+#endif
+//*/
+
     free(fileWstring);
-    fclose(fin);
     fclose(fout);
 }
