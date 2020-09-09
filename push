@@ -1,7 +1,7 @@
 #! /bin/bash
 
 git status
-git add src/*.c src/head/*.h Makefile push
+git add src/*.c src/head/*.h push # Makefile 
 git commit -am "push commit"
 git push origin linux
 git branch -av

@@ -115,8 +115,7 @@ static void joinPreMoveStrs__(wchar_t**** tables, int* record)
 }
 
 // 获取回合着法字符串数组
-static void getBoutMove__(wchar_t bout[][3], wchar_t firstMove[][WCHARSIZE], int* fIndex,
-    wchar_t secondMove[][WCHARSIZE], int* sIndex, wchar_t* moveStr, void* reg_bm)
+static void getBoutMove__(wchar_t boutMove[][5][WCHARSIZE], int* boutCount, wchar_t* moveStr, void* reg_bm)
 {
     int first = 0, last = wcslen(moveStr), ovec[30];
     while (first < last) {
@@ -125,25 +124,18 @@ static void getBoutMove__(wchar_t bout[][3], wchar_t firstMove[][WCHARSIZE], int
         if (count < 3)
             break;
 
-        copySubStr(bout[*fIndex], tempWstr, ovec[2], ovec[3]);
-        copySubStr(firstMove[(*fIndex)++], tempWstr, ovec[4], ovec[5]);
-
-        //fwprintf(fout, L"%ls. %ls ", bout[*fIndex - 1], firstMove[*fIndex - 1]);
-        if (count == 4) { // 有第二着
-            copySubStr(secondMove[(*sIndex)++], tempWstr, ovec[6], ovec[7]);
-
-            //fwprintf(fout, L"%ls\t", secondMove[*sIndex - 1]);
-        }
+        for (int i = 1; i < count; ++i)
+            copySubStr(boutMove[*boutCount][i - 1], tempWstr, ovec[2 * i], ovec[2 * i + 1]);
+        ++(*boutCount);
         first += ovec[1];
     }
 }
 
 // 获取不分先后的着法字符串数组
-static void getNoOrderMove__(wchar_t bout[][3], wchar_t move[][WCHARSIZE], int* index,
-    wchar_t* moveStr, void* reg_m)
+static int getNoOrderMove__(wchar_t boutMove[][5][WCHARSIZE], int boutCount, int field, wchar_t* moveStr, void* reg_m)
 {
     // 将不分前后的着法组合成着法串
-    int count = 0, first = 0, last = wcslen(moveStr), ovec[30];
+    int index = 0, first = 0, last = wcslen(moveStr), ovec[30];
     wchar_t rbStr[WCHARSIZE] = { 0 }, mv[WCHARSIZE];
     while (first < last) {
         wchar_t* tempWstr = moveStr + first;
@@ -151,28 +143,26 @@ static void getNoOrderMove__(wchar_t bout[][3], wchar_t move[][WCHARSIZE], int* 
             break;
 
         // 红棋第1着不参与
-        if (!(bout != NULL && count == 0)) {
+        if (!(field == 1 && index == 0)) {
             copySubStr(mv, tempWstr, ovec[2], ovec[3]);
             wcscat(rbStr, mv);
             wcscat(rbStr, L"／");
         }
-        ++count;
+        ++index;
         first += ovec[1];
     }
     if (wcslen(rbStr) > 0)
         rbStr[wcslen(rbStr) - 1] = L'\x0'; // 消除最后的“／”
 
     // 将组合着法串写入着法数组
-    for (int c = 0; c < count; ++c) {
-        if (bout != NULL) {
-            swprintf(bout[*index], 3, L"%d", *index + 1);
-
-            //fwprintf(fout, L"%ls. ", bout[*index]);
-        }
-        wcscpy(move[(*index)++], rbStr);
-
-        //fwprintf(fout, L"%ls\t", move[*index - 1]);
+    --index; // 减去第一着
+    for (int i = 0; i < index; ++i) {
+        if (field == 1)
+            swprintf(boutMove[boutCount + i][0], 3, L"%d", boutCount + i + 1);
+        wcscpy(boutMove[boutCount + i][field], rbStr);
     }
+
+    return index;
 }
 
 // 格式化处理tables[2][r][2]=>moveStr字段
@@ -180,12 +170,12 @@ static void formatMoveStrs__(wchar_t*** tables_g, int record)
 {
     const char* error;
     int errorffset, no = 0;
-    wchar_t ZhWChars[WCHARSIZE], mStr[WCHARSIZE], msStr[WCHARSIZE],
-        bmsStr[WCHARSIZE], *split = L"[，、；\\s　和\\(]|$";
+    wchar_t ZhWChars[WCHARSIZE], mStr[WCHARSIZE], msStr[WIDEWCHARSIZE],
+        bmsStr[WIDEWCHARSIZE], *split = L"[，、；\\s　和\\(／]|$";
     getZhWChars(ZhWChars);
-    swprintf(mStr, WCHARSIZE, L"([%ls…]{2,4})(?:\\s?\\((此前[^\\)]+?)\\))?", ZhWChars);
-    swprintf(msStr, WCHARSIZE, L"%ls(?:／%ls)*(?=%ls)", mStr, mStr, split);
-    swprintf(bmsStr, WCHARSIZE, L"([\\da-z]). %ls(?:%ls)(?:%ls)?", msStr, split, msStr);
+    swprintf(mStr, WCHARSIZE, L"(?:[%ls]{4}(?:／[%ls]{4})*)", ZhWChars, ZhWChars);
+    swprintf(msStr, WIDEWCHARSIZE, L"(%ls|……)(?:%ls)(?:\\(?(此前[^\\)]+?)\\))?", mStr, split); // 捕捉1,2: 一步着法，可能附带“此前”着法描述
+    swprintf(bmsStr, WIDEWCHARSIZE, L"([\\da-z]). %ls(?:%ls)?", msStr, msStr); // 捕捉2,3,4,5: 1为序号，2为着法，3-4为着法或“此前”，5为“此前”
     void *reg_m = pcrewch_compile(msStr, 0, &error, &errorffset, NULL),
          *reg_bm = pcrewch_compile(bmsStr, 0, &error, &errorffset, NULL),
          *reg_sp = pcrewch_compile(L"([\\s\\S]+)红方：([\\s\\S]+)黑方：([\\s\\S]+)\\n",
@@ -201,42 +191,33 @@ static void formatMoveStrs__(wchar_t*** tables_g, int record)
         if (moveStr == NULL)
             continue;
 
-        int fIndex = 0, sIndex = 0, ovector[30];
-        wchar_t bout[100][3] = { 0 }, firstMove[100][WCHARSIZE] = { 0 }, secondMove[100][WCHARSIZE] = { 0 };
+        int boutCount = 0, ovector[30];
+        wchar_t boutMove[100][5][WCHARSIZE] = { 0 };
         // 格式化处理着法描述字符串————"红方：黑方："
         if (pcrewch_exec(reg_sp, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) == 4) {
+            int count = 0;
             for (int s = 0; s < 3; ++s) {
                 wchar_t splitStr[WCHARSIZE];
                 copySubStr(splitStr, moveStr, ovector[2 * s + 2], ovector[2 * s + 3]);
                 if (s == 0)
-                    getBoutMove__(bout, firstMove, &fIndex, secondMove, &sIndex, splitStr, reg_bm);
+                    getBoutMove__(boutMove, &boutCount, splitStr, reg_bm);
                 else if (s == 1)
-                    getNoOrderMove__(bout, firstMove, &fIndex, splitStr, reg_m);
+                    count = getNoOrderMove__(boutMove, boutCount, 1, splitStr, reg_m);
                 else
-                    getNoOrderMove__(NULL, secondMove, &sIndex, splitStr, reg_m);
+                    getNoOrderMove__(boutMove, boutCount, 3, splitStr, reg_m);
             }
+            boutCount += count;
             moveStr += ovector[1];
-
-            /*// 调试输出
-            fwprintf(fout, L"%d ", no++);
-            for (int i = 0, j = 0; i < fIndex; ++i, ++j) {
-                fwprintf(fout, L"%ls. %ls ", bout[i], firstMove[i]);
-                if (j < sIndex)
-                    fwprintf(fout, L"%ls\t", secondMove[j]);
-            }
-            fwprintf(fout, L"\n\n");
-            //*/
         }
 
         // 格式化处理着法描述字符串————"1. 2. ..... k. l. m. n. "
-        getBoutMove__(bout, firstMove, &fIndex, secondMove, &sIndex, moveStr, reg_bm);
+        getBoutMove__(boutMove, &boutCount, moveStr, reg_bm);
 
         //*// 调试输出
         fwprintf(fout, L"No.%3d %ls\t%ls\t%ls\nFormatStr: ", no++, tables_g[r][0], tables_g[r][1], tables_g[r][2]);
-        for (int i = 0, j = 0; i < fIndex; ++i, ++j) {
-            fwprintf(fout, L"%ls. %ls ", bout[i], firstMove[i]);
-            if (j < sIndex)
-                fwprintf(fout, L"%ls\t", secondMove[j]);
+        for (int i = 0; i < boutCount; ++i) {
+            fwprintf(fout, L"%ls. %ls%ls %ls%ls\t", boutMove[i][0], boutMove[i][1],
+                boutMove[i][2], boutMove[i][3], boutMove[i][4]);
         }
         fwprintf(fout, L"\n\n");
         //*/
@@ -568,14 +549,14 @@ void eccoInit(char* dbName)
 
 void testEcco(void)
 {
-    fout = fopen("chessManual/eccolib", "w");   
+    fout = fopen("chessManual/eccolib", "w");
     FILE* fin = fopen("chessManual/eccolib_src", "r");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
-    fwprintf(fout, L"%ls", fileWstring);
+    //fwprintf(fout, L"%ls", fileWstring);
     fclose(fin);
 
-/*
+    /*
 #ifndef __linux
     // 地域设置，使字符编码设置为utf-8
     char* oldlocale = setlocale(LC_ALL, NULL);
@@ -586,7 +567,7 @@ void testEcco(void)
 //*/
     testGetFields__(fileWstring);
 
-/*
+    /*
 #ifndef __linux
     // 结束地域设置
     setlocale(LC_ALL, oldlocale);
