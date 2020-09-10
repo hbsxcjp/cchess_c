@@ -180,11 +180,8 @@ static void formatMoveStrs__(wchar_t*** tables_g, int record)
          *reg_bm = pcrewch_compile(bmsStr, 0, &error, &errorffset, NULL),
          *reg_sp = pcrewch_compile(L"([\\s\\S]+)红方：([\\s\\S]+)黑方：([\\s\\S]+)\\n",
              0, &error, &errorffset, NULL);
-    fwprintf(fout, L"%ls\n\n", split);
-    fwprintf(fout, L"%ls\n\n", ZhWChars);
-    fwprintf(fout, L"%ls\n\n", mStr);
-    fwprintf(fout, L"%ls\n\n", msStr);
-    fwprintf(fout, L"%ls\n\n", bmsStr);
+
+    fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n%ls\n", split, ZhWChars, mStr, msStr, bmsStr);
 
     for (int r = 0; r < record; ++r) {
         wchar_t* moveStr = tables_g[r][2];
@@ -549,31 +546,23 @@ void eccoInit(char* dbName)
 
 void testEcco(void)
 {
-    fout = fopen("chessManual/eccolib", "w");
-    FILE* fin = fopen("chessManual/eccolib_src", "r");
+    char *wm, *rm;
+#ifdef __linux
+    wm = "w";
+    rm = "r";
+#else
+    wm = "w, ccs=UTF-8";
+    rm = "r, ccs=UTF-8";
+#endif
+
+    fout = fopen("chessManual/eccolib", wm);
+    FILE* fin = fopen("chessManual/eccolib_src", rm);
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
-    //fwprintf(fout, L"%ls", fileWstring);
-    fclose(fin);
 
-    /*
-#ifndef __linux
-    // 地域设置，使字符编码设置为utf-8
-    char* oldlocale = setlocale(LC_ALL, NULL);
-    //setlocale(LC_ALL, "C");
-    char* newlocale = setlocale(LC_ALL, "");
-    printf("old:%s\nnew:%s\n", oldlocale, newlocale);
-#endif
-//*/
     testGetFields__(fileWstring);
 
-    /*
-#ifndef __linux
-    // 结束地域设置
-    setlocale(LC_ALL, oldlocale);
-#endif
-//*/
-
     free(fileWstring);
+    fclose(fin);
     fclose(fout);
 }

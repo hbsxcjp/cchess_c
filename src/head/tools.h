@@ -66,7 +66,7 @@ void transFileExtName(char* filename, const char* extname);
 // 字符串连接，根据需要重新分配内存空间
 void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
 
-// 从文件当前指针至尾部获取宽字符串
+// 从输入文件获取全部内容至宽字符串
 wchar_t* getWString(FILE* fin);
 
 // 从一个字符串中提取子字符串
