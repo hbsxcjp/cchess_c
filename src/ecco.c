@@ -3,7 +3,7 @@
 #include "head/tools.h"
 
 #define BOUT_MAX 80
-#define MOVEFIELD_MAX 4
+#define FIELD_MAX 4
 //* 输出字符串，检查用
 static FILE* fout;
 
@@ -69,8 +69,8 @@ static wchar_t* getPreMoveStr__(wchar_t**** tables, int* record, const wchar_t* 
 {
     int ovector[30];
     wchar_t sn[10];
+    // 三级局面的 C20 C30 C61 C72局面 有40项
     if (pcrewch_exec(reg_p0, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
-        // 处理三级局面的 C20 C30 C61 C72局面 有40项
         copySubStr(sn, moveStr, ovector[2], ovector[3]);
         if (wcscmp(sn, L"C73局面") == 0)
             sn[2] = L'2'; // C73 => C72
@@ -79,8 +79,8 @@ static wchar_t* getPreMoveStr__(wchar_t**** tables, int* record, const wchar_t* 
                 return tables[3][ir][1];
     }
 
+    // 前置省略的着法 有74项
     if (pcrewch_exec(reg_p1, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
-        // 处理 前置省略的着法 有74项
         wcscpy(sn, snStr);
         if (sn[0] == L'C')
             sn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
@@ -97,130 +97,112 @@ static wchar_t* getPreMoveStr__(wchar_t**** tables, int* record, const wchar_t* 
 }
 
 // 将不分前后的着法组合成着法串, 返回着法数量（“此前...”，“红方：...黑方：...”）
-static int getMoves__(wchar_t* move, wchar_t* moveStr, void* reg_m)
+static void getMoves__(wchar_t* moves, wchar_t* moveStr, void* reg_m)
 {
-    int count = 0, first = 0, last = wcslen(moveStr), ovec[30];
-    wchar_t mv[WCHARSIZE];
-    move[0] = L'\x0';
+    int first = 0, last = wcslen(moveStr), ovector[30];
+    wchar_t move[WCHARSIZE];
+    moves[0] = L'\x0';
     while (first < last) {
         wchar_t* tempWstr = moveStr + first;
-        if (pcrewch_exec(reg_m, NULL, tempWstr, last - first, 0, 0, ovec, 30) <= 0)
+        if (pcrewch_exec(reg_m, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
             break;
 
-        copySubStr(mv, tempWstr, ovec[2], ovec[3]);
-        wcscat(move, mv);
-        wcscat(move, L"／");
-        ++count;
-        first += ovec[1];
+        copySubStr(move, tempWstr, ovector[2], ovector[3]);
+        wcscat(moves, move);
+        wcscat(moves, L"／");
+        first += ovector[1];
     }
-    if (wcslen(move) > 0)
-        move[wcslen(move) - 1] = L'\x0'; // 消除最后的“／”
-
-    return count;
-}
-
-// 获取不分先后的着法字符串数组
-static void getNoOrderMove__(wchar_t boutMove[][MOVEFIELD_MAX][WCHARSIZE], int fieldIndex, wchar_t* moveStr,
-    void* reg_m, int* lastPreBoutIndex)
-{
-    wchar_t move[WCHARSIZE];
-    int count = getMoves__(move, moveStr, reg_m);
-    // 删除首着方的第一步着法
-    if (fieldIndex == 0 && count > 1) {
-        int len = wcslen(move);
-        for (int i = 5; i <= len; ++i)
-            move[i - 5] = move[i];
-    }
-
-    // 将组合着法串写入着法数组
-    int boutIndex = 0;
-    while (wcslen(boutMove[boutIndex][fieldIndex]) != 0)
-        ++boutIndex;
-    // 第一着不计数
-    for (int i = 0; i < count - 1; ++i)
-        wcscpy(boutMove[boutIndex + i][fieldIndex], move);
-
-    if (*lastPreBoutIndex < boutIndex + count - 1)
-        *lastPreBoutIndex = boutIndex + count - 1;
+    if (wcslen(moves) > 0)
+        moves[wcslen(moves) - 1] = L'\x0'; // 消除最后的“／”
 }
 
 // 调试输出
-static void showBoutMove__(int no, wchar_t**** tables, int r, wchar_t boutMove[][MOVEFIELD_MAX][WCHARSIZE])
+static void showBoutMove__(int no, wchar_t**** tables, int r, wchar_t boutMove[][FIELD_MAX][WCHARSIZE],
+    int choiceIndex[][2], int (*repeatCount)[FIELD_MAX])
 {
     fwprintf(fout, L"No.%d %ls\t%ls\t%ls\nFormatMoveStr: ", no, tables[2][r][0], tables[2][r][1], tables[2][r][2]);
     for (int i = 0; i < BOUT_MAX; ++i)
         if (boutMove[i][0][0] || boutMove[i][1][0] || boutMove[i][2][0] || boutMove[i][3][0])
-            fwprintf(fout, L"\n%d. %ls|%ls\t%ls|%ls", i, boutMove[i][0], boutMove[i][1], boutMove[i][2], boutMove[i][3]);
+            fwprintf(fout, L"\n%d. %ls|%ls\t%ls|%ls Repeat:%d",
+                i, boutMove[i][0], boutMove[i][1], boutMove[i][2], boutMove[i][3], repeatCount[i][0]);
+    for (int i = 0; i < 2; ++i)
+        fwprintf(fout, L"\nPre_Next:%d start:%d end:%d", i, choiceIndex[i][0], choiceIndex[i][1]);
     fwprintf(fout, L"\n\n");
 }
 
-// 获取回合着法字符串数组, other:其他排列着法的标志
-static void getBoutMove__(wchar_t boutMove[][MOVEFIELD_MAX][WCHARSIZE], wchar_t* moveStr,
-    void* reg_bm, void* reg_m, int* lastPreBoutIndex, int* preOther)
+// 处理前置着法描述字符串————"红方：黑方："
+static bool putRedBlackMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int (*repeatCount)[FIELD_MAX], wchar_t* moveStr,
+    void* reg_sp, void* reg_m)
 {
-    wchar_t snChar[BOUT_MAX] = { 0 };
-    int first = 0, last = wcslen(moveStr), ovec[30], pIndex = 0, boutIndex = 0, other = 0;
+    int ovector[30];
+    if (pcrewch_exec(reg_sp, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) == 3) {
+        wchar_t splitStr[WCHARSIZE], moves[WCHARSIZE];
+        for (int s = 0; s < 2; ++s) {
+            copySubStr(splitStr, moveStr, ovector[2 * s + 2], ovector[2 * s + 3]);
+            getMoves__(moves, splitStr, reg_m);
+            wcscpy(boutMove[1][2 * s], moves);
+            //fwprintf(fout, L"s:%d %ls\n", s, moves);
+        }
+        repeatCount[1][0] = (wcslen(moves) + 1) / 5;
+        return true;
+    }
+    return false;
+}
+
+// 处理"此前..."着法描述字符串
+static void putPreMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int choiceIndex[][2], wchar_t* moveStr,
+    int fieldIndex, int other, int partIndex, void* reg_m)
+{
+    int insertBoutIndex = 10 + 30 * partIndex;
+    wchar_t moves[WCHARSIZE];
+    getMoves__(moves, moveStr, reg_m);
+    swprintf(boutMove[insertBoutIndex][fieldIndex], WCHARSIZE, L"%ls%ls",
+        wcschr(moveStr, L'除') == NULL ? L"" : L"-", moves);
+    // (变着，且非变着为空)||(非变着，且属覆盖前置，且前置有变着)，复制“此前”着法
+    if (other == 1 && wcslen(boutMove[insertBoutIndex][fieldIndex - 1]) == 0)
+        wcscpy(boutMove[insertBoutIndex][fieldIndex - 1], boutMove[insertBoutIndex][fieldIndex]);
+    // 变着，且非前置，起始序号设此序号
+    if (other == 1 && partIndex == 1)
+        choiceIndex[1][0] = insertBoutIndex;
+}
+
+// 获取回合着法字符串数组,
+static void putBoutMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int (*repeatCount)[FIELD_MAX], int choiceIndex[][2], wchar_t* moveStr,
+    void* reg_sp, void* reg_bm, void* reg_m, int partIndex)
+{
+    int first = 0, last = wcslen(moveStr), sn = 0, psn = 0, boutIndex = 0, other = 0, ovector[30];
     while (first < last) {
         wchar_t* tempWstr = moveStr + first;
-        int count = pcrewch_exec(reg_bm, NULL, tempWstr, last - first, 0, 0, ovec, 30);
+        int count = pcrewch_exec(reg_bm, NULL, tempWstr, last - first, 0, 0, ovector, 30);
         if (count < 3)
             break;
 
-        // 回合数组的序号
-        wchar_t sn = tempWstr[ovec[2]], matchBoutStr[WCHARSIZE];
-        if (wcschr(snChar, sn) == NULL)
-            snChar[pIndex++] = sn;
-        else
+        if ((sn = tempWstr[ovector[2]]) <= psn)
             other = 1; // 此后着法皆为变着
-        // 特殊处理：将“C0．中炮对屏风马(一)”的两着特殊着法放前面些，避免衔接后续着法时被覆盖
-        copySubStr(matchBoutStr, tempWstr, ovec[0], ovec[1]);
-        boutIndex = ((wcscmp(matchBoutStr, L"n. ……，马２进３／") == 0
-                         || wcscmp(matchBoutStr, L"n. ……，马８进７\n(此前可走车９平８、卒７进１和卒３进１)") == 0)
-                ? L'o' - L'1'
-                : sn - L'1');
-        //fwprintf(fout, L"bI:%d mv:%ls\n", boutIndex, boutMove[boutIndex][fieldIndex]);
+        psn = sn;
+        boutIndex = sn - L'0' + (partIndex == 0 && sn > L'a' ? -40 : 0);
         for (int i = 2; i < count; ++i) {
-            int start = ovec[2 * i], end = ovec[2 * i + 1];
-            if (start == end)
+            wchar_t wstr[WCHARSIZE];
+            copySubStr(wstr, tempWstr, ovector[2 * i], ovector[2 * i + 1]);
+            if (wcslen(wstr) == 0)
                 continue;
 
-            wchar_t wstr[WCHARSIZE];
-            copySubStr(wstr, tempWstr, start, end);
             //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
-
-            int fieldIndex = i - 2 + other, curBoutIndex = boutIndex;
-            if (wcsstr(wstr, L"此前") != NULL) { // 非直接着法，"此前..." i=3, 5
-                --fieldIndex; // 修正字段序号
-                curBoutIndex = L'a' - L'1';
-                wchar_t move[WCHARSIZE];
-                getMoves__(move, wstr, reg_m);
-                swprintf(boutMove[curBoutIndex][fieldIndex], WCHARSIZE, L"%ls%ls",
-                    wcschr(wstr, L'除') == NULL ? L"" : L"-", move);
-                // 变着，且非变着为空，复制“此前”着法
-                if (other == 1 && wcslen(boutMove[curBoutIndex][fieldIndex - 1]) == 0)
-                    wcscpy(boutMove[curBoutIndex][fieldIndex - 1], boutMove[curBoutIndex][fieldIndex]);
-                // 非变着，且属覆盖前置，且前置有变着, 复制至变着
-                if (other == 0 && *preOther == 1)
-                    wcscpy(boutMove[curBoutIndex][fieldIndex + 1], boutMove[curBoutIndex][fieldIndex]);
-            } else { // 回合的着法 i=2, 4
-                /*
-                if (*preOther && other && wcscmp(boutMove[boutIndex][fieldIndex - 1], wstr) != 0) { // 针对类似C04局面
-                    wcscat(boutMove[boutIndex][fieldIndex - 1], L"／");
-                    wcscat(boutMove[boutIndex][fieldIndex - 1], wstr);
-                    wcscpy(boutMove[boutIndex][fieldIndex], boutMove[boutIndex][fieldIndex - 1]);
-                    fwprintf(fout, L"%d %ls\n", __LINE__, boutMove[boutIndex][fieldIndex - 1]);
-                } else //*/
+            int fieldIndex = (i / 5) * 2 + other;
+            if (i == 2 || i == 5) // 回合的着法
                 wcscpy(boutMove[boutIndex][fieldIndex], wstr);
-            }
+            else if (i == 3 || i == 6) // "不分先后"
+                ;
+            else if (i == 4 || i == 7) // "此前..."
+                putPreMove__(boutMove, choiceIndex, wstr, fieldIndex, other, partIndex, reg_m);
 
-            // 非变着，且属覆盖前置，且前置有变着, 复制至变着
-            //if (other == 0 && *lastPreBoutIndex >= boutIndex && *preOther == 1)
-            //wcscpy(boutMove[curBoutIndex][fieldIndex + 1], boutMove[curBoutIndex][fieldIndex]);
+            if (other == 1 && choiceIndex[partIndex][0] == 0)
+                choiceIndex[partIndex][0] = boutIndex;
         }
-        first += ovec[1];
+        first += ovector[1];
     }
-    *lastPreBoutIndex = boutIndex;
-    *preOther = other;
+    if (other == 1)
+        choiceIndex[partIndex][1] = boutIndex;
 }
 
 // 格式化处理tables[2][r][2]=>moveStr字段
@@ -229,20 +211,20 @@ static void formatMoveStrs__(wchar_t**** tables, int* record)
     const char* error;
     int errorffset, no = 0;
     wchar_t ZhWChars[WCHARSIZE], mStr[WCHARSIZE], msStr[WIDEWCHARSIZE],
-        bmsStr[WIDEWCHARSIZE], *split = L"[，、；\\s　和\\(以／]|$";
+        bmsStr[WIDEWCHARSIZE], *split = L"[，、；\\s　和\\(\\)以／]|$";
     // 着法字符组
     getZhWChars(ZhWChars);
     // 着法，含多选的复式着法
     swprintf(mStr, WCHARSIZE, L"(?:[%ls]{4}(?:／[%ls]{4})*)", ZhWChars, ZhWChars);
     // 捕捉一步着法: 1.着法，2.可能的“此前...”着法，3. 可能的“／\\n...$”着法
-    swprintf(msStr, WIDEWCHARSIZE, L"(%ls|……)(?:%ls)(?:[^%ls]*?(此前[^\\)]+?)\\))?", mStr, split, ZhWChars); //(?:(／\\n[\\s\\S]+)$)?
+    swprintf(msStr, WIDEWCHARSIZE, L"(%ls|……)(?:%ls)(\\(不.先后[\\)，])?([^%ls]*?此前[^\\)]+?\\))?", mStr, split, ZhWChars); //  (?:(／\\n[\\s\\S]+)$)?
     // 捕捉一个回合着法：1.序号，2.一步着法的1，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
     swprintf(bmsStr, WIDEWCHARSIZE, L"([\\da-z]). %ls(?:%ls)?", msStr, msStr);
     void *reg_m = pcrewch_compile(msStr, 0, &error, &errorffset, NULL),
          *reg_bm = pcrewch_compile(bmsStr, 0, &error, &errorffset, NULL),
          *reg_p0 = pcrewch_compile(L"从([A-E]\\d\\d局面)开始：", 0, &error, &errorffset, NULL),
          *reg_p1 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
-         *reg_sp = pcrewch_compile(L"(.+)\\n红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL);
+         *reg_sp = pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL);
     fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n%ls\n\n", split, ZhWChars, mStr, msStr, bmsStr);
 
     for (int r = 0; r < record[2]; ++r) {
@@ -250,34 +232,18 @@ static void formatMoveStrs__(wchar_t**** tables, int* record)
         if (moveStr == NULL)
             continue;
 
-        int lastPreBoutIndex = 0, preOther = 0, ovector[30];
+        // 着法可选变着的起止boutIndex [Pre-Next][Start-End]
+        int choiceIndex[2][2] = { 0 }, repeatCount[BOUT_MAX][FIELD_MAX] = { 0 };
         // 着法记录数组，以序号字符ASCII值为数组索引存入(例如：L'a'-L'1')
-        wchar_t boutMove[BOUT_MAX][MOVEFIELD_MAX][WCHARSIZE] = { 0 },
+        wchar_t boutMove[BOUT_MAX][FIELD_MAX][WCHARSIZE] = { 0 },
                 *preMoveStr = getPreMoveStr__(tables, record, tables[2][r][0], moveStr, reg_p0, reg_p1);
-        if (preMoveStr != NULL) {
-            if (pcrewch_exec(reg_sp, NULL, preMoveStr, wcslen(preMoveStr), 0, 0, ovector, 30) == 4) {
-                // 处理着法描述字符串————"红方：黑方："
-                for (int s = 0; s < 3; ++s) {
-                    wchar_t splitStr[WCHARSIZE];
-                    copySubStr(splitStr, preMoveStr, ovector[2 * s + 2], ovector[2 * s + 3]);
-                    if (s == 0)
-                        getBoutMove__(boutMove, splitStr, reg_bm, reg_m, &lastPreBoutIndex, &preOther);
-                    else
-                        getNoOrderMove__(boutMove, (s - 1) * 2, splitStr, reg_m, &lastPreBoutIndex);
-                }
-                //fwprintf(fout, L"PreMoveStr: %ls\n", preMoveStr);
-                //showBoutMove__(no++, tables, r, boutMove);
-            } else {
-                // 处理着法描述字符串————"1. 2. ..... k. l. m. n. "
-                getBoutMove__(boutMove, preMoveStr, reg_bm, reg_m, &lastPreBoutIndex, &preOther);
-                //fwprintf(fout, L"PreMoveStr: %ls\n", preMoveStr);
-                //showBoutMove__(no++, tables, r, boutMove);
-            }
-        }
-        getBoutMove__(boutMove, moveStr, reg_bm, reg_m, &lastPreBoutIndex, &preOther);
-        if (preMoveStr != NULL) {
+        if (preMoveStr && !putRedBlackMove__(boutMove, repeatCount, preMoveStr, reg_sp, reg_m))
+            putBoutMove__(boutMove, repeatCount, choiceIndex, preMoveStr, reg_sp, reg_bm, reg_m, 0);
+
+        putBoutMove__(boutMove, repeatCount, choiceIndex, moveStr, reg_sp, reg_bm, reg_m, 1);
+        if (preMoveStr) {
             fwprintf(fout, L"PreMoveStr: %ls\n", preMoveStr);
-            showBoutMove__(no++, tables, r, boutMove);
+            showBoutMove__(no++, tables, r, boutMove, choiceIndex, repeatCount);
         }
     }
 
@@ -303,13 +269,13 @@ static void testGetFields__(wchar_t* fileWstring)
     /*
         int first = 0, last = wcslen(moveStr);
         while (first < last) {
-            wchar_t move[WCHARSIZE], *tempWstr = moveStr + first;
+            wchar_t moves[WCHARSIZE], *tempWstr = moveStr + first;
             if (pcrewch_exec(reg1, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
                 break;
 
-            //copySubStr(move, tempWstr, ovector[2], ovector[3]);
+            //copySubStr(moves, tempWstr, ovector[2], ovector[3]);
 
-            //fwprintf(fout, L"%ls\n", move);
+            //fwprintf(fout, L"%ls\n", moves);
             first += ovector[1];
         }
         //*/
@@ -464,7 +430,7 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
     // ([2-9a-z]. ?)([^，a-z\f\r\t\v]+)(，[^　／a-z\f\r\t\v]+)?
 
     // wcslen(sn[i]) == 3  有74项
-    wchar_t tsn[10], fmoveStr[WIDEWCHARSIZE], move[WCHARSIZE]; //tmoveStr[WIDEWCHARSIZE],
+    wchar_t tsn[10], fmoveStr[WIDEWCHARSIZE], moves[WCHARSIZE]; //tmoveStr[WIDEWCHARSIZE],
     for (int i = 55; i < num0; ++i) {
         if (pcrewch_exec(reg_r, NULL, moveStr[i], wcslen(moveStr[i]), 0, 0, ovector, 30) <= 0)
             continue;
@@ -490,9 +456,9 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             if (pcrewch_exec(reg1, NULL, tempWstr, last - first, 0, 0, ovector, 30) <= 0)
                 break;
 
-            copySubStr(move, tempWstr, ovector[2], ovector[3]);
+            copySubStr(moves, tempWstr, ovector[2], ovector[3]);
 
-            //fwprintf(fout, L"%ls\n", move);
+            //fwprintf(fout, L"%ls\n", moves);
             first += ovector[1];
         }
         //fwprintf(fout, L"\nfmoveStr:%ls\n", fmoveStr);
