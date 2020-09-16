@@ -8,10 +8,10 @@
 static FILE* fout;
 
 // 调试输出
-static void showBoutMove__(int no, wchar_t**** tables, int r, wchar_t boutMove[][FIELD_MAX][WCHARSIZE],
+static void showBoutMove__(int no, wchar_t tables[][4][WCHARSIZE], int r, wchar_t boutMove[][FIELD_MAX][WCHARSIZE],
     int choiceIndex[][2], int (*repeatCount)[FIELD_MAX])
 {
-    fwprintf(fout, L"No.%d %ls\t%ls\t%ls\nFormatMoveStr: ", no, tables[2][r][0], tables[2][r][1], tables[2][r][2]);
+    fwprintf(fout, L"No.%d %ls\t%ls\t%ls\nFormatMoveStr: ", no, tables[r][0], tables[r][1], tables[r][3]);
     for (int i = 0; i < BOUT_MAX; ++i)
         if (boutMove[i][0][0] || boutMove[i][1][0] || boutMove[i][2][0] || boutMove[i][3][0])
             fwprintf(fout, L"\n%d. %ls|%ls\t%ls|%ls Repeat:%d",
@@ -21,22 +21,12 @@ static void showBoutMove__(int no, wchar_t**** tables, int r, wchar_t boutMove[]
     fwprintf(fout, L"\n\n");
 }
 
-static void putTablesRecField__(wchar_t*** tables_g, int record, int field, const wchar_t* wstr)
-{
-    wchar_t* findStr = tables_g[record][field];
-    if (findStr != NULL)
-        free(findStr);
-    findStr = malloc((wcslen(wstr) + 1) * sizeof(wchar_t));
-    wcscpy(findStr, wstr);
-    tables_g[record][field] = findStr;
-}
-
 // 读取开局着法内容至数据表
-static void getSplitFields__(wchar_t**** tables, int* record, int* field, const wchar_t* wstring)
+static void getSplitFields__(wchar_t tables[][4][WCHARSIZE], int* record, const wchar_t* wstring)
 {
     // 根据正则表达式分解字符串，获取字段内容
     const char* error;
-    int errorffset, ovector[30], fieldCount[] = { 3, 4, 4 };
+    int errorffset, ovector[30], recIndex = 0; 
     void* regs[] = {
         // field: sn name nums
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)",
@@ -55,9 +45,7 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
             0, &error, &errorffset, NULL)
     };
     for (int g = 0; g < sizeof(regs) / sizeof(regs[0]); ++g) {
-        tables[g] = malloc(THOUSAND * sizeof(wchar_t**));
-        field[g] = fieldCount[g];
-        int first = 0, last = wcslen(wstring), recIndex = 0;
+        int first = 0, last = wcslen(wstring);
         while (first < last) {
             const wchar_t* tempWstr = wstring + first;
             int count = pcrewch_exec(regs[g], NULL, tempWstr, last - first, 0, 0, ovector, 30);
@@ -66,15 +54,12 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
 
             wchar_t wstr[WCHARSIZE];
             if (g < 3) {
-                assert(recIndex < THOUSAND);
-                assert(count - 1 <= field[g]);
-                tables[g][recIndex] = calloc(field[g], sizeof(wchar_t*));
-
+                assert(recIndex < record[2]);
+                
                 //fwprintf(fout, L"%d:\t", recIndex);
                 for (int f = 0; f < count - 1; ++f) {
                     copySubStr(wstr, tempWstr, ovector[2 * f + 2], ovector[2 * f + 3]);
-                    putTablesRecField__(tables[g], recIndex, f, wstr);
-                    //fwprintf(fout, L"%ls\t", mStr);
+                    wcscpy(tables[recIndex][g == 2 && f > 1 ? (f == 2 ? 3 : 2) : f], wstr);
                 }
                 recIndex++;
             } else {
@@ -83,21 +68,20 @@ static void getSplitFields__(wchar_t**** tables, int* record, int* field, const 
                 copySubStr(wstr, tempWstr, ovector[4], ovector[5]);
                 // C20 C30 C61 C72局面字符串存至g=1数组
                 for (int r = 0; r < record[1]; ++r)
-                    if (wcscmp(tables[1][r][0], sn) == 0) {
-                        putTablesRecField__(tables[1], r, 3, wstr);
+                    if (wcscmp(tables[r][0], sn) == 0) {
+                        wcscpy(tables[r][3], wstr);
                         break;
                     }
             }
             //fwprintf(fout, L"\n");
             first += ovector[1];
         }
-        record[g] = recIndex;
         pcrewch_free(regs[g]);
     }
 }
 
 // 获取moveStr字段前置省略内容 有40+74=114项
-static wchar_t* getPreMoveStr__(wchar_t**** tables, int* record, const wchar_t* snStr,
+static wchar_t* getPreMoveStr__(wchar_t tables[][4][WCHARSIZE], int* record, const wchar_t* snStr,
     const wchar_t* moveStr, void* reg_p0, void* reg_p1)
 {
     int ovector[30];
@@ -114,12 +98,10 @@ static wchar_t* getPreMoveStr__(wchar_t**** tables, int* record, const wchar_t* 
         if (wcscmp(sn, L"D5") == 0)
             wcscpy(sn, L"D51"); // D5 => D51
     }
-    int level = wcslen(sn) - 1;
-    if (level > 0) {
-        for (int r = 0; r < record[level]; ++r)
-            if (wcscmp(tables[level][r][0], sn) == 0)
-                return tables[level][r][level == 1 ? 3 : 2];
-    }
+    if (wcslen(sn) > 1)
+        for (int r = record[0]; r < record[2]; ++r)
+            if (wcscmp(tables[r][0], sn) == 0)
+                return tables[r][3];
     return NULL;
 }
 
@@ -253,7 +235,7 @@ static void putBoutMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int repeatCo
 }
 
 // 格式化处理tables[2][r][2]=>moveStr字段
-static void formatMoveStrs__(wchar_t**** tables, int* record)
+static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
 {
     const char* error;
     int errorffset, no = 0;
@@ -264,9 +246,9 @@ static void formatMoveStrs__(wchar_t**** tables, int* record)
     // 着法，含多选的复式着法
     swprintf(mStr, WCHARSIZE, L"(?:[%ls]{4}(?:／[%ls]{4})*)", ZhWChars, ZhWChars);
     // 捕捉一步着法: 1.着法，2.可能的“此前...”着法，3. 可能的“／\\n...$”着法
-    swprintf(msStr, WIDEWCHARSIZE, L"(%ls|……)(?:%ls)(\\(不.先后[\\)，])?([^%ls]*?此前[^\\)]+?\\))?", mStr, split, ZhWChars); //  (?:(／\\n[\\s\\S]+)$)?
+    swprintf(msStr, WIDEWCHARSIZE, L"(%ls|……)(?:%ls)(\\(?不.先后[\\)，])?([^%ls]*?此前[^\\)]+?\\))?", mStr, split, ZhWChars); //  (?:(／\\n[\\s\\S]+)$)?
     // 捕捉一个回合着法：1.序号，2.一步着法的1，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
-    swprintf(bmsStr, WIDEWCHARSIZE, L"([\\da-z]). %ls(?:%ls)?", msStr, msStr);
+    swprintf(bmsStr, WIDEWCHARSIZE, L"([\\da-z]). ?%ls(?:%ls)?", msStr, msStr);
     void *reg_m = pcrewch_compile(msStr, 0, &error, &errorffset, NULL),
          *reg_bm = pcrewch_compile(bmsStr, 0, &error, &errorffset, NULL),
          *reg_p0 = pcrewch_compile(L"从([A-E]\\d)\\d局面开始：", 0, &error, &errorffset, NULL),
@@ -274,24 +256,24 @@ static void formatMoveStrs__(wchar_t**** tables, int* record)
          *reg_sp = pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL);
     //fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n%ls\n\n", split, ZhWChars, mStr, msStr, bmsStr);
 
-    for (int r = 0; r < record[2]; ++r) {
-        wchar_t* moveStr = tables[2][r][2];
-        if (moveStr == NULL)
+    for (int r = record[1]; r < record[2]; ++r) {
+        if (wcslen(tables[r][1]) < 2)
             continue;
+        wchar_t* moveStr = tables[r][3];
 
         // 着法可选变着的起止boutIndex [Pre-Next][Start-End]
         int choiceIndex[2][2] = { 0 }, repeatCount[BOUT_MAX][FIELD_MAX] = { 0 };
         // 着法记录数组，以序号字符ASCII值为数组索引存入(例如：L'a'-L'1')
         wchar_t boutMove[BOUT_MAX][FIELD_MAX][WCHARSIZE] = { 0 },
-                *preMoveStr = getPreMoveStr__(tables, record, tables[2][r][0], moveStr, reg_p0, reg_p1);
+                *preMoveStr = getPreMoveStr__(tables, record, tables[r][0], moveStr, reg_p0, reg_p1);
         if (preMoveStr && !putRedBlackMove__(boutMove, repeatCount, preMoveStr, reg_sp, reg_m))
             putBoutMove__(boutMove, repeatCount, choiceIndex, preMoveStr, reg_sp, reg_bm, reg_m, 0);
 
         putBoutMove__(boutMove, repeatCount, choiceIndex, moveStr, reg_sp, reg_bm, reg_m, 1);
-        if (preMoveStr) {
+        //if (preMoveStr) {
             fwprintf(fout, L"PreMoveStr: %ls\n", preMoveStr);
             showBoutMove__(no++, tables, r, boutMove, choiceIndex, repeatCount);
-        }
+        //}
     }
 
     pcrewch_free(reg_m);
@@ -304,12 +286,11 @@ static void formatMoveStrs__(wchar_t**** tables, int* record)
 static void testGetFields__(wchar_t* fileWstring)
 {
     // 读取全部所需的字符串数组
-    int group = 3, record[group], field[group];
-    wchar_t*** tables[group];
-    getSplitFields__(tables, record, field, fileWstring);
+    int record[] = { 5, 55, 555 };
+    wchar_t tables[555][4][WCHARSIZE] = { 0 };
+    getSplitFields__(tables, record, fileWstring);
 
     formatMoveStrs__(tables, record);
-
     //*reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
     //    0, &error, &errorffset, NULL);
 
@@ -328,16 +309,6 @@ static void testGetFields__(wchar_t* fileWstring)
         //*/
 
     //pcrewch_free(reg1);
-
-    // 释放资源
-    for (int g = 0; g < group; ++g) {
-        for (int r = 0; r < record[g]; ++r) {
-            for (int f = 0; f < field[g]; ++f)
-                free(tables[g][r][f]);
-            free(tables[g][r]);
-        }
-        free(tables[g]);
-    }
 }
 
 // 获取查询记录结果的数量
