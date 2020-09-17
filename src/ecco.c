@@ -65,7 +65,7 @@ static void getSplitFields__(wchar_t tables[][4][WCHARSIZE], int* record, const 
                 copySubStr(sn, tempWstr, ovector[2], ovector[3]);
                 copySubStr(wstr, tempWstr, ovector[4], ovector[5]);
                 // C20 C30 C61 C72局面字符串存至g=1数组
-                for (int r = record[1]; r < record[1]; ++r)
+                for (int r = record[0]; r < record[1]; ++r)
                     if (wcscmp(tables[r][0], sn) == 0) {
                         wcscpy(tables[r][3], wstr);
                         break;
@@ -85,7 +85,7 @@ static wchar_t* getPreMoveStr__(wchar_t tables[][4][WCHARSIZE], int* record, con
     int ovector[30];
     wchar_t sn[8] = { 0 };
     if (pcrewch_exec(reg_p0, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0)
-        // 三级局面的 C20 C30 C61 C72局面 有40项
+        // 三级局面的 C2 C3_C4 C61 C72局面 有40项
         copySubStr(sn, moveStr, ovector[2], ovector[3]);
     else if (pcrewch_exec(reg_p1, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 0) {
         // 前置省略的着法 有74项
@@ -136,7 +136,7 @@ static bool putRedBlackMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], wchar_t*
     void* reg_sp, void* reg_m)
 {
     int ovector[30];
-    if (pcrewch_exec(reg_sp, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) == 3) {
+    if (pcrewch_exec(reg_sp, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30) > 2) {
         wchar_t splitStr[WCHARSIZE], moves[WCHARSIZE];
         for (int s = 0; s < 2; ++s) {
             copySubStr(splitStr, moveStr, ovector[2 * s + 2], ovector[2 * s + 3]);
@@ -154,7 +154,7 @@ static bool putRedBlackMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], wchar_t*
 static void putPreMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int choiceIndex[][2], wchar_t* moveStr,
     int fieldIndex, int other, int partIndex, void* reg_m)
 {
-    int insertBoutIndex = 10 + 30 * partIndex;
+    int insertBoutIndex = 10 + partIndex * 30;
     wchar_t moves[WCHARSIZE];
     getMoves__(moves, moveStr, reg_m);
     swprintf(boutMove[insertBoutIndex][fieldIndex], WCHARSIZE, L"%ls%ls",
@@ -173,16 +173,15 @@ static void putNoOrderMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int first
     for (int f = 0; f < 3; f += 2) {
         int index = 0, endBoutIndex = (fieldIndex = 0 && f == 2) ? boutIndex - 1 : boutIndex;
         wchar_t moves[WCHARSIZE], move[16][WCHARSIZE];
-        for (int r = firstBoutIndex; r <= endBoutIndex; ++r) {
-            //if (wcscmp(boutMove[r][f], L"……") == 0)
-            //    continue;
-            wcscpy(move[index++], boutMove[r][f]);
-            wcscpy(boutMove[r][f], L"");
-        }
+        for (int r = firstBoutIndex; r <= endBoutIndex; ++r)
+            if (wcslen(boutMove[r][f]) > 0) {
+                wcscpy(move[index++], boutMove[r][f]);
+                wcscpy(boutMove[r][f], L"");
+            }
         transMoves__(moves, move, index);
         wcscpy(boutMove[firstBoutIndex][f], moves);
 
-        fwprintf(fout, L"moves:%ls\n", moves);
+        //fwprintf(fout, L"moves:%ls\n", moves);
     }
 }
 
@@ -197,7 +196,7 @@ static void putBoutMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int choiceIn
         if (count < 3)
             break;
 
-        if ((sn = tempWstr[ovector[2]]) <= psn)
+        if ((sn = tempWstr[ovector[2]]) < psn || (sn == psn && tempWstr[-2] == L'／'))
             other = 1; // 此后着法皆为变着
         psn = sn;
         boutIndex = sn - L'0' + (partIndex == 0 && sn > L'a' ? -40 : 0);
@@ -211,11 +210,13 @@ static void putBoutMove__(wchar_t boutMove[][FIELD_MAX][WCHARSIZE], int choiceIn
 
             //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
             int fieldIndex = (i / 5) * 2 + other, x = i % 3;
-            if (x == 0) // "不分先后" i=3, 6
+            if (x == 0) { // "不分先后" i=3, 6
+                //fwprintf(fout, L"\ti:%d fb:%d b:%d fi:%d %ls\n", i, firstBoutIndex, boutIndex, fieldIndex, wstr);
                 putNoOrderMove__(boutMove, firstBoutIndex, boutIndex, fieldIndex);
-            else if (x == 1) // "此前..." i=4, 7
+            } else if (x == 1) { // "此前..." i=4, 7
+                //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
                 putPreMove__(boutMove, choiceIndex, wstr, fieldIndex, other, partIndex, reg_m);
-            else if (wcscmp(wstr, L"空") != 0 && wcscmp(wstr, L"……") != 0) // if (x == 2) // 回合的着法 i=2, 5
+            } else if (wcscmp(wstr, L"……") != 0) // if (x == 2) // 回合的着法 i=2, 5
                 wcscpy(boutMove[boutIndex][fieldIndex], wstr);
 
             if (other == 1 && choiceIndex[partIndex][0] == 0)
@@ -232,8 +233,9 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
 {
     const char* error;
     int errorffset, no = 0;
-    wchar_t ZhWChars[WCHARSIZE], move[WCHARSIZE], rmove[WIDEWCHARSIZE], brmove[WIDEWCHARSIZE];
+    wchar_t ZhWChars[WCHARSIZE], mv[WCHARSIZE], move[WCHARSIZE], rmove[WIDEWCHARSIZE], brmove[WIDEWCHARSIZE];
     getZhWChars(ZhWChars); // 着法字符组
+    swprintf(mv, WCHARSIZE, L"([%ls]{4})", ZhWChars);
     // 着法，含多选的复式着法
     swprintf(move, WCHARSIZE, L"(?:[%ls]{4}(?:／[%ls]{4})*)", ZhWChars, ZhWChars);
     // 捕捉一步着法: 1.着法，2.可能的“此前...”着法，3. 可能的“／\\n...$”着法
@@ -241,7 +243,7 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
         move, L"[，、；\\s　和\\(\\)以／]|$", ZhWChars);
     // 捕捉一个回合着法：1.序号，2.一步着法的1，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
     swprintf(brmove, WIDEWCHARSIZE, L"([\\da-z]). ?%ls(?:%ls)?", rmove, rmove);
-    void *reg_m = pcrewch_compile(rmove, 0, &error, &errorffset, NULL),
+    void *reg_m = pcrewch_compile(mv, 0, &error, &errorffset, NULL),
          *reg_bm = pcrewch_compile(brmove, 0, &error, &errorffset, NULL),
          *reg_p0 = pcrewch_compile(L"从([A-E]\\d)\\d局面开始：", 0, &error, &errorffset, NULL),
          *reg_p1 = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
@@ -249,9 +251,9 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
     //fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n\n", ZhWChars, move, rmove, brmove);
 
     for (int r = record[1]; r < record[2]; ++r) {
-        if (wcslen(tables[r][1]) == 0)
-            continue;
         wchar_t* moveStr = tables[r][3];
+        if (wcslen(moveStr) < 2)
+            continue;
 
         // 着法可选变着的起止boutIndex [Pre-Next][Start-End]
         int choiceIndex[2][2] = { 0 };
@@ -262,7 +264,7 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
             putBoutMove__(boutMove, choiceIndex, preMoveStr, reg_sp, reg_bm, reg_m, 0);
 
         putBoutMove__(boutMove, choiceIndex, moveStr, reg_sp, reg_bm, reg_m, 1);
-        if (!preMoveStr) {
+        if (preMoveStr) {
             fwprintf(fout, L"PreMoveStr: %ls\n", preMoveStr);
             showBoutMove__(no++, tables, r, boutMove, choiceIndex);
         }
