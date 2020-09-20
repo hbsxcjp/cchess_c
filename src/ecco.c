@@ -3,7 +3,11 @@
 #include "head/tools.h"
 
 #define BOUT_MAX 80
+#define INSERTBOUT_INDEX 10
+#define INSERTBOUT_SPLIT 30
+#define INSERTBOUT(partIndex) (INSERTBOUT_INDEX + (partIndex)*INSERTBOUT_SPLIT)
 #define FIELD_MAX 4
+#define MOVESTR_LEN 4
 //* 输出字符串，检查用
 static FILE* fout;
 
@@ -101,6 +105,7 @@ static void getMoves__(wchar_t* moves, wchar_t* moveStr, void* reg_m)
 
         copySubStr(move, tempWstr, ovector[2], ovector[3]);
         wcscat(moves, move);
+        wcscat(moves, L"／");
         first += ovector[1];
     }
 }
@@ -127,11 +132,12 @@ static bool getStartPreMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], wch
 static void getThisPreMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int choiceIndex[][2], wchar_t* moveStr,
     int fieldIndex, int other, int partIndex, void* reg_m)
 {
-    int insertBoutIndex = 10 + partIndex * 30;
+    int insertBoutIndex = INSERTBOUT(partIndex);
     wchar_t moves[WCHARSIZE];
     getMoves__(moves, moveStr, reg_m);
     swprintf(boutMoveZhStr[insertBoutIndex][fieldIndex], WCHARSIZE, L"%ls%ls",
         wcschr(moveStr, L'除') == NULL ? L"" : L"-", moves);
+
     // (变着，且非变着为空)||(非变着，且属覆盖前置，且前置有变着)，复制“此前”着法
     if (other == 1 && wcslen(boutMoveZhStr[insertBoutIndex][fieldIndex - 1]) == 0)
         wcscpy(boutMoveZhStr[insertBoutIndex][fieldIndex - 1], boutMoveZhStr[insertBoutIndex][fieldIndex]);
@@ -149,6 +155,7 @@ static void getNoOrderMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int 
         for (int r = firstBoutIndex; r <= endBoutIndex; ++r)
             if (wcslen(boutMoveZhStr[r][f]) > 0) {
                 wcscat(moves, boutMoveZhStr[r][f]);
+                wcscat(moves, L"／");
                 wcscpy(boutMoveZhStr[r][f], L"");
             }
         wcscpy(boutMoveZhStr[firstBoutIndex][f], moves);
@@ -187,8 +194,9 @@ static void getBoutMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int cho
             } else if (x == 1) { // "此前..." i=4, 7
                 //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
                 getThisPreMove__(boutMoveZhStr, choiceIndex, wstr, fieldIndex, other, partIndex, reg_m);
-            } else if (wcscmp(wstr, L"……") != 0) // if (x == 2) // 回合的着法 i=2, 5
+            } else if (wcscmp(wstr, L"……") != 0) { // if (x == 2) // 回合的着法 i=2, 5
                 wcscpy(boutMoveZhStr[boutIndex][fieldIndex], wstr);
+            }
         }
 
         if (other == 1 && choiceIndex[partIndex][0] == 0)
@@ -199,52 +207,105 @@ static void getBoutMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int cho
         choiceIndex[partIndex][1] = boutIndex;
 }
 
-// 添加着法Iccs字符串
-static void appendIccsStr__(wchar_t* iccsRegStr, wchar_t* zhStr)
+// 获取各自组合的回合数组
+static void getBoutIndex__(int boutIndex[][2][2][3], int choiceIndex[][2])
 {
-    wchar_t iccs[6] = { 0 };
-    wcscat(iccsRegStr, iccs);
+    fwprintf(fout, L"\nBoutIndex: ");
+    for (int comb = 0; comb < 4; ++comb) {
+        if ((comb % 2 == 1 && choiceIndex[1][0] == 0)
+            || (comb > 1 && choiceIndex[0][0] == 0))
+            continue;
+
+        fwprintf(fout, L"\n\ti:%d", comb);
+        for (int color = 0; color < 2; ++color) {
+
+            fwprintf(fout, L"  color:%d\t", color);
+            for (int part = 0; part < 2; ++part) {
+                boutIndex[comb][color][part][0] = (part == 1 ? (choiceIndex[part][0]
+                                                           ? choiceIndex[part][0]
+                                                           : (choiceIndex[part - 1][1] ? choiceIndex[part - 1][1] + 1 : INSERTBOUT(part)))
+                                                             : 1);
+                boutIndex[comb][color][part][1] = (part == 0 ? (choiceIndex[part][1]
+                                                           ? choiceIndex[part][1]
+                                                           : (choiceIndex[part + 1][0] ? choiceIndex[part + 1][0] - 1 : INSERTBOUT(part + 1) - 1))
+                                                             : BOUT_MAX - 1);
+                boutIndex[comb][color][part][2] = color * 2 + comb / 2 + (part == 1 ? (comb == 2 ? -1 : (comb == 1 ? 1 : 0)) : 0);
+
+                fwprintf(fout, L"%d-%d[%d] ", boutIndex[comb][color][part][0], boutIndex[comb][color][part][1], boutIndex[comb][color][part][2]);
+            }
+        }
+    }
 }
 
-// 添加可选部分的着法Iccs字符串
-static void appendFieldIccsStr__(wchar_t* iccsRegStr, wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE],
-    int firstBout, int endBout, int field)
+// 获取着法的iccs字符串
+static wchar_t* getIccs__(wchar_t* iccs, wchar_t* zhStr)
 {
-    bool addEmpty = false;
-    int pr = 0;
-    for (int r = firstBout; r <= endBout; ++r) {
-        if (wcslen(boutMoveZhStr[r][field]) > 0) {
-            appendIccsStr__(iccsRegStr, boutMoveZhStr[r][field]);
-        } else if (r - pr > 1 && !addEmpty) {
-            wcscat(iccsRegStr, L"(?:[a-i]\\d[a-i]\\d)*");
-            addEmpty = true;
+    wcscpy(iccs, L" ");
+
+    //fwprintf(fout, L"zhStr:%ls\n", zhStr);
+    return iccs;
+}
+
+// 添加一个组合的着法Iccs字符串
+static void getCombIccsStr__(wchar_t* combStr, wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int boutIndex_i[][2][3])
+{
+    wchar_t iccs[MOVESTR_LEN + 1], zhStr[MOVESTR_LEN + 1] = { 0 }, *zhStrs;
+    wcscpy(combStr, L"(?:");
+    for (int color = 0; color < 2; ++color) {
+        bool addEmpty = false;
+        for (int part = 0; part < 2; ++part) {
+            int endBout = boutIndex_i[color][part][1];
+            for (int bout = boutIndex_i[color][part][0]; bout <= endBout; ++bout) {
+                zhStrs = boutMoveZhStr[bout][boutIndex_i[color][part][2]];
+                int count = (wcslen(zhStrs) + 1) / (MOVESTR_LEN + 1);
+                if (count > 0) {
+                    wchar_t iccses[WCHARSIZE] = { 0 };
+                    for (int i = 0; i < count; ++i) {
+                        wcsncpy(zhStr, zhStrs + (MOVESTR_LEN + 1) * i, MOVESTR_LEN);
+                        getIccs__(iccs, zhStr);
+                        wcscat(iccses, iccs);
+                        wcscat(iccses, L" |");
+                    }
+                    iccses[wcslen(iccses) - 2] = L'\x0';
+
+                    // 如属“此前...”插入的回合索引，则后续不加任意着法（此前着法是必走之着法）
+                    addEmpty = bout == INSERTBOUT(0) || bout == INSERTBOUT(1);
+                    if (count > 1) {
+                        //if (wcslen(zhStrs) % (MOVESTR_LEN + 1) != 0)
+                        //    fwprintf(fout, L"\nzhStrs:%ls len:%d", zhStrs, wcslen(zhStrs));
+                        wchar_t tempStr[WCHARSIZE];
+                        swprintf(tempStr, WCHARSIZE, L"(?:%ls){%ls%d}", iccses, addEmpty ? L"0," : L"", count);
+                        wcscat(combStr, tempStr);
+                    } else
+                        wcscat(combStr, iccses);
+                } else if (!addEmpty) {
+                    addEmpty = true;
+                    wcscat(combStr, L"(?:[a-i]\\d[a-i]\\d )*");
+                }
+            }
         }
-        pr = r;
+        wcscat(combStr, L"&"); // 两种颜色着法需同时匹配
     }
+    combStr[wcslen(combStr) - 1] = L')';
 }
 
 // 获取Iccs正则字符串
 static void getIccsRegStr__(wchar_t* iccsRegStr, wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int choiceIndex[][2])
 {
+    // boutIndex[comb][color][part][start_end_field]
+    int boutIndex[4][2][2][3] = { 0 };
+    wchar_t combStr[WCHARSIZE];
+    getBoutIndex__(boutIndex, choiceIndex);
     wcscpy(iccsRegStr, L"");
-    for (int f = 0; f < 3; f += 2) {
-        appendFieldIccsStr__(iccsRegStr, boutMoveZhStr, 0, BOUT_MAX, f);
-        if (f == 0)
-            wcscat(iccsRegStr, L" && ");
-    }
+    for (int comb = 0; comb < 4; ++comb)
+        if (boutIndex[comb][0][0][0] > 0) {
+            getCombIccsStr__(combStr, boutMoveZhStr, boutIndex[comb]);
+            wcscat(iccsRegStr, combStr);
+            wcscat(iccsRegStr, L"|"); // 多种组合着法可选匹配
+        }
+    iccsRegStr[wcslen(iccsRegStr) - 1] = L'\x0';
 
-    int recIndex[12][3] = { 0 };
-    //for (int p = 0; p < 2; ++p) {
-    if (choiceIndex[0][0] > 0) {
-        recIndex[0][0] = choiceIndex[0][0];
-        recIndex[0][1] = choiceIndex[0][1];
-        recIndex[0][2] = 1; // field
-        recIndex[1][0] = choiceIndex[0][1] + 1;
-        recIndex[1][1] = BOUT_MAX;
-        recIndex[1][2] = 0; // field
-    }
-    //}
-    fwprintf(fout, L"%d", recIndex[0][0]);
+    fwprintf(fout, L"\nIccsRegStr:\n\t%ls", iccsRegStr);
 }
 
 // 格式化处理tables[r][3]=>moveStr字段
@@ -285,7 +346,6 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
 
         getBoutMove__(boutMoveZhStr, choiceIndex, moveStr, reg_sp, reg_bm, reg_m, 1);
 
-        getIccsRegStr__(iccsRegStr, boutMoveZhStr, choiceIndex);
         //*/
         if (preMoveStr) { //
             fwprintf(fout, L"No.%d %ls\t%ls\nPreMoveStr: %ls\nMoveStr: %ls\nBoutMove: ",
@@ -299,9 +359,12 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
             fwprintf(fout, L"\nChoiceIndex: ");
             if (choiceIndex[0][0] > 0 || choiceIndex[1][0] > 0)
                 fwprintf(fout, L"%d-%d\t%d-", choiceIndex[0][0], choiceIndex[0][1], choiceIndex[1][0]); // 最后一个取值：BOUT_MAX
+
+            getIccsRegStr__(iccsRegStr, boutMoveZhStr, choiceIndex);
             fwprintf(fout, L"\n\n");
         }
         //*/
+        //getIccsRegStr__(iccsRegStr, boutMoveZhStr, choiceIndex);
     }
 
     pcrewch_free(reg_m);
