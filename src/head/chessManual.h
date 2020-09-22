@@ -17,6 +17,28 @@ Move getRootMove(ChessManual cm);
 // 取得正则表达式所需的中文字符组
 wchar_t* getZhWChars(wchar_t* ZhWChars);
 
+// 前进一步
+void go(ChessManual cm);
+// 前进到变着
+void goOther(ChessManual cm);
+void goEnd(ChessManual cm);
+// 前进至指定move
+void goTo(ChessManual cm, Move move);
+
+// 后退一步
+void back(ChessManual cm);
+void backNext(ChessManual cm);
+void backOther(ChessManual cm);
+void backFirst(ChessManual cm);
+// 后退至指定move
+void backTo(ChessManual cm, Move move);
+
+// 前进或后退数步
+void goInc(ChessManual cm, int inc);
+
+// 添加着法
+void appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
+
 // 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 void delInfoItem(ChessManual cm, const wchar_t* name);

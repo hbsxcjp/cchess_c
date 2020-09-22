@@ -661,13 +661,23 @@ static void test_chessManual_dir(void)
     //bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
-        for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
-            for (RecFormat toFmt = BIN; toFmt <= PGN_CC; ++toFmt)
+        for (RecFormat fromFmt = XQF; fromFmt <= BIN; ++fromFmt)
+            for (RecFormat toFmt = BIN; toFmt <= JSON; ++toFmt)
                 if (fromFmt != toFmt) { // && fromFmt != PGN_ICCS
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
                 }
     }
+}
+
+static void test_chessManual_go(void)
+{
+    ChessManual cm = newChessManual(xqfFileName__);
+
+    goEnd(cm);
+    backFirst(cm);
+
+    delChessManual(cm);
 }
 
 static void test_chessManual_sqlite(void)
@@ -679,7 +689,8 @@ static void test_chessManual_sqlite(void)
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_xqf", test_chessManual_xqf },
     { "test_chessManual_otherExt", test_chessManual_otherExt },
-    //{ "test_chessManual_dir", test_chessManual_dir },
+    { "test_chessManual_dir", test_chessManual_dir },
+    { "test_chessManual_go", test_chessManual_go },
     { "test_chessManual_sqlite", test_chessManual_sqlite },
     CU_TEST_INFO_NULL,
 };
@@ -747,6 +758,9 @@ static CU_TestInfo suite_aspect[] = {
 
 static void test_play_file(void)
 {
+    Play play = newPlay(xqfFileName__);
+
+    delPlay(play);
 }
 
 static CU_TestInfo suite_play[] = {
