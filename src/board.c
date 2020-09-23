@@ -683,7 +683,11 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
             board, color, name, getCol__(isBottom, getNum__(color, zhStr[1])));
         if (count == 0) {
             wchar_t wstr[WIDEWCHARSIZE];
-            wprintf(L"%d:\n%ls%ls\n", __LINE__, getBoardString(wstr, board), zhStr);
+            getBoardString(wstr, board);
+            char str[WIDEWCHARSIZE], zh[20];
+            wcstombs(str, wstr, WIDEWCHARSIZE);
+            wcstombs(zh, zhStr, 20);
+            printf("%d:\n%s%s\n", __LINE__, str, zh);
             fflush(stdout);
         }
         assert(count > 0);

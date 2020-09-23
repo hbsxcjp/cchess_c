@@ -183,8 +183,10 @@ void goInc(ChessManual cm, int inc)
 
 void appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
-    isOther ? goOther(cm) : go(cm);
+    if (isOther)
+        undoMove(cm->curMove);
+    cm->curMove = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
+    doMove(cm->curMove);
 }
 
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
@@ -1177,10 +1179,12 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 
 void readChessManual__(ChessManual cm, const char* fileName)
 {
-    if (!fileIsRight__(fileName))
+    if (!fileIsRight__(fileName)) {
+        getFENToSetBoard__(cm);
         return;
-    RecFormat fmt = getRecFormat__(getExtName(fileName));
+    }
 
+    RecFormat fmt = getRecFormat__(getExtName(fileName));
     FILE* fin = fopen(fileName, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
     if (fin == NULL)
         return;
