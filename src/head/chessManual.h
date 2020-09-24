@@ -37,7 +37,7 @@ void backTo(ChessManual cm, Move move);
 void goInc(ChessManual cm, int inc);
 
 // 添加着法
-void appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
+Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
 
 // 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);

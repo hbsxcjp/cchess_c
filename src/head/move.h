@@ -8,6 +8,7 @@ Move newMove();
 // 删除move的所有下着move、变着move及自身
 void delMove(Move move);
 
+PieceColor getFromColor(CMove move);
 // 取得简单前着（数据内部表示的前个链接），可能是前着，也可能是前变着
 Move getSimplePre(CMove move);
 // 取得前着，非前变着

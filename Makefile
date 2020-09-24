@@ -1,6 +1,6 @@
 # 参考《C语言核心技术》第19章
 
-__linux = # 随意添加一个字符即属已定义
+__linux = 1# 随意添加一个字符即属已定义
 ifdef __linux
 	FEXEC_CHARSET = utf-8
 	LPCRE = -lpcre32

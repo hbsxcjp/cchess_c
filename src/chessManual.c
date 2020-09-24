@@ -181,12 +181,11 @@ void goInc(ChessManual cm, int inc)
         func(cm);
 }
 
-void appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
+Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    if (isOther)
-        undoMove(cm->curMove);
-    cm->curMove = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
-    doMove(cm->curMove);
+    addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
+    isOther ? goOther(cm) : go(cm);
+    return cm->curMove;
 }
 
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
@@ -323,7 +322,8 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
     }
 }
 
-static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
+//static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
+static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
 {
     unsigned char tag = 0;
     int fcolrow = 0, tcolrow = 0;
@@ -331,20 +331,29 @@ static void readMove_XQF__(Move preMove, Board board, FILE* fin, bool isOther)
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
     int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
     Move move;
-    if (isXQFStoreError(preMove, frow, fcol, trow, tcol)) {
-        move = preMove;
+    //if (isXQFStoreError(preMove, frow, fcol, trow, tcol)) {
+    if (isXQFStoreError(cm->curMove, frow, fcol, trow, tcol)) {
+        //move = preMove;
+        move = cm->curMove;
         if (remark)
             setRemark(move, remark);
     } else {
         wchar_t rcStr[5];
-        move = addMove(preMove, board, getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol)),
-            XQF, remark, isOther);
+        getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol));
+        //move = addMove(preMove, board, rcStr, XQF, remark, isOther);
+        move = appendMove(cm, rcStr, XQF, remark, isOther);
     }
 
     if (tag & 0x80) //# 有左子树
-        readMove_XQF__(move, board, fin, false);
+        //readMove_XQF__(move, board, fin, false);
+        readMove_XQF__(cm, fin, false);
+
+    backTo(cm, move);
     if (tag & 0x40) // # 有右子树
-        readMove_XQF__(move, board, fin, true);
+        //readMove_XQF__(move, board, fin, true);
+        readMove_XQF__(cm, fin, true);
+
+    //backFirst(cm);
 }
 
 static void readXQF__(ChessManual cm, FILE* fin)
@@ -489,7 +498,8 @@ static void readXQF__(ChessManual cm, FILE* fin)
     setRemark(cm->rootMove, remark);
 
     if (tag & 0x80)
-        readMove_XQF__(cm->rootMove, cm->board, fin, false);
+        //readMove_XQF__(cm->rootMove, cm->board, fin, false);
+        readMove_XQF__(cm, fin, false);
 }
 
 static wchar_t* getFENFromCM__(ChessManual cm)
@@ -526,7 +536,8 @@ static char readMoveTagRemark_BIN__(wchar_t** premark, FILE* fin)
     return tag;
 }
 
-static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
+//static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
+static void readMove_BIN__(ChessManual cm, FILE* fin, bool isOther)
 {
     unsigned char frowcol, trowcol;
     fread(&frowcol, sizeof(unsigned char), 1, fin);
@@ -534,12 +545,18 @@ static void readMove_BIN__(Move preMove, Board board, FILE* fin, bool isOther)
     wchar_t* remark = NULL;
     char tag = readMoveTagRemark_BIN__(&remark, fin);
     wchar_t rcStr[5];
-    Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), BIN, remark, isOther);
+    //Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), BIN, remark, isOther);
+    Move move = appendMove(cm, getRcStr_rowcol__(rcStr, frowcol, trowcol), BIN, remark, isOther);
 
     if (tag & 0x80)
-        readMove_BIN__(move, board, fin, false);
+        //readMove_BIN__(move, board, fin, false);
+        readMove_BIN__(cm, fin, false);
+
+    backTo(cm, move);
     if (tag & 0x40)
-        readMove_BIN__(move, board, fin, true);
+        //readMove_BIN__(move, board, fin, true);
+        readMove_BIN__(cm, fin, true);
+    //backFirst(cm);
 }
 
 static void readBin__(ChessManual cm, FILE* fin)
@@ -571,7 +588,8 @@ static void readBin__(ChessManual cm, FILE* fin)
         if (remark)
             setRemark(cm->rootMove, remark);
         if (tag & 0x80)
-            readMove_BIN__(cm->rootMove, cm->board, fin, false);
+            //readMove_BIN__(cm->rootMove, cm->board, fin, false);
+            readMove_BIN__(cm, fin, false);
     }
 }
 
@@ -644,21 +662,26 @@ static wchar_t* readMoveRemark_JSON__(const cJSON* moveJSON)
     return remark;
 }
 
-static void readMove_JSON__(Move preMove, Board board, const cJSON* moveJSON, bool isOther)
+//static void readMove_JSON__(Move preMove, Board board, const cJSON* moveJSON, bool isOther)
+static void readMove_JSON__(ChessManual cm, const cJSON* moveJSON, bool isOther)
 {
     int frowcol = cJSON_GetObjectItem(moveJSON, "f")->valueint;
     int trowcol = cJSON_GetObjectItem(moveJSON, "t")->valueint;
     wchar_t rcStr[5];
-    Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), JSON,
-        readMoveRemark_JSON__(moveJSON), isOther);
+    //Move move = addMove(preMove, board, getRcStr_rowcol__(rcStr, frowcol, trowcol), JSON, readMoveRemark_JSON__(moveJSON), isOther);
+    Move move = appendMove(cm, getRcStr_rowcol__(rcStr, frowcol, trowcol), JSON, readMoveRemark_JSON__(moveJSON), isOther);
 
     cJSON* nmoveJSON = cJSON_GetObjectItem(moveJSON, "n");
     if (nmoveJSON)
-        readMove_JSON__(move, board, nmoveJSON, false);
+        //readMove_JSON__(move, board, nmoveJSON, false);
+        readMove_JSON__(cm, nmoveJSON, false);
 
+    backTo(cm, move);
     cJSON* omoveJSON = cJSON_GetObjectItem(moveJSON, "o");
     if (omoveJSON)
-        readMove_JSON__(move, board, omoveJSON, true);
+        //readMove_JSON__(move, board, omoveJSON, true);
+        readMove_JSON__(cm, omoveJSON, true);
+    //backFirst(cm);
 }
 
 static void readJSON__(ChessManual cm, FILE* fin)
@@ -693,7 +716,8 @@ static void readJSON__(ChessManual cm, FILE* fin)
         setRemark(cm->rootMove, readMoveRemark_JSON__(rootMoveJSON));
         cJSON* moveJSON = cJSON_GetObjectItem(rootMoveJSON, "n");
         if (moveJSON)
-            readMove_JSON__(cm->rootMove, cm->board, moveJSON, false);
+            //readMove_JSON__(cm->rootMove, cm->board, moveJSON, false);
+            readMove_JSON__(cm, moveJSON, false);
     }
     cJSON_Delete(manualJSON);
 }

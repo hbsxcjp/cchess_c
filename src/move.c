@@ -5,6 +5,7 @@
 
 struct Move {
     Seat fseat, tseat; // 起止位置0x00
+    PieceColor fcolor; // 移动方颜色
     Piece tpiece; // 目标位置棋子
     //wchar_t* fen; // 局面字符串
     wchar_t* remark; // 注解
@@ -23,6 +24,7 @@ Move newMove()
     Move move = malloc(sizeof(struct Move));
     assert(move);
     move->fseat = move->tseat = NULL;
+    move->fcolor = RED;
     move->tpiece = getBlankPiece();
     //move->fen = NULL;
     move->remark = NULL;
@@ -45,6 +47,8 @@ void delMove(Move move)
     delMove(omove);
     delMove(nmove);
 }
+
+inline PieceColor getFromColor(CMove move) { return move->fcolor; }
 
 inline Move getSimplePre(CMove move) { return move->pmove; }
 
@@ -120,7 +124,7 @@ inline int getCC_ColNo(CMove move) { return move->CC_ColNo_; }
 //inline PieceColor getFirstColor(CMove move) { return move->nmove == NULL ? RED : getColor(getPiece_s(move->fseat)); }
 
 inline bool isStart(CMove move) { return !getSimplePre(move); }
-inline bool hasPreOther(CMove move) { return getSimplePre(move) && move == move->pmove->omove; }
+inline bool hasPreOther(CMove move) { return getSimplePre(move) && move == getSimplePre(move)->omove; }
 inline bool isRootMove(CMove move) { return move->pmove == NULL; }
 //inline bool isSameRowCol(CMove lmove, CMove pmove) { return getRowCols_m(lmove) == getRowCols_m(pmove); }
 bool isConnected(CMove lmove, CMove pmove)
@@ -241,6 +245,8 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         setMoveSeat_zh__(move, board, wstr);
         break;
     }
+    move->fcolor = getColor(getPiece_s(move->fseat));
+
     //setFEN__(move, board);
     //setRemark_addMove__(preMove, move, remark, isOther);
     setRemark(move, remark);
@@ -253,6 +259,17 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
     //move->willKill = isWillKill(board, color);
     //move->catch = isCatch(board, color);
     //undoMove(move);
+
+    /*
+    assert(!isSameColor(move->fseat, move->tseat));
+    if(isOther)
+        undoMove(preMove);
+    doMove(move);
+    assert(!kingIsEated(board, getFromColor(move)));
+    undoMove(move);
+    if (isOther)
+        doMove(preMove);
+    //*/
 
     return move;
 }

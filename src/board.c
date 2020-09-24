@@ -300,7 +300,7 @@ static int getSortPawnLiveSeats__(Seat* seats, Board board, PieceColor color, wc
     return count;
 }
 
-bool isKill(Board board, PieceColor color)
+bool isKilled(Board board, PieceColor color)
 {
     Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
     int count = getLiveSeats_bc(seats, board, getOtherColor(color));
@@ -347,9 +347,14 @@ bool isUnableMove(Board board, PieceColor color)
     return true;
 }
 
+bool kingIsEated(Board board, PieceColor color)
+{
+    return isFace(board, color) || isKilled(board, color);
+}
+
 bool isFail(Board board, PieceColor color)
 {
-    return isFace(board, color) || isKill(board, color) || isUnableMove(board, color);
+    return kingIsEated(board, color) || isUnableMove(board, color);
 }
 
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind)
@@ -423,9 +428,14 @@ static int filterMoveSeats__(Seat* seats, int count, Board board, Seat fseat,
     return count;
 }
 
-static bool moveSameColor__(Board board, Seat fseat, Seat tseat)
+bool isSameColor(Seat fseat, Seat tseat)
 {
     return getColor(getPiece_s(fseat)) == getColor(getPiece_s(tseat));
+}
+
+static bool moveSameColor__(Board board, Seat fseat, Seat tseat)
+{
+    return isSameColor(fseat, tseat);
 }
 
 int moveSeats(Seat* seats, Board board, Seat fseat)
@@ -602,7 +612,7 @@ static bool moveFailed__(Board board, Seat fseat, Seat tseat)
 {
     PieceColor fcolor = getColor(getPiece_s(fseat));
     Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
-    bool failed = isFail(board, fcolor);
+    bool failed = kingIsEated(board, fcolor);
     movePiece(tseat, fseat, eatPiece);
     return failed;
 }

@@ -59,7 +59,7 @@ Seat getKingSeat(Board board, PieceColor color);
 int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
 
 // 是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
-bool isKill(Board board, PieceColor color);
+bool isKilled(Board board, PieceColor color);
 // 是否杀（凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”）
 bool isWillKill(Board board, PieceColor color);
 // 是否捉（凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段)吃掉对方某个无根子，称为“捉”）
@@ -68,8 +68,13 @@ bool isCatch(Board board, PieceColor color);
 bool isFace(Board board, PieceColor color);
 // 是否困毙
 bool isUnableMove(Board board, PieceColor color);
+
+// 将帅是否将被吃
+bool kingIsEated(Board board, PieceColor color);
 // 是否已输棋 (根据象棋规则，还需添加更多条件)
 bool isFail(Board board, PieceColor color);
+// 两个位置的棋子颜色是否相同
+bool isSameColor(Seat fseat, Seat tseat);
 
 // 某棋盘红黑定方向后某种棋子可置入位置的集合，返回位置个数（至少90个）
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind);
