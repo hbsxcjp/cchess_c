@@ -190,6 +190,15 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
         undoMove(cm->curMove);
     Move move = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
     go__(cm, move);
+
+    /*
+    assert(!isFace(cm->board, getFromColor(cm->curMove)));
+    if (isKilled(cm->board, getFromColor(cm->curMove)))
+        printBoard(cm->board, fmt, isOther, wstr);
+    assert(!isKilled(cm->board, getFromColor(cm->curMove)));
+    //*/
+    assert(!kingIsEated(cm->board, getFromColor(cm->curMove)));
+
     return move;
 }
 
@@ -219,6 +228,16 @@ void delInfoItem(ChessManual cm, const wchar_t* name)
             --(cm->infoCount);
             break;
         }
+}
+
+static wchar_t* getFENFromCM__(ChessManual cm)
+{
+    wchar_t fen[] = L"FEN";
+    for (int i = 0; i < cm->infoCount; ++i)
+        if (wcscmp(cm->info[i][0], fen) == 0)
+            return cm->info[i][1];
+    addInfoItem(cm, fen, L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
+    return cm->info[cm->infoCount - 1][1];
 }
 
 static void setMoveNumZhStr__(ChessManual cm, Move move)
@@ -494,25 +513,11 @@ static void readXQF__(ChessManual cm, FILE* fin)
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
     setRemark(cm->rootMove, remark);
 
+    setBoard_FEN(cm->board, getFENFromCM__(cm));
     if (tag & 0x80)
         readMove_XQF__(cm, fin, false);
 
     backFirst(cm);
-}
-
-static wchar_t* getFENFromCM__(ChessManual cm)
-{
-    wchar_t fen[] = L"FEN";
-    for (int i = 0; i < cm->infoCount; ++i)
-        if (wcscmp(cm->info[i][0], fen) == 0)
-            return cm->info[i][1];
-    addInfoItem(cm, fen, L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
-    return cm->info[cm->infoCount - 1][1];
-}
-
-static void getFENToSetBoard__(ChessManual cm)
-{
-    setBoard_FEN(cm->board, getFENFromCM__(cm));
 }
 
 static wchar_t* readWstring_BIN__(FILE* fin)
@@ -570,6 +575,7 @@ static void readBin__(ChessManual cm, FILE* fin)
             free(value);
         }
     }
+    setBoard_FEN(cm->board, getFENFromCM__(cm));
 
     if (tag & 0x20)
         setRemark(cm->rootMove, readWstring_BIN__(fin));
@@ -694,6 +700,7 @@ static void readJSON__(ChessManual cm, FILE* fin)
         }
         addInfoItem(cm, nameValue[0], nameValue[1]);
     }
+    setBoard_FEN(cm->board, getFENFromCM__(cm));
 
     cJSON* rootMoveJSON = cJSON_GetObjectItem(manualJSON, "rootmove");
     if (rootMoveJSON) {
@@ -984,7 +991,7 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
     //printf("\n准备读取info... ");
     readInfo_PGN__(cm, fin);
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
-    getFENToSetBoard__(cm);
+    setBoard_FEN(cm->board, getFENFromCM__(cm));
 
     //printf("\n准备读取move... ");
     if (fmt == PGN_CC)
@@ -1146,7 +1153,7 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 void readChessManual__(ChessManual cm, const char* fileName)
 {
     if (!fileIsRight__(fileName)) {
-        getFENToSetBoard__(cm);
+        setBoard_FEN(cm->board, getFENFromCM__(cm));
         return;
     }
 
@@ -1165,22 +1172,11 @@ void readChessManual__(ChessManual cm, const char* fileName)
         readJSON__(cm, fin);
         break;
     default:
-        //printf("准备读取文件...%s ", fileName);
-        //
         readPGN__(cm, fin, fmt);
-        //printf("读取成功！ ");
-        //
         break;
     }
-    if (fmt == XQF || fmt == BIN || fmt == JSON)
-        getFENToSetBoard__(cm);
-    //*
-
     if (getNext(cm->rootMove))
         setMoveNumZhStr(cm); // 驱动函数
-    //*/
-    //printf("设置成功！\n");
-
     fclose(fin);
 }
 

@@ -159,22 +159,6 @@ void setMoveZhStr(Move move, Board board)
     getZhStr_seats(move->zhStr, board, move->fseat, move->tseat);
 }
 
-static Move setMoveNext__(Move preMove, Move move)
-{
-    move->nextNo_ = preMove->nextNo_ + 1;
-    move->otherNo_ = preMove->otherNo_;
-    move->pmove = preMove;
-    return preMove->nmove = move;
-}
-
-static Move setMoveOther__(Move preMove, Move move)
-{
-    move->nextNo_ = preMove->nextNo_;
-    move->otherNo_ = preMove->otherNo_ + 1;
-    move->pmove = preMove;
-    return preMove->omove = move;
-}
-
 inline const wchar_t* getRemark(CMove move) { return move->remark; }
 
 bool isXQFStoreError(CMove move, int frow, int fcol, int trow, int tcol)
@@ -246,12 +230,16 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         break;
     }
     move->fcolor = getColor(getPiece_s(move->fseat));
-
-    //setFEN__(move, board);
-    //setRemark_addMove__(preMove, move, remark, isOther);
     setRemark(move, remark);
-    isOther ? setMoveOther__(preMove, move) : setMoveNext__(preMove, move);
-
+    
+    move->nextNo_ = preMove->nextNo_ + (isOther ? 0 : 1);
+    move->otherNo_ = preMove->otherNo_ + (isOther ? 1 : 0);
+    if (isOther)
+        preMove->omove = move;
+    else
+        preMove->nmove = move;
+    move->pmove = preMove;
+    
     // 以下在fmt==pgn_iccs时未成功？
     //doMove(move);
     //PieceColor color = getColor(getPiece_s(move->fseat));
@@ -259,17 +247,6 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
     //move->willKill = isWillKill(board, color);
     //move->catch = isCatch(board, color);
     //undoMove(move);
-
-    /*
-    assert(!isSameColor(move->fseat, move->tseat));
-    if(isOther)
-        undoMove(preMove);
-    doMove(move);
-    assert(!kingIsEated(board, getFromColor(move)));
-    undoMove(move);
-    if (isOther)
-        doMove(preMove);
-    //*/
 
     return move;
 }

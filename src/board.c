@@ -125,9 +125,7 @@ inline Seat getSeat_rc(Board board, int row, int col)
 {
     //*
     if (!(isValidRow__(row) && isValidCol__(col))) {
-        wchar_t wstr[2 * WIDEWCHARSIZE];
-        wprintf(L"\n%srow:%d col:%d\n", getBoardString(wstr, board), row, col);
-        fflush(stdout);
+        printBoard(board, row, col, L"");
     }
     //*/
     assert(isValidRow__(row) && isValidCol__(col));
@@ -307,12 +305,14 @@ bool isKilled(Board board, PieceColor color)
     for (int i = 0; i < count; ++i) {
         if (!isStronge(getPiece_s(seats[i])))
             continue;
+
         int mcount = moveSeats(mseats, board, seats[i]);
         for (int m = 0; m < mcount; ++m)
             // 本方将帅位置在对方强子可走位置范围内
             if (mseats[m] == kingSeat)
                 return true;
     }
+
     return false;
 }
 
@@ -328,11 +328,13 @@ bool isFace(Board board, PieceColor color)
     int fcol = getCol_s(kingSeat);
     if (fcol != getCol_s(othKingSeat))
         return false;
+
     int frow = getRow_s(kingSeat), trow = getRow_s(othKingSeat),
         rowLow = isBottom ? frow : trow, rowUp = isBottom ? trow : frow;
     for (int row = rowLow + 1; row < rowUp; ++row)
         if (!isBlankPiece(getPiece_rc(board, row, fcol)))
             return false;
+
     // 将帅之间全空，没有间隔棋子
     return true;
 }
@@ -537,20 +539,20 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
             { frow - 1, fcol }, //NW
             { frow + 1, fcol } //NE
         };
-        bool select[] = { true, true, true, true };
+        bool select[] = { false, false, false, false };
         if (isBottom) {
             if (frow != RowUpIndex_)
-                select[NE] = false;
+                select[NE] = true;
         } else if (frow != RowLowIndex_)
-            select[NW] = false;
+            select[NW] = true;
+
         if ((isBottom && frow > RowLowUpIndex_)
             || (!isBottom && frow <= RowLowUpIndex_)) { // 兵已过河
-            if (fcol == ColLowIndex_)
-                select[SW] = false;
-            else if (fcol == ColUpIndex_)
-                select[SE] = false;
-        } else // 兵未过河
-            select[SW] = select[SE] = false;
+            if (fcol != ColLowIndex_)
+                select[SW] = true;
+            else if (fcol != ColUpIndex_)
+                select[SE] = true;
+        }
         for (int i = 0; i < sizeof(trowcols) / sizeof(trowcols[0]); ++i)
             if (select[i])
                 seats[count++] = getSeat_rc(board, trowcols[i][0], trowcols[i][1]);
@@ -733,6 +735,8 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
                                     // 斜线走子：仕、相、马
                                     : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
 
+    //assert(!isSameColor(*pfseat, *ptseat));
+
     //*
     wchar_t tmpZhStr[6];
     getZhStr_seats(tmpZhStr, board, *pfseat, *ptseat);
@@ -870,6 +874,17 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
         L"９　８　７　６　５　４　３　２　１\n　　　　　　　黑　方　　　　　　　\n"
     };
     return wcscpy(sufStr, SUFSTR[board->bottomColor]);
+}
+
+void printBoard(Board board, int arg1, int arg2, const wchar_t* arg3)
+{
+    wchar_t wstr[2 * WIDEWCHARSIZE];
+    getBoardString(wstr, board);
+    char str[2 * WIDEWCHARSIZE], args[WIDEWCHARSIZE];
+    wcstombs(str, wstr, 2 * WIDEWCHARSIZE);
+    wcstombs(args, arg3, WIDEWCHARSIZE);
+    printf("\n%s\narg1:%d arg2:%d\nargs:%s\n", str, arg1, arg2, args);
+    fflush(stdout);
 }
 
 bool seat_equal(CSeat seat0, CSeat seat1)

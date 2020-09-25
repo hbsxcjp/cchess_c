@@ -110,6 +110,8 @@ wchar_t* getBoardPreString(wchar_t* preStr, CBoard board);
 // 棋盘下边标识字符串
 wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board);
 
+void printBoard(Board board, int arg1, int arg2, const wchar_t* arg3);
+
 bool seat_equal(CSeat seat0, CSeat seat1);
 
 bool board_equal(Board board0, Board board1);
