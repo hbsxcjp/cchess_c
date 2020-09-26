@@ -100,33 +100,40 @@ void delChessManual(ChessManual cm)
 
 Move getRootMove(ChessManual cm) { return cm->rootMove; }
 
-void go__(ChessManual cm, Move curMove)
+static bool go__(ChessManual cm, Move curMove)
 {
     doMove(curMove);
     cm->curMove = curMove;
+    return true;
 }
 
-void go(ChessManual cm)
+bool go(ChessManual cm)
 {
     if (getNext(cm->curMove))
-        go__(cm, getNext(cm->curMove));
+        return go__(cm, getNext(cm->curMove));
+    return false;
 }
 
-void goOther(ChessManual cm)
+bool goOther(ChessManual cm)
 {
     if (getOther(cm->curMove)) {
         undoMove(cm->curMove);
-        go__(cm, getOther(cm->curMove));
+        return go__(cm, getOther(cm->curMove));
     }
+    return false;
 }
 
-void goEnd(ChessManual cm)
+int goEnd(ChessManual cm)
 {
-    while (getNext(cm->curMove))
+    int count = 0;
+    while (getNext(cm->curMove)) {
         go__(cm, getNext(cm->curMove));
+        ++count;
+    }
+    return count;
 }
 
-void goTo(ChessManual cm, Move move)
+int goTo(ChessManual cm, Move move)
 {
     assert(move);
     cm->curMove = move;
@@ -134,54 +141,72 @@ void goTo(ChessManual cm, Move move)
     int count = getPreMoves(preMoves, move);
     for (int i = 0; i < count; ++i)
         doMove(preMoves[i]);
+    return count;
 }
 
-static void back__(ChessManual cm)
+static bool back__(ChessManual cm)
 {
     undoMove(cm->curMove);
     cm->curMove = getSimplePre(cm->curMove);
+    return true;
 }
 
-void back(ChessManual cm)
+bool back(ChessManual cm)
 {
     if (hasPreOther(cm->curMove))
-        backOther(cm);
+        return backOther(cm);
     else if (getSimplePre(cm->curMove))
-        back__(cm);
+        return back__(cm);
+    return false;
 }
 
-void backNext(ChessManual cm)
+bool backNext(ChessManual cm)
 {
-    if (getSimplePre(cm->curMove) && !hasPreOther(cm->curMove))
+    if (getSimplePre(cm->curMove) && !hasPreOther(cm->curMove)) {
         back__(cm);
+        return true;
+    }
+    return false;
 }
 
-void backOther(ChessManual cm)
+bool backOther(ChessManual cm)
 {
     if (hasPreOther(cm->curMove)) {
         back__(cm); // 变着回退
         doMove(cm->curMove); // 前变执行
+        return true;
     }
+    return false;
 }
 
-void backFirst(ChessManual cm)
+int backFirst(ChessManual cm)
 {
-    while (getSimplePre(cm->curMove))
+    int count = 0;
+    while (getSimplePre(cm->curMove)) {
         back(cm);
+        ++count;
+    }
+    return count;
 }
 
-void backTo(ChessManual cm, Move move)
+int backTo(ChessManual cm, Move move)
 {
-    while (getSimplePre(cm->curMove) && cm->curMove != move)
+    int count = 0;
+    while (getSimplePre(cm->curMove) && cm->curMove != move) {
         back(cm);
+        ++count;
+    }
+    return count;
 }
 
-void goInc(ChessManual cm, int inc)
+int goInc(ChessManual cm, int inc)
 {
-    int count = abs(inc);
-    void (*func)(ChessManual) = inc > 0 ? go : back;
-    while (count-- > 0)
-        func(cm);
+    int incCount = abs(inc), count = 0;
+    bool (*func)(ChessManual) = inc > 0 ? go : back;
+    while (incCount-- > 0)
+        if (func(cm))
+            ++count;
+    return count;
 }
 
 Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
@@ -189,17 +214,17 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
     if (isOther)
         undoMove(cm->curMove);
     Move move = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
-    go__(cm, move);
-
-    /*
-    assert(!isFace(cm->board, getFromColor(cm->curMove)));
-    if (isKilled(cm->board, getFromColor(cm->curMove)))
+    if (move == NULL)
         printBoard(cm->board, fmt, isOther, wstr);
-    assert(!isKilled(cm->board, getFromColor(cm->curMove)));
-    //*/
-    assert(!kingIsEated(cm->board, getFromColor(cm->curMove)));
+    assert(move != NULL);
 
+    go__(cm, move);
     return move;
+}
+
+const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
+{
+    return getICCS_mt(iccs, cm->curMove, cm->board, ct);
 }
 
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
@@ -1015,7 +1040,7 @@ static void writeMove_PGN_ICCSZH__(FILE* fout, Move move, bool isPGN_ZH, bool is
         (isOther ? L"(" : L""),
         (isOther || !isEven ? boutStr : L" "),
         (isOther && isEven ? L"... " : L""),
-        (isPGN_ZH ? getZhStr(move) : getICCS(iccs, move)));
+        (isPGN_ZH ? getZhStr(move) : getICCS_m(iccs, move)));
     writeRemark_PGN_ICCSZH__(fout, move);
 
     if (getOther(move)) {
@@ -1313,18 +1338,16 @@ void getChessManualNumStr(char* str, ChessManual cm)
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 }
 
-const char* getIccsStr(char* iccsStr, ChessManual cm)
+const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm)
 {
-    iccsStr[0] = '\x0';
-    char iccs[6];
-    for (ChangeType ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
-        CMove tmove = cm->rootMove;
-        while ((tmove = getNext(tmove)) != NULL) {
-            strcat(iccsStr, getIccs_mt(iccs, tmove, cm->board, ct));
-            strcat(iccsStr, " ");
-        }
-        strcat(iccsStr, "\n");
+    wchar_t iccs[6], redStr[WCHARSIZE] = { 0 }, blackStr[WCHARSIZE] = { 0 };
+    backFirst(cm);
+    while (go(cm)) {
+        wcscat(redStr, getICCS_cm(iccs, cm, EXCHANGE));
+        if (go(cm))
+            wcscat(blackStr, getICCS_cm(iccs, cm, EXCHANGE));
     }
+    swprintf(iccsStr, WIDEWCHARSIZE, L"%ls&%ls", redStr, blackStr);
     return iccsStr;
 }
 

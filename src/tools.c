@@ -114,6 +114,22 @@ void hashToStr(char* str, unsigned char* hash, int length)
     }
 }
 
+int filterObjects(void** objs, int count, void* arg1, void* obj, bool (*filterFunc__)(void*, void*, void*), bool sure)
+{
+    int index = 0;
+    while (index < count) {
+        bool result = filterFunc__(arg1, obj, objs[index]);
+        // 如符合条件，先减少count再比较序号，如小于则需要交换；如不小于则指向同一元素，不需要交换；
+        if (result == sure && index < --count) {
+            void* tempObj = objs[count];
+            objs[count] = objs[index];
+            objs[index] = tempObj;
+        } else
+            ++index; // 不符合筛选条件，index前进一个
+    }
+    return count;
+}
+
 char* trim(char* str)
 {
     size_t size = strlen(str);

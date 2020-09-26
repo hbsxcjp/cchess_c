@@ -5,7 +5,6 @@
 
 struct Move {
     Seat fseat, tseat; // 起止位置0x00
-    PieceColor fcolor; // 移动方颜色
     Piece tpiece; // 目标位置棋子
     //wchar_t* fen; // 局面字符串
     wchar_t* remark; // 注解
@@ -24,7 +23,6 @@ Move newMove()
     Move move = malloc(sizeof(struct Move));
     assert(move);
     move->fseat = move->tseat = NULL;
-    move->fcolor = RED;
     move->tpiece = getBlankPiece();
     //move->fen = NULL;
     move->remark = NULL;
@@ -47,8 +45,6 @@ void delMove(Move move)
     delMove(omove);
     delMove(nmove);
 }
-
-inline PieceColor getFromColor(CMove move) { return move->fcolor; }
 
 inline Move getSimplePre(CMove move) { return move->pmove; }
 
@@ -175,25 +171,18 @@ int getRowCols_m(CMove move) { return (getFromRowCol_m(move) << 8) | getToRowCol
 
 const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
-const char* getIccs_m(char* iccs, CMove move)
+const wchar_t* getICCS_m(wchar_t* iccs, CMove move)
 {
     if (isRootMove(move))
         iccs[0] = '\x0';
     else
-        getIccs_s(iccs, move->fseat, move->tseat);
+        getICCS_s(iccs, move->fseat, move->tseat);
     return iccs;
 }
 
-const char* getIccs_mt(char* iccs, CMove move, Board board, ChangeType ct)
+const wchar_t* getICCS_mt(wchar_t* iccs, CMove move, Board board, ChangeType ct)
 {
-    return getIccs_s(iccs, getOtherSeat(board, move->fseat, ct), getOtherSeat(board, move->tseat, ct));
-}
-
-const wchar_t* getICCS(wchar_t* iccs, CMove move)
-{
-    char str[6];
-    mbstowcs(iccs, getIccs_m(str, move), 6);
-    return iccs;
+    return getICCS_s(iccs, getOtherSeat(board, move->fseat, ct), getOtherSeat(board, move->tseat, ct));
 }
 
 static void setMoveSeat_rc__(Move move, Board board, const wchar_t* rcStr)
@@ -229,17 +218,11 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         setMoveSeat_zh__(move, board, wstr);
         break;
     }
-    move->fcolor = getColor(getPiece_s(move->fseat));
-    setRemark(move, remark);
-    
-    move->nextNo_ = preMove->nextNo_ + (isOther ? 0 : 1);
-    move->otherNo_ = preMove->otherNo_ + (isOther ? 1 : 0);
-    if (isOther)
-        preMove->omove = move;
-    else
-        preMove->nmove = move;
-    move->pmove = preMove;
-    
+    //*
+    if (!isCanMove(board, move->fseat, move->tseat))
+        return NULL; // 添加着法失败
+    //*/
+
     // 以下在fmt==pgn_iccs时未成功？
     //doMove(move);
     //PieceColor color = getColor(getPiece_s(move->fseat));
@@ -248,6 +231,14 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
     //move->catch = isCatch(board, color);
     //undoMove(move);
 
+    setRemark(move, remark);
+    move->nextNo_ = preMove->nextNo_ + (isOther ? 0 : 1);
+    move->otherNo_ = preMove->otherNo_ + (isOther ? 1 : 0);
+    if (isOther)
+        preMove->omove = move;
+    else
+        preMove->nmove = move;
+    move->pmove = preMove;
     return move;
 }
 
@@ -278,7 +269,7 @@ static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
     wchar_t iccs[6] = { 0 };
     if (move)
         swprintf(wstr, WCHARSIZE, L"%02x->%02x %ls %ls@%lc",
-            getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS(iccs, move), move->zhStr,
+            getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS_m(iccs, move), move->zhStr,
             (!isBlankPiece(move->tpiece) ? getPieName(move->tpiece) : getBlankChar()));
     return wstr;
 }

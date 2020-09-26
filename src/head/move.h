@@ -8,7 +8,6 @@ Move newMove();
 // 删除move的所有下着move、变着move及自身
 void delMove(Move move);
 
-PieceColor getFromColor(CMove move);
 // 取得简单前着（数据内部表示的前个链接），可能是前着，也可能是前变着
 Move getSimplePre(CMove move);
 // 取得前着，非前变着
@@ -46,9 +45,8 @@ int getToRowCol_m(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
 const wchar_t* getZhStr(CMove move);
-const char* getIccs_m(char* iccs, CMove move);
-const char* getIccs_mt(char* iccs, CMove move, Board board, ChangeType ct);
-const wchar_t* getICCS(wchar_t* iccs, CMove move);
+const wchar_t* getICCS_m(wchar_t* iccs, CMove move);
+const wchar_t* getICCS_mt(wchar_t* iccs, CMove move, Board board, ChangeType ct);
 
 // 检测是否存在一个XQF文件存储时的错误
 bool isXQFStoreError(CMove move, int frow, int fcol, int trow, int tcol);

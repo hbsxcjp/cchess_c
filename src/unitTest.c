@@ -500,14 +500,14 @@ static void test_board_moveSeats_str(void)
             wcscat(wstr, tmpWstr1);
 
             wcscat(wstr, L" =【");
-            int cmcount = ableMoveSeats(mseats, mcount, board, fseat);
+            int cmcount = canMoveSeats(mseats, board, fseat, true);
             for (int i = 0; i < cmcount; ++i)
                 appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr2, mseats[i]));
             swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d", cmcount);
             wcscat(wstr, tmpWstr1);
 
             wcscat(wstr, L" +【");
-            int kmcount = unableMoveSeats(mseats, mcount, board, fseat);
+            int kmcount = canMoveSeats(mseats, board, fseat, false);
             for (int i = 0; i < kmcount; ++i)
                 appendWstr__(wstr, L"%ls ", getSeatString(tmpWstr2, mseats[i]));
             swprintf(tmpWstr1, WIDEWCHARSIZE, L"】%d\n", kmcount);
@@ -661,8 +661,8 @@ static void test_chessManual_dir(void)
     //bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
-        for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
-            for (RecFormat toFmt = BIN; toFmt <= PGN_CC; ++toFmt)
+        for (RecFormat fromFmt = XQF; fromFmt <= BIN; ++fromFmt)
+            for (RecFormat toFmt = BIN; toFmt <= BIN; ++toFmt)
                 if (fromFmt != toFmt) { // && fromFmt != PGN_ICCS
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);

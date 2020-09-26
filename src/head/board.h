@@ -58,35 +58,34 @@ Seat getKingSeat(Board board, PieceColor color);
 // 取得活的棋子位置
 int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
 
-// 是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
-bool isKilled(Board board, PieceColor color);
-// 是否杀（凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”）
-bool isWillKill(Board board, PieceColor color);
-// 是否捉（凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段)吃掉对方某个无根子，称为“捉”）
-bool isCatch(Board board, PieceColor color);
-// 是否将帅对面
-bool isFace(Board board, PieceColor color);
-// 是否困毙
-bool isUnableMove(Board board, PieceColor color);
-
-// 将帅是否将被吃
-bool kingIsEated(Board board, PieceColor color);
-// 是否已输棋 (根据象棋规则，还需添加更多条件)
-bool isFail(Board board, PieceColor color);
-// 两个位置的棋子颜色是否相同
-bool isSameColor(Seat fseat, Seat tseat);
+// 移动棋子，返回目的地棋子
+Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 
 // 某棋盘红黑定方向后某种棋子可置入位置的集合，返回位置个数（至少90个）
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind);
 // 某棋盘局面下某位置的棋子“行走规则(筛除同色，未筛将军)”可移入位置的集合（至多17个）
 int moveSeats(Seat* seats, Board board, Seat fseat);
-// 某棋盘局面下某位置的棋子在“行走规则”基础上筛除被将军位置后可移入位置的集合（至多17个）
-int ableMoveSeats(Seat* seats, int count, Board board, Seat fseat);
-// 某棋盘局面下某位置的棋子在“行走规则”基础上，移动后将被将军位置的集合（至多17个）
-int unableMoveSeats(Seat* seats, int count, Board board, Seat fseat);
+// 某棋盘局面下某位置的棋子在“行走规则”基础上筛除将帅对面、被将军的位置后可移入位置的集合（至多17个）
+int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure);
 
-// 移动棋子，返回目的地棋子
-Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
+// 着法走之后，判断是否将帅对面
+bool isFace(Board board, PieceColor color);
+// 着法走之后，判断是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
+bool isKilled(Board board, PieceColor color);
+// 着法走之后，判断是否困毙
+bool isUnableMove(Board board, PieceColor color);
+// 着法走之后，判断是否杀（凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”）
+bool isWillKill(Board board, PieceColor color);
+// 着法走之后，判断是否捉（凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段)吃掉对方某个无根子，称为“捉”）
+bool isCatch(Board board, PieceColor color);
+
+// 着法走之后，判断将帅是否将帅对面、被将军
+bool kingIsEated(Board board, PieceColor color);
+// 着法走之后，判断是否已输棋 (根据象棋规则，还需添加更多条件)
+bool isFail(Board board, PieceColor color);
+
+// 着法走之前，判断起止位置是可走的位置(遵守“行走规则”，并排除：棋子同色、将帅对面、被将军等的情况)
+bool isCanMove(Board board, Seat fseat, Seat tseat);
 
 // 按某种变换类型变换棋盘局面
 void changeBoard(Board board, ChangeType ct);
@@ -97,7 +96,7 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
 void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat);
 
 // 获取位置的iccs描述字符串
-const char* getIccs_s(char* iccs, Seat fseat, Seat tseat);
+const wchar_t* getICCS_s(wchar_t* iccs, Seat fseat, Seat tseat);
 
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);

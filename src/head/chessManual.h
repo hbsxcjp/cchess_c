@@ -18,26 +18,29 @@ Move getRootMove(ChessManual cm);
 wchar_t* getZhWChars(wchar_t* ZhWChars);
 
 // 前进一步
-void go(ChessManual cm);
+bool go(ChessManual cm);
 // 前进到变着
-void goOther(ChessManual cm);
-void goEnd(ChessManual cm);
+bool goOther(ChessManual cm);
+int goEnd(ChessManual cm);
 // 前进至指定move
-void goTo(ChessManual cm, Move move);
+int goTo(ChessManual cm, Move move);
 
 // 后退一步
-void back(ChessManual cm);
-void backNext(ChessManual cm);
-void backOther(ChessManual cm);
-void backFirst(ChessManual cm);
+bool back(ChessManual cm);
+bool backNext(ChessManual cm);
+bool backOther(ChessManual cm);
+int backFirst(ChessManual cm);
 // 后退至指定move
-void backTo(ChessManual cm, Move move);
+int backTo(ChessManual cm, Move move);
 
 // 前进或后退数步
-void goInc(ChessManual cm, int inc);
+int goInc(ChessManual cm, int inc);
 
 // 添加着法
 Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
+
+// 获取着法ICCS字符串
+const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
 
 // 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
@@ -71,8 +74,8 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);
 
-// 调试：取得棋谱的着法字符串(iccs)
-const char* getIccsStr(char* iccsStr, ChessManual cm);
+// 取得棋谱的拟匹配开局正则表达式的着法字符串(iccs)
+const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
