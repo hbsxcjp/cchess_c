@@ -38,7 +38,7 @@ void delMove(Move move)
     if (move == NULL)
         return;
     Move omove = move->omove,
-         nmove = move->nmove;
+        nmove = move->nmove;
     //free(move->fen);
     free(move->remark);
     free(move);
@@ -219,8 +219,10 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         break;
     }
     //*
-    if (!isCanMove(board, move->fseat, move->tseat))
+    if (!isCanMove(board, move->fseat, move->tseat)) {
+        delMove(move);
         return NULL; // 添加着法失败
+    }
     //*/
 
     // 以下在fmt==pgn_iccs时未成功？
@@ -360,8 +362,8 @@ static bool move_equalMap__(CMove move0, CMove move1)
 bool rootmove_equal(CMove rootmove0, CMove rootmove1)
 {
     if (!((rootmove0->remark == NULL && rootmove1->remark == NULL)
-            || (rootmove0->remark && rootmove1->remark
-                && wcscmp(rootmove0->remark, rootmove1->remark) == 0)))
+        || (rootmove0->remark && rootmove1->remark
+            && wcscmp(rootmove0->remark, rootmove1->remark) == 0)))
         return false;
 
     return move_equalMap__(rootmove0, rootmove1);

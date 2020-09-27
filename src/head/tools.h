@@ -49,7 +49,7 @@ bool chars_equal(const char* dst, const char* src, int len);
 void hashToStr(char* str, unsigned char* hash, int length);
 
 // 根据给定的参数、对象、过滤函数和是否确认值，过滤掉给定数组中的对象
-int filterObjects(void** objs, int count, void* arg1, void* obj, bool (*filterFunc__)(void*, void*, void*), bool sure);
+int filterObjects(void** objs, int count, void* arg1, void* arg2, bool (*filterFunc__)(void*, void*, void*), bool sure);
 
 // 去掉字符串前后的空白字符
 char* trim(char* str);
