@@ -22,10 +22,10 @@ static void getSplitFields__(wchar_t tables[][4][WCHARSIZE], int* record, const 
         // field: sn name nums
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)",
             0, &error, &errorffset, NULL),
-        // field: sn name nums moveStr B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
-        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-                        "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",
-            0, &error, &errorffset, NULL),
+            // field: sn name nums moveStr B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
+            pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
+                            "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",
+                0, &error, &errorffset, NULL),
         // field: sn name moveStr nums
         pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
                         "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
@@ -50,7 +50,8 @@ static void getSplitFields__(wchar_t tables[][4][WCHARSIZE], int* record, const 
                     wcscpy(tables[index][g == 2 && f > 1 ? (f == 2 ? 3 : 2) : f], wstr);
                 }
                 index++;
-            } else {
+            }
+            else {
                 wchar_t sn[10];
                 copySubStr(sn, tempWstr, ovector[2], ovector[3]);
                 copySubStr(wstr, tempWstr, ovector[4], ovector[5]);
@@ -215,10 +216,12 @@ static void getBoutMove__(wchar_t boutMoveZhStr[][FIELD_MAX][WCHARSIZE], int cho
                 if (snStr && wcscmp(snStr, L"C11") != 0 && wcscmp(snStr, L"C16") != 0
                     && wcscmp(snStr, L"C18") != 0 && wcscmp(snStr, L"C19") != 0 && wcscmp(snStr, L"C54") != 0)
                     getNoOrderMove__(boutMoveZhStr, firstBoutIndex, boutIndex, fieldIndex, reg_m, reg_bp);
-            } else if (x == 1) { // "此前..." i=4, 7
-                //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
+            }
+            else if (x == 1) { // "此前..." i=4, 7
+             //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
                 getBeforePreMove__(boutMoveZhStr, choiceIndex, wstr, fieldIndex, other, partIndex, reg_m, reg_bp);
-            } else if (wcscmp(wstr, L"……") != 0) { // if (x == 2) // 回合的着法 i=2, 5
+            }
+            else if (wcscmp(wstr, L"……") != 0) { // if (x == 2) // 回合的着法 i=2, 5
                 int adjustBoutIndex = boutIndex;
                 if (wcscmp(wstr, L"象七进九") == 0)
                     wstr[0] = L'相';
@@ -252,13 +255,13 @@ static void getBoutIndex__(int boutIndex[][2][2][3], int choiceIndex[][2])
             fwprintf(fout, L"  color:%d\t", color);
             for (int part = 0; part < 2; ++part) {
                 boutIndex[comb][color][part][0] = (part == 1 ? (choiceIndex[part][0]
-                                                           ? choiceIndex[part][0]
-                                                           : (choiceIndex[part - 1][1] ? choiceIndex[part - 1][1] + 1 : INSERTBOUT(part)))
-                                                             : 1);
+                    ? choiceIndex[part][0]
+                    : (choiceIndex[part - 1][1] ? choiceIndex[part - 1][1] + 1 : INSERTBOUT(part)))
+                    : 1);
                 boutIndex[comb][color][part][1] = (part == 0 ? (choiceIndex[part][1]
-                                                           ? choiceIndex[part][1]
-                                                           : (choiceIndex[part + 1][0] ? choiceIndex[part + 1][0] - 1 : INSERTBOUT(part + 1) - 1))
-                                                             : BOUT_MAX - 1);
+                    ? choiceIndex[part][1]
+                    : (choiceIndex[part + 1][0] ? choiceIndex[part + 1][0] - 1 : INSERTBOUT(part + 1) - 1))
+                    : BOUT_MAX - 1);
                 boutIndex[comb][color][part][2] = color * 2 + comb / 2 + (part == 1 ? (comb == 2 ? -1 : (comb == 1 ? 1 : 0)) : 0);
 
                 fwprintf(fout, L"%d-%d[%d] ", boutIndex[comb][color][part][0], boutIndex[comb][color][part][1], boutIndex[comb][color][part][2]);
@@ -267,10 +270,25 @@ static void getBoutIndex__(int boutIndex[][2][2][3], int choiceIndex[][2])
     }
 }
 
+static bool appendIccs__(wchar_t* iccses, const wchar_t* zhStrs, int index, ChessManual cm, ChangeType ct, bool isOther)
+{
+    wchar_t wstr[MOVESTR_LEN + 1] = { 0 };
+    wcsncpy(wstr, zhStrs + (MOVESTR_LEN + 1) * index, MOVESTR_LEN);
+    if (appendMove(cm, wstr, PGN_ZH, NULL, false) == NULL) {
+        fwprintf(fout, L"\tFailed:%ls", wstr);
+        return false;
+    }
+
+    wcscat(iccses, getICCS_cm(wstr, cm, ct));
+    if (isOther)
+        backNext(cm);
+    return true;
+}
+
 // 获取着法的iccses字符串
 static int getIccses__(wchar_t* iccses, const wchar_t* zhStrs, ChessManual cm, ChangeType ct, bool isBefore)
 {
-    wchar_t iccs[MOVESTR_LEN + 1], zhStr[MOVESTR_LEN + 1] = { 0 }, zhStrsBak[WCHARSIZE], *orderStr;
+    wchar_t zhStrsBak[WCHARSIZE], * orderStr;
     wcscpy(zhStrsBak, zhStrs);
     orderStr = wcschr(zhStrsBak, L'-');
     if (orderStr != NULL) {
@@ -278,36 +296,30 @@ static int getIccses__(wchar_t* iccses, const wchar_t* zhStrs, ChessManual cm, C
         orderStr++;
     }
 
-    int count = (wcslen(zhStrsBak) + 1) / (MOVESTR_LEN + 1);
+    int count = (wcslen(zhStrsBak) + 1) / (MOVESTR_LEN + 1), failCount = 0;
+    bool success = true;
     (count == 1) ? wcscpy(iccses, L"") : wcscpy(iccses, L"(?:");
     for (int i = 0; i < count; ++i) {
-        wchar_t* tempWstr = zhStrsBak + (MOVESTR_LEN + 1) * i;
-        wcsncpy(zhStr, tempWstr, MOVESTR_LEN);
-        appendMove(cm, zhStr, PGN_ZH, NULL, false);
-        wcscat(iccses, getICCS_cm(iccs, cm, ct));
-        if (isBefore || tempWstr[MOVESTR_LEN] == L'／')
-            backNext(cm);
-        if (count > 1)
+        success = appendIccs__(iccses, zhStrsBak, i, cm, ct,
+            zhStrsBak[(MOVESTR_LEN + 1) * i + MOVESTR_LEN] == L'／');//isBefore || 
+        if (success && count > 1)
             wcscat(iccses, L"|");
+        else
+            failCount++;
     }
 
     //*/ 处理存在先后顺序的着法
     if (orderStr != NULL) {
         int order = (wcslen(orderStr) + 1) / (MOVESTR_LEN + 1);
         for (int i = 0; i < order; ++i) {
-            wcsncpy(zhStr, orderStr + (MOVESTR_LEN + 1) * i, MOVESTR_LEN);
-            appendMove(cm, zhStr, PGN_ZH, NULL, false);
-            wcscat(iccses, getICCS_cm(iccs, cm, ct));
+            success = appendIccs__(iccses, orderStr, i, cm, ct, false);
         }
-        //if (order >= 3)
-        //    fwprintf(fout, L"\n\tNums:%ls %ls", orderStr, iccses);
-        //while (i--)
-        //    backNext(cm);
-        wcscat(iccses, L"|");
-        count++;
+        if (success) {
+            wcscat(iccses, L"|");
+            count++;
+        }
     }
-    //*/
-    if (count > 1)
+    if ((count -= failCount) > 1)
         iccses[wcslen(iccses) - 1] = L')';
 
     fwprintf(fout, L"\n\tzhStrs:%ls %ls %ls{%d}", zhStrsBak, orderStr ? orderStr : L"", iccses, count);
@@ -335,7 +347,8 @@ static void appendBeforeIccses__(wchar_t* combStr, wchar_t* before, wchar_t* zhS
 
     if (wcslen(before) == 0) {
         wcscat(combStr, iccses);
-    } else {
+    }
+    else {
         swprintf(tempStr, WCHARSIZE, L"(?:%ls%ls)", before, iccses);
         wcscat(combStr, tempStr);
     }
@@ -363,10 +376,12 @@ static void appendPartIccsStr__(wchar_t* combStr, wchar_t* anyMove, wchar_t bout
             wcscpy(&tempStr[rook1to4 - zhStrs], rook1to4 + (MOVESTR_LEN + 1) * 2);
             getBefore__(before, anyMove, tempStr, cm, ct); // 修订-初始化before
             continue;
-        } else if (bout == INSERTBOUT(0) || bout == INSERTBOUT(1)) {
+        }
+        else if (bout == INSERTBOUT(0) || bout == INSERTBOUT(1)) {
             getBefore__(before, anyMove, zhStrs, cm, ct); // 正常初始化before
             continue;
-        } else if (wcslen(zhStrs_bak) > 0) {
+        }
+        else if (wcslen(zhStrs_bak) > 0) {
             if (wcsstr(zhStrs, L"车一进一") == NULL) {
                 getBefore__(before, anyMove, zhStrs_bak, cm, ct); // 恢复原始-初始化before
                 wcscpy(zhStrs_bak, L"");
@@ -417,7 +432,8 @@ static void getIccsRegStr__(wchar_t* iccsRegStr, wchar_t boutMoveZhStr[][FIELD_M
     if (combNum == 1) {
         wcscpy(iccsRegStr, combStr + 3);
         iccsRegStr[wcslen(iccsRegStr) - 1] = L'\x0'; // 删除最后一个')‘
-    } else
+    }
+    else
         wcscpy(iccsRegStr, combStr);
 
     fwprintf(fout, L"\nIccsRegStr:\n\t%ls", iccsRegStr);
@@ -439,10 +455,10 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
         move, L"[，、；\\s　和\\(\\)以／]|$", ZhWChars);
     // 捕捉一个回合着法：1.序号，2.一步着法的1，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
     swprintf(brmove, WIDEWCHARSIZE, L"([\\da-z]). ?%ls(?:%ls)?", rmove, rmove);
-    void *reg_m = pcrewch_compile(mv, 0, &error, &errorffset, NULL),
-         *reg_bm = pcrewch_compile(brmove, 0, &error, &errorffset, NULL),
-         *reg_sp = pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL),
-         *reg_bp = pcrewch_compile(L"(炮二平五)?.*(马二进三).+(车一平二).*(车二进四|六)?", 0, &error, &errorffset, NULL);
+    void* reg_m = pcrewch_compile(mv, 0, &error, &errorffset, NULL),
+        * reg_bm = pcrewch_compile(brmove, 0, &error, &errorffset, NULL),
+        * reg_sp = pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL),
+        * reg_bp = pcrewch_compile(L"(炮二平五)?.*(马二进三).+(车一平二).*(车二进四|六)?", 0, &error, &errorffset, NULL);
     //fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n\n", ZhWChars, move, rmove, brmove);
 
     for (int r = record[1]; r < record[2]; ++r) {
@@ -454,8 +470,8 @@ static void formatMoveStrs__(wchar_t tables[][4][WCHARSIZE], int* record)
         int choiceIndex[2][2] = { 0 };
         // 着法记录数组，以序号字符ASCII值为数组索引存入(例如：L'a'-L'1')
         wchar_t boutMoveZhStr[BOUT_MAX][FIELD_MAX][WCHARSIZE] = { 0 },
-                iccsRegStr[SUPERWIDEWCHARSIZE],
-                *preMoveStr = getPreMoveStr__(tables, record, tables[r][0], moveStr);
+            iccsRegStr[SUPERWIDEWCHARSIZE],
+            * preMoveStr = getPreMoveStr__(tables, record, tables[r][0], moveStr);
         if (preMoveStr && !getStartPreMove__(boutMoveZhStr, preMoveStr, reg_m, reg_sp, reg_bp))
             getBoutMove__(boutMoveZhStr, choiceIndex, NULL, preMoveStr, reg_m, reg_bm, reg_bp, 0);
 
@@ -516,7 +532,7 @@ static int getFieldStr__(void* str, int argc, char** argv, char** azColName)
 static int getRecCount__(sqlite3* db, char* tblName, char* where)
 {
     // 查找表
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WCHARSIZE], * zErrMsg = 0;
     int count = 0;
     sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
     int rc = sqlite3_exec(db, sql, callCount__, &count, &zErrMsg);
@@ -532,7 +548,7 @@ static int getRecCount__(sqlite3* db, char* tblName, char* where)
 // 初始化表
 static int createTable__(sqlite3* db, char* tblName, char* colNames)
 {
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WCHARSIZE], * zErrMsg = 0;
     int rc;
     sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
     if (getRecCount__(db, "sqlite_master", sql) > 0) {
@@ -566,8 +582,8 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
     const char* error;
     int errorffset, ovector[30],
         first, last = wcslen(fileWstring), index = 0,
-               num0 = 555, num1 = 4, num = num0 + num1;
-    wchar_t *tempWstr, sn[num][10], name[num][WCHARSIZE], nums[num][WCHARSIZE], moveStr[num][WIDEWCHARSIZE];
+        num0 = 555, num1 = 4, num = num0 + num1;
+    wchar_t* tempWstr, sn[num][10], name[num][WCHARSIZE], nums[num][WCHARSIZE], moveStr[num][WIDEWCHARSIZE];
     void* regs[] = {
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)", 0, &error, &errorffset, NULL),
         // B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
@@ -604,7 +620,8 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
 
                     if (i > 0) // i=1,2
                         copySubStr(moveStr[index], tempWstr, ovector[i < 2 ? 8 : 6], ovector[i < 2 ? 9 : 7]);
-                } else
+                }
+                else
                     name[index][0] = L'\x0';
             }
             first += ovector[1];
@@ -627,11 +644,11 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
             }
             //*/
 
-    // 修正moveStr
-    //int No = 0;
-    void *reg_r = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
-         *reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
-             0, &error, &errorffset, NULL);
+            // 修正moveStr
+            //int No = 0;
+    void* reg_r = pcrewch_compile(L"^[2-9a-z].", 0, &error, &errorffset, NULL),
+        * reg1 = pcrewch_compile(L"([2-9a-z]. ?)([^，a-z\\f\\r\\t\\v]+)(，[^　／a-z\\f\\r\\t\\v]+)?",
+            0, &error, &errorffset, NULL);
     // ([2-9a-z]. ?)([^，a-z\f\r\t\v]+)(，[^　／a-z\f\r\t\v]+)?
 
     // wcslen(sn[i]) == 3  有74项
@@ -673,13 +690,13 @@ static void getEccoSql__(char** initEccoSql, char* tblName, wchar_t* fileWstring
 
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t wtblName[WCHARSIZE], lineStr[WIDEWCHARSIZE],
-        *wInitEccoSql = malloc(size * sizeof(wchar_t));
+        * wInitEccoSql = malloc(size * sizeof(wchar_t));
     assert(wInitEccoSql);
     wInitEccoSql[0] = L'\x0';
     mbstowcs(wtblName, tblName, WCHARSIZE);
     for (int i = 0; i < num0; ++i) {
         swprintf(lineStr, WIDEWCHARSIZE, L"INSERT INTO %ls (SN, NAME, NUMS, MOVESTR) "
-                                         "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
+            "VALUES ('%ls', '%ls', '%ls', '%ls' );\n",
             wtblName, sn[i], name[i], nums[i], moveStr[i]);
         supper_wcscat(&wInitEccoSql, &size, lineStr);
     }
@@ -698,14 +715,15 @@ static void initEccoTable__(sqlite3* db, char* tblName, char* colNames, wchar_t*
         return;
 
     // 获取插入记录字符串，并插入
-    char *initEccoSql = NULL, *zErrMsg;
+    char* initEccoSql = NULL, * zErrMsg;
     getEccoSql__(&initEccoSql, tblName, fileWstring);
 
     int rc = sqlite3_exec(db, initEccoSql, NULL, NULL, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "\nTable %s operate error: %s", tblName, zErrMsg);
         sqlite3_free(zErrMsg);
-    } else
+    }
+    else
         fprintf(stdout, "\nTable %s have records: %d\n", tblName, getRecCount__(db, tblName, ""));
 
     free(initEccoSql);
@@ -738,8 +756,8 @@ static void updateEccoField__(sqlite3* db, char* tblName)
     char sql[WCHARSIZE];
     //int count = 0;
     sprintf(sql, "SELECT SN, MOVESTR FROM %s "
-                 //"WHERE LENGTH(SN) = 2 AND LENGTH(MOVESTR) > 0;",
-                 "WHERE LENGTH(SN) = 3;",
+        //"WHERE LENGTH(SN) = 2 AND LENGTH(MOVESTR) > 0;",
+        "WHERE LENGTH(SN) = 3;",
         tblName);
 
     sqlite3_exec(db, sql, updateMoveStr__, NULL, NULL);
@@ -757,14 +775,15 @@ void eccoInit(char* dbName)
     int rc = sqlite3_open(dbName, &db);
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
-    } else {
+    }
+    else {
         char* tblName = "ecco";
         char colNames[] = "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                          "SN TEXT NOT NULL,"
-                          "NAME TEXT,"
-                          "NUMS TEXT,"
-                          "MOVESTR TEXT,"
-                          "MOVEROWCOL TEXT";
+            "SN TEXT NOT NULL,"
+            "NAME TEXT,"
+            "NUMS TEXT,"
+            "MOVESTR TEXT,"
+            "MOVEROWCOL TEXT";
         initEccoTable__(db, tblName, colNames, fileWstring);
 
         updateEccoField__(db, tblName);
@@ -778,7 +797,7 @@ void eccoInit(char* dbName)
 
 void testEcco(void)
 {
-    char *wm, *rm;
+    char* wm, * rm;
 #ifdef __linux
     wm = "w";
     rm = "r";
