@@ -215,6 +215,8 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
         undoMove(cm->curMove);
     Move move = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
     if (move == NULL) {
+        if (isOther)
+            doMove(cm->curMove);
         //printBoard(cm->board, fmt, isOther, wstr);
         return NULL;
     }
