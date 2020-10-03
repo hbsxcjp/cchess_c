@@ -21,8 +21,8 @@ int getRowCol_s(CSeat seat);
 int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);
 
-// 判断位置是否相同
-//bool isSameSeat(CSeat aseat, CSeat bseat);
+// 根据中文着法取得走棋颜色
+PieceColor getColor_zh(const wchar_t* zhStr);
 
 // 根据行、列值获取seat
 Seat getSeat_rc(Board board, int row, int col);
@@ -91,7 +91,7 @@ bool isCanMove(Board board, Seat fseat, Seat tseat);
 void changeBoard(Board board, ChangeType ct);
 
 // 设置着法的起止位置
-void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
+bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
 // 设置着法的中文字符串
 void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat);
 

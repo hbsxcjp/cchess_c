@@ -29,6 +29,7 @@ int goTo(ChessManual cm, Move move);
 bool back(ChessManual cm);
 bool backNext(ChessManual cm);
 bool backOther(ChessManual cm);
+int backToPre(ChessManual cm);
 int backFirst(ChessManual cm);
 // 后退至指定move
 int backTo(ChessManual cm, Move move);

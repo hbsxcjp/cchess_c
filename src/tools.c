@@ -114,6 +114,17 @@ void hashToStr(char* str, unsigned char* hash, int length)
     }
 }
 
+wchar_t* setStruct_wstrField(wchar_t** pfield, const wchar_t* value)
+{
+    if (value == NULL)
+        return NULL;
+
+    if (*pfield)
+        free(*pfield);
+    *pfield = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+    return wcscpy(*pfield, value);
+}
+
 int filterObjects(void** objs, int count, void* arg1, void* arg2, bool (*filterFunc__)(void*, void*, void*), bool sure)
 {
     int index = 0;

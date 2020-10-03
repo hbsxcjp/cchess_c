@@ -68,7 +68,7 @@ inline static wchar_t getNumChar__(PieceColor color, int num) { return NUMWCHAR[
 inline static int getCol__(bool isBottom, int num) { return isBottom ? BOARDCOL - num : num - 1; }
 inline static int getNum_Col__(bool isBottom, int col) { return (isBottom ? getOtherCol_c(col) : col) + 1; }
 inline static int getMovDir__(bool isBottom, wchar_t mch) { return (getIndex__(MOVCHAR, mch) - 1) * (isBottom ? 1 : -1); }
-inline static PieceColor getColor_zh__(const wchar_t* zhStr) { return wcschr(NUMWCHAR[RED], zhStr[3]) == NULL ? BLACK : RED; }
+inline PieceColor getColor_zh(const wchar_t* zhStr) { return wcschr(NUMWCHAR[RED], zhStr[3]) ? RED : BLACK; }
 
 static wchar_t getPreChar__(bool isBottom, int count, int index)
 {
@@ -671,13 +671,13 @@ void changeBoard(Board board, ChangeType ct)
         board->bottomColor = !(board->bottomColor);
 }
 
-void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
+bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
 {
     assert(wcslen(zhStr) == 4);
     //wprintf(L"%d %ls\n", __LINE__, zhStr);
     //fflush(stdout);
     // 根据最后一个字符判断该着法属于哪一方
-    PieceColor color = getColor_zh__(zhStr);
+    PieceColor color = getColor_zh(zhStr);
     bool isBottom = isBottomSide(board, color);
     int index = 0, count = 0,
         movDir = getMovDir__(isBottom, zhStr[2]);
@@ -687,6 +687,7 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
     if (isPieceName(name)) { // 棋子名
         count = getLiveSeats_bcnc__(seats,
             board, color, name, getCol__(isBottom, getNum__(color, zhStr[1])));
+        /*
         if (count == 0) {
             wchar_t wstr[WIDEWCHARSIZE];
             getBoardString(wstr, board);
@@ -696,6 +697,9 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
             printf("%d:\n%s%s\n", __LINE__, str, zh);
             fflush(stdout);
         }
+        //*/
+        if (count == 0)
+            return false;
         assert(count > 0);
         // 排除：士、象同列时不分前后，以进、退区分棋子。移动方向为底退、顶进时，修正index
         index = (count == 2 && movDir == -1) ? 1 : 0; // movDir == -1：表示底退、顶进
@@ -734,6 +738,7 @@ void getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
     getZhStr_seats(tmpZhStr, board, *pfseat, *ptseat);
     assert(wcscmp(zhStr, tmpZhStr) == 0);
     //*/
+    return true;
 }
 
 void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat)

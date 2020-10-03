@@ -197,13 +197,14 @@ static void setMoveSeat_iccs__(Move move, Board board, const wchar_t* iccsStr)
     setMoveSeat_rc__(move, board, rcStr);
 }
 
-static void setMoveSeat_zh__(Move move, Board board, const wchar_t* wstr)
+static bool setMoveSeat_zh__(Move move, Board board, const wchar_t* wstr)
 {
-    getSeats_zh(&move->fseat, &move->tseat, board, wstr);
+   return getSeats_zh(&move->fseat, &move->tseat, board, wstr);
 }
 
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
+    bool success = true;
     Move move = newMove();
     switch (fmt) {
     case XQF:
@@ -215,11 +216,11 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         setMoveSeat_iccs__(move, board, wstr);
         break;
     default: // PGN_ZH PGN_CC
-        setMoveSeat_zh__(move, board, wstr);
+        success = setMoveSeat_zh__(move, board, wstr);
         break;
     }
     //*
-    if (!isCanMove(board, move->fseat, move->tseat)) {
+    if (!success || !isCanMove(board, move->fseat, move->tseat)) {
         delMove(move);
         return NULL; // 添加着法失败
     }

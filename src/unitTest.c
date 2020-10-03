@@ -682,8 +682,7 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    //eccoInit("chess.db");
-    testEcco();
+    initEcco("chess.db");
 }
 
 static CU_TestInfo suite_chessManual[] = {

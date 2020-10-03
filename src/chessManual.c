@@ -179,6 +179,17 @@ bool backOther(ChessManual cm)
     return false;
 }
 
+int backToPre(ChessManual cm)
+{
+    int count = 0;
+    while (hasPreOther(cm->curMove)) {
+        backOther(cm);
+        ++count;
+    }
+    backNext(cm);
+    return ++count;
+}
+
 int backFirst(ChessManual cm)
 {
     int count = 0;

@@ -48,6 +48,9 @@ bool chars_equal(const char* dst, const char* src, int len);
 // 取得hash的字符串表示
 void hashToStr(char* str, unsigned char* hash, int length);
 
+// 设置结构内宽字符字段的值
+wchar_t* setStruct_wstrField(wchar_t** pfield, const wchar_t* value);
+
 // 根据给定的参数、对象、过滤函数和是否确认值，过滤掉给定数组中的对象
 int filterObjects(void** objs, int count, void* arg1, void* arg2, bool (*filterFunc__)(void*, void*, void*), bool sure);
 
