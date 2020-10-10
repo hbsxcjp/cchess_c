@@ -689,12 +689,7 @@ bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
             board, color, name, getCol__(isBottom, getNum__(color, zhStr[1])));
         /*
         if (count == 0) {
-            wchar_t wstr[WIDEWCHARSIZE];
-            getBoardString(wstr, board);
-            char str[WIDEWCHARSIZE], zh[20];
-            wcstombs(str, wstr, WIDEWCHARSIZE);
-            wcstombs(zh, zhStr, 20);
-            printf("%d:\n%s%s\n", __LINE__, str, zh);
+            printBoard(board, __LINE__, 0, zhStr);
             fflush(stdout);
         }
         //*/
@@ -873,14 +868,15 @@ wchar_t* getBoardSufString(wchar_t* sufStr, CBoard board)
     return wcscpy(sufStr, SUFSTR[board->bottomColor]);
 }
 
-void printBoard(Board board, int arg1, int arg2, const wchar_t* arg3)
+void printBoard(Board board, int int_arg1, int int_arg2, const wchar_t* wcs_arg3)
 {
     wchar_t wstr[2 * WIDEWCHARSIZE];
     getBoardString(wstr, board);
-    char str[2 * WIDEWCHARSIZE], args[WIDEWCHARSIZE];
-    wcstombs(str, wstr, 2 * WIDEWCHARSIZE);
-    wcstombs(args, arg3, WIDEWCHARSIZE);
-    printf("\n%s\narg1:%d arg2:%d\nargs:%s\n", str, arg1, arg2, args);
+    int strLen = wcstombs(NULL, wstr, 0) + 1, arg3Len = wcstombs(NULL, wcs_arg3, 0) + 1;
+    char str[strLen], wcs_args[arg3Len];
+    wcstombs(str, wstr, strLen);
+    wcstombs(wcs_args, wcs_arg3, arg3Len);
+    printf("\n%s\narg1:%d arg2:%d\nargs:%s\n", str, int_arg1, int_arg2, wcs_args);
     fflush(stdout);
 }
 

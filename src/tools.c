@@ -58,8 +58,8 @@ unsigned int BKDRHash_c(const char* src, int size)
 unsigned int BKDRHash_w(const wchar_t* wstr)
 {
     /*
-    int len = wcslen(wstr) * 2;
-    char str[len + 1];
+    int len = wcstombs(NULL, wstr, 0)+1;
+    char str[len];
     wcstombs(str, wstr, len);
     return BKDRHash_c(str, strlen(str));
     //*/

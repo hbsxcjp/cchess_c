@@ -535,6 +535,7 @@ static CU_TestInfo tests_board[] = {
 static void test_chessManual_xqf(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
+         *iccses = "f2g4g4e5g7f7e5g6&d0d9d9e9e8f7",
          *pgn_ccStr = "[TitleA \"第01局\"]\n"
                       "[Event \"\"]\n"
                       "[Date \"\"]\n"
@@ -616,8 +617,9 @@ static void test_chessManual_xqf(void)
     free(wstr);
     free(resultStr);
 
-    //char iccsStr[WIDEWCHARSIZE];
-    //printf("\n%s\n", getIccsStr(iccsStr, cm));
+    char iccsStr[WIDEWCHARSIZE];
+    getIccsStr_c(iccsStr, cm);
+    CU_ASSERT_STRING_EQUAL(iccses, iccsStr);
 
     //*
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {

@@ -3,6 +3,8 @@
 
 #include "base.h"
 
+typedef struct ChessManualRec* ChessManualRec;
+
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
 
@@ -77,7 +79,20 @@ void getChessManualNumStr(char* str, ChessManual cm);
 
 // 取得棋谱的拟匹配开局正则表达式的着法字符串(iccs)
 const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm);
+const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
+
+// 新建chessManualRec
+ChessManualRec newChessManualRec(ChessManualRec preChessManualRec, const char* fileName);
+
+// 删除chessManualRec
+void delChessManualRec(ChessManualRec chessManualRec);
+
+// 输出chessManualRec
+void printChessManualRec(FILE* fout, ChessManualRec rcmr);
+
+// 读取目录下文件至chessManualRec
+void readDirToChessManualRec(ChessManualRec* prcmr, const char* dirName, RecFormat fromfmt);
 
 #endif
