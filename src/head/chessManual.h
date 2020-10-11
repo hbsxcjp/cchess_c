@@ -15,6 +15,7 @@ ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 void delChessManual(ChessManual cm);
 
 Move getRootMove(ChessManual cm);
+const char* getFileName_cm(ChessManual cm);
 
 // 取得正则表达式所需的中文字符组
 wchar_t* getZhWChars(wchar_t* ZhWChars);
@@ -47,6 +48,7 @@ const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
 
 // 添加/删除一个info条目
 void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
+const wchar_t* getInfoValue(ChessManual cm, const wchar_t* name);
 void delInfoItem(ChessManual cm, const wchar_t* name);
 
 // 增删改move后，更新zhStr、行列数值
@@ -55,12 +57,11 @@ void setMoveNumZhStr(ChessManual cm);
 // 将PGN_CC格式的info、move、remark信息写入字符串
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm);
 
-void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove);
-void writeRemark_PGN_CC(wchar_t** premarkStr, size_t* premSize, CMove rootMove);
-
+void writeMoveRemark_PGN_ICCSZHtoWstr(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt);
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
-void writePGN_CCtoWstr(wchar_t** pStr, ChessManual cm);
+
+void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt);
 
 // 从chessManual存储到文件，根据文件扩展名选择存储格式
 void writeChessManual(ChessManual cm, const char* fileName);
@@ -89,10 +90,13 @@ ChessManualRec newChessManualRec(ChessManualRec preChessManualRec, const char* f
 // 删除chessManualRec
 void delChessManualRec(ChessManualRec chessManualRec);
 
+ChessManualRec getNextCMR(ChessManualRec cmr);
+ChessManual getNextCM(ChessManualRec cmr);
+
 // 输出chessManualRec
 void printChessManualRec(FILE* fout, ChessManualRec rcmr);
 
 // 读取目录下文件至chessManualRec
-void readDirToChessManualRec(ChessManualRec* prcmr, const char* dirName, RecFormat fromfmt);
+ChessManualRec readDirToChessManualRec(const char* dirName, RecFormat fromfmt);
 
 #endif

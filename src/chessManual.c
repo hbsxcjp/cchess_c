@@ -20,7 +20,6 @@ struct ChessManual {
 };
 
 struct ChessManualRec {
-    wchar_t *ecco_sn, *origin, *iccses;
     ChessManual cm;
     ChessManualRec ncmr;
 };
@@ -105,6 +104,8 @@ void delChessManual(ChessManual cm)
 }
 
 Move getRootMove(ChessManual cm) { return cm->rootMove; }
+
+const char* getFileName_cm(ChessManual cm) { return cm->fileName; }
 
 static bool go__(ChessManual cm, Move curMove)
 {
@@ -261,6 +262,14 @@ void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
     ++(cm->infoCount);
 }
 
+const wchar_t* getInfoValue(ChessManual cm, const wchar_t* name)
+{
+    for (int i = 0; i < cm->infoCount; ++i)
+        if (wcscmp(cm->info[i][0], name) == 0)
+            return cm->info[i][1];
+    return L"";
+}
+
 void delInfoItem(ChessManual cm, const wchar_t* name)
 {
     for (int i = 0; i < cm->infoCount; ++i)
@@ -378,7 +387,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
             assert(*remark);
 
 #ifdef __linux
-            size_t outlen = mbstowcs(NULL, remc, 0) + 1;
+            size_t outlen = WIDEWCHARSIZE;
             char remc[outlen];
             code_convert("gbk", "utf-8", (char*)rem, remc, &outlen);
             mbstowcs(*remark, remc, len);
@@ -1046,30 +1055,34 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
         readMove_PGN_ICCSZH__(cm, fin, fmt);
 }
 
-static void writeRemark_PGN_ICCSZH__(FILE* fout, CMove move)
+static void writeRemark_PGN_ICCSZH__s(wchar_t** pmoveStr, size_t* psize, CMove move)
 {
-    if (getRemark(move))
-        fwprintf(fout, L" \n{%ls}\n ", getRemark(move));
+    if (getRemark(move)) {
+        wchar_t remarkstr[WIDEWCHARSIZE];
+        swprintf(remarkstr, WIDEWCHARSIZE, L" \n{%ls}\n ", getRemark(move));
+        supper_wcscat(pmoveStr, psize, remarkstr);
+    }
 }
 
-static void writeMove_PGN_ICCSZH__(FILE* fout, Move move, bool isPGN_ZH, bool isOther)
+static void writeMove_PGN_ICCSZH__s(wchar_t** pmoveStr, size_t* psize, Move move, bool isPGN_ZH, bool isOther)
 {
-    wchar_t boutStr[WCHARSIZE], iccs[6] = { 0 };
-    swprintf(boutStr, WCHARSIZE, L"%d. ", (getNextNo(move) + 1) / 2);
+    wchar_t boutNum[WCHARSIZE], boutStr[WCHARSIZE], iccs[6] = { 0 };
+    swprintf(boutNum, WCHARSIZE, L"%d. ", (getNextNo(move) + 1) / 2);
     bool isEven = getNextNo(move) % 2 == 0;
-    fwprintf(fout, L"%ls%ls%ls%ls ",
+    swprintf(boutStr, WCHARSIZE, L"%ls%ls%ls%ls ",
         (isOther ? L"(" : L""),
-        (isOther || !isEven ? boutStr : L" "),
+        (isOther || !isEven ? boutNum : L" "),
         (isOther && isEven ? L"... " : L""),
         (isPGN_ZH ? getZhStr(move) : getICCS_m(iccs, move)));
-    writeRemark_PGN_ICCSZH__(fout, move);
+    supper_wcscat(pmoveStr, psize, boutStr);
+    writeRemark_PGN_ICCSZH__s(pmoveStr, psize, move);
 
     if (getOther(move)) {
-        writeMove_PGN_ICCSZH__(fout, getOther(move), isPGN_ZH, true);
-        fwprintf(fout, L")");
+        writeMove_PGN_ICCSZH__s(pmoveStr, psize, getOther(move), isPGN_ZH, true);
+        supper_wcscat(pmoveStr, psize, L")");
     }
     if (getNext(move))
-        writeMove_PGN_ICCSZH__(fout, getNext(move), isPGN_ZH, false);
+        writeMove_PGN_ICCSZH__s(pmoveStr, psize, getNext(move), isPGN_ZH, false);
 }
 
 static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
@@ -1089,12 +1102,6 @@ static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
     }
 }
 
-void writeMove_PGN_CC(wchar_t* moveStr, int colNum, CMove rootMove)
-{
-    if (getNext(rootMove))
-        writeMove_PGN_CC__(moveStr, colNum, getNext(rootMove));
-}
-
 static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
 {
     const wchar_t* remark = getRemark(move);
@@ -1111,16 +1118,12 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
         writeRemark_PGN_CC__(pstr, psize, getNext(move));
 }
 
-void writeRemark_PGN_CC(wchar_t** pstr, size_t* psize, CMove rootMove)
-{
-    writeRemark_PGN_CC__(pstr, psize, rootMove);
-}
-
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm)
 {
     size_t size = WIDEWCHARSIZE;
     *pinfoStr = calloc(size, sizeof(wchar_t));
     assert(*pinfoStr);
+
     wchar_t tmpWstr[WIDEWCHARSIZE];
     for (int i = 0; i < cm->infoCount; ++i) {
         swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
@@ -1145,8 +1148,9 @@ void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
     moveStr[1] = L'开';
     moveStr[2] = L'始';
     moveStr[colNum + 2] = L'↓';
+    if (getNext(cm->rootMove))
+        writeMove_PGN_CC__(moveStr, colNum, getNext(cm->rootMove));
 
-    writeMove_PGN_CC(moveStr, colNum, cm->rootMove);
     *pmoveStr = moveStr;
 }
 
@@ -1156,15 +1160,32 @@ void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm)
     *premStr = malloc(size * sizeof(wchar_t));
     assert(*premStr);
     (*premStr)[0] = L'\x0';
-    writeRemark_PGN_CC(premStr, &size, cm->rootMove);
+    writeRemark_PGN_CC__(premStr, &size, cm->rootMove);
 }
 
-void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
+void writeMoveRemark_PGN_ICCSZHtoWstr(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt)
+{
+    size_t size = WIDEWCHARSIZE;
+    *pmoveStr = malloc(size * sizeof(wchar_t));
+    assert(*pmoveStr);
+    (*pmoveStr)[0] = L'\x0';
+    writeRemark_PGN_ICCSZH__s(pmoveStr, &size, cm->rootMove);
+    if (getNext(cm->rootMove))
+        writeMove_PGN_ICCSZH__s(pmoveStr, &size, getNext(cm->rootMove), fmt == PGN_ZH, false);
+    supper_wcscat(pmoveStr, &size, L"\n");
+}
+
+void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt)
 {
     wchar_t *infoStr = NULL, *moveStr = NULL, *remarkStr = NULL;
     writeInfo_PGNtoWstr(&infoStr, cm);
-    writeMove_PGN_CCtoWstr(&moveStr, cm);
-    writeRemark_PGN_CCtoWstr(&remarkStr, cm);
+    if (fmt == PGN_CC) {
+        writeMove_PGN_CCtoWstr(&moveStr, cm);
+        writeRemark_PGN_CCtoWstr(&remarkStr, cm);
+    } else {
+        writeMoveRemark_PGN_ICCSZHtoWstr(&moveStr, cm, fmt);
+        remarkStr = L"";
+    }
 
     int len = wcslen(infoStr) + wcslen(moveStr) + wcslen(remarkStr) + 3; // 两个回车，一个结束符号
     *pstr = malloc(len * sizeof(wchar_t));
@@ -1173,27 +1194,16 @@ void writePGN_CCtoWstr(wchar_t** pstr, ChessManual cm)
 
     free(infoStr);
     free(moveStr);
-    free(remarkStr);
+    if (fmt == PGN_CC)
+        free(remarkStr);
 }
 
 static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 {
-    if (fmt != PGN_CC) {
-        wchar_t* infoStr = NULL;
-        writeInfo_PGNtoWstr(&infoStr, cm);
-        fwprintf(fout, L"%ls\n", infoStr);
-        free(infoStr);
-
-        writeRemark_PGN_ICCSZH__(fout, cm->rootMove);
-        if (getNext(cm->rootMove))
-            writeMove_PGN_ICCSZH__(fout, getNext(cm->rootMove), fmt == PGN_ZH, false);
-        fwprintf(fout, L"\n");
-    } else {
-        wchar_t* pstr = NULL;
-        writePGN_CCtoWstr(&pstr, cm);
-        fwprintf(fout, L"%ls", pstr);
-        free(pstr);
-    }
+    wchar_t* pstr = NULL;
+    writePGNtoWstr(&pstr, cm, fmt);
+    fwprintf(fout, L"%ls", pstr);
+    free(pstr);
 }
 
 void readChessManual__(ChessManual cm, const char* fileName)
@@ -1425,10 +1435,8 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
 ChessManualRec newChessManualRec(ChessManualRec preChessManualRec, const char* fileName)
 {
     ChessManualRec cmr = malloc(sizeof(struct ChessManualRec));
-    cmr->ecco_sn = NULL;
-    cmr->origin = NULL;
-    cmr->iccses = NULL;
     cmr->cm = newChessManual(fileName);
+    cmr->ncmr = NULL;
     if (preChessManualRec)
         preChessManualRec->ncmr = cmr;
     return cmr;
@@ -1440,34 +1448,15 @@ void delChessManualRec(ChessManualRec cmr)
         return;
 
     ChessManualRec ncmr = cmr->ncmr;
-    free(cmr->ecco_sn);
-    free(cmr->origin);
-    free(cmr->iccses);
     delChessManual(cmr->cm);
     free(cmr);
 
     delChessManualRec(ncmr);
 }
 
-void printChessManualRec(FILE* fout, ChessManualRec rcmr)
-{
-    int no = 0;
-    ChessManualRec cmr = rcmr;
-    fwprintf(fout, L"\n\nrcmr:");
-    while ((cmr = cmr->ncmr)) {
+ChessManualRec getNextCMR(ChessManualRec cmr) { return cmr->ncmr; }
 
-        fwprintf(fout, L"\nNo.%d %ls\t%ls\n%ls\n",
-            no++,
-            cmr->ecco_sn ? cmr->ecco_sn : L"",
-            cmr->origin ? cmr->origin : L"",
-            cmr->iccses ? cmr->iccses : L"");
-
-        wchar_t* wstr = NULL;
-        writePGN_CCtoWstr(&wstr, cmr->cm);
-        fwprintf(fout, L"PGN_CC: %ls\n", wstr);
-        free(wstr);
-    }
-}
+ChessManual getNextCM(ChessManualRec cmr) { return cmr->cm; }
 
 static void readFileToChessManualRec__(FileInfo fileInfo, ChessManualRec* cpcmr)
 {
@@ -1475,19 +1464,36 @@ static void readFileToChessManualRec__(FileInfo fileInfo, ChessManualRec* cpcmr)
     if (!fileIsRight__(fileName))
         return;
 
-    wchar_t tempWstr[WIDEWCHARSIZE];
-    ChessManualRec cmr = newChessManualRec(*cpcmr, fileName);
-    mbstowcs(tempWstr, fileName, WIDEWCHARSIZE - 1);
-    setStruct_wstrField(&cmr->origin, tempWstr);
-    cmr->ecco_sn = NULL;
-    cmr->iccses = NULL;
-    *cpcmr = cmr;
+    *cpcmr = newChessManualRec(*cpcmr, fileName);
 }
 
-void readDirToChessManualRec(ChessManualRec* cpcmr, const char* dirName, RecFormat fromfmt)
+ChessManualRec readDirToChessManualRec(const char* dirName, RecFormat fromfmt)
 {
     char fromDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
 
-    operateDir(fromDir, (void (*)(void*, void*))readFileToChessManualRec__, cpcmr, true);
+    ChessManualRec cmr = newChessManualRec(NULL, NULL),
+                   rcmr = cmr;
+    operateDir(fromDir, (void (*)(void*, void*))readFileToChessManualRec__, &cmr, true);
+    return rcmr;
+}
+
+void printChessManualRec(FILE* fout, ChessManualRec rcmr)
+{
+    int no = 0;
+    ChessManualRec cmr = rcmr;
+    fwprintf(fout, L"rcmr:\n");
+    while ((cmr = cmr->ncmr)) {
+
+        wchar_t ecco_sn[4] = { 0 }, fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
+        mbstowcs(fileName, cmr->cm->fileName, WIDEWCHARSIZE - 1);
+        getIccsStr(wIccsStr, cmr->cm);
+        fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
+            no++, ecco_sn, fileName, wIccsStr);
+
+        wchar_t* wstr = NULL;
+        writePGNtoWstr(&wstr, cmr->cm, PGN_ZH);
+        //fwprintf(fout, L"PGN_CC: %ls\n", wstr);
+        free(wstr);
+    }
 }

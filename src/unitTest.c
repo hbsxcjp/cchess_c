@@ -608,11 +608,13 @@ static void test_chessManual_xqf(void)
 
     char* resultStr = NULL;
     wchar_t* wstr = NULL;
-    writePGN_CCtoWstr(&wstr, cm);
+    writePGNtoWstr(&wstr, cm, PGN_CC);
     int len = (wcslen(wstr) + 1) * sizeof(wchar_t);
     resultStr = malloc(len);
     wcstombs(resultStr, wstr, len);
 
+    //if (strcmp(pgn_ccStr, resultStr) != 0)
+    //    printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);

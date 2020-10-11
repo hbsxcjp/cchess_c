@@ -18,19 +18,7 @@
 //printf("Windows\n");
 #endif
 
-// 文件信息结构数组指针
-typedef struct FileInfo {
-    char* name;
-    unsigned int attrib;
-    unsigned long size;
-} * FileInfo;
-
-typedef struct FileInfos {
-    FileInfo* fis;
-    int size;
-    int count;
-} * FileInfos;
-
+// 结构和字符串类 开始 -------------------------------------------------------------------------------------- //
 bool isPrime(int n);
 int getPrimes(int* primes, int bitCount);
 // 取得大于等于size的质数
@@ -60,25 +48,12 @@ char* trim(char* str);
 // 去掉宽字符串前后的空白字符
 wchar_t* wtrim(wchar_t* wstr);
 
-// 从文件名提取目录名
-void getDirName(char* dirName, const char* fileName);
-// 从文件名提取纯文件名，去掉目录
-const char* getFileName(const char* filename);
-// 从文件名提取扩展名
-const char* getExtName(const char* filename);
-// 转换文件的扩展名
-void transFileExtName(char* filename, const char* extname);
-
-// 字符串连接，根据需要重新分配内存空间
-void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
-
-// 从输入文件获取全部内容至宽字符串
-wchar_t* getWString(FILE* fin);
-
 // 从一个字符串中提取子字符串
 void copySubStr(wchar_t* subStr, const wchar_t* srcWstr, int first, int last);
 wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last);
+// 结构和字符串类 结束 -------------------------------------------------------------------------------------- //
 
+// 正则类 开始 -------------------------------------------------------------------------------------- //
 // 针对wchar_t的pcre包装函数
 void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s);
 
@@ -96,6 +71,36 @@ ovector的最后1/3个空间，即[2n~3n-1]，貌似为pcre正则匹配算法预
 //*/
 int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int size);
 void pcrewch_free(void* reg);
+// 正则类 结束 -------------------------------------------------------------------------------------- //
+
+// 文件类 开始 -------------------------------------------------------------------------------------- //
+// 文件信息结构数组指针
+typedef struct FileInfo {
+    char* name;
+    unsigned int attrib;
+    unsigned long size;
+} * FileInfo;
+
+typedef struct FileInfos {
+    FileInfo* fis;
+    int size;
+    int count;
+} * FileInfos;
+
+// 从文件名提取目录名
+void getDirName(char* dirName, const char* fileName);
+// 从文件名提取纯文件名，去掉目录
+const char* getFileName(const char* filename);
+// 从文件名提取扩展名
+const char* getExtName(const char* filename);
+// 转换文件的扩展名
+void transFileExtName(char* filename, const char* extname);
+
+// 字符串连接，根据需要重新分配内存空间
+void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
+
+// 从输入文件获取全部内容至宽字符串
+wchar_t* getWString(FILE* fin);
 
 // 创建目录
 int makeDir(const char* dirName);
@@ -120,5 +125,20 @@ void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive);
 
 // 测试函数
 void writeFileInfos(FILE* fout, const char* dirName);
+// 文件类 结束 -------------------------------------------------------------------------------------- //
+
+// 数据库类 开始 -------------------------------------------------------------------------------------- //
+int sqlite3_callCount(void* count, int argc, char** argv, char** colNames);
+
+int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* where);
+
+bool sqlite3_existTable(sqlite3* db, const char* tblName);
+
+int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames);
+
+void sqlite3_clearTable(sqlite3* db, const char* tblName);
+
+void sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
+// 数据库类 结束 -------------------------------------------------------------------------------------- //
 
 #endif

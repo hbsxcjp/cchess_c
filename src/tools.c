@@ -475,3 +475,64 @@ void writeFileInfos(FILE* fout, const char* dirName)
 
     fprintf(fout, "总共包括:%d个文件。\n", sum);
 }
+
+// 获取查询记录结果的数量
+int sqlite3_callCount(void* count, int argc, char** argv, char** colNames)
+{
+    *(int*)count = (argv[0] ? atoi(argv[0]) : 0);
+    return 0;
+}
+
+int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* where)
+{
+    int count = 0;
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
+    int rc = sqlite3_exec(db, sql, sqlite3_callCount, &count, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -1;
+    }
+
+    return count;
+}
+
+bool sqlite3_existTable(sqlite3* db, const char* tblName)
+{
+    char sql[WCHARSIZE];
+    sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
+    return sqlite3_getRecCount(db, "sqlite_master", sql) > 0;
+}
+
+// 初始化表
+int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames)
+{
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s created error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -1;
+    } //else
+    //fprintf(stdout, "\nTable %s created successfully.", tblName);
+
+    return 0;
+}
+
+void sqlite3_clearTable(sqlite3* db, const char* tblName)
+{
+    char sql[WCHARSIZE];
+    sprintf(sql, "DELETE FROM %s", tblName);
+    sqlite3_exec(db, sql, NULL, NULL, NULL);
+}
+
+void sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
+{
+    char* zErrMsg = NULL;
+    int rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
+    if (rc != SQLITE_OK)
+        fprintf(stderr, "\nErrMsg: %s", zErrMsg);
+    sqlite3_free(zErrMsg);
+}
