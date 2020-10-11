@@ -833,8 +833,8 @@ static void storeEccolib__(sqlite3* db, const char* tblName, const char* fileNam
 
     if (sqlite3_existTable(db, tblName))
         sqlite3_clearTable(db, tblName);
-    else
-        sqlite3_createTable(db, tblName, colNames);
+    else if (sqlite3_createTable(db, tblName, colNames) < 0)
+        return;
 
     // 获取插入记录字符串，并插入
     char* initEccoSql = NULL;
