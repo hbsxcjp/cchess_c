@@ -114,18 +114,19 @@ void hashToStr(char* str, unsigned char* hash, int length)
     }
 }
 
-wchar_t* setStruct_wstrField(wchar_t** pfield, const wchar_t* value)
+wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value)
 {
     if (value == NULL)
         return NULL;
 
-    if (*pfield)
-        free(*pfield);
-    *pfield = malloc((wcslen(value) + 1) * sizeof(wchar_t));
-    return wcscpy(*pfield, value);
+    if (*pwstr)
+        free(*pwstr);
+    *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+    return wcscpy(*pwstr, value);
 }
 
-int filterObjects(void** objs, int count, void* arg1, void* arg2, bool (*filterFunc__)(void*, void*, void*), bool sure)
+int filterObjects(void** objs, int count, void* arg1, void* arg2,
+    bool (*filterFunc__)(void*, void*, void*), bool sure)
 {
     int index = 0;
     while (index < count) {
@@ -137,43 +138,75 @@ int filterObjects(void** objs, int count, void* arg1, void* arg2, bool (*filterF
         } else
             ++index; // 不符合筛选条件，index前进一个
     }
-    return count;
+    return count; // 以返回的count分界，大于count的对象，均为已过滤对象
 }
 
 char* trim(char* str)
 {
-    size_t size = strlen(str);
-    for (int i = size - 1; i >= 0; --i)
-        if (isspace((int)str[i]))
-            str[i] = '\x0';
-        else
-            break;
-    size = strlen(str);
-    int offset = 0;
-    for (int i = 0; i < size; ++i)
-        if (isspace((int)str[i]))
-            ++offset;
-        else
-            break;
-    return str + offset;
+    size_t first = 0, last = strlen(str);
+    while (isspace(str[--last]))
+        str[last] = '\x0';
+    while (first < last && isspace(str[first]))
+        ++first;
+    return str + first;
 }
 
 wchar_t* wtrim(wchar_t* wstr)
 {
-    size_t size = wcslen(wstr);
-    for (int i = size - 1; i >= 0; --i)
-        if (iswspace(wstr[i]))
-            wstr[i] = L'\x0';
-        else
-            break;
-    size = wcslen(wstr);
-    int offset = 0;
-    for (int i = 0; i < size; ++i)
-        if (iswspace(wstr[i]))
-            ++offset;
-        else
-            break;
-    return wstr + offset;
+    size_t first = 0, last = wcslen(wstr);
+    while (iswspace(wstr[--last]))
+        wstr[last] = '\x0';
+    while (first < last && iswspace(wstr[first]))
+        ++first;
+    return wstr + first;
+}
+
+void copySubStr(wchar_t* subStr, const wchar_t* srcWstr, int first, int last)
+{
+    int len = last - first;
+    wcsncpy(subStr, srcWstr + first, len);
+    subStr[len] = L'\x0';
+}
+
+wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last)
+{
+    wchar_t* subStr = NULL;
+    if (last - first > 0) {
+        subStr = malloc((last - first + 1) * sizeof(wchar_t));
+        assert(subStr);
+        copySubStr(subStr, srcWstr, first, last);
+    }
+    return subStr;
+}
+
+void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
+{
+    // 如字符串分配的长度不够，则增加长度
+    if (*size < wcslen(*pwstr) + wcslen(wstr) + 1) {
+        *size = *size * 2 + wcslen(wstr) + 1;
+        *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
+        assert(*pwstr);
+    }
+    wcscat(*pwstr, wstr);
+}
+
+void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s)
+{
+    if (wc_short)
+        return pcre16_compile((const unsigned short*)wstr, n, error, erroffset, s);
+    else
+        return pcre32_compile((const unsigned int*)wstr, n, error, erroffset, s);
+}
+
+int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int ovsize)
+{
+    return (wc_short ? pcre16_exec(reg, p, (const unsigned short*)wstr, len, x, y, ovector, ovsize)
+                     : pcre32_exec(reg, p, (const unsigned int*)wstr, len, x, y, ovector, ovsize));
+}
+
+void pcrewch_free(void* reg)
+{
+    wc_short ? pcre16_free(reg) : pcre32_free(reg);
 }
 
 // 返回指向目录与文件的分界字符指针，如不存在则返回NULL
@@ -219,66 +252,18 @@ void transFileExtName(char* fileName, const char* extname)
     strcat(fileName, extname);
 }
 
-void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
-{
-    // 如字符串分配的长度不够，则增加长度
-    if (*size < wcslen(*pwstr) + wcslen(wstr) + 1) {
-        *size = *size * 2 + wcslen(wstr) + 1;
-        *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
-        assert(*pwstr);
-    }
-    wcscat(*pwstr, wstr);
-}
-
 wchar_t* getWString(FILE* fin)
 {
     wchar_t* wstr = NULL;
     if (!feof(fin)) {
-        size_t size = WIDEWCHARSIZE;
-        wchar_t lineStr[WIDEWCHARSIZE];
+        size_t size = SUPERWIDEWCHARSIZE;
+        wchar_t lineStr[SUPERWIDEWCHARSIZE];
         wstr = calloc(size, sizeof(wchar_t));
         assert(wstr);
-        while (fgetws(lineStr, WIDEWCHARSIZE, fin) != NULL)
+        while (fgetws(lineStr, SUPERWIDEWCHARSIZE, fin) != NULL)
             supper_wcscat(&wstr, &size, lineStr);
     }
     return wstr;
-}
-
-void copySubStr(wchar_t* subStr, const wchar_t* srcWstr, int first, int last)
-{
-    int len = last - first;
-    wcsncpy(subStr, srcWstr + first, len);
-    subStr[len] = L'\x0';
-}
-
-wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last)
-{
-    wchar_t* subStr = NULL;
-    if (last - first > 0) {
-        subStr = malloc((last - first + 1) * sizeof(wchar_t));
-        assert(subStr);
-        copySubStr(subStr, srcWstr, first, last);
-    }
-    return subStr;
-}
-
-void* pcrewch_compile(const wchar_t* wstr, int n, const char** error, int* erroffset, const unsigned char* s)
-{
-    if (wc_short)
-        return pcre16_compile((const unsigned short*)wstr, n, error, erroffset, s);
-    else
-        return pcre32_compile((const unsigned int*)wstr, n, error, erroffset, s);
-}
-
-int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int ovsize)
-{
-    return (wc_short ? pcre16_exec(reg, p, (const unsigned short*)wstr, len, x, y, ovector, ovsize)
-                     : pcre32_exec(reg, p, (const unsigned int*)wstr, len, x, y, ovector, ovsize));
-}
-
-void pcrewch_free(void* reg)
-{
-    wc_short ? pcre16_free(reg) : pcre32_free(reg);
 }
 
 int makeDir(const char* dirName)
@@ -290,34 +275,19 @@ int makeDir(const char* dirName)
 #endif
 }
 
-/*****************************************************************************************
-Function:       CopyFile
-Description:    复制文件
-Input:          SourceFile:原文件路径 NewFile:复制后的文件路径
-Return:         1:成功 0:失败
-******************************************************************************************/
 int copyFile(const char* SourceFile, const char* NewFile)
 {
-    FILE* fin = fopen(SourceFile, "rb"); //打开源文件
-    if (fin == NULL) //打开源文件失败
-    {
-        printf("Error 1: Fail to open the source file.");
+    FILE *fin = fopen(SourceFile, "rb"),
+         *fout = fopen(NewFile, "wb");
+    if (fin == NULL || fout == NULL)
         return 0;
+
+    char data[1024];
+    while (!feof(fin)) {
+        size_t n = fread(data, sizeof(char), 1024, fin);
+        fwrite(data, sizeof(char), n, fout);
     }
-    FILE* fout = fopen(NewFile, "wb"); //创建目标文件
-    if (fout == NULL) //创建文件失败
-    {
-        printf("Error 2: Fail to create the new file.");
-        return 0;
-    } else { //复制文件
-        char data[1024] = { 0 };
-        size_t n = 0;
-        while (!feof(fin)) {
-            n = fread(data, sizeof(char), 1024, fin);
-            fwrite(data, sizeof(char), n, fout);
-        }
-        return 1;
-    }
+    return 1;
 }
 
 #ifdef __linux
@@ -327,6 +297,7 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     iconv_t cd = iconv_open(to_charset, from_charset);
     if (cd == (iconv_t)-1)
         return -1;
+
     size_t inlen = strlen(inbuf);
     memset(outbuf, 0, *outlen);
     if (iconv(cd, &inbuf, &inlen, &outbuf, outlen) == (size_t)-1)
@@ -369,6 +340,40 @@ void delFileInfos(FileInfos fileInfos)
         delFileInfo__(fileInfos->fis[i]);
     free(fileInfos->fis);
     free(fileInfos);
+}
+
+static void addFileInfos__(FileInfo fileInfo, FileInfos fileInfos)
+{
+    if (fileInfos->count == fileInfos->size) {
+        fileInfos->size *= 2;
+        fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
+        assert(fileInfos->fis);
+    }
+
+    fileInfos->fis[fileInfos->count++] = newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size);
+}
+
+void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
+{
+    operateDir(dirName, (void (*)(void*, void*))addFileInfos__, fileInfos, recursive);
+}
+
+void writeFileInfos(FILE* fout, const char* dirName)
+{
+    fprintf(fout, "\n");
+    int sum = 0;
+    FileInfos fileInfos = newFileInfos();
+    getFileInfos(fileInfos, dirName, true);
+
+    for (int i = 0; i < fileInfos->count; ++i)
+        fprintf(fout, "attr:%4x size:%lu %s\n",
+            fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
+    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, fileInfos->count);
+
+    sum += fileInfos->count;
+    delFileInfos(fileInfos);
+
+    fprintf(fout, "总共包括:%d个文件。\n", sum);
 }
 
 void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, bool recursive)
@@ -443,52 +448,19 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
 #endif
 }
 
-static void addFileInfos__(FileInfo fileInfo, FileInfos fileInfos)
-{
-    if (fileInfos->count == fileInfos->size) {
-        fileInfos->size *= 2;
-        fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
-        assert(fileInfos->fis);
-    }
-
-    fileInfos->fis[fileInfos->count++] = newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size);
-}
-
-void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
-{
-    operateDir(dirName, (void (*)(void*, void*))addFileInfos__, fileInfos, recursive);
-}
-
-void writeFileInfos(FILE* fout, const char* dirName)
-{
-    fprintf(fout, "\n");
-    int sum = 0;
-    FileInfos fileInfos = newFileInfos();
-    getFileInfos(fileInfos, dirName, true);
-
-    for (int i = 0; i < fileInfos->count; ++i)
-        fprintf(fout, "attr:%4x size:%lu %s\n", fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
-    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, fileInfos->count);
-
-    sum += fileInfos->count;
-    delFileInfos(fileInfos);
-
-    fprintf(fout, "总共包括:%d个文件。\n", sum);
-}
-
 // 获取查询记录结果的数量
-int sqlite3_callCount(void* count, int argc, char** argv, char** colNames)
+static int sqlite3_callCount__(void* count, int argc, char** argv, char** colNames)
 {
     *(int*)count = (argv[0] ? atoi(argv[0]) : 0);
     return 0;
 }
 
-int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* where)
+int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* condition)
 {
     int count = 0;
     char sql[WCHARSIZE], *zErrMsg = 0;
-    sprintf(sql, "SELECT count(*) FROM %s %s;", tblName, where);
-    int rc = sqlite3_exec(db, sql, sqlite3_callCount, &count, &zErrMsg);
+    sprintf(sql, "SELECT count(*) FROM %s WHERE %s;", tblName, condition);
+    int rc = sqlite3_exec(db, sql, sqlite3_callCount__, &count, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
         sqlite3_free(zErrMsg);
@@ -501,38 +473,32 @@ int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* where)
 bool sqlite3_existTable(sqlite3* db, const char* tblName)
 {
     char sql[WCHARSIZE];
-    sprintf(sql, "WHERE type = 'table' AND name = '%s'", tblName);
-    return sqlite3_getRecCount(db, "sqlite_master", sql) > 0;
+    sprintf(sql, "type = 'table' AND name = '%s'", tblName);
+    int count = sqlite3_getRecCount(db, "sqlite_master", sql);
+    return count > 0;
 }
 
 // 初始化表
 int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames)
 {
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WCHARSIZE];
     sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
-    int rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s created error: %s", tblName, zErrMsg);
-        sqlite3_free(zErrMsg);
-        return -1;
-    } //else
-    //fprintf(stdout, "\nTable %s created successfully.", tblName);
-
-    return 0;
+    return sqlite3_exec_showErrMsg(db, sql);
 }
 
-void sqlite3_clearTable(sqlite3* db, const char* tblName)
+int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition)
 {
     char sql[WCHARSIZE];
-    sprintf(sql, "DELETE FROM %s", tblName);
-    sqlite3_exec(db, sql, NULL, NULL, NULL);
+    sprintf(sql, "DELETE FROM %s WHERE %s;", tblName, condition);
+    return sqlite3_exec_showErrMsg(db, sql);
 }
 
-void sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
+int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
 {
     char* zErrMsg = NULL;
-    int rc = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
-    if (rc != SQLITE_OK)
+    int resultCode = sqlite3_exec(db, sql, NULL, NULL, &zErrMsg);
+    if (resultCode != SQLITE_OK)
         fprintf(stderr, "\nErrMsg: %s", zErrMsg);
     sqlite3_free(zErrMsg);
+    return resultCode;
 }

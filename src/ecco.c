@@ -47,7 +47,7 @@ static BoutMoveStr newBoutMoveStr__(BoutMoveStr preBoutMoveStr, int boutNo, cons
         for (int i = 0; i < BOUTMOVEOR_NUM; ++i) {
             boutMoveStr->bmvstr[c][i] = NULL;
             if (bmvstr[c][i] && wcslen(bmvstr[c][i]) > 0)
-                setStruct_wstrField(&boutMoveStr->bmvstr[c][i], bmvstr[c][i]);
+                setPwstr_value(&boutMoveStr->bmvstr[c][i], bmvstr[c][i]);
         }
     boutMoveStr->nboutMoveStr = NULL;
     if (preBoutMoveStr)
@@ -122,7 +122,7 @@ static RegObj newRegObj__(RegObj preRegOjb, const wchar_t* sn, const wchar_t* fm
     return regObj;
 }
 
-static void delRegObj__(RegObj regObj)
+void delRegObj(RegObj regObj)
 {
     if (regObj == NULL)
         return;
@@ -131,7 +131,7 @@ static void delRegObj__(RegObj regObj)
     free(regObj->reg);
     free(regObj);
 
-    delRegObj__(nobj);
+    delRegObj(nobj);
 }
 
 static BoutMoveStr getBoutMoveStr__(EccoRec eccoRec, int boutNo, bool isPre)
@@ -214,7 +214,7 @@ static void setEccoRec_pre_mvstrs__(EccoRec eccoRec, EccoRec rootEccoRec)
 
     EccoRec teccoRec = NULL;
     if (wcslen(sn) > 1 && (teccoRec = getEccoRec__(rootEccoRec, sn)))
-        setStruct_wstrField(&eccoRec->pre_mvstrs, teccoRec->mvstrs);
+        setPwstr_value(&eccoRec->pre_mvstrs, teccoRec->mvstrs);
 }
 
 // 读取开局着法内容至数据表
@@ -257,7 +257,7 @@ static void setEccoRec_someField__(EccoRec rootEccoRec, const wchar_t* wstring)
                 wchar_t** peccoRec_f[] = { &eccoRec->sn, &eccoRec->name, &eccoRec->mvstrs, &eccoRec->nums };
                 for (int f = 0; f < count - 1; ++f) {
                     copySubStr(wstr, tempWstr, ovector[2 * f + 2], ovector[2 * f + 3]);
-                    setStruct_wstrField(peccoRec_f[(g < 2 && f > 1) ? (f == 2 ? 3 : 2) : f], wstr);
+                    setPwstr_value(peccoRec_f[(g < 2 && f > 1) ? (f == 2 ? 3 : 2) : f], wstr);
                 }
 
                 index++;
@@ -268,7 +268,7 @@ static void setEccoRec_someField__(EccoRec rootEccoRec, const wchar_t* wstring)
                 // C20 C30 C61 C72局面字符串存至g=1数组
                 EccoRec teccoRec = getEccoRec__(rootEccoRec, sn);
                 if (teccoRec)
-                    setStruct_wstrField(&teccoRec->mvstrs, wstr);
+                    setPwstr_value(&teccoRec->mvstrs, wstr);
             }
 
             first += ovector[1];
@@ -362,9 +362,9 @@ static void setBeforePreMove__(EccoRec eccoRec, const wchar_t* wstr,
     assert(preBoutMoveStr);
     BoutMoveStr boutMoveStr = preBoutMoveStr->nboutMoveStr;
     if (boutMoveStr && boutMoveStr->boutNo == insertBoutIndex) {
-        setStruct_wstrField(&boutMoveStr->bmvstr[color][or], mvstrs);
+        setPwstr_value(&boutMoveStr->bmvstr[color][or], mvstrs);
         if (or == 1 && boutMoveStr->bmvstr[color][0] == NULL)
-            setStruct_wstrField(&boutMoveStr->bmvstr[color][0], mvstrs);
+            setPwstr_value(&boutMoveStr->bmvstr[color][0], mvstrs);
     } else {
         const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
         bmvstr[color][or] = mvstrs;
@@ -393,7 +393,7 @@ static void setNoOrderMove__(EccoRec eccoRec, int firstBoutNo, void* reg_m, void
                     continue;
 
                 wcscat(wstr, boutMoveStr->bmvstr[c][i]);
-                setStruct_wstrField(&boutMoveStr->bmvstr[c][i], L"");
+                setPwstr_value(&boutMoveStr->bmvstr[c][i], L"");
             } while ((boutMoveStr = boutMoveStr->nboutMoveStr));
 
             if (wcslen(wstr) == 0)
@@ -401,7 +401,7 @@ static void setNoOrderMove__(EccoRec eccoRec, int firstBoutNo, void* reg_m, void
 
             wchar_t mvstrs[WCHARSIZE];
             getMoveStrs__(mvstrs, wstr, false, reg_m, reg_bp);
-            setStruct_wstrField(&firstBoutMoveStr->bmvstr[c][i], mvstrs);
+            setPwstr_value(&firstBoutMoveStr->bmvstr[c][i], mvstrs);
         }
     }
 }
@@ -449,7 +449,7 @@ static void setEccoRec_boutMoveStr__(EccoRec eccoRec, const wchar_t* snStr,
                 BoutMoveStr boutMoveStr = eccoRec->curBoutMoveStr;
                 if (boutMoveStr->boutNo == boutNo
                     || (or == 1 && (boutMoveStr = getBoutMoveStr__(eccoRec, boutNo, false))))
-                    setStruct_wstrField(&boutMoveStr->bmvstr[color][or], rbmvstr[color]);
+                    setPwstr_value(&boutMoveStr->bmvstr[color][or], rbmvstr[color]);
                 else { //if (or == 0 || boutMoveStr == NULL) {
                     const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
                     bmvstr[color][or] = rbmvstr[color];
@@ -676,7 +676,7 @@ static void doSetRegStr__(EccoRec eccoRec)
     } else
         wcscpy(eccoRecStr, combStr);
 
-    setStruct_wstrField(&eccoRec->regstr, eccoRecStr);
+    setPwstr_value(&eccoRec->regstr, eccoRecStr);
 
     //fwprintf(fout, L"\nEccoRecStr:\n\t%ls", eccoRecStr);
     delChessManual(cm);
@@ -832,8 +832,8 @@ static void storeEccolib__(sqlite3* db, const char* tblName, const char* fileNam
     //initEccoTable__(db, tblName, colNames, initEccoSql);
 
     if (sqlite3_existTable(db, tblName))
-        sqlite3_clearTable(db, tblName);
-    else if (sqlite3_createTable(db, tblName, colNames) < 0)
+        sqlite3_deleteTable(db, tblName, "1=1");
+    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
         return;
 
     // 获取插入记录字符串，并插入
@@ -917,9 +917,10 @@ void storeManual(sqlite3* db, RegObj rootRegObj, const char* dirName, RecFormat 
           "VALUES ('%ls', '%ls', '%ls', '%ls', '%ls', '%ls', '%ls', '%ls', "
           "'%ls', '%ls', '%ls', '%ls', '%ls', '%ls', '%ls', '%ls' );\n";
 
-    if (!sqlite3_existTable(db, tblName))
-        if (sqlite3_createTable(db, tblName, colNames) < 0)
-            return;
+    if (sqlite3_existTable(db, tblName))
+        sqlite3_deleteTable(db, tblName, "1=1");
+    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
+        return;
 
     //*/ 获取插入记录字符串，并插入
     char* insertSql = NULL;
@@ -949,12 +950,12 @@ void initEcco(char* dbName)
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        char* lib_tblName = "ecco";
-        storeEccolib__(db, lib_tblName, "chessManual/eccolib_src");
+        //char* lib_tblName = "ecco";
+        //storeEccolib__(db, lib_tblName, "chessManual/eccolib_src");
 
-        RegObj rootRegObj = getRootRegObj(db, lib_tblName);
-        storeManual(db, rootRegObj, "chessManual/示例文件", XQF);
-        delRegObj__(rootRegObj);
+        //RegObj rootRegObj = getRootRegObj(db, lib_tblName);
+        //storeManual(db, rootRegObj, "chessManual/示例文件", XQF);
+        //delRegObj(rootRegObj);
     }
     sqlite3_close(db);
 

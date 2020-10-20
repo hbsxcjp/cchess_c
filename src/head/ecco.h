@@ -9,6 +9,7 @@ void initEcco(char* dbName);
 
 // 取得正则对象（单链表根对象）
 RegObj getRootRegObj(sqlite3* db, const char* lib_tblName);
+void delRegObj(RegObj regObj);
 
 // 取得开局编号
 const wchar_t* getEccoSn(wchar_t* ecco_sn, RegObj rootRegObj, ChessManual cm);
