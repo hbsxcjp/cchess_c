@@ -845,6 +845,35 @@ static void storeEccolib__(sqlite3* db, const char* tblName, const char* fileNam
     free(initEccoSql);
     delEccoRec__(rootEccoRec);
 }
+/*
+static void wcscatCM_Str__(ChessManual cm, wchar_t* wInsertSql, const wchar_t* insertFormat, bool* onward)
+{
+    wchar_t ecco_sn[4], fileName[WCHARSIZE], lineStr[SUPERWIDEWCHARSIZE], *movestr = NULL;
+    getEccoSn(ecco_sn, rootRegObj_item, cm);
+    mbstowcs(fileName, getFileName_cm(cm), WCHARSIZE - 1);
+    writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
+    swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat,
+        wtblName,
+        ecco_sn,
+        fileName,
+        getInfoValue(cm, L"TitleA"),
+        getInfoValue(cm, L"Event"),
+        getInfoValue(cm, L"Date"),
+        getInfoValue(cm, L"Site"),
+        getInfoValue(cm, L"Red"),
+        getInfoValue(cm, L"Black"),
+        getInfoValue(cm, L"Opening"),
+        getInfoValue(cm, L"RMKWriter"),
+        getInfoValue(cm, L"Author"),
+        getInfoValue(cm, L"PlayType"),
+        getInfoValue(cm, L"FEN"),
+        getInfoValue(cm, L"Result"),
+        getInfoValue(cm, L"Version"),
+        movestr ? movestr : L"");
+    supper_wcscat(&wInsertSql, &size, lineStr);
+    free(movestr);
+}
+//*/
 
 static void getManualInsertSql__(char** pinsertSql, sqlite3* db, LinkedItem rootRegObj_item,
     const char* tblName, const wchar_t* insertFormat, ChessManualRec rcmr)
