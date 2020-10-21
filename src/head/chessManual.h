@@ -2,6 +2,7 @@
 #define CHESSMANUAL_H
 
 #include "base.h"
+#include "tools.h"
 
 typedef struct ChessManualRec* ChessManualRec;
 
@@ -98,5 +99,14 @@ void printChessManualRec(FILE* fout, ChessManualRec rcmr);
 
 // 读取目录下文件至chessManualRec
 ChessManualRec readDirToChessManualRec(const char* dirName, RecFormat fromfmt);
+
+
+
+// 读取目录下文件至chessManualRec
+LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt);
+
+void delRootCM_LinkedItem(LinkedItem rootCM_item);
+
+void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_item);
 
 #endif

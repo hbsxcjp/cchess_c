@@ -719,57 +719,59 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec)
     pcrewch_free(reg_bp);
 }
 
-static int appendSlist__(void* ppreSlist, int argc, char** argv, char** colNames)
+static int appendRegObj_Item__(void* ppreItem, int argc, char** argv, char** colNames)
 {
     wchar_t sn[4], regstr[SUPERWIDEWCHARSIZE];
     mbstowcs(sn, argv[0], 4);
     mbstowcs(regstr, argv[1], SUPERWIDEWCHARSIZE);
     RegObj regObj = newRegObj__(sn, regstr);
-    *(SingleList*)ppreSlist = newSingleList(*(SingleList*)ppreSlist, regObj);
+    *(LinkedItem*)ppreItem = newLinkedItem(*(LinkedItem*)ppreItem, regObj);
 
     //wprintf(L"sn:%ls regstr:%ls regObj:%p\n", sn, regstr, regObj);
     return 0; // 表示执行成功
 }
 
-SingleList getRegObj_SingleList(sqlite3* db, const char* lib_tblName)
+LinkedItem getRootRegObj_LinkedItem(sqlite3* db, const char* lib_tblName)
 {
-    SingleList rootRegObj_slist = newSingleList(NULL, NULL),
-               preRegObj_slist = rootRegObj_slist;
+    LinkedItem rootRegObj_item = newLinkedItem(NULL, NULL),
+               preRegObj_item = rootRegObj_item;
     char sql[WCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT sn, regstr FROM %s "
                  "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn DESC;",
         lib_tblName);
-    int rc = sqlite3_exec(db, sql, appendSlist__, &preRegObj_slist, &zErrMsg);
+    int rc = sqlite3_exec(db, sql, appendRegObj_Item__, &preRegObj_item, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
-    return rootRegObj_slist;
+    return rootRegObj_item;
 }
 
-void delRegObj_SingleList(SingleList rootRegObj_slist)
+void delRootRegObj_LinkedItem(LinkedItem rootRegObj_item)
 {
-    delSingleList(rootRegObj_slist, delRegObj__);
+    delLinkedItem(rootRegObj_item, delRegObj__);
 }
 
-const wchar_t* getEccoSn(wchar_t* ecco_sn, SingleList rootRegObj_slist, ChessManual cm)
+static void setEcco_sn__(void* obj, void* arg1, void* arg2, bool* onward)
 {
     int ovector[30];
-    wchar_t iccsStr[WIDEWCHARSIZE];
-    SingleList regObj_slist = rootRegObj_slist;
-
-    getIccsStr(iccsStr, cm);
-    int len = wcslen(iccsStr);
-    wcscpy(ecco_sn, L"");
-    while ((regObj_slist = getNextSlist(regObj_slist))) {
-        RegObj regObj = getBody(regObj_slist);
-        if (pcrewch_exec(regObj->reg, NULL, iccsStr, len, 0, 0, ovector, 30) > 0) {
-            wcscpy(ecco_sn, regObj->sn);
-            break;
-        }
+    RegObj regObj = obj;
+    wchar_t* ecco_sn = arg1;
+    const wchar_t* iccsStr = arg2;
+    if (pcrewch_exec(regObj->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, 30) > 0) {
+        wcscpy(ecco_sn, regObj->sn);
+        *onward = false;
     }
+}
 
+const wchar_t* getEccoSn(wchar_t* ecco_sn, LinkedItem rootRegObj_item, ChessManual cm)
+{
+    bool onward = true;
+    wchar_t iccsStr[WIDEWCHARSIZE];
+    getIccsStr(iccsStr, cm);
+    wcscpy(ecco_sn, L"");
+    traverseLinkedItem(rootRegObj_item, setEcco_sn__, ecco_sn, iccsStr, &onward);
     return ecco_sn;
 }
 
@@ -844,7 +846,7 @@ static void storeEccolib__(sqlite3* db, const char* tblName, const char* fileNam
     delEccoRec__(rootEccoRec);
 }
 
-static void getManualInsertSql__(char** pinsertSql, sqlite3* db, SingleList rootRegObj_slist,
+static void getManualInsertSql__(char** pinsertSql, sqlite3* db, LinkedItem rootRegObj_item,
     const char* tblName, const wchar_t* insertFormat, ChessManualRec rcmr)
 {
     size_t size = SUPERWIDEWCHARSIZE;
@@ -858,7 +860,7 @@ static void getManualInsertSql__(char** pinsertSql, sqlite3* db, SingleList root
     wchar_t ecco_sn[4], fileName[WCHARSIZE], *movestr = NULL;
     while ((cmr = getNextCMR(cmr))) {
         ChessManual cm = getNextCM(cmr);
-        getEccoSn(ecco_sn, rootRegObj_slist, cm);
+        getEccoSn(ecco_sn, rootRegObj_item, cm);
         mbstowcs(fileName, getFileName_cm(cm), WCHARSIZE - 1);
         writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
         swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat,
@@ -891,7 +893,7 @@ static void getManualInsertSql__(char** pinsertSql, sqlite3* db, SingleList root
     free(wInsertSql);
 }
 
-void storeManual(sqlite3* db, SingleList rootRegObj_slist, const char* dirName, RecFormat fromfmt)
+void storeManual(sqlite3* db, LinkedItem rootRegObj_item, const char* dirName, RecFormat fromfmt)
 {
     char *tblName = "manual",
          *colNames = "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -927,7 +929,7 @@ void storeManual(sqlite3* db, SingleList rootRegObj_slist, const char* dirName, 
     ChessManualRec rcmr = readDirToChessManualRec(dirName, fromfmt);
     //printChessManualRec(fout, rcmr);
 
-    getManualInsertSql__(&insertSql, db, rootRegObj_slist, tblName, insertFormat, rcmr);
+    getManualInsertSql__(&insertSql, db, rootRegObj_item, tblName, insertFormat, rcmr);
     sqlite3_exec(db, insertSql, NULL, NULL, NULL);
 
     delChessManualRec(rcmr);
@@ -954,9 +956,9 @@ void initEcco(char* dbName)
         char* lib_tblName = "ecco";
         storeEccolib__(db, lib_tblName, "chessManual/eccolib_src");
 
-        SingleList rootRegObj_slist = getRegObj_SingleList(db, lib_tblName);
-        storeManual(db, rootRegObj_slist, "chessManual/示例文件", XQF);
-        delRegObj_SingleList(rootRegObj_slist);
+        LinkedItem rootRegObj_item = getRootRegObj_LinkedItem(db, lib_tblName);
+        storeManual(db, rootRegObj_item, "chessManual/示例文件", XQF);
+        delRootRegObj_LinkedItem(rootRegObj_item);
     }
     sqlite3_close(db);
 

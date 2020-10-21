@@ -5,7 +5,6 @@
 #include "head/cJSON.h"
 #include "head/move.h"
 #include "head/piece.h"
-#include "head/tools.h"
 //#include <regex.h>
 //#include <sys/types.h>
 
@@ -1496,4 +1495,46 @@ void printChessManualRec(FILE* fout, ChessManualRec rcmr)
         //fwprintf(fout, L"PGN_CC: %ls\n", wstr);
         free(wstr);
     }
+}
+
+static int addCM_Item__(FileInfo fileInfo, LinkedItem* ppreItem)
+{
+    const char* fileName = fileInfo->name;
+    if (!fileIsRight__(fileName))
+        return -1;
+
+    ChessManual cm = newChessManual(fileName);
+    *(LinkedItem*)ppreItem = newLinkedItem(*(LinkedItem*)ppreItem, cm);
+    return 0;
+}
+
+LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt)
+{
+    char fromDir[FILENAME_MAX];
+    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
+    LinkedItem rootCM_LinkedItem = newLinkedItem(NULL, NULL),
+               preCM_LinkedItem = rootCM_LinkedItem;
+    operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &preCM_LinkedItem, true);
+    return rootCM_LinkedItem;
+}
+
+void delRootCM_LinkedItem(LinkedItem rootCM_item)
+{
+    delLinkedItem(rootCM_item, (void (*)(void*))delChessManual);
+}
+
+static void printCM_Str__(ChessManual cm, FILE* fout, int* no, bool* onward)
+{
+    wchar_t ecco_sn[4] = { 0 }, fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
+    mbstowcs(fileName, cm->fileName, WIDEWCHARSIZE - 1);
+    getIccsStr(wIccsStr, cm);
+    fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
+        (*no)++, ecco_sn, fileName, wIccsStr);
+}
+
+void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_item)
+{
+    bool onward = true;
+    int no = 0;
+    traverseLinkedItem(rootCM_item, (void (*)(void*, void*, void*, bool*))printCM_Str__, fout, &no, &onward);
 }

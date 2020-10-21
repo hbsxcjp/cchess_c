@@ -503,40 +503,48 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
     return resultCode;
 }
 
-struct SingleList {
-    void* body;
-    SingleList next;
+struct LinkedItem {
+    void* object;
+    LinkedItem next;
 };
 
-SingleList newSingleList(SingleList preSingleList, void* body)
+LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object)
 {
-    SingleList slist = malloc(sizeof(struct SingleList));
-    slist->body = body;
-    slist->next = NULL;
-    if (preSingleList)
-        preSingleList->next = slist;
-    return slist;
+    LinkedItem item = malloc(sizeof(struct LinkedItem));
+    item->object = object;
+    item->next = NULL;
+    if (preLinkedItem)
+        preLinkedItem->next = item;
+    return item;
 }
 
-void delSingleList(SingleList slist, void (*delBody)(void*))
+void delLinkedItem(LinkedItem item, void (*delObject)(void*))
 {
-    if (slist == NULL)
+    if (item == NULL)
         return;
 
-    SingleList next = slist->next;
-    if (slist->body)
-        delBody(slist->body);
-    free(slist);
+    LinkedItem next = item->next;
+    if (item->object)
+        delObject(item->object);
+    free(item);
 
-    delSingleList(next, delBody);
+    delLinkedItem(next, delObject);
 }
 
-SingleList getNextSlist(SingleList slist)
+LinkedItem getNextItem(LinkedItem item)
 {
-    return slist->next;
+    return item->next;
 }
 
-void* getBody(SingleList slist)
+void* getObject(LinkedItem item)
 {
-    return slist->body;
+    return item->object;
+}
+
+void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, bool*),
+    void* arg1, void* arg2, bool* onward)
+{
+    LinkedItem linkedItem = rootLinkedItem;
+    while (*onward && (linkedItem = getNextItem(linkedItem)))
+        operatorObj(getObject(linkedItem), arg1, arg2, onward);
 }

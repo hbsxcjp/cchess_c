@@ -156,18 +156,21 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
 // 单链表类 开始 -------------------------------------------------------------------------------------- //
 
-// 单链表类 
-typedef struct SingleList* SingleList;
+// 单链表类
+typedef struct LinkedItem* LinkedItem;
 
 // 新建singleList
-SingleList newSingleList(SingleList preSingleList, void* body);
+LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object);
 
 // 删除singleList
-void delSingleList(SingleList slist, void (*delBody)(void*));
+void delLinkedItem(LinkedItem item, void (*delObject)(void*));
 
-SingleList getNextSlist(SingleList slist);
+LinkedItem getNextItem(LinkedItem item);
 
-void* getBody(SingleList slist);
+void* getObject(LinkedItem item);
+
+void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, bool*),
+    void* arg1, void* arg2, bool* onward);
 // 单链表类 结束 -------------------------------------------------------------------------------------- //
 
 #endif
