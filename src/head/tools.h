@@ -154,4 +154,20 @@ int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition);
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 // 数据库类 结束 -------------------------------------------------------------------------------------- //
 
+// 单链表类 开始 -------------------------------------------------------------------------------------- //
+
+// 单链表类 
+typedef struct SingleList* SingleList;
+
+// 新建singleList
+SingleList newSingleList(SingleList preSingleList, void* body);
+
+// 删除singleList
+void delSingleList(SingleList slist, void (*delBody)(void*));
+
+SingleList getNextSlist(SingleList slist);
+
+void* getBody(SingleList slist);
+// 单链表类 结束 -------------------------------------------------------------------------------------- //
+
 #endif

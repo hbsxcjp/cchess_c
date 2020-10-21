@@ -502,3 +502,41 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
     sqlite3_free(zErrMsg);
     return resultCode;
 }
+
+struct SingleList {
+    void* body;
+    SingleList next;
+};
+
+SingleList newSingleList(SingleList preSingleList, void* body)
+{
+    SingleList slist = malloc(sizeof(struct SingleList));
+    slist->body = body;
+    slist->next = NULL;
+    if (preSingleList)
+        preSingleList->next = slist;
+    return slist;
+}
+
+void delSingleList(SingleList slist, void (*delBody)(void*))
+{
+    if (slist == NULL)
+        return;
+
+    SingleList next = slist->next;
+    if (slist->body)
+        delBody(slist->body);
+    free(slist);
+
+    delSingleList(next, delBody);
+}
+
+SingleList getNextSlist(SingleList slist)
+{
+    return slist->next;
+}
+
+void* getBody(SingleList slist)
+{
+    return slist->body;
+}
