@@ -1508,6 +1508,15 @@ static int addCM_Item__(FileInfo fileInfo, LinkedItem* ppreItem)
     return 0;
 }
 
+/*/ 设置开局编号
+static int addEcco_Sn_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item)
+{
+    wchar_t ecco_sn[4];
+    //addInfoItem(cm, L"ECCO", getEccoSn(ecco_sn, rootRegObj_item, cm));
+    return 0;
+}
+//*/
+
 LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt)
 {
     char fromDir[FILENAME_MAX];
@@ -1515,12 +1524,20 @@ LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt)
     LinkedItem rootCM_LinkedItem = newLinkedItem(NULL, NULL),
                preCM_LinkedItem = rootCM_LinkedItem;
     operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &preCM_LinkedItem, true);
+
+    /*
+    bool onward = true;
+    LinkedItem rootRegObj_item = getRootRegObj_LinkedItem(db, lib_tblName);
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, bool*))addEcco_Sn_CM_Item__,
+        rootRegObj_item, NULL, &onward);
+        //*/
+
     return rootCM_LinkedItem;
 }
 
-void delRootCM_LinkedItem(LinkedItem rootCM_item)
+void delRootCM_LinkedItem(LinkedItem rootCM_LinkedItem)
 {
-    delLinkedItem(rootCM_item, (void (*)(void*))delChessManual);
+    delLinkedItem(rootCM_LinkedItem, (void (*)(void*))delChessManual);
 }
 
 static void printCM_Str__(ChessManual cm, FILE* fout, int* no, bool* onward)
@@ -1532,9 +1549,9 @@ static void printCM_Str__(ChessManual cm, FILE* fout, int* no, bool* onward)
         (*no)++, ecco_sn, fileName, wIccsStr);
 }
 
-void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_item)
+void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_LinkedItem)
 {
     bool onward = true;
     int no = 0;
-    traverseLinkedItem(rootCM_item, (void (*)(void*, void*, void*, bool*))printCM_Str__, fout, &no, &onward);
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, bool*))printCM_Str__, fout, &no, &onward);
 }

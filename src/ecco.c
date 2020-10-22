@@ -848,6 +848,7 @@ static void storeEccolib__(sqlite3* db, const char* tblName, const char* fileNam
 /*
 static void wcscatCM_Str__(ChessManual cm, wchar_t* wInsertSql, const wchar_t* insertFormat, bool* onward)
 {
+    size_t size = SUPERWIDEWCHARSIZE;
     wchar_t ecco_sn[4], fileName[WCHARSIZE], lineStr[SUPERWIDEWCHARSIZE], *movestr = NULL;
     getEccoSn(ecco_sn, rootRegObj_item, cm);
     mbstowcs(fileName, getFileName_cm(cm), WCHARSIZE - 1);
@@ -873,6 +874,7 @@ static void wcscatCM_Str__(ChessManual cm, wchar_t* wInsertSql, const wchar_t* i
     supper_wcscat(&wInsertSql, &size, lineStr);
     free(movestr);
 }
+
 //*/
 
 static void getManualInsertSql__(char** pinsertSql, sqlite3* db, LinkedItem rootRegObj_item,
@@ -957,11 +959,17 @@ void storeManual(sqlite3* db, LinkedItem rootRegObj_item, const char* dirName, R
     char* insertSql = NULL;
     ChessManualRec rcmr = readDirToChessManualRec(dirName, fromfmt);
     //printChessManualRec(fout, rcmr);
-
     getManualInsertSql__(&insertSql, db, rootRegObj_item, tblName, insertFormat, rcmr);
     sqlite3_exec(db, insertSql, NULL, NULL, NULL);
-
     delChessManualRec(rcmr);
+
+    /*
+    bool onward = true;
+    LinkedItem rootCM_LinkedItem = getRootCM_LinkedItem(dirName, fromfmt);
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, bool*))wcscatCM_Str__,
+        &insertSql, insertFormat, &onward); //rootRegObj_item,
+        //*/
+
     free(insertSql);
 }
 
