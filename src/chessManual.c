@@ -18,11 +18,6 @@ struct ChessManual {
     int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
 
-struct ChessManualRec {
-    ChessManual cm;
-    ChessManualRec ncmr;
-};
-
 typedef struct OperateDirData {
     int fcount, dcount, movCount, remCount, remLenMax;
     const char *fromDir, *toDir;
@@ -254,7 +249,10 @@ void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
         return;
     cm->info[count][0] = malloc(nameLen * sizeof(wchar_t));
     assert(cm->info[count][0]);
+    assert(name);
     wcscpy(cm->info[count][0], name);
+    if (value == NULL)
+        value = L"";
     cm->info[count][1] = malloc((wcslen(value) + 1) * sizeof(wchar_t));
     assert(cm->info[count][1]);
     wcscpy(cm->info[count][1], value);
@@ -1431,72 +1429,6 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     return true;
 }
 
-ChessManualRec newChessManualRec(ChessManualRec preChessManualRec, const char* fileName)
-{
-    ChessManualRec cmr = malloc(sizeof(struct ChessManualRec));
-    cmr->cm = newChessManual(fileName);
-    cmr->ncmr = NULL;
-    if (preChessManualRec)
-        preChessManualRec->ncmr = cmr;
-    return cmr;
-}
-
-void delChessManualRec(ChessManualRec cmr)
-{
-    if (cmr == NULL)
-        return;
-
-    ChessManualRec ncmr = cmr->ncmr;
-    delChessManual(cmr->cm);
-    free(cmr);
-
-    delChessManualRec(ncmr);
-}
-
-ChessManualRec getNextCMR(ChessManualRec cmr) { return cmr->ncmr; }
-
-ChessManual getNextCM(ChessManualRec cmr) { return cmr->cm; }
-
-static void readFileToChessManualRec__(FileInfo fileInfo, ChessManualRec* cpcmr)
-{
-    const char* fileName = fileInfo->name;
-    if (!fileIsRight__(fileName))
-        return;
-
-    *cpcmr = newChessManualRec(*cpcmr, fileName);
-}
-
-ChessManualRec readDirToChessManualRec(const char* dirName, RecFormat fromfmt)
-{
-    char fromDir[FILENAME_MAX];
-    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
-
-    ChessManualRec cmr = newChessManualRec(NULL, NULL),
-                   rcmr = cmr;
-    operateDir(fromDir, (void (*)(void*, void*))readFileToChessManualRec__, &cmr, true);
-    return rcmr;
-}
-
-void printChessManualRec(FILE* fout, ChessManualRec rcmr)
-{
-    int no = 0;
-    ChessManualRec cmr = rcmr;
-    fwprintf(fout, L"rcmr:\n");
-    while ((cmr = cmr->ncmr)) {
-
-        wchar_t ecco_sn[4] = { 0 }, fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
-        mbstowcs(fileName, cmr->cm->fileName, WIDEWCHARSIZE - 1);
-        getIccsStr(wIccsStr, cmr->cm);
-        fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-            no++, ecco_sn, fileName, wIccsStr);
-
-        wchar_t* wstr = NULL;
-        writePGNtoWstr(&wstr, cmr->cm, PGN_ZH);
-        //fwprintf(fout, L"PGN_CC: %ls\n", wstr);
-        free(wstr);
-    }
-}
-
 static int addCM_Item__(FileInfo fileInfo, LinkedItem* ppreItem)
 {
     const char* fileName = fileInfo->name;
@@ -1508,16 +1440,32 @@ static int addCM_Item__(FileInfo fileInfo, LinkedItem* ppreItem)
     return 0;
 }
 
-/*/ 设置开局编号
-static int addEcco_Sn_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item)
+static void setEcco_sn__(RegObj regObj, const wchar_t** pecco_sn, const wchar_t* iccsStr, size_t* psize)
 {
-    wchar_t ecco_sn[4];
-    //addInfoItem(cm, L"ECCO", getEccoSn(ecco_sn, rootRegObj_item, cm));
+    *pecco_sn = getEcco_sn(regObj, iccsStr);
+    if (*pecco_sn)
+        *psize = 0;
+}
+
+// 设置开局编号
+int setCM_Ecco_Sn(ChessManual cm, LinkedItem rootRegObj_item)
+{
+    size_t size = 1;
+    wchar_t *ecco_sn = NULL, iccsStr[WIDEWCHARSIZE];
+    getIccsStr(iccsStr, cm);
+    traverseLinkedItem(rootRegObj_item, (void (*)(void*, void*, void*, size_t*))setEcco_sn__,
+        &ecco_sn, iccsStr, &size);
+    if (ecco_sn)
+        addInfoItem(cm, L"ECCO", ecco_sn);
     return 0;
 }
-//*/
 
-LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt)
+static void setEcco_Sn_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item, void* _, size_t* psize)
+{
+    setCM_Ecco_Sn(cm, rootRegObj_item);
+}
+
+LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item)
 {
     char fromDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
@@ -1525,13 +1473,9 @@ LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt)
                preCM_LinkedItem = rootCM_LinkedItem;
     operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &preCM_LinkedItem, true);
 
-    /*
-    bool onward = true;
-    LinkedItem rootRegObj_item = getRootRegObj_LinkedItem(db, lib_tblName);
-    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, bool*))addEcco_Sn_CM_Item__,
-        rootRegObj_item, NULL, &onward);
-        //*/
-
+    size_t size = 1;
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))setEcco_Sn_CM_Item__,
+        rootRegObj_item, NULL, &size);
     return rootCM_LinkedItem;
 }
 
@@ -1540,18 +1484,18 @@ void delRootCM_LinkedItem(LinkedItem rootCM_LinkedItem)
     delLinkedItem(rootCM_LinkedItem, (void (*)(void*))delChessManual);
 }
 
-static void printCM_Str__(ChessManual cm, FILE* fout, int* no, bool* onward)
+static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
 {
-    wchar_t ecco_sn[4] = { 0 }, fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
+    wchar_t fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
     mbstowcs(fileName, cm->fileName, WIDEWCHARSIZE - 1);
     getIccsStr(wIccsStr, cm);
     fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-        (*no)++, ecco_sn, fileName, wIccsStr);
+        (*size)++, getInfoValue(cm, L"ECCO"), fileName, wIccsStr);
 }
 
 void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_LinkedItem)
 {
-    bool onward = true;
-    int no = 0;
-    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, bool*))printCM_Str__, fout, &no, &onward);
+    size_t size = 1;
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))printCM_Str__,
+        fout, NULL, &size);
 }

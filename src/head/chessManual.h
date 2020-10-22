@@ -3,8 +3,7 @@
 
 #include "base.h"
 #include "tools.h"
-
-typedef struct ChessManualRec* ChessManualRec;
+#include "ecco.h"
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -85,25 +84,11 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
-// 新建chessManualRec
-ChessManualRec newChessManualRec(ChessManualRec preChessManualRec, const char* fileName);
-
-// 删除chessManualRec
-void delChessManualRec(ChessManualRec chessManualRec);
-
-ChessManualRec getNextCMR(ChessManualRec cmr);
-ChessManual getNextCM(ChessManualRec cmr);
-
-// 输出chessManualRec
-void printChessManualRec(FILE* fout, ChessManualRec rcmr);
+// 设置开局编号
+int setCM_Ecco_Sn(ChessManual cm, LinkedItem rootRegObj_item);
 
 // 读取目录下文件至chessManualRec
-ChessManualRec readDirToChessManualRec(const char* dirName, RecFormat fromfmt);
-
-
-
-// 读取目录下文件至chessManualRec
-LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt);
+LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item);
 
 void delRootCM_LinkedItem(LinkedItem rootCM_item);
 

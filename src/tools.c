@@ -541,10 +541,10 @@ void* getObject(LinkedItem item)
     return item->object;
 }
 
-void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, bool*),
-    void* arg1, void* arg2, bool* onward)
+void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, size_t*),
+    void* arg1, void* arg2, size_t* psize)
 {
     LinkedItem linkedItem = rootLinkedItem;
-    while (*onward && (linkedItem = getNextItem(linkedItem)))
-        operatorObj(getObject(linkedItem), arg1, arg2, onward);
+    while (*psize && (linkedItem = getNextItem(linkedItem)))
+        operatorObj(getObject(linkedItem), arg1, arg2, psize);
 }

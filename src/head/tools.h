@@ -169,8 +169,8 @@ LinkedItem getNextItem(LinkedItem item);
 
 void* getObject(LinkedItem item);
 
-void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, bool*),
-    void* arg1, void* arg2, bool* onward);
+void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, size_t*),
+    void* arg1, void* arg2, size_t* psize);
 // 单链表类 结束 -------------------------------------------------------------------------------------- //
 
 #endif
