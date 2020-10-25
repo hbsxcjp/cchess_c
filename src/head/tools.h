@@ -162,6 +162,23 @@ typedef struct LinkedItem* LinkedItem;
 // 新建singleList
 LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object);
 
+// 添加链接节点，前置节点移到当前添加节点
+LinkedItem appendLinkedItem(LinkedItem* pcurLinkedItem, void* object);
+
+// 查找所含对象符合某个条件的节点
+LinkedItem findLinkedItem(LinkedItem rootLinkedItem, int (*objece_compare)(void*, void*), void* compObj);
+
+// 剪切所含对象符合某个条件的节点
+LinkedItem cutLinkedItem(LinkedItem rootLinkedItem, void* compObj, int (*object_compare)(void*, void*),
+    void (*delObject)(void*));
+
+// 比较两个单链表是否相等
+bool rootLinkedItem_equal(LinkedItem rootLinkedItem0, LinkedItem rootLinkedItem1,
+    int (*object_cmp)(void*, void*));
+
+// 获取根节点以下的节点个数
+int getLinkedItemCount(LinkedItem rootLinkedItem);
+
 // 删除singleList
 void delLinkedItem(LinkedItem item, void (*delObject)(void*));
 

@@ -510,35 +510,103 @@ struct LinkedItem {
 
 LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object)
 {
-    LinkedItem item = malloc(sizeof(struct LinkedItem));
-    item->object = object;
-    item->next = NULL;
+    LinkedItem linkedItem = malloc(sizeof(struct LinkedItem));
+    linkedItem->object = object;
+    linkedItem->next = NULL;
     if (preLinkedItem)
-        preLinkedItem->next = item;
-    return item;
+        preLinkedItem->next = linkedItem;
+    return linkedItem;
 }
 
-void delLinkedItem(LinkedItem item, void (*delObject)(void*))
+LinkedItem appendLinkedItem(LinkedItem* pcurLinkedItem, void* object)
 {
-    if (item == NULL)
+    return *pcurLinkedItem = newLinkedItem(*pcurLinkedItem, object);
+}
+
+static LinkedItem findPreLinkedItem__(LinkedItem rootLinkedItem, int (*object_compare)(void*, void*), void* compObj)
+{
+    LinkedItem preLinkedItem = rootLinkedItem;
+    while (preLinkedItem->next && object_compare(preLinkedItem->next->object, compObj) != 0)
+        preLinkedItem = preLinkedItem->next;
+    return preLinkedItem->next ? preLinkedItem : NULL; // NULL 或 满足比较条件的节点
+}
+
+LinkedItem findLinkedItem(LinkedItem rootLinkedItem, int (*object_compare)(void*, void*), void* compObj)
+{
+    LinkedItem preLinkedItem = findPreLinkedItem__(rootLinkedItem, object_compare, compObj);
+    return preLinkedItem ? preLinkedItem->next : NULL;
+}
+
+static void eraseLinkedItem__(LinkedItem linkedItem, void (*delObject)(void*))
+{
+    if (linkedItem->object)
+        delObject(linkedItem->object);
+    free(linkedItem);
+}
+
+LinkedItem cutLinkedItem(LinkedItem rootLinkedItem, void* compObj, int (*object_compare)(void*, void*),
+    void (*delObject)(void*))
+{
+    LinkedItem preLinkedItem = findPreLinkedItem__(rootLinkedItem, object_compare, compObj);
+    if (preLinkedItem) {
+        LinkedItem linkedItem = preLinkedItem->next;
+        preLinkedItem->next = linkedItem->next;
+        eraseLinkedItem__(linkedItem, delObject);
+        return preLinkedItem->next; // 返回剪切对象之后的节点
+    }
+    return NULL;
+}
+
+static void operator_compare__(void* object, LinkedItem* potherLinkedItem,
+    int (*object_cmp)(void*, void*), size_t* size)
+{
+    *potherLinkedItem = getNextItem(*potherLinkedItem);
+    if (object_cmp(object, getObject(*potherLinkedItem)) != 0)
+        *size = 0; // 不相等
+}
+
+bool rootLinkedItem_equal(LinkedItem rootLinkedItem0, LinkedItem rootLinkedItem1,
+    int (*object_cmp)(void*, void*))
+{
+    if (getLinkedItemCount(rootLinkedItem0) != getLinkedItemCount(rootLinkedItem1)) {
+        printf("\nrootLinkedItem_equal %d %s", __LINE__, __FILE__);
+        return 0;
+    }
+
+    size_t size = 1;
+    traverseLinkedItem(rootLinkedItem0, (void (*)(void*, void*, void*, size_t*))operator_compare__,
+        &rootLinkedItem1, object_cmp, &size);
+    return size != 0; // size = 1, 则相等
+}
+
+int getLinkedItemCount(LinkedItem rootLinkedItem)
+{
+    int count = 0;
+    LinkedItem linkedItem = rootLinkedItem;
+    while ((linkedItem = linkedItem->next))
+        ++count;
+    return count;
+}
+
+void delLinkedItem(LinkedItem linkedItem, void (*delObject)(void*))
+{
+    if (linkedItem == NULL)
         return;
 
-    LinkedItem next = item->next;
-    if (item->object)
-        delObject(item->object);
-    free(item);
+    LinkedItem next = linkedItem->next;
+    eraseLinkedItem__(linkedItem, delObject);
 
     delLinkedItem(next, delObject);
 }
 
-LinkedItem getNextItem(LinkedItem item)
+LinkedItem getNextItem(LinkedItem linkedItem)
 {
-    return item->next;
+    return linkedItem->next;
 }
 
-void* getObject(LinkedItem item)
+void* getObject(LinkedItem linkedItem)
 {
-    return item->object;
+    return linkedItem->object;
 }
 
 void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, size_t*),

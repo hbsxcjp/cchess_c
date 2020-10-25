@@ -549,6 +549,27 @@ static void test_chessManual_xqf(void)
                       "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 -b\"]\n"
                       "[Result \"红胜\"]\n"
                       "[Version \"18\"]\n"
+                      "[FileName \"chessManual/01.xqf\"]\n"
+                      "[movestr \"1. 马四进三  \n"
+                      "{　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n"
+                      "}\n"
+                      " (1. 马四进五  炮４退９ 2. 马五进三  炮４平５ 3. 帅五平六  车９平８ 4. 马三进二  车８进１ 5. 车三平二  士５退４ 6. 车二进一  将６进１  \n"
+                      "{　　至此，形成少见的高将底炮双士和单车的局面。\r\n"
+                      "}\n"
+                      " 7. 车二退二  士６进５ 8. 车二平四  将６平５ 9. 车四平一  将５平６ 10. 车一平四  将６平５ 11. 帅六退一  炮５平６  \n"
+                      "{　　和棋。\r\n"
+                      "}\n"
+                      " ) 炮４退９ (1. ... 炮４退７ (1. ... 士５进６ (1. ... 卒９进１ 2. 马三进五  车９进２ 3. 车三进一 )2. 马三进二  \n"
+                      "{　　叫杀得车。\r\n"
+                      "}\n"
+                      " )2. 马三进五  炮４平５ (2. ... 车９平８ 3. 车三平四  士５进６ 4. 马五进三 (4. 马五进六 ))3. 马五进三 )2. 马三进五  \n"
+                      "{　　不怕黑炮平中拴链，进观的攻势含蓄双有诱惑性，是红方制胜的关键。\r\n"
+                      "}\n"
+                      "  炮４平５ 3. 车三平四  \n"
+                      "{　　弃车，与前着相联系，由此巧妙成杀。\r\n"
+                      "}\n"
+                      "  士５进６ 4. 马五进三 \n"
+                      "\"]\n"
                       "\n"
                       "　开始　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
                       "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
@@ -613,8 +634,8 @@ static void test_chessManual_xqf(void)
     resultStr = malloc(len);
     wcstombs(resultStr, wstr, len);
 
-    //if (strcmp(pgn_ccStr, resultStr) != 0)
-    //    printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+    if (strcmp(pgn_ccStr, resultStr) != 0)
+        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);
@@ -643,20 +664,23 @@ static void test_chessManual_xqf(void)
 
 static void test_chessManual_otherExt(void)
 {
-    ChessManual cm = newChessManual(xqfFileName__),
-                cm1 = newChessManual(NULL); //""
+    ChessManual cm = newChessManual(xqfFileName__);
+    //      cm1 = newChessManual(NULL); //""
 
     char fileName[FILENAME_MAX];
     for (RecFormat fmt = BIN; fmt <= PGN_CC; ++fmt) {
         sprintf(fileName, "chessManual/01%s", EXTNAMES[fmt]);
         writeChessManual(cm, fileName);
-        resetChessManual(&cm1, fileName);
+        //resetChessManual(&cm1, fileName);
+        ChessManual cm1 = newChessManual(fileName);
+
         CU_ASSERT_TRUE(chessManual_equal(cm, cm1));
         //printf("\n%d %s ok.", __LINE__, fileName);
+        delChessManual(cm1);
     }
 
     delChessManual(cm);
-    delChessManual(cm1);
+    //delChessManual(cm1);
 }
 
 static void test_chessManual_dir(void)

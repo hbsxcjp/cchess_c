@@ -2,8 +2,11 @@
 #define CHESSMANUAL_H
 
 #include "base.h"
-#include "tools.h"
 #include "ecco.h"
+#include "tools.h"
+
+#define INFOSIZE 32
+#define INITINFOLEN 16
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -15,7 +18,7 @@ ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 void delChessManual(ChessManual cm);
 
 Move getRootMove(ChessManual cm);
-const char* getFileName_cm(ChessManual cm);
+//const char* getFileName_cm(ChessManual cm);
 
 // 取得正则表达式所需的中文字符组
 wchar_t* getZhWChars(wchar_t* ZhWChars);
@@ -47,7 +50,7 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
 const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
 
 // 添加/删除一个info条目
-void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
+void setInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
 const wchar_t* getInfoValue(ChessManual cm, const wchar_t* name);
 void delInfoItem(ChessManual cm, const wchar_t* name);
 
@@ -85,7 +88,7 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
 // 设置开局编号
-int setCM_Ecco_Sn(ChessManual cm, LinkedItem rootRegObj_item);
+int setCM_ECCO(ChessManual cm, LinkedItem rootRegObj_item);
 
 // 读取目录下文件至chessManualRec
 LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item);
@@ -93,5 +96,9 @@ LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedIt
 void delRootCM_LinkedItem(LinkedItem rootCM_item);
 
 void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_item);
+
+
+// 获取棋谱对象链表
+MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
 
 #endif

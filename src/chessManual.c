@@ -8,14 +8,37 @@
 //#include <regex.h>
 //#include <sys/types.h>
 
-#define INFOSIZE 32
+typedef struct Info* Info;
+struct Info {
+    wchar_t *name, *value;
+};
+
+static Info newInfo__(const wchar_t* name, const wchar_t* value)
+{
+    Info info = malloc(sizeof(struct Info));
+    info->name = NULL;
+    info->value = NULL;
+    if (name && value) {
+        info->name = malloc((wcslen(name) + 1) * sizeof(wchar_t));
+        wcscpy(info->name, name);
+        info->value = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+        wcscpy(info->value, value);
+    }
+    return info;
+}
+
+static void delInfo__(Info info)
+{
+    free(info->name);
+    free(info->value);
+    free(info);
+}
 
 struct ChessManual {
-    char* fileName;
     Board board;
     Move rootMove, curMove;
-    wchar_t* info[INFOSIZE][2];
-    int infoCount, movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
+    MyLinkedList infoMyLinkedList;
+    int movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
 
 typedef struct OperateDirData {
@@ -27,12 +50,24 @@ typedef struct OperateDirData {
 const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
+
+const char* INFONAMES[INITINFOLEN] = {
+    "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author",
+    "PlayType", "FEN", "Result", "Version",
+    "ECCO", "FileName", "movestr"
+};
+const int FEN_INDEX = 10;
+const int ECCO_INDEX = 13;
+const int FILENAME_INDEX = 14;
+const int MOVESTR_INDEX = 15;
+
 static const char FILETAG[] = "learnchess";
 
 // 着法相关的字符数组静态全局变量
 static const wchar_t* PRECHAR = L"前中后";
 static const wchar_t* MOVCHAR = L"退平进";
 static const wchar_t* NUMWCHAR[PIECECOLORNUM] = { L"一二三四五六七八九", L"１２３４５６７８９" };
+static const wchar_t* FEN_INITVALUE = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 
 // 根据文件扩展名取得存储记录类型
 static RecFormat getRecFormat__(const char* ext)
@@ -61,20 +96,26 @@ ChessManual newChessManual(const char* fileName)
 {
     ChessManual cm = malloc(sizeof(struct ChessManual));
     assert(cm);
-    if (fileName == NULL)
-        cm->fileName = NULL;
-    else {
-        cm->fileName = malloc(strlen(fileName) + 1);
-        strcpy(cm->fileName, fileName);
-    }
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
-    for (int i = 0; i < INFOSIZE; ++i)
-        for (int j = 0; j < 2; ++j)
-            cm->info[i][j] = NULL;
-    cm->infoCount = cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
+    cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo__);
+    cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
+    if (fileName) {
+        wchar_t name[WCHARSIZE], value[WCHARSIZE];
+        mbstowcs(name, INFONAMES[FILENAME_INDEX], WCHARSIZE);
+        mbstowcs(value, fileName, WCHARSIZE);
+        setInfoItem(cm, name, value);
+
+        if (getNext(cm->rootMove)) {
+            wchar_t* movestr = NULL;
+            writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
+            mbstowcs(name, INFONAMES[MOVESTR_INDEX], WCHARSIZE);
+            setInfoItem(cm, name, movestr);
+            free(movestr);
+        }
+    }
     return cm;
 }
 
@@ -88,18 +129,14 @@ void delChessManual(ChessManual cm)
 {
     if (cm == NULL)
         return;
-    free(cm->fileName);
-    for (int i = 0; i < cm->infoCount; ++i)
-        for (int j = 0; j < 2; ++j)
-            free(cm->info[i][j]);
+
+    delMyLinkedList(cm->infoMyLinkedList);
     delMove(cm->rootMove);
     delBoard(cm->board);
     free(cm);
 }
 
 Move getRootMove(ChessManual cm) { return cm->rootMove; }
-
-const char* getFileName_cm(ChessManual cm) { return cm->fileName; }
 
 static bool go__(ChessManual cm, Move curMove)
 {
@@ -242,53 +279,49 @@ const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
     return getICCS_mt(iccs, cm->curMove, cm->board, ct);
 }
 
-void addInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
+static int infoName_cmp__(Info info, const wchar_t* name)
 {
-    int count = cm->infoCount, nameLen = wcslen(name) + 1;
-    if (count == INFOSIZE || nameLen == 1)
-        return;
-    cm->info[count][0] = malloc(nameLen * sizeof(wchar_t));
-    assert(cm->info[count][0]);
-    assert(name);
-    wcscpy(cm->info[count][0], name);
-    if (value == NULL)
-        value = L"";
-    cm->info[count][1] = malloc((wcslen(value) + 1) * sizeof(wchar_t));
-    assert(cm->info[count][1]);
-    wcscpy(cm->info[count][1], value);
-    ++(cm->infoCount);
+    return wcscmp(info->name, name);
+}
+
+static Info getInfo_name__(ChessManual cm, const wchar_t* name)
+{
+    return getDataMyLinkedList_cond(cm->infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
+}
+
+void setInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value)
+{
+    Info info = getInfo_name__(cm, name);
+    if (info == NULL)
+        addMyLinkedList(cm->infoMyLinkedList, newInfo__(name, value));
+    else
+        setMyLinkedList_cond(cm->infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__,
+            (void*)name, newInfo__(name, value));
 }
 
 const wchar_t* getInfoValue(ChessManual cm, const wchar_t* name)
 {
-    for (int i = 0; i < cm->infoCount; ++i)
-        if (wcscmp(cm->info[i][0], name) == 0)
-            return cm->info[i][1];
-    return L"";
+    Info info = getInfo_name__(cm, name);
+    return info ? info->value : L"";
 }
 
 void delInfoItem(ChessManual cm, const wchar_t* name)
 {
-    for (int i = 0; i < cm->infoCount; ++i)
-        if (wcscmp(cm->info[i][0], name) == 0) {
-            for (int j = 0; j < 2; ++j)
-                free(cm->info[i][j]);
-            for (int k = i + 1; k < cm->infoCount; ++k)
-                for (int j = 0; j < 2; ++j)
-                    cm->info[k - 1][j] = cm->info[k][j];
-            --(cm->infoCount);
-            break;
-        }
+    removeMyLinkedList_cond(cm->infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__,
+        (void*)name);
 }
 
-static wchar_t* getFENFromCM__(ChessManual cm)
+static const wchar_t* getFENFromCM__(ChessManual cm)
 {
-    wchar_t fen[] = L"FEN";
-    for (int i = 0; i < cm->infoCount; ++i)
-        if (wcscmp(cm->info[i][0], fen) == 0)
-            return cm->info[i][1];
-    addInfoItem(cm, fen, L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR");
-    return cm->info[cm->infoCount - 1][1];
+    wchar_t fen[WCHARSIZE];
+    mbstowcs(fen, INFONAMES[FEN_INDEX], WCHARSIZE);
+    const wchar_t* value = getInfoValue(cm, fen);
+    if (wcslen(value) > 0)
+        return value;
+
+    setInfoItem(cm, fen, FEN_INITVALUE);
+    Info info = getDataMyLinkedList_idx(cm->infoMyLinkedList, myLinkedList_size(cm->infoMyLinkedList) - 1);
+    return info->value;
 }
 
 static void setMoveNumZhStr__(ChessManual cm, Move move)
@@ -528,11 +561,11 @@ static void readXQF__(ChessManual cm, FILE* fin)
         TitleA, Event, Date, Site, Red, Black,
         Opening, RMKWriter, Author
     };
-    wchar_t* names[] = {
-        L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
-        L"Opening", L"RMKWriter", L"Author"
-    };
-    for (int i = 0; i != sizeof(names) / sizeof(names[0]); ++i) {
+    int infoNames_num0 = 9;
+    wchar_t name[WCHARSIZE];
+    for (int i = 0; i < infoNames_num0; ++i) {
+        // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
+        // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 #ifdef __linux
         size_t len = strlen(values[i]) + 1;
         size_t outlen = len * 3;
@@ -542,20 +575,25 @@ static void readXQF__(ChessManual cm, FILE* fin)
 #else
         mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
 #endif
-        //wcstombs(tstr, tempStr, WIDEWCHARSIZE - 1);
-        //printf("\nsize:%ld %s", strlen(tstr), tstr);
-
-        addInfoItem(cm, names[i], tempStr);
+        mbstowcs(name, INFONAMES[i], WCHARSIZE);
+        setInfoItem(cm, name, tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    addInfoItem(cm, L"PlayType", PlayType[headCodeA_H[0]]); // 编码定义存储
+    mbstowcs(name, INFONAMES[9], WCHARSIZE); //L"PlayType"
+    setInfoItem(cm, name, PlayType[headCodeA_H[0]]); // 编码定义存储
+
     getFEN_pieChars(tempStr, pieChars);
-    addInfoItem(cm, L"FEN", wcscat(tempStr, headWhoPlay ? L" -r" : L" -b")); // 转换FEN存储
+    mbstowcs(name, INFONAMES[FEN_INDEX], WCHARSIZE); // L"FEN"
+    wcscat(tempStr, headWhoPlay ? L" -r" : L" -b");
+    setInfoItem(cm, name, tempStr); // 转换FEN存储
+
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    addInfoItem(cm, L"Result", Result[headPlayResult]); // 编码定义存储
+    mbstowcs(name, INFONAMES[11], WCHARSIZE); // L"Result"
+    setInfoItem(cm, name, Result[headPlayResult]); // 编码定义存储
+
     swprintf(tempStr, WIDEWCHARSIZE, L"%d", Version);
-    addInfoItem(cm, L"Version", tempStr); // 整数存储
-    // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
+    mbstowcs(name, INFONAMES[12], WCHARSIZE); // L"Version"
+    setInfoItem(cm, name, tempStr); // 整数存储
 
     fseek(fin, 1024, SEEK_SET);
     unsigned char tag = 0;
@@ -621,7 +659,7 @@ static void readBin__(ChessManual cm, FILE* fin)
         for (int i = 0; i < infoCount; ++i) {
             wchar_t* name = readWstring_BIN__(fin);
             wchar_t* value = readWstring_BIN__(fin);
-            addInfoItem(cm, name, value);
+            setInfoItem(cm, name, value);
             free(name);
             free(value);
         }
@@ -674,18 +712,25 @@ static void writeMove_BIN__(FILE* fout, CMove move)
         writeMove_BIN__(fout, getOther(move));
 }
 
+static void writeInfo_BIN__(Info info, FILE* fout, void* _0, void* _1)
+{
+    writeWstring_BIN__(fout, info->name);
+    writeWstring_BIN__(fout, info->value);
+}
+
 static void writeBIN__(FILE* fout, ChessManual cm)
 {
     fwrite(FILETAG, sizeof(char), sizeof(FILETAG), fout);
-    char infoCount = cm->infoCount;
-    char tag = ((infoCount > 0 ? 0x10 : 0x00) | (getRemark(cm->rootMove) ? 0x20 : 0x00) | (getNext(cm->rootMove) ? 0x80 : 0x00));
+    char infoCount = myLinkedList_size(cm->infoMyLinkedList);
+
+    char tag = ((infoCount > 0 ? 0x10 : 0x00)
+        | (getRemark(cm->rootMove) ? 0x20 : 0x00)
+        | (getNext(cm->rootMove) ? 0x80 : 0x00));
     fwrite(&tag, sizeof(char), 1, fout);
     if (tag & 0x10) {
         fwrite(&infoCount, sizeof(char), 1, fout);
-        for (int i = 0; i < infoCount; ++i) {
-            writeWstring_BIN__(fout, cm->info[i][0]);
-            writeWstring_BIN__(fout, cm->info[i][1]);
-        }
+        traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_BIN__,
+            fout, NULL, NULL);
     }
 
     if (tag & 0x20)
@@ -749,7 +794,7 @@ static void readJSON__(ChessManual cm, FILE* fin)
             char* str = cJSON_GetStringValue(kvItem);
             mbstowcs(nameValue[j], str, WIDEWCHARSIZE);
         }
-        addInfoItem(cm, nameValue[0], nameValue[1]);
+        setInfoItem(cm, nameValue[0], nameValue[1]);
     }
     setBoard_FEN(cm->board, getFENFromCM__(cm));
 
@@ -795,24 +840,27 @@ static void writeMove_JSON__(cJSON* moveJSON, CMove move)
     }
 }
 
+static void writeInfo_JSON__(Info info, cJSON* infoJSON, void* _0, void* _1)
+{
+    size_t namelen = wcstombs(NULL, info->name, 0) + 1,
+           valuelen = wcstombs(NULL, info->value, 0) + 1;
+    char name[namelen], value[valuelen];
+    wcstombs(name, info->name, namelen);
+    wcstombs(value, info->value, valuelen);
+    cJSON_AddItemToArray(infoJSON,
+        cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
+}
+
 static void writeJSON__(FILE* fout, ChessManual cm)
 {
     cJSON *manualJSON = cJSON_CreateObject(),
           *infoJSON = cJSON_CreateArray(),
           *rootmoveJSON = cJSON_CreateObject();
 
-    for (int i = 0; i < cm->infoCount; ++i) {
-        size_t namelen = wcstombs(NULL, cm->info[i][0], 0) + 1,
-               valuelen = wcstombs(NULL, cm->info[i][1], 0) + 1;
-        char name[namelen], value[valuelen];
-        wcstombs(name, cm->info[i][0], namelen);
-        wcstombs(value, cm->info[i][1], valuelen);
-        cJSON_AddItemToArray(infoJSON,
-            cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
-    }
+    traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_JSON__,
+        infoJSON, NULL, NULL);
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
-    //writeMove_JSON(rootmoveJSON, cm->rootMove);
     writeMoveRemark_JSON__(rootmoveJSON, cm->rootMove);
     if (getNext(cm->rootMove)) {
         cJSON* moveJSON = cJSON_CreateObject();
@@ -846,7 +894,7 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
         wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
         copySubStr(name, infoStr, offsetArray[2], offsetArray[3]);
         copySubStr(value, infoStr, offsetArray[4], offsetArray[5]);
-        addInfoItem(cm, name, value);
+        setInfoItem(cm, name, value);
     }
     pcrewch_free(infoReg);
 }
@@ -1115,17 +1163,19 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
         writeRemark_PGN_CC__(pstr, psize, getNext(move));
 }
 
+static void writeInfo_PGN__(Info info, wchar_t** pinfoStr, void* _, size_t* size)
+{
+    wchar_t tmpWstr[WIDEWCHARSIZE];
+    swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", info->name, info->value);
+    supper_wcscat(pinfoStr, size, tmpWstr);
+}
+
 void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm)
 {
     size_t size = WIDEWCHARSIZE;
     *pinfoStr = calloc(size, sizeof(wchar_t));
-    assert(*pinfoStr);
-
-    wchar_t tmpWstr[WIDEWCHARSIZE];
-    for (int i = 0; i < cm->infoCount; ++i) {
-        swprintf(tmpWstr, WIDEWCHARSIZE, L"[%ls \"%ls\"]\n", cm->info[i][0], cm->info[i][1]);
-        supper_wcscat(pinfoStr, &size, tmpWstr);
-    }
+    traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_PGN__,
+        pinfoStr, NULL, &size);
 }
 
 void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm)
@@ -1388,56 +1438,85 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm)
     return iccsStr;
 }
 
+static int info_cmp__(Info info0, Info info1)
+{
+    if (info0 == NULL && info1 == NULL)
+        return 0;
+
+    // 其中有一个为空指针，不相等
+    if (!(info0 && info1))
+        return 1;
+
+    // 文件名属性不做比较，视同相等
+    wchar_t file_name[WCHARSIZE];
+    mbstowcs(file_name, INFONAMES[FILENAME_INDEX], WCHARSIZE);
+    if (wcscmp(info0->name, info1->name) == 0 && wcscmp(info0->name, file_name) == 0)
+        return 0;
+
+    // 两个属性有一个不相等，则不相等
+    if (wcscmp(info0->name, info1->name) != 0 || wcscmp(info0->value, info1->value) != 0) {
+        printf("len:%ld %ld\n", wcslen(info0->value), wcslen(info1->value));
+        return 1;
+    }
+
+    return 0;
+}
+
 bool chessManual_equal(ChessManual cm0, ChessManual cm1)
 {
     if (cm0 == NULL && cm1 == NULL)
         return true;
     // 其中有一个为空指针
     if (!(cm0 && cm1)) {
-        //printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
-    if (!(cm0->infoCount == cm1->infoCount
-            && cm0->movCount_ == cm1->movCount_
+    if (!(cm0->movCount_ == cm1->movCount_
             && cm0->remCount_ == cm1->remCount_
             && cm0->maxRemLen_ == cm1->maxRemLen_
             && cm0->maxRow_ == cm1->maxRow_
             && cm0->maxCol_ == cm1->maxCol_)) {
-        //printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
+        printf("\n!(cm0 && cm1)\n%d %s\nmov:%d %d\nrem:%d %d\nmaxRen:%d %d\nmaxRow:%d %d\nmaxCol:%d %d\n",
+            __LINE__, __FILE__,
+            cm0->movCount_, cm1->movCount_,
+            cm0->remCount_, cm1->remCount_,
+            cm0->maxRemLen_, cm1->maxRemLen_,
+            cm0->maxRow_, cm1->maxRow_,
+            cm0->maxCol_, cm1->maxCol_);
         return false;
     }
 
-    for (int i = 0; i < cm0->infoCount; ++i) {
-        for (int j = 0; j < 2; ++j)
-            if (wcscmp(cm0->info[i][j], cm1->info[i][j]) != 0) {
-                //printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
-                return false;
-            }
+    //*
+    if (!myLinkedList_equal(cm0->infoMyLinkedList, cm1->infoMyLinkedList,
+            (int (*)(void*, void*))info_cmp__)) {
+        printf("\n!(info0 && info1) %d %s", __LINE__, __FILE__);
+        return false;
     }
+    //*/
 
     if (!board_equal(cm0->board, cm1->board)) {
-        //printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
     if (!rootmove_equal(cm0->rootMove, cm1->rootMove)) {
-        //printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
+        printf("\n!(cm0 && cm1)\n%d %s", __LINE__, __FILE__);
         return false;
     }
 
     return true;
 }
 
-static int addCM_Item__(FileInfo fileInfo, LinkedItem* ppreItem)
+static void addCM_Item__(FileInfo fileInfo, LinkedItem* pcurLinkedItem)
 {
     const char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
-        return -1;
+        return;
 
     ChessManual cm = newChessManual(fileName);
-    *(LinkedItem*)ppreItem = newLinkedItem(*(LinkedItem*)ppreItem, cm);
-    return 0;
+    appendLinkedItem(pcurLinkedItem, cm);
+    return;
 }
 
 static void setEcco_sn__(RegObj regObj, const wchar_t** pecco_sn, const wchar_t* iccsStr, size_t* psize)
@@ -1447,22 +1526,24 @@ static void setEcco_sn__(RegObj regObj, const wchar_t** pecco_sn, const wchar_t*
         *psize = 0;
 }
 
-// 设置开局编号
-int setCM_Ecco_Sn(ChessManual cm, LinkedItem rootRegObj_item)
+int setCM_ECCO(ChessManual cm, LinkedItem rootRegObj_item)
 {
     size_t size = 1;
     wchar_t *ecco_sn = NULL, iccsStr[WIDEWCHARSIZE];
     getIccsStr(iccsStr, cm);
     traverseLinkedItem(rootRegObj_item, (void (*)(void*, void*, void*, size_t*))setEcco_sn__,
         &ecco_sn, iccsStr, &size);
-    if (ecco_sn)
-        addInfoItem(cm, L"ECCO", ecco_sn);
+    if (ecco_sn) {
+        wchar_t ecco[WCHARSIZE];
+        mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
+        setInfoItem(cm, ecco, ecco_sn);
+    }
     return 0;
 }
 
-static void setEcco_Sn_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item, void* _, size_t* psize)
+static void setECCO_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item, void* _, size_t* psize)
 {
-    setCM_Ecco_Sn(cm, rootRegObj_item);
+    setCM_ECCO(cm, rootRegObj_item);
 }
 
 LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item)
@@ -1470,11 +1551,11 @@ LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedIt
     char fromDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     LinkedItem rootCM_LinkedItem = newLinkedItem(NULL, NULL),
-               preCM_LinkedItem = rootCM_LinkedItem;
-    operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &preCM_LinkedItem, true);
+               curCM_LinkedItem = rootCM_LinkedItem;
+    operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &curCM_LinkedItem, true);
 
     size_t size = 1;
-    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))setEcco_Sn_CM_Item__,
+    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))setECCO_CM_Item__,
         rootRegObj_item, NULL, &size);
     return rootCM_LinkedItem;
 }
@@ -1486,11 +1567,12 @@ void delRootCM_LinkedItem(LinkedItem rootCM_LinkedItem)
 
 static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
 {
-    wchar_t fileName[WIDEWCHARSIZE], wIccsStr[WIDEWCHARSIZE];
-    mbstowcs(fileName, cm->fileName, WIDEWCHARSIZE - 1);
+    wchar_t wIccsStr[WIDEWCHARSIZE], ecco[WCHARSIZE], file[WCHARSIZE];
     getIccsStr(wIccsStr, cm);
+    mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
+    mbstowcs(file, INFONAMES[FILENAME_INDEX], WCHARSIZE);
     fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-        (*size)++, getInfoValue(cm, L"ECCO"), fileName, wIccsStr);
+        (*size)++, getInfoValue(cm, ecco), getInfoValue(cm, file), wIccsStr);
 }
 
 void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_LinkedItem)
@@ -1498,4 +1580,32 @@ void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_LinkedItem)
     size_t size = 1;
     traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))printCM_Str__,
         fout, NULL, &size);
+}
+
+static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList myLinkedList)
+{
+    const char* fileName = fileInfo->name;
+    if (!fileIsRight__(fileName))
+        return;
+
+    addMyLinkedList(myLinkedList, newChessManual(fileName));
+}
+
+static void setECCO_cm__(ChessManual cm, MyLinkedList regObj_MyLinkedList, void* _0, void* _1)
+{
+    setECCO_cm(cm, regObj_MyLinkedList);
+}
+
+MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList)
+{
+    MyLinkedList myLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
+
+    char fromDir[FILENAME_MAX];
+    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
+    operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, myLinkedList, true);
+
+    traverseMyLinkedList(myLinkedList, (void (*)(void*, void*, void*, void*))setECCO_cm__,
+        regObj_MyLinkedList, NULL, NULL);
+
+    return myLinkedList;
 }

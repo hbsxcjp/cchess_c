@@ -116,11 +116,10 @@ static RegObj newRegObj__(const wchar_t* sn, const wchar_t* regstr)
     return regObj;
 }
 
-static void delRegObj__(void* regObj)
+static void delRegObj__(RegObj regObj)
 {
-    RegObj robj = regObj;
-    pcrewch_free(robj->reg);
-    free(robj);
+    pcrewch_free(regObj->reg);
+    free(regObj);
 }
 
 static BoutMoveStr getBoutMoveStr__(EccoRec eccoRec, int boutNo, bool isPre)
@@ -140,20 +139,6 @@ static EccoRec getEccoRec__(EccoRec rootEccoRec, wchar_t* sn)
     while (eccoRec && wcscmp(eccoRec->sn, sn) != 0)
         eccoRec = eccoRec->neccoRec;
     return eccoRec;
-}
-
-static void printBoutMoveStr__(BoutMoveStr rootBoutMoveStr)
-{
-    const wchar_t* blankStr = L"        ";
-    BoutMoveStr boutMoveStr = rootBoutMoveStr;
-    while ((boutMoveStr = boutMoveStr->nboutMoveStr)) {
-        fwprintf(fout, L"\t\t%2d %ls／%ls %ls／%ls\n",
-            boutMoveStr->boutNo,
-            boutMoveStr->bmvstr[RED][0] ? boutMoveStr->bmvstr[RED][0] : blankStr,
-            boutMoveStr->bmvstr[RED][1] ? boutMoveStr->bmvstr[RED][1] : blankStr,
-            boutMoveStr->bmvstr[BLACK][0] ? boutMoveStr->bmvstr[BLACK][0] : blankStr,
-            boutMoveStr->bmvstr[BLACK][1] ? boutMoveStr->bmvstr[BLACK][1] : blankStr);
-    }
 }
 
 static void printEccoRec__(EccoRec rootEccoRec)
@@ -177,7 +162,16 @@ static void printEccoRec__(EccoRec rootEccoRec)
         }
         fwprintf(fout, L"\n");
 
-        printBoutMoveStr__(eccoRec->rootBoutMoveStr);
+        const wchar_t* blankStr = L"        ";
+        BoutMoveStr boutMoveStr = eccoRec->rootBoutMoveStr;
+        while ((boutMoveStr = boutMoveStr->nboutMoveStr)) {
+            fwprintf(fout, L"\t\t%2d %ls／%ls %ls／%ls\n",
+                boutMoveStr->boutNo,
+                boutMoveStr->bmvstr[RED][0] ? boutMoveStr->bmvstr[RED][0] : blankStr,
+                boutMoveStr->bmvstr[RED][1] ? boutMoveStr->bmvstr[RED][1] : blankStr,
+                boutMoveStr->bmvstr[BLACK][0] ? boutMoveStr->bmvstr[BLACK][0] : blankStr,
+                boutMoveStr->bmvstr[BLACK][1] ? boutMoveStr->bmvstr[BLACK][1] : blankStr);
+        }
 
         //fwprintf(fout, L"regstr: %ls\n", eccoRec->regstr);
     }
@@ -719,29 +713,29 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec)
     pcrewch_free(reg_bp);
 }
 
-static int appendRegObj_Item__(void* ppreItem, int argc, char** argv, char** colNames)
+static int appendRegObj_Item__(void* pcurLinkedItem, int argc, char** argv, char** colNames)
 {
     wchar_t sn[4], regstr[SUPERWIDEWCHARSIZE];
     mbstowcs(sn, argv[0], 4);
     mbstowcs(regstr, argv[1], SUPERWIDEWCHARSIZE);
     RegObj regObj = newRegObj__(sn, regstr);
-    *(LinkedItem*)ppreItem = newLinkedItem(*(LinkedItem*)ppreItem, regObj);
 
+    appendLinkedItem(pcurLinkedItem, regObj);
     //wprintf(L"sn:%ls regstr:%ls regObj:%p\n", sn, regstr, regObj);
     return 0; // 表示执行成功
 }
 
-LinkedItem getRootRegObj_LinkedItem(sqlite3* db, const char* lib_tblName)
+LinkedItem getRootRegObj_LinkedItem(sqlite3* db, const char* tblName)
 {
     LinkedItem rootRegObj_item = newLinkedItem(NULL, NULL),
-               preRegObj_item = rootRegObj_item;
+               curRegObj_item = rootRegObj_item;
     char sql[WCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT sn, regstr FROM %s "
                  "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn DESC;",
-        lib_tblName);
-    int rc = sqlite3_exec(db, sql, appendRegObj_Item__, &preRegObj_item, &zErrMsg);
+        tblName);
+    int rc = sqlite3_exec(db, sql, appendRegObj_Item__, &curRegObj_item, &zErrMsg);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
+        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
@@ -750,7 +744,7 @@ LinkedItem getRootRegObj_LinkedItem(sqlite3* db, const char* lib_tblName)
 
 void delRootRegObj_LinkedItem(LinkedItem rootRegObj_item)
 {
-    delLinkedItem(rootRegObj_item, delRegObj__);
+    delLinkedItem(rootRegObj_item, (void (*)(void*))delRegObj__);
 }
 
 const wchar_t* getEcco_sn(RegObj regObj, const wchar_t* iccsStr)
@@ -761,20 +755,18 @@ const wchar_t* getEcco_sn(RegObj regObj, const wchar_t* iccsStr)
             : NULL);
 }
 
-static void getInitEccoSql__(char** initEccoSql,
-    const char* lib_tblName, const wchar_t* insertFormat, EccoRec rootEccoRec)
+static void getInitEccoSql__(char** initEccoSql, const wchar_t* insertFormat, EccoRec rootEccoRec)
 {
     size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t wtblName[WCHARSIZE], lineStr[SUPERWIDEWCHARSIZE],
-        *wInitEccoSql = malloc(size * sizeof(wchar_t));
+    wchar_t lineStr[SUPERWIDEWCHARSIZE], *wInitEccoSql = malloc(size * sizeof(wchar_t));
     assert(wInitEccoSql);
     wInitEccoSql[0] = L'\x0';
-    mbstowcs(wtblName, lib_tblName, WCHARSIZE);
 
     EccoRec eccoRec = rootEccoRec;
     while ((eccoRec = eccoRec->neccoRec)) {
         swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat,
-            wtblName, eccoRec->sn, eccoRec->name,
+            eccoRec->sn,
+            eccoRec->name,
             eccoRec->pre_mvstrs ? eccoRec->pre_mvstrs : L"",
             eccoRec->mvstrs ? eccoRec->mvstrs : L"",
             eccoRec->nums ? eccoRec->nums : L"",
@@ -789,33 +781,34 @@ static void getInitEccoSql__(char** initEccoSql,
     free(wInitEccoSql);
 }
 
-static char* catColNames__(char* colNames, const char** col_names, int size, const char* splitStr)
+static char* catColNames__(char* colNames, const char** col_names, int col_len, const char* sufStr)
 {
-    char tempStr[WCHARSIZE];
-    for (int i = 0; i < size; ++i) {
-        sprintf(tempStr, "%s%s", col_names[i], splitStr);
-        strcat(colNames, tempStr);
+    strcpy(colNames, "");
+    for (int i = 0; i < col_len; ++i) {
+        strcat(colNames, col_names[i]);
+        strcat(colNames, sufStr);
     }
-    colNames[strlen(colNames) - 1] = '\x0'; //去掉最后的分隔逗号
+    colNames[strlen(colNames) - 1] = '\x0'; //去掉后缀最后的分隔逗号
     return colNames;
 }
 
-static void getInsertFormat__(wchar_t* insertFormat, const char* tblName, const char** col_names, int col_len)
+static void getInsertFormat__(wchar_t* wInsertFormat, const char* tblName, const char** col_names, int col_len)
 {
-    char colNames[WCHARSIZE];
-    wchar_t wtblName[WCHARSIZE], wcolNames[WCHARSIZE] = { 0 }, wcolFmt[WCHARSIZE] = { 0 };
+    char colNames[WIDEWCHARSIZE];
+    catColNames__(colNames, col_names, col_len, " ,");
+
+    wchar_t wtblName[WCHARSIZE], wcolNames[WIDEWCHARSIZE], wcolFmt[WCHARSIZE] = { 0 };
     mbstowcs(wtblName, tblName, WCHARSIZE);
-    strcpy(colNames, "");
-    catColNames__(colNames, col_names, col_len, ",");
-    mbstowcs(wcolNames, colNames, WCHARSIZE);
+    mbstowcs(wcolNames, colNames, WIDEWCHARSIZE);
     for (int i = 0; i < col_len; ++i)
-        wcscat(wcolFmt, L"'%ls',");
+        wcscat(wcolFmt, L"'%ls' ,");
+    assert(wcslen(wcolFmt) > 0);
     wcolFmt[wcslen(wcolFmt) - 1] = L'\x0'; //去掉最后的逗号
-    swprintf(insertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%ls);\n",
+    swprintf(wInsertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%ls);\n",
         wtblName, wcolNames, wcolFmt);
 }
 
-static void storeEccolib__(sqlite3* db, const char* lib_tblName, const char** col_names, int col_len, const char* fileName)
+static void storeEccolib__(sqlite3* db, const char* tblName, const char** col_names, int col_len, const char* fileName)
 {
     char* rm;
 #ifdef __linux
@@ -827,48 +820,39 @@ static void storeEccolib__(sqlite3* db, const char* lib_tblName, const char** co
     FILE* fin = fopen(fileName, rm);
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
+    fclose(fin);
+
     EccoRec rootEccoRec = newEccoRec__(NULL);
     setEccoRec_someField__(rootEccoRec, fileWstring);
     setEccoRec_regstr__(rootEccoRec);
+
     printEccoRec__(rootEccoRec);
-
     free(fileWstring);
-    fclose(fin);
 
-    char colNames[WCHARSIZE];
+    char colNames[WIDEWCHARSIZE];
     strcpy(colNames, "ID INTEGER PRIMARY KEY AUTOINCREMENT,");
     catColNames__(colNames, col_names, col_len, " TEXT,");
-    if (sqlite3_existTable(db, lib_tblName))
-        sqlite3_deleteTable(db, lib_tblName, "1=1");
-    else if (sqlite3_createTable(db, lib_tblName, colNames) != SQLITE_OK)
+    if (sqlite3_existTable(db, tblName))
+        sqlite3_deleteTable(db, tblName, "1=1");
+    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
         return;
- 
+
     // 获取插入记录字符串，并插入
     char* initEccoSql = NULL;
-    wchar_t insertFormat[WIDEWCHARSIZE];
-    getInsertFormat__(insertFormat, lib_tblName, col_names, col_len);
-    getInitEccoSql__(&initEccoSql, lib_tblName, insertFormat, rootEccoRec);
+    wchar_t wInsertFormat[WIDEWCHARSIZE];
+    getInsertFormat__(wInsertFormat, tblName, col_names, col_len);
+    getInitEccoSql__(&initEccoSql, wInsertFormat, rootEccoRec);
     sqlite3_exec(db, initEccoSql, NULL, NULL, NULL);
     free(initEccoSql);
     delEccoRec__(rootEccoRec);
-
-    /*
-    size = wcstombs(NULL, wInsertSql, 0) + 1;
-    char insertSql[size];
-    wcstombs(insertSql, wInsertSql, size);
-    sqlite3_exec(db, insertSql, NULL, NULL, NULL);
-    free(wInsertSql);
-    //*/
 }
 
 static void wcscatCM_Str__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
 {
-    wchar_t fileName[WCHARSIZE], lineStr[SUPERWIDEWCHARSIZE], *movestr = NULL;
-    mbstowcs(fileName, getFileName_cm(cm), WCHARSIZE - 1);
-    writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
+    wchar_t lineStr[SUPERWIDEWCHARSIZE];
     swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat,
         getInfoValue(cm, L"ECCO"),
-        fileName,
+        getInfoValue(cm, L"FileName"),
         getInfoValue(cm, L"TitleA"),
         getInfoValue(cm, L"Event"),
         getInfoValue(cm, L"Date"),
@@ -882,34 +866,32 @@ static void wcscatCM_Str__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t*
         getInfoValue(cm, L"FEN"),
         getInfoValue(cm, L"Result"),
         getInfoValue(cm, L"Version"),
-        movestr ? movestr : L"");
+        getInfoValue(cm, L"movestr"));
     supper_wcscat(pwInsertSql, psize, lineStr);
-    free(movestr);
 }
 
-void storeManual(sqlite3* db, const char* man_tblName, const char** col_names, int col_len,
+void storeManual(sqlite3* db, const char* tblName, const char** col_names, int col_len,
     const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item)
 {
-    char colNames[WCHARSIZE];
+    char colNames[WIDEWCHARSIZE];
     strcpy(colNames, "ID INTEGER PRIMARY KEY AUTOINCREMENT,");
     catColNames__(colNames, col_names, col_len, " TEXT,");
-    if (sqlite3_existTable(db, man_tblName))
-        sqlite3_deleteTable(db, man_tblName, "1=1");
-    else if (sqlite3_createTable(db, man_tblName, colNames) != SQLITE_OK)
+    if (sqlite3_existTable(db, tblName))
+        sqlite3_deleteTable(db, tblName, "1=1");
+    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
         return;
 
     // 获取插入记录字符串，并插入
-    size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t insertFormat[WIDEWCHARSIZE],
-        *wInsertSql = calloc(sizeof(wchar_t), size);
-    getInsertFormat__(insertFormat, man_tblName, col_names, col_len);
-
     LinkedItem rootCM_LinkedItem = getRootCM_LinkedItem(dirName, fromfmt, rootRegObj_item);
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
+    getInsertFormat__(wInsertFormat, tblName, col_names, col_len);
     traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))wcscatCM_Str__,
-        &wInsertSql, insertFormat, &size);
+        &wInsertSql, wInsertFormat, &size);
 
     fwprintf(fout, L"\n\n%ls\n\nwInsertSql len:%d", wInsertSql, wcslen(wInsertSql));
-    printCM_LinkedItem(fout, rootCM_LinkedItem);
+    //printCM_LinkedItem(fout, rootCM_LinkedItem);
+
     delRootCM_LinkedItem(rootCM_LinkedItem);
 
     size = wcstombs(NULL, wInsertSql, 0) + 1;
@@ -936,21 +918,73 @@ void initEcco(char* dbName)
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        const char *lib_tblName = "ecco", *srcFileName = "chessManual/eccolib_src",
-                   *man_tblName = "manual", *manualDirName = "chessManual/示例文件",
+        extern const char* INFONAMES[INITINFOLEN];
+        const char *lib_tblName = "ecco",
                    *lib_col_names[] = { "SN", "NAME", "PRE_MVSTRS", "MVSTRS", "NUMS", "REGSTR" },
-                   *man_col_names[] = { "Ecco_sn", "FileName", "TitleA", "Event", "Date", "Site", "Red", "Black",
-                       "Opening", "RMKWriter", "Author", "PlayType", "FEN", "Result", "Version", "movestr" };
-        int lib_col_len = sizeof(lib_col_names) / sizeof(lib_col_names[0]),
-            man_col_len = sizeof(man_col_names) / sizeof(man_col_names[0]);
+                   *srcFileName = "chessManual/eccolib_src",
+                   *man_tblName = "manual",
+                   *manualDirName = "chessManual/示例文件";
+        int lib_col_len = sizeof(lib_col_names) / sizeof(lib_col_names[0]);
 
         storeEccolib__(db, lib_tblName, lib_col_names, lib_col_len, srcFileName);
 
+        //*
         LinkedItem rootRegObj_item = getRootRegObj_LinkedItem(db, lib_tblName);
-        storeManual(db, man_tblName, man_col_names, man_col_len, manualDirName, XQF, rootRegObj_item);
+        storeManual(db, man_tblName, INFONAMES, INITINFOLEN, manualDirName, XQF, rootRegObj_item);
         delRootRegObj_LinkedItem(rootRegObj_item);
+        //*/
     }
     sqlite3_close(db);
 
     fclose(fout);
+}
+
+
+
+static int addRegObj_MyLinkedList__(void* myLinkedList, int argc, char** argv, char** colNames)
+{
+    int size0 = mbstowcs(NULL, argv[0], 0) + 1,
+        size1 = mbstowcs(NULL, argv[1], 0) + 1;
+    wchar_t sn[size0], regstr[size1];
+    mbstowcs(sn, argv[0], size0);
+    mbstowcs(regstr, argv[1], size1);
+
+    addMyLinkedList(myLinkedList, newRegObj__(sn, regstr));
+    return 0; // 表示执行成功
+}
+
+MyLinkedList getRegObj_MyLinkedList(sqlite3* db, const char* tblName)
+{
+    MyLinkedList myLinkedList = newMyLinkedList((void (*)(void*))delRegObj__);
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "SELECT sn, regstr FROM %s "
+                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn DESC;",
+        tblName);
+    int rc = sqlite3_exec(db, sql, addRegObj_MyLinkedList__, myLinkedList, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
+    return myLinkedList;
+}
+
+static int compare_iccsStr__(RegObj regObj, const wchar_t* iccsStr)
+{
+    int ovector[30];
+    return (pcrewch_exec(regObj->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, 30) > 0 ? 0 : 1); // 0:匹配成功
+}
+
+bool setECCO_cm(ChessManual cm, MyLinkedList regObj_MyLinkedList)
+{
+    wchar_t iccsStr[WIDEWCHARSIZE];
+    getIccsStr(iccsStr, cm);
+    RegObj regObj = getDataMyLinkedList_cond(regObj_MyLinkedList, (int (*)(void*, void*))compare_iccsStr__, iccsStr);
+    if (regObj == NULL)
+        return false;
+
+    wchar_t ecco[WCHARSIZE];
+    //mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
+    //setInfoItem(cm, ecco, regObj->sn);
+    return true;
 }
