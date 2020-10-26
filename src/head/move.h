@@ -3,13 +3,6 @@
 
 #include "base.h"
 
-// 新建着法树
-MoveTree newMoveTree(void);
-
-void delMoveTree(MoveTree moveTree);
-
-void clearMoveTree(MoveTree moveTree);
-
 // 新建根着法
 Move newMove(void);
 // 删除move的所有下着move、变着move及自身
@@ -86,32 +79,4 @@ bool isContinuousCatch(Move move, int boutCount); //(未测试)
 
 bool rootmove_equal(CMove rootmove0, CMove rootmove1);
 
-Move getCurMoveTree(MoveTree moveTree);
-
-bool goMoveTree(MoveTree moveTree);
-
-bool goOtherMoveTree(MoveTree moveTree);
-
-int goEndMoveTree(MoveTree moveTree);
-
-int goToMoveTree(MoveTree moveTree, Move move);
-
-bool backMoveTree(MoveTree moveTree);
-
-bool backNextMoveTree(MoveTree moveTree);
-
-bool backOtherMoveTree(MoveTree moveTree);
-
-int backToPreMoveTree(MoveTree moveTree);
-
-int backFirstMoveTree(MoveTree moveTree);
-
-int backToMoveTree(MoveTree moveTree, Move move);
-
-int goIncMoveTree(MoveTree moveTree, int inc);
-
-// 生成着法
-Move newMove_bs(Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark);
-
-bool addMoveToMoveTree(MoveTree moveTree, Move move, bool isOther);
 #endif

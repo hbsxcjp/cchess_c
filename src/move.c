@@ -10,7 +10,7 @@ struct Move {
     wchar_t* remark; // 注解
     wchar_t zhStr[6]; // 着法名称
     bool kill, willKill, catch; // 将、杀、捉
-    Move pmove, nmove, omove; // 前着、下着、变着
+    Move prev, next, other; // 前着、下着、变着
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 
@@ -24,7 +24,7 @@ Move newMove(void)
     move->remark = NULL;
     wcscpy(move->zhStr, L"0000");
     move->kill = move->willKill = move->catch = false;
-    move->pmove = move->nmove = move->omove = NULL;
+    move->prev = move->next = move->other = NULL;
     move->nextNo_ = move->otherNo_ = move->CC_ColNo_ = 0;
     return move;
 }
@@ -33,65 +33,33 @@ void delMove(Move move)
 {
     if (move == NULL)
         return;
-    Move omove = move->omove,
-         nmove = move->nmove;
+    Move other = move->other,
+         next = move->next;
     //free(move->fen);
     free(move->remark);
     free(move);
-    delMove(omove);
-    delMove(nmove);
+    delMove(other);
+    delMove(next);
 }
 
-struct MoveTree {
-    Move rootMove;
-    Move curMove;
-
-    int theSize;
-};
-
-MoveTree newMoveTree(void)
-{
-    MoveTree moveTree = malloc(sizeof(struct MoveTree));
-    moveTree->rootMove = newMove();
-    moveTree->curMove = moveTree->rootMove;
-
-    moveTree->theSize = 0;
-    return moveTree;
-}
-
-void delMoveTree(MoveTree moveTree)
-{
-    delMove(moveTree->rootMove);
-    free(moveTree);
-}
-
-void clearMoveTree(MoveTree moveTree)
-{
-    delMove(moveTree->rootMove);
-    moveTree->rootMove = newMove();
-    moveTree->curMove = moveTree->rootMove;
-
-    moveTree->theSize = 0;
-}
-
-inline Move getSimplePre(CMove move) { return move->pmove; }
+inline Move getSimplePre(CMove move) { return move->prev; }
 
 Move getPre(CMove move)
 {
     //assert(getSimplePre(move));
     while (hasPreOther(move)) // 推进到非变着
-        move = move->pmove;
-    return move->pmove;
+        move = move->prev;
+    return move->prev;
 }
-inline Move getNext(CMove move) { return move->nmove; }
-inline Move getOther(CMove move) { return move->omove; }
+inline Move getNext(CMove move) { return move->next; }
+inline Move getOther(CMove move) { return move->other; }
 
 void cutMove(Move move)
 {
     if (hasPreOther(move))
-        move->pmove->omove = NULL;
+        move->prev->other = NULL;
     else if (getSimplePre(move))
-        move->pmove->nmove = NULL;
+        move->prev->next = NULL;
     delMove(move);
 }
 
@@ -104,8 +72,8 @@ int getPreMoves(Move* moves, Move move)
             move = getPre(move);
             /*
             while (hasPreOther(move)) // 推进到非变着
-                move = move->pmove;
-            move = move->pmove;
+                move = move->prev;
+            move = move->prev;
             //*/
         }
         int mid = index / 2;
@@ -145,16 +113,16 @@ inline int getNextNo(CMove move) { return move->nextNo_; }
 inline int getOtherNo(CMove move) { return move->otherNo_; }
 inline int getCC_ColNo(CMove move) { return move->CC_ColNo_; }
 
-//inline PieceColor getFirstColor(CMove move) { return move->nmove == NULL ? RED : getColor(getPiece_s(move->fseat)); }
+//inline PieceColor getFirstColor(CMove move) { return move->next == NULL ? RED : getColor(getPiece_s(move->fseat)); }
 
 inline bool isStart(CMove move) { return !getSimplePre(move); }
-inline bool hasPreOther(CMove move) { return getSimplePre(move) && move == getSimplePre(move)->omove; }
-inline bool isRootMove(CMove move) { return move->pmove == NULL; }
-//inline bool isSameRowCol(CMove lmove, CMove pmove) { return getRowCols_m(lmove) == getRowCols_m(pmove); }
-bool isConnected(CMove lmove, CMove pmove)
+inline bool hasPreOther(CMove move) { return getSimplePre(move) && move == getSimplePre(move)->other; }
+inline bool isRootMove(CMove move) { return move->prev == NULL; }
+//inline bool isSameRowCol(CMove lmove, CMove prev) { return getRowCols_m(lmove) == getRowCols_m(prev); }
+bool isConnected(CMove lmove, CMove prev)
 {
-    assert(pmove);
-    while (lmove && lmove != pmove)
+    assert(prev);
+    while (lmove && lmove != prev)
         lmove = getPre(lmove);
     return lmove;
 }
@@ -266,10 +234,10 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
     move->nextNo_ = preMove->nextNo_ + (isOther ? 0 : 1);
     move->otherNo_ = preMove->otherNo_ + (isOther ? 1 : 0);
     if (isOther)
-        preMove->omove = move;
+        preMove->other = move;
     else
-        preMove->nmove = move;
-    move->pmove = preMove;
+        preMove->next = move;
+    move->prev = preMove;
     return move;
 }
 
@@ -280,8 +248,8 @@ void changeMove(Move move, Board board, ChangeType ct)
     move->fseat = getOtherSeat(board, move->fseat, ct);
     move->tseat = getOtherSeat(board, move->tseat, ct);
 
-    changeMove(move->omove, board, ct);
-    changeMove(move->nmove, board, ct);
+    changeMove(move->other, board, ct);
+    changeMove(move->next, board, ct);
 }
 
 void doMove(Move move)
@@ -309,11 +277,11 @@ wchar_t* getMoveStr(wchar_t* wstr, CMove move)
 {
     wchar_t preWstr[WCHARSIZE] = { 0 }, thisWstr[WCHARSIZE] = { 0 }, nextWstr[WCHARSIZE] = { 0 }, otherWstr[WCHARSIZE] = { 0 };
     swprintf(wstr, WIDEWCHARSIZE, L"%s：%ls\n现在：%ls\n下着：%ls\n下变：%ls\n注解：               导航区%3d行%2d列\n%ls",
-        ((move->pmove == NULL || move->pmove->nmove == move) ? L"前着" : L"前变"),
-        getSimpleMoveStr__(preWstr, move->pmove),
+        ((move->prev == NULL || move->prev->next == move) ? L"前着" : L"前变"),
+        getSimpleMoveStr__(preWstr, move->prev),
         getSimpleMoveStr__(thisWstr, move),
-        getSimpleMoveStr__(nextWstr, move->nmove),
-        getSimpleMoveStr__(otherWstr, move->omove),
+        getSimpleMoveStr__(nextWstr, move->next),
+        getSimpleMoveStr__(otherWstr, move->other),
         move->nextNo_, move->CC_ColNo_ + 1, move->remark);
     return wstr;
 }
@@ -396,169 +364,4 @@ bool rootmove_equal(CMove rootmove0, CMove rootmove1)
         return false;
 
     return move_equalMap__(rootmove0, rootmove1);
-}
-
-Move getCurMoveTree(MoveTree moveTree)
-{
-    return moveTree->curMove;
-}
-
-static bool goMoveTree__(MoveTree moveTree, Move curMove)
-{
-    doMove(curMove);
-    moveTree->curMove = curMove;
-    return true;
-}
-
-bool goMoveTree(MoveTree moveTree)
-{
-    if (getNext(moveTree->curMove))
-        return goMoveTree__(moveTree, getNext(moveTree->curMove));
-    return false;
-}
-
-bool goOtherMoveTree(MoveTree moveTree)
-{
-    if (getOther(moveTree->curMove)) {
-        undoMove(moveTree->curMove);
-        return goMoveTree__(moveTree, getOther(moveTree->curMove));
-    }
-    return false;
-}
-
-int goEndMoveTree(MoveTree moveTree)
-{
-    int count = 0;
-    while (getNext(moveTree->curMove)) {
-        goMoveTree__(moveTree, getNext(moveTree->curMove));
-        ++count;
-    }
-    return count;
-}
-
-int goToMoveTree(MoveTree moveTree, Move move)
-{
-    assert(move);
-    moveTree->curMove = move;
-    Move preMoves[getNextNo(move)];
-    int count = getPreMoves(preMoves, move);
-    for (int i = 0; i < count; ++i)
-        doMove(preMoves[i]);
-    return count;
-}
-
-static bool backMoveTree__(MoveTree moveTree)
-{
-    undoMove(moveTree->curMove);
-    moveTree->curMove = getSimplePre(moveTree->curMove);
-    return true;
-}
-
-bool backMoveTree(MoveTree moveTree)
-{
-    if (hasPreOther(moveTree->curMove))
-        return backOtherMoveTree(moveTree);
-    else if (getSimplePre(moveTree->curMove))
-        return backMoveTree__(moveTree);
-    return false;
-}
-
-bool backNextMoveTree(MoveTree moveTree)
-{
-    if (getSimplePre(moveTree->curMove) && !hasPreOther(moveTree->curMove)) {
-        backMoveTree__(moveTree);
-        return true;
-    }
-    return false;
-}
-
-bool backOtherMoveTree(MoveTree moveTree)
-{
-    if (hasPreOther(moveTree->curMove)) {
-        backMoveTree__(moveTree); // 变着回退
-        doMove(moveTree->curMove); // 前变执行
-        return true;
-    }
-    return false;
-}
-
-int backToPreMoveTree(MoveTree moveTree)
-{
-    int count = 0;
-    while (hasPreOther(moveTree->curMove)) {
-        backOtherMoveTree(moveTree);
-        ++count;
-    }
-    backNextMoveTree(moveTree);
-    return ++count;
-}
-
-int backFirstMoveTree(MoveTree moveTree)
-{
-    int count = 0;
-    while (getSimplePre(moveTree->curMove)) {
-        backMoveTree(moveTree);
-        ++count;
-    }
-    return count;
-}
-
-int backToMoveTree(MoveTree moveTree, Move move)
-{
-    int count = 0;
-    while (getSimplePre(moveTree->curMove) && moveTree->curMove != move) {
-        backMoveTree(moveTree);
-        ++count;
-    }
-    return count;
-}
-
-int goIncMoveTree(MoveTree moveTree, int inc)
-{
-    int incCount = abs(inc), count = 0;
-    bool (*func)(MoveTree) = inc > 0 ? goMoveTree : backMoveTree;
-    while (incCount-- > 0)
-        if (func(moveTree))
-            ++count;
-    return count;
-}
-
-Move newMove_bs(Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark)
-{
-    bool success = true;
-    Move move = newMove();
-    switch (fmt) {
-    case XQF:
-    case BIN:
-    case JSON:
-        setMoveSeat_rc__(move, board, wstr);
-        break;
-    case PGN_ICCS:
-        setMoveSeat_iccs__(move, board, wstr);
-        break;
-    default: // PGN_ZH PGN_CC
-        success = setMoveSeat_zh__(move, board, wstr);
-        break;
-    }
-    
-    if (!success || !isCanMove(board, move->fseat, move->tseat)) {
-        delMove(move);
-        return NULL; // 添加着法失败
-    }
-    setRemark(move, remark);
-
-    return move;
-}
-
-bool addMoveToMoveTree(MoveTree moveTree, Move move, bool isOther)
-{
-    Move curMove = moveTree->curMove;
-    move->nextNo_ = curMove->nextNo_ + (isOther ? 0 : 1);
-    move->otherNo_ = curMove->otherNo_ + (isOther ? 1 : 0);
-    move->pmove = curMove;
-
-    isOther ? (curMove->omove = move) : (curMove->nmove = move);
-    moveTree->theSize++;
-
-    return isOther ? goOtherMoveTree(moveTree) : goMoveTree(moveTree);
 }

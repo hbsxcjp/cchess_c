@@ -2,6 +2,7 @@
 #define TOOLS_H
 
 #include "base.h"
+#include "mylinkedlist.h"
 #include <iconv.h>
 
 #ifdef __linux
@@ -88,18 +89,6 @@ void pcrewch_free(void* reg);
 // 正则类 结束 -------------------------------------------------------------------------------------- //
 
 // 文件类 开始 -------------------------------------------------------------------------------------- //
-// 文件信息结构数组指针
-typedef struct FileInfo {
-    char* name;
-    unsigned int attrib;
-    unsigned long size;
-} * FileInfo;
-
-typedef struct FileInfos {
-    FileInfo* fis;
-    int size;
-    int count;
-} * FileInfos;
 
 // 从文件名提取目录名
 void getDirName(char* dirName, const char* fileName);
@@ -127,13 +116,14 @@ int copyFile(const char* SourceFile, const char* NewFile);
 int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen);
 #endif
 
-// 新建删除文件信息结构组
-FileInfos newFileInfos(void);
+// 文件信息结构数组指针
+typedef struct FileInfo* FileInfo;
 
-void delFileInfos(FileInfos fileInfos);
-
-// 提取目录下的文件信息
-void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive);
+struct FileInfo {
+    char* name;
+    unsigned int attrib;
+    unsigned long size;
+};
 
 // 测试函数
 void writeFileInfos(FILE* fout, const char* dirName);
@@ -153,41 +143,5 @@ int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition);
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 // 数据库类 结束 -------------------------------------------------------------------------------------- //
-
-// 单链表类 开始 -------------------------------------------------------------------------------------- //
-
-// 单链表类
-typedef struct LinkedItem* LinkedItem;
-
-// 新建singleList
-LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object);
-
-// 添加链接节点，前置节点移到当前添加节点
-LinkedItem appendLinkedItem(LinkedItem* pcurLinkedItem, void* object);
-
-// 查找所含对象符合某个条件的节点
-LinkedItem findLinkedItem(LinkedItem rootLinkedItem, int (*objece_compare)(void*, void*), void* compObj);
-
-// 剪切所含对象符合某个条件的节点
-LinkedItem cutLinkedItem(LinkedItem rootLinkedItem, void* compObj, int (*object_compare)(void*, void*),
-    void (*delObject)(void*));
-
-// 比较两个单链表是否相等
-bool rootLinkedItem_equal(LinkedItem rootLinkedItem0, LinkedItem rootLinkedItem1,
-    int (*object_cmp)(void*, void*));
-
-// 获取根节点以下的节点个数
-int getLinkedItemCount(LinkedItem rootLinkedItem);
-
-// 删除singleList
-void delLinkedItem(LinkedItem item, void (*delObject)(void*));
-
-LinkedItem getNextItem(LinkedItem item);
-
-void* getObject(LinkedItem item);
-
-void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, size_t*),
-    void* arg1, void* arg2, size_t* psize);
-// 单链表类 结束 -------------------------------------------------------------------------------------- //
 
 #endif

@@ -38,7 +38,7 @@ struct ChessManual {
     Board board;
     Move rootMove, curMove;
 
-    MoveTree moveTree;
+    //MoveTree moveTree;
     MyLinkedList infoMyLinkedList;
     int movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
@@ -102,7 +102,7 @@ ChessManual newChessManual(const char* fileName)
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
 
-    cm->moveTree = newMoveTree();
+    //cm->moveTree = newMoveTree();
     cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo__);
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
@@ -137,7 +137,7 @@ void delChessManual(ChessManual cm)
     delMyLinkedList(cm->infoMyLinkedList);
     delMove(cm->rootMove);
 
-    delMoveTree(cm->moveTree);
+    //delMoveTree(cm->moveTree);
     delBoard(cm->board);
     free(cm);
 }
@@ -271,7 +271,7 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
     }
     Move move = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
     if (move == NULL) {
-        if (isOther){
+        if (isOther) {
             doMove(cm->curMove);
         }
         //printBoard(cm->board, fmt, isOther, wstr);
@@ -452,7 +452,7 @@ static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
         move = cm->curMove;
 
         //curMove = getCurMoveTree(cm->moveTree);
-        if (remark){
+        if (remark) {
             setRemark(move, remark);
 
             //setRemark(curMove, remark);
@@ -1534,80 +1534,6 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     return true;
 }
 
-static void addCM_Item__(FileInfo fileInfo, LinkedItem* pcurLinkedItem)
-{
-    const char* fileName = fileInfo->name;
-    if (!fileIsRight__(fileName))
-        return;
-
-    ChessManual cm = newChessManual(fileName);
-    appendLinkedItem(pcurLinkedItem, cm);
-    return;
-}
-
-static void setEcco_sn__(RegObj regObj, const wchar_t** pecco_sn, const wchar_t* iccsStr, size_t* psize)
-{
-    *pecco_sn = getEcco_sn(regObj, iccsStr);
-    if (*pecco_sn)
-        *psize = 0;
-}
-
-int setCM_ECCO(ChessManual cm, LinkedItem rootRegObj_item)
-{
-    size_t size = 1;
-    wchar_t *ecco_sn = NULL, iccsStr[WIDEWCHARSIZE];
-    getIccsStr(iccsStr, cm);
-    traverseLinkedItem(rootRegObj_item, (void (*)(void*, void*, void*, size_t*))setEcco_sn__,
-        &ecco_sn, iccsStr, &size);
-    if (ecco_sn) {
-        wchar_t ecco[WCHARSIZE];
-        mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
-        setInfoItem(cm, ecco, ecco_sn);
-    }
-    return 0;
-}
-
-static void setECCO_CM_Item__(ChessManual cm, LinkedItem rootRegObj_item, void* _, size_t* psize)
-{
-    setCM_ECCO(cm, rootRegObj_item);
-}
-
-LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item)
-{
-    char fromDir[FILENAME_MAX];
-    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
-    LinkedItem rootCM_LinkedItem = newLinkedItem(NULL, NULL),
-               curCM_LinkedItem = rootCM_LinkedItem;
-    operateDir(fromDir, (void (*)(void*, void*))addCM_Item__, &curCM_LinkedItem, true);
-
-    size_t size = 1;
-    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))setECCO_CM_Item__,
-        rootRegObj_item, NULL, &size);
-    return rootCM_LinkedItem;
-}
-
-void delRootCM_LinkedItem(LinkedItem rootCM_LinkedItem)
-{
-    delLinkedItem(rootCM_LinkedItem, (void (*)(void*))delChessManual);
-}
-
-static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
-{
-    wchar_t wIccsStr[WIDEWCHARSIZE], ecco[WCHARSIZE], file[WCHARSIZE];
-    getIccsStr(wIccsStr, cm);
-    mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
-    mbstowcs(file, INFONAMES[FILENAME_INDEX], WCHARSIZE);
-    fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-        (*size)++, getInfoValue(cm, ecco), getInfoValue(cm, file), wIccsStr);
-}
-
-void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_LinkedItem)
-{
-    size_t size = 1;
-    traverseLinkedItem(rootCM_LinkedItem, (void (*)(void*, void*, void*, size_t*))printCM_Str__,
-        fout, NULL, &size);
-}
-
 static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList myLinkedList)
 {
     const char* fileName = fileInfo->name;
@@ -1633,4 +1559,20 @@ MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt,
     traverseMyLinkedList(myLinkedList, setECCO_cm__, regObj_MyLinkedList, NULL, NULL);
 
     return myLinkedList;
+}
+static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
+{
+    wchar_t wIccsStr[WIDEWCHARSIZE], ecco[WCHARSIZE], file[WCHARSIZE];
+    getIccsStr(wIccsStr, cm);
+    mbstowcs(ecco, INFONAMES[ECCO_INDEX], WCHARSIZE);
+    mbstowcs(file, INFONAMES[FILENAME_INDEX], WCHARSIZE);
+    fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
+        (*size)++, getInfoValue(cm, ecco), getInfoValue(cm, file), wIccsStr);
+}
+
+void printCM_MyLinkedList(FILE* fout, MyLinkedList cm_MyLinkedList)
+{
+    size_t size = 1;
+    traverseMyLinkedList(cm_MyLinkedList, (void (*)(void*, void*, void*, void*))printCM_Str__,
+        fout, NULL, &size);
 }

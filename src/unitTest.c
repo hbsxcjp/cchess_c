@@ -626,7 +626,7 @@ static void test_chessManual_xqf(void)
                       "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n";
 
     ChessManual cm = newChessManual(xqfFileName__);
-    /*
+    //*
 
     char* resultStr = NULL;
     wchar_t* wstr = NULL;
@@ -642,7 +642,7 @@ static void test_chessManual_xqf(void)
     free(resultStr);
     //*/
 
-    /*
+    //*
     char iccsStr[WIDEWCHARSIZE];
     getIccsStr_c(iccsStr, cm);
     CU_ASSERT_STRING_EQUAL(iccses, iccsStr);
@@ -712,7 +712,7 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    //initEcco("chess.db");
+    initEcco("chess.db");
 }
 
 static CU_TestInfo suite_chessManual[] = {

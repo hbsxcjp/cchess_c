@@ -307,6 +307,7 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
 }
 #endif
 
+
 static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)
 {
     FileInfo fileInfo = malloc(sizeof(struct FileInfo));
@@ -323,57 +324,35 @@ static void delFileInfo__(FileInfo fileInfo)
     free(fileInfo);
 }
 
-FileInfos newFileInfos(void)
+static void addFI_LinkedList__(FileInfo fileInfo, MyLinkedList fi_LinkedList)
 {
-    FileInfos fileInfos = malloc(sizeof(struct FileInfos));
-    fileInfos->count = 0;
-    fileInfos->size = 256;
-    fileInfos->fis = malloc(fileInfos->size * sizeof(FileInfo));
-    assert(fileInfos);
-    return fileInfos;
+    addMyLinkedList(fi_LinkedList, newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size));
 }
 
-void delFileInfos(FileInfos fileInfos)
+MyLinkedList getFileInfo_MyLinkedList(const char* dirName, bool recursive)
 {
-    for (int i = 0; i < fileInfos->count; ++i)
-        //free(fileInfos->fis[i]);
-        delFileInfo__(fileInfos->fis[i]);
-    free(fileInfos->fis);
-    free(fileInfos);
+    MyLinkedList fi_LinkedList = newMyLinkedList((void (*)(void*))delFileInfo__);
+    operateDir(dirName, (void (*)(void*, void*))addFI_LinkedList__, fi_LinkedList, recursive);
+
+    return fi_LinkedList;
 }
 
-static void addFileInfos__(FileInfo fileInfo, FileInfos fileInfos)
+static void printfFileInfo__(FileInfo fileInfo, FILE* fout, void* _0, void* _1)
 {
-    if (fileInfos->count == fileInfos->size) {
-        fileInfos->size *= 2;
-        fileInfos->fis = realloc(fileInfos->fis, fileInfos->size * sizeof(FileInfo));
-        assert(fileInfos->fis);
-    }
-
-    fileInfos->fis[fileInfos->count++] = newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size);
-}
-
-void getFileInfos(FileInfos fileInfos, const char* dirName, bool recursive)
-{
-    operateDir(dirName, (void (*)(void*, void*))addFileInfos__, fileInfos, recursive);
+    fprintf(fout, "attr:%4x size:%lu %s\n",
+        fileInfo->attrib, fileInfo->size, fileInfo->name);
 }
 
 void writeFileInfos(FILE* fout, const char* dirName)
 {
     fprintf(fout, "\n");
-    int sum = 0;
-    FileInfos fileInfos = newFileInfos();
-    getFileInfos(fileInfos, dirName, true);
 
-    for (int i = 0; i < fileInfos->count; ++i)
-        fprintf(fout, "attr:%4x size:%lu %s\n",
-            fileInfos->fis[i]->attrib, fileInfos->fis[i]->size, fileInfos->fis[i]->name);
-    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, fileInfos->count);
+    MyLinkedList fi_LinkedList = getFileInfo_MyLinkedList(dirName, true);
+    traverseMyLinkedList(fi_LinkedList, (void (*)(void*, void*, void*, void*))printfFileInfo__,
+        fout, NULL, NULL);
 
-    sum += fileInfos->count;
-    delFileInfos(fileInfos);
-
-    fprintf(fout, "总共包括:%d个文件。\n", sum);
+    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, myLinkedList_size(fi_LinkedList));
+    delMyLinkedList(fi_LinkedList);
 }
 
 void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, bool recursive)
@@ -501,118 +480,4 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
         fprintf(stderr, "\nErrMsg: %s", zErrMsg);
     sqlite3_free(zErrMsg);
     return resultCode;
-}
-
-struct LinkedItem {
-    void* object;
-    LinkedItem next;
-};
-
-LinkedItem newLinkedItem(LinkedItem preLinkedItem, void* object)
-{
-    LinkedItem linkedItem = malloc(sizeof(struct LinkedItem));
-    linkedItem->object = object;
-    linkedItem->next = NULL;
-    if (preLinkedItem)
-        preLinkedItem->next = linkedItem;
-    return linkedItem;
-}
-
-LinkedItem appendLinkedItem(LinkedItem* pcurLinkedItem, void* object)
-{
-    return *pcurLinkedItem = newLinkedItem(*pcurLinkedItem, object);
-}
-
-static LinkedItem findPreLinkedItem__(LinkedItem rootLinkedItem, int (*object_compare)(void*, void*), void* compObj)
-{
-    LinkedItem preLinkedItem = rootLinkedItem;
-    while (preLinkedItem->next && object_compare(preLinkedItem->next->object, compObj) != 0)
-        preLinkedItem = preLinkedItem->next;
-    return preLinkedItem->next ? preLinkedItem : NULL; // NULL 或 满足比较条件的节点
-}
-
-LinkedItem findLinkedItem(LinkedItem rootLinkedItem, int (*object_compare)(void*, void*), void* compObj)
-{
-    LinkedItem preLinkedItem = findPreLinkedItem__(rootLinkedItem, object_compare, compObj);
-    return preLinkedItem ? preLinkedItem->next : NULL;
-}
-
-static void eraseLinkedItem__(LinkedItem linkedItem, void (*delObject)(void*))
-{
-    if (linkedItem->object)
-        delObject(linkedItem->object);
-    free(linkedItem);
-}
-
-LinkedItem cutLinkedItem(LinkedItem rootLinkedItem, void* compObj, int (*object_compare)(void*, void*),
-    void (*delObject)(void*))
-{
-    LinkedItem preLinkedItem = findPreLinkedItem__(rootLinkedItem, object_compare, compObj);
-    if (preLinkedItem) {
-        LinkedItem linkedItem = preLinkedItem->next;
-        preLinkedItem->next = linkedItem->next;
-        eraseLinkedItem__(linkedItem, delObject);
-        return preLinkedItem->next; // 返回剪切对象之后的节点
-    }
-    return NULL;
-}
-
-static void operator_compare__(void* object, LinkedItem* potherLinkedItem,
-    int (*object_cmp)(void*, void*), size_t* size)
-{
-    *potherLinkedItem = getNextItem(*potherLinkedItem);
-    if (object_cmp(object, getObject(*potherLinkedItem)) != 0)
-        *size = 0; // 不相等
-}
-
-bool rootLinkedItem_equal(LinkedItem rootLinkedItem0, LinkedItem rootLinkedItem1,
-    int (*object_cmp)(void*, void*))
-{
-    if (getLinkedItemCount(rootLinkedItem0) != getLinkedItemCount(rootLinkedItem1)) {
-        printf("\nrootLinkedItem_equal %d %s", __LINE__, __FILE__);
-        return 0;
-    }
-
-    size_t size = 1;
-    traverseLinkedItem(rootLinkedItem0, (void (*)(void*, void*, void*, size_t*))operator_compare__,
-        &rootLinkedItem1, object_cmp, &size);
-    return size != 0; // size = 1, 则相等
-}
-
-int getLinkedItemCount(LinkedItem rootLinkedItem)
-{
-    int count = 0;
-    LinkedItem linkedItem = rootLinkedItem;
-    while ((linkedItem = linkedItem->next))
-        ++count;
-    return count;
-}
-
-void delLinkedItem(LinkedItem linkedItem, void (*delObject)(void*))
-{
-    if (linkedItem == NULL)
-        return;
-
-    LinkedItem next = linkedItem->next;
-    eraseLinkedItem__(linkedItem, delObject);
-
-    delLinkedItem(next, delObject);
-}
-
-LinkedItem getNextItem(LinkedItem linkedItem)
-{
-    return linkedItem->next;
-}
-
-void* getObject(LinkedItem linkedItem)
-{
-    return linkedItem->object;
-}
-
-void traverseLinkedItem(LinkedItem rootLinkedItem, void (*operatorObj)(void*, void*, void*, size_t*),
-    void* arg1, void* arg2, size_t* psize)
-{
-    LinkedItem linkedItem = rootLinkedItem;
-    while (*psize && (linkedItem = getNextItem(linkedItem)))
-        operatorObj(getObject(linkedItem), arg1, arg2, psize);
 }

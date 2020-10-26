@@ -5,8 +5,9 @@
 #include "ecco.h"
 #include "tools.h"
 
-#define INFOSIZE 32
 #define INITINFOLEN 16
+
+extern const char* INFONAMES[INITINFOLEN];
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -87,18 +88,8 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
-// 设置开局编号
-int setCM_ECCO(ChessManual cm, LinkedItem rootRegObj_item);
-
-// 读取目录下文件至chessManualRec
-LinkedItem getRootCM_LinkedItem(const char* dirName, RecFormat fromfmt, LinkedItem rootRegObj_item);
-
-void delRootCM_LinkedItem(LinkedItem rootCM_item);
-
-void printCM_LinkedItem(FILE* fout, LinkedItem rootCM_item);
-
-
 // 获取棋谱对象链表
 MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
 
+void printCM_MyLinkedList(FILE* fout, MyLinkedList cm_MyLinkedList);
 #endif

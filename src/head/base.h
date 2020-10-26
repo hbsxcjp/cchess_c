@@ -13,6 +13,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <wchar.h>
@@ -109,8 +110,7 @@ typedef enum {
 // 着法类型
 typedef struct Move* Move;
 typedef const struct Move* CMove;
-
-typedef struct MoveTree* MoveTree;
+//typedef struct MoveTree* MoveTree;
 
 typedef struct MoveRec* MoveRec;
 
