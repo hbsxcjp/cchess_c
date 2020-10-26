@@ -193,9 +193,14 @@ void traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*,
 
 static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, void*), bool* isSame)
 {
+    if (*pnode == NULL)
+        return;
+
     *pnode = (*pnode)->next;
-    if (data_cmp(data, (*pnode)->data) != 0)
+    if (data_cmp(data, (*pnode)->data) != 0){
         *isSame = false;
+        *pnode = NULL;
+    }
 }
 
 bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,

@@ -14,11 +14,7 @@ struct Move {
     int nextNo_, otherNo_, CC_ColNo_; // 走着、变着序号，文本图列号
 };
 
-struct MoveRec {
-    char text[WCHARSIZE];
-};
-
-Move newMove()
+Move newMove(void)
 {
     Move move = malloc(sizeof(struct Move));
     assert(move);
@@ -38,12 +34,44 @@ void delMove(Move move)
     if (move == NULL)
         return;
     Move omove = move->omove,
-        nmove = move->nmove;
+         nmove = move->nmove;
     //free(move->fen);
     free(move->remark);
     free(move);
     delMove(omove);
     delMove(nmove);
+}
+
+struct MoveTree {
+    Move rootMove;
+    Move curMove;
+
+    int theSize;
+};
+
+MoveTree newMoveTree(void)
+{
+    MoveTree moveTree = malloc(sizeof(struct MoveTree));
+    moveTree->rootMove = newMove();
+    moveTree->curMove = moveTree->rootMove;
+
+    moveTree->theSize = 0;
+    return moveTree;
+}
+
+void delMoveTree(MoveTree moveTree)
+{
+    delMove(moveTree->rootMove);
+    free(moveTree);
+}
+
+void clearMoveTree(MoveTree moveTree)
+{
+    delMove(moveTree->rootMove);
+    moveTree->rootMove = newMove();
+    moveTree->curMove = moveTree->rootMove;
+
+    moveTree->theSize = 0;
 }
 
 inline Move getSimplePre(CMove move) { return move->pmove; }
@@ -199,7 +227,7 @@ static void setMoveSeat_iccs__(Move move, Board board, const wchar_t* iccsStr)
 
 static bool setMoveSeat_zh__(Move move, Board board, const wchar_t* wstr)
 {
-   return getSeats_zh(&move->fseat, &move->tseat, board, wstr);
+    return getSeats_zh(&move->fseat, &move->tseat, board, wstr);
 }
 
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
@@ -363,9 +391,174 @@ static bool move_equalMap__(CMove move0, CMove move1)
 bool rootmove_equal(CMove rootmove0, CMove rootmove1)
 {
     if (!((rootmove0->remark == NULL && rootmove1->remark == NULL)
-        || (rootmove0->remark && rootmove1->remark
-            && wcscmp(rootmove0->remark, rootmove1->remark) == 0)))
+            || (rootmove0->remark && rootmove1->remark
+                && wcscmp(rootmove0->remark, rootmove1->remark) == 0)))
         return false;
 
     return move_equalMap__(rootmove0, rootmove1);
+}
+
+Move getCurMoveTree(MoveTree moveTree)
+{
+    return moveTree->curMove;
+}
+
+static bool goMoveTree__(MoveTree moveTree, Move curMove)
+{
+    doMove(curMove);
+    moveTree->curMove = curMove;
+    return true;
+}
+
+bool goMoveTree(MoveTree moveTree)
+{
+    if (getNext(moveTree->curMove))
+        return goMoveTree__(moveTree, getNext(moveTree->curMove));
+    return false;
+}
+
+bool goOtherMoveTree(MoveTree moveTree)
+{
+    if (getOther(moveTree->curMove)) {
+        undoMove(moveTree->curMove);
+        return goMoveTree__(moveTree, getOther(moveTree->curMove));
+    }
+    return false;
+}
+
+int goEndMoveTree(MoveTree moveTree)
+{
+    int count = 0;
+    while (getNext(moveTree->curMove)) {
+        goMoveTree__(moveTree, getNext(moveTree->curMove));
+        ++count;
+    }
+    return count;
+}
+
+int goToMoveTree(MoveTree moveTree, Move move)
+{
+    assert(move);
+    moveTree->curMove = move;
+    Move preMoves[getNextNo(move)];
+    int count = getPreMoves(preMoves, move);
+    for (int i = 0; i < count; ++i)
+        doMove(preMoves[i]);
+    return count;
+}
+
+static bool backMoveTree__(MoveTree moveTree)
+{
+    undoMove(moveTree->curMove);
+    moveTree->curMove = getSimplePre(moveTree->curMove);
+    return true;
+}
+
+bool backMoveTree(MoveTree moveTree)
+{
+    if (hasPreOther(moveTree->curMove))
+        return backOtherMoveTree(moveTree);
+    else if (getSimplePre(moveTree->curMove))
+        return backMoveTree__(moveTree);
+    return false;
+}
+
+bool backNextMoveTree(MoveTree moveTree)
+{
+    if (getSimplePre(moveTree->curMove) && !hasPreOther(moveTree->curMove)) {
+        backMoveTree__(moveTree);
+        return true;
+    }
+    return false;
+}
+
+bool backOtherMoveTree(MoveTree moveTree)
+{
+    if (hasPreOther(moveTree->curMove)) {
+        backMoveTree__(moveTree); // 变着回退
+        doMove(moveTree->curMove); // 前变执行
+        return true;
+    }
+    return false;
+}
+
+int backToPreMoveTree(MoveTree moveTree)
+{
+    int count = 0;
+    while (hasPreOther(moveTree->curMove)) {
+        backOtherMoveTree(moveTree);
+        ++count;
+    }
+    backNextMoveTree(moveTree);
+    return ++count;
+}
+
+int backFirstMoveTree(MoveTree moveTree)
+{
+    int count = 0;
+    while (getSimplePre(moveTree->curMove)) {
+        backMoveTree(moveTree);
+        ++count;
+    }
+    return count;
+}
+
+int backToMoveTree(MoveTree moveTree, Move move)
+{
+    int count = 0;
+    while (getSimplePre(moveTree->curMove) && moveTree->curMove != move) {
+        backMoveTree(moveTree);
+        ++count;
+    }
+    return count;
+}
+
+int goIncMoveTree(MoveTree moveTree, int inc)
+{
+    int incCount = abs(inc), count = 0;
+    bool (*func)(MoveTree) = inc > 0 ? goMoveTree : backMoveTree;
+    while (incCount-- > 0)
+        if (func(moveTree))
+            ++count;
+    return count;
+}
+
+Move newMove_bs(Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark)
+{
+    bool success = true;
+    Move move = newMove();
+    switch (fmt) {
+    case XQF:
+    case BIN:
+    case JSON:
+        setMoveSeat_rc__(move, board, wstr);
+        break;
+    case PGN_ICCS:
+        setMoveSeat_iccs__(move, board, wstr);
+        break;
+    default: // PGN_ZH PGN_CC
+        success = setMoveSeat_zh__(move, board, wstr);
+        break;
+    }
+    
+    if (!success || !isCanMove(board, move->fseat, move->tseat)) {
+        delMove(move);
+        return NULL; // 添加着法失败
+    }
+    setRemark(move, remark);
+
+    return move;
+}
+
+bool addMoveToMoveTree(MoveTree moveTree, Move move, bool isOther)
+{
+    Move curMove = moveTree->curMove;
+    move->nextNo_ = curMove->nextNo_ + (isOther ? 0 : 1);
+    move->otherNo_ = curMove->otherNo_ + (isOther ? 1 : 0);
+    move->pmove = curMove;
+
+    isOther ? (curMove->omove = move) : (curMove->nmove = move);
+    moveTree->theSize++;
+
+    return isOther ? goOtherMoveTree(moveTree) : goMoveTree(moveTree);
 }

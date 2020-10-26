@@ -110,6 +110,8 @@ typedef enum {
 typedef struct Move* Move;
 typedef const struct Move* CMove;
 
+typedef struct MoveTree* MoveTree;
+
 typedef struct MoveRec* MoveRec;
 
 // 局面记录类型

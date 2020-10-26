@@ -626,6 +626,7 @@ static void test_chessManual_xqf(void)
                       "(5,0): {　　弃车，与前着相联系，由此巧妙成杀。\r\n}\n";
 
     ChessManual cm = newChessManual(xqfFileName__);
+    /*
 
     char* resultStr = NULL;
     wchar_t* wstr = NULL;
@@ -634,30 +635,31 @@ static void test_chessManual_xqf(void)
     resultStr = malloc(len);
     wcstombs(resultStr, wstr, len);
 
-    if (strcmp(pgn_ccStr, resultStr) != 0)
-        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+    //if (strcmp(pgn_ccStr, resultStr) != 0)
+    //    printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);
+    //*/
 
+    /*
     char iccsStr[WIDEWCHARSIZE];
     getIccsStr_c(iccsStr, cm);
     CU_ASSERT_STRING_EQUAL(iccses, iccsStr);
 
-    //*
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
         sprintf(fname, "chessManual/01%d.pgn_cc", ct);
         writeChessManual(cm, fname);
     }
-    //*/
 
     char str2[WIDEWCHARSIZE];
     getChessManualNumStr(str2, cm);
     //if (strcmp(str1, str2) != 0)
     //    printf("\n%s\n\n%s\n", str1, str2);
     CU_ASSERT_STRING_EQUAL(str1, str2);
+    //*/
 
     delChessManual(cm);
 }
@@ -710,7 +712,7 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    initEcco("chess.db");
+    //initEcco("chess.db");
 }
 
 static CU_TestInfo suite_chessManual[] = {

@@ -37,6 +37,8 @@ static void delInfo__(Info info)
 struct ChessManual {
     Board board;
     Move rootMove, curMove;
+
+    MoveTree moveTree;
     MyLinkedList infoMyLinkedList;
     int movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
@@ -99,6 +101,8 @@ ChessManual newChessManual(const char* fileName)
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
+
+    cm->moveTree = newMoveTree();
     cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo__);
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
@@ -132,6 +136,8 @@ void delChessManual(ChessManual cm)
 
     delMyLinkedList(cm->infoMyLinkedList);
     delMove(cm->rootMove);
+
+    delMoveTree(cm->moveTree);
     delBoard(cm->board);
     free(cm);
 }
@@ -260,12 +266,14 @@ int goInc(ChessManual cm, int inc)
 
 Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther)
 {
-    if (isOther)
+    if (isOther) {
         undoMove(cm->curMove);
+    }
     Move move = addMove(cm->curMove, cm->board, wstr, fmt, remark, isOther);
     if (move == NULL) {
-        if (isOther)
+        if (isOther){
             doMove(cm->curMove);
+        }
         //printBoard(cm->board, fmt, isOther, wstr);
         return NULL;
     }
@@ -438,20 +446,32 @@ static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
     int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
     Move move;
+
+    //Move curMove;
     if (isXQFStoreError(cm->curMove, frow, fcol, trow, tcol)) {
         move = cm->curMove;
-        if (remark)
+
+        //curMove = getCurMoveTree(cm->moveTree);
+        if (remark){
             setRemark(move, remark);
+
+            //setRemark(curMove, remark);
+        }
     } else {
         wchar_t rcStr[5];
         getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol));
         move = appendMove(cm, rcStr, XQF, remark, isOther);
+
+        //curMove = newMove_bs(cm->board, rcStr, XQF, remark);
+        //addMoveToMoveTree(cm->moveTree, curMove, isOther);
     }
 
     if (tag & 0x80) //# 有左子树
         readMove_XQF__(cm, fin, false);
 
     backTo(cm, move);
+
+    //backToMoveTree(cm->moveTree, curMove);
     if (tag & 0x40) // # 有右子树
         readMove_XQF__(cm, fin, true);
 }
@@ -607,6 +627,8 @@ static void readXQF__(ChessManual cm, FILE* fin)
         readMove_XQF__(cm, fin, false);
 
     backFirst(cm);
+
+    //backFirstMoveTree(cm->moveTree);
 }
 
 static wchar_t* readWstring_BIN__(FILE* fin)
@@ -1455,7 +1477,11 @@ static int info_cmp__(Info info0, Info info1)
 
     // 两个属性有一个不相等，则不相等
     if (wcscmp(info0->name, info1->name) != 0 || wcscmp(info0->value, info1->value) != 0) {
-        printf("len:%ld %ld\n", wcslen(info0->value), wcslen(info1->value));
+        int nameLen0 = wcslen(info0->name),
+            nameLen1 = wcslen(info1->name),
+            valueLen0 = wcslen(info0->value),
+            valueLen1 = wcslen(info1->value);
+        printf("len:%d %d %d %d\n", nameLen0, nameLen1, valueLen0, valueLen1);
         return 1;
     }
 
@@ -1591,7 +1617,7 @@ static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList myLinkedList)
     addMyLinkedList(myLinkedList, newChessManual(fileName));
 }
 
-static void setECCO_cm__(ChessManual cm, MyLinkedList regObj_MyLinkedList, void* _0, void* _1)
+static void setECCO_cm__(void* cm, void* regObj_MyLinkedList, void* _0, void* _1)
 {
     setECCO_cm(cm, regObj_MyLinkedList);
 }
@@ -1604,8 +1630,7 @@ MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt,
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, myLinkedList, true);
 
-    traverseMyLinkedList(myLinkedList, (void (*)(void*, void*, void*, void*))setECCO_cm__,
-        regObj_MyLinkedList, NULL, NULL);
+    traverseMyLinkedList(myLinkedList, setECCO_cm__, regObj_MyLinkedList, NULL, NULL);
 
     return myLinkedList;
 }
