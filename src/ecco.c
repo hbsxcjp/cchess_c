@@ -66,7 +66,7 @@ static int addRegObj_MyLinkedList__(void* myLinkedList, int argc, char** argv, c
     return 0; // 表示执行成功
 }
 
-MyLinkedList getRegObj_MyLinkedList(sqlite3* db, const char* tblName)
+MyLinkedList getRegObjMyLinkedList(sqlite3* db, const char* tblName)
 {
     MyLinkedList myLinkedList = newMyLinkedList((void (*)(void*))delRegObj__);
     char sql[WCHARSIZE], *zErrMsg = 0;
@@ -88,11 +88,11 @@ static int compare_iccsStr__(RegObj regObj, const wchar_t* iccsStr)
     return (pcrewch_exec(regObj->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, 30) > 0 ? 0 : 1); // 0:匹配成功
 }
 
-bool setECCO_cm(ChessManual cm, MyLinkedList regObj_MyLinkedList)
+bool setECCO_cm(ChessManual cm, MyLinkedList regObjMyLinkedList)
 {
     wchar_t iccsStr[WIDEWCHARSIZE];
     getIccsStr(iccsStr, cm);
-    RegObj regObj = getDataMyLinkedList_cond(regObj_MyLinkedList,
+    RegObj regObj = getDataMyLinkedList_cond(regObjMyLinkedList,
         (int (*)(void*, void*))compare_iccsStr__, iccsStr);
     if (regObj == NULL)
         return false;
@@ -870,7 +870,7 @@ static void wcscatCM_Str__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t*
 }
 
 void storeManual_db(sqlite3* db, const char* tblName,
-    const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList)
+    const char* dirName, RecFormat fromfmt, MyLinkedList regObjMyLinkedList)
 {
     char colNames[WIDEWCHARSIZE];
     strcpy(colNames, "ID INTEGER PRIMARY KEY AUTOINCREMENT,");
@@ -881,7 +881,7 @@ void storeManual_db(sqlite3* db, const char* tblName,
         return;
 
     // 获取插入记录字符串，并插入
-    MyLinkedList cm_MyLinkedList = getChessManual_MyLinkedList(dirName, fromfmt, regObj_MyLinkedList);
+    MyLinkedList cm_MyLinkedList = getChessManualMyLinkedList(dirName, fromfmt, regObjMyLinkedList);
 
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
@@ -919,16 +919,16 @@ void initEcco(char* dbName)
     } else {
         const char *lib_tblName = "ecco",
                    *lib_col_names[] = { "SN", "NAME", "PRE_MVSTRS", "MVSTRS", "NUMS", "REGSTR" },
-                   *srcFileName = "chessManual/eccolib_src",
-                   *man_tblName = "manual",
-                   *manualDirName = "chessManual/示例文件";
+                   *srcFileName = "chessManual/eccolib_src";
         int lib_col_len = sizeof(lib_col_names) / sizeof(lib_col_names[0]);
 
         storeEccolib_db__(db, lib_tblName, lib_col_names, lib_col_len, srcFileName);
 
-        MyLinkedList regObj_MyLinkedList = getRegObj_MyLinkedList(db, lib_tblName);
-        storeManual_db(db, man_tblName, manualDirName, XQF, regObj_MyLinkedList);
-        delMyLinkedList(regObj_MyLinkedList);
+        const char *man_tblName = "manual",
+                   *manualDirName = "chessManual/示例文件";
+        MyLinkedList regObjMyLinkedList = getRegObjMyLinkedList(db, lib_tblName);
+        storeManual_db(db, man_tblName, manualDirName, XQF, regObjMyLinkedList);
+        delMyLinkedList(regObjMyLinkedList);
     }
     sqlite3_close(db);
 

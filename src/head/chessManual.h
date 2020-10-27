@@ -89,7 +89,7 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
 // 获取棋谱对象链表
-MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
+MyLinkedList getChessManualMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
 
 void printCM_MyLinkedList(FILE* fout, MyLinkedList cm_MyLinkedList);
 #endif

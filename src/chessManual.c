@@ -37,8 +37,6 @@ static void delInfo__(Info info)
 struct ChessManual {
     Board board;
     Move rootMove, curMove;
-
-    //MoveTree moveTree;
     MyLinkedList infoMyLinkedList;
     int movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
@@ -101,25 +99,9 @@ ChessManual newChessManual(const char* fileName)
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
-
-    //cm->moveTree = newMoveTree();
     cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo__);
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
-    if (fileName) {
-        wchar_t name[WCHARSIZE], value[WCHARSIZE];
-        mbstowcs(name, INFONAMES[FILENAME_INDEX], WCHARSIZE);
-        mbstowcs(value, fileName, WCHARSIZE);
-        setInfoItem(cm, name, value);
-
-        if (getNext(cm->rootMove)) {
-            wchar_t* movestr = NULL;
-            writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
-            mbstowcs(name, INFONAMES[MOVESTR_INDEX], WCHARSIZE);
-            setInfoItem(cm, name, movestr);
-            free(movestr);
-        }
-    }
     return cm;
 }
 
@@ -136,8 +118,6 @@ void delChessManual(ChessManual cm)
 
     delMyLinkedList(cm->infoMyLinkedList);
     delMove(cm->rootMove);
-
-    //delMoveTree(cm->moveTree);
     delBoard(cm->board);
     free(cm);
 }
@@ -446,32 +426,20 @@ static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
     int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
     Move move;
-
-    //Move curMove;
     if (isXQFStoreError(cm->curMove, frow, fcol, trow, tcol)) {
         move = cm->curMove;
-
-        //curMove = getCurMoveTree(cm->moveTree);
-        if (remark) {
+        if (remark)
             setRemark(move, remark);
-
-            //setRemark(curMove, remark);
-        }
     } else {
         wchar_t rcStr[5];
         getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol));
         move = appendMove(cm, rcStr, XQF, remark, isOther);
-
-        //curMove = newMove_bs(cm->board, rcStr, XQF, remark);
-        //addMoveToMoveTree(cm->moveTree, curMove, isOther);
     }
 
     if (tag & 0x80) //# 有左子树
         readMove_XQF__(cm, fin, false);
 
     backTo(cm, move);
-
-    //backToMoveTree(cm->moveTree, curMove);
     if (tag & 0x40) // # 有右子树
         readMove_XQF__(cm, fin, true);
 }
@@ -1275,7 +1243,7 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
     free(pstr);
 }
 
-void readChessManual__(ChessManual cm, const char* fileName)
+static void readChessManual__(ChessManual cm, const char* fileName)
 {
     if (!fileIsRight__(fileName)) {
         setBoard_FEN(cm->board, getFENFromCM__(cm));
@@ -1299,10 +1267,25 @@ void readChessManual__(ChessManual cm, const char* fileName)
     default:
         readPGN__(cm, fin, fmt);
         break;
-    }
+    }    
     if (getNext(cm->rootMove))
         setMoveNumZhStr(cm); // 驱动函数
     fclose(fin);
+
+    // 文件名存入信息链表
+    wchar_t name[WCHARSIZE], value[WCHARSIZE];
+    mbstowcs(name, INFONAMES[FILENAME_INDEX], WCHARSIZE);
+    mbstowcs(value, fileName, WCHARSIZE);
+    setInfoItem(cm, name, value);
+
+    // 着法存入信息链表
+    if (getNext(cm->rootMove)) {
+        wchar_t* movestr = NULL;
+        writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
+        mbstowcs(name, INFONAMES[MOVESTR_INDEX], WCHARSIZE);
+        setInfoItem(cm, name, movestr);
+        free(movestr);
+    }
 }
 
 void writeChessManual(ChessManual cm, const char* fileName)
@@ -1534,32 +1517,33 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     return true;
 }
 
-static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList myLinkedList)
+static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList cmMyLinkedList)
 {
     const char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
         return;
 
-    addMyLinkedList(myLinkedList, newChessManual(fileName));
+    addMyLinkedList(cmMyLinkedList, newChessManual(fileName));
 }
 
-static void setECCO_cm__(void* cm, void* regObj_MyLinkedList, void* _0, void* _1)
+static void setECCO_cm__(void* cm, void* regObjMyLinkedList, void* _0, void* _1)
 {
-    setECCO_cm(cm, regObj_MyLinkedList);
+    setECCO_cm(cm, regObjMyLinkedList);
 }
 
-MyLinkedList getChessManual_MyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList)
+MyLinkedList getChessManualMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObjMyLinkedList)
 {
-    MyLinkedList myLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
+    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
 
     char fromDir[FILENAME_MAX];
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
-    operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, myLinkedList, true);
+    operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, cmMyLinkedList, true);
 
-    traverseMyLinkedList(myLinkedList, setECCO_cm__, regObj_MyLinkedList, NULL, NULL);
+    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, regObjMyLinkedList, NULL, NULL);
 
-    return myLinkedList;
+    return cmMyLinkedList;
 }
+
 static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
 {
     wchar_t wIccsStr[WIDEWCHARSIZE], ecco[WCHARSIZE], file[WCHARSIZE];
@@ -1570,9 +1554,9 @@ static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
         (*size)++, getInfoValue(cm, ecco), getInfoValue(cm, file), wIccsStr);
 }
 
-void printCM_MyLinkedList(FILE* fout, MyLinkedList cm_MyLinkedList)
+void printCM_MyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
 {
     size_t size = 1;
-    traverseMyLinkedList(cm_MyLinkedList, (void (*)(void*, void*, void*, void*))printCM_Str__,
+    traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCM_Str__,
         fout, NULL, &size);
 }
