@@ -1,12 +1,28 @@
 #ifndef MYLINKEDLIST_H
 #define MYLINKEDLIST_H
 
-#include <assert.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include "base.h"
+
+// 名值信息类
+typedef struct Info* Info;
 
 // 链表类
 typedef struct MyLinkedList* MyLinkedList;
+
+Info newInfo(const wchar_t* name, const wchar_t* value);
+
+void delInfo(Info info);
+
+const wchar_t* getInfoName(Info info);
+
+const wchar_t* getInfoValue(Info info);
+
+const wchar_t* getInfoValue_name(MyLinkedList myLinkedList, const wchar_t* name);
+
+void setInfoItem(MyLinkedList myLinkedList, const wchar_t* name, const wchar_t* value);
+
+void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name);
+
 
 MyLinkedList newMyLinkedList(void (*delData)(void*));
 

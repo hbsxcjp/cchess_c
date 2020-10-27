@@ -1,5 +1,10 @@
 #include "head/mylinkedlist.h"
 
+struct Info {
+    wchar_t* name;
+    wchar_t* value;
+};
+
 // 内部节点类
 typedef struct Node* Node;
 struct Node {
@@ -8,6 +13,70 @@ struct Node {
     Node prev;
     Node next;
 };
+
+struct MyLinkedList {
+    Node beginMarker;
+    Node endMarker;
+
+    int theSize;
+    int modCount;
+
+    // 节点内数据对象内存释放函数
+    void (*delData)(void*);
+};
+
+Info newInfo(const wchar_t* name, const wchar_t* value)
+{
+    Info info = malloc(sizeof(struct Info));
+    info->name = NULL;
+    info->value = NULL;
+    if (name && value) {
+        info->name = malloc((wcslen(name) + 1) * sizeof(wchar_t));
+        wcscpy(info->name, name);
+        info->value = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+        wcscpy(info->value, value);
+    }
+    return info;
+}
+
+void delInfo(Info info)
+{
+    free(info->name);
+    free(info->value);
+    free(info);
+}
+
+const wchar_t* getInfoName(Info info)
+{
+    return info->name;
+}
+
+const wchar_t* getInfoValue(Info info)
+{
+    return info->value;
+}
+
+static int infoName_cmp__(Info info, const wchar_t* name)
+{
+    return wcscmp(getInfoName(info), name);
+}
+
+const wchar_t* getInfoValue_name(MyLinkedList myLinkedList, const wchar_t* name)
+{
+    Info info = getDataMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
+    return info ? getInfoValue(info) : L"";
+}
+
+void setInfoItem(MyLinkedList myLinkedList, const wchar_t* name, const wchar_t* value)
+{
+    setMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__,
+        (void*)name, newInfo(name, value));
+}
+
+void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name)
+{
+    removeMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
+}
 
 static Node newNode__(void* data, Node prev, Node next)
 {
@@ -31,17 +100,6 @@ static void delNode__(Node node, void (*delData)(void*))
 
     delNode__(next, delData);
 }
-
-struct MyLinkedList {
-    Node beginMarker;
-    Node endMarker;
-
-    int theSize;
-    int modCount;
-
-    // 节点内数据对象内存释放函数
-    void (*delData)(void*);
-};
 
 MyLinkedList newMyLinkedList(void (*delData)(void*))
 {
@@ -197,7 +255,7 @@ static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, v
         return;
 
     *pnode = (*pnode)->next;
-    if (data_cmp(data, (*pnode)->data) != 0){
+    if (data_cmp(data, (*pnode)->data) != 0) {
         *isSame = false;
         *pnode = NULL;
     }
@@ -206,7 +264,7 @@ static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, v
 bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,
     int (*data_cmp)(void*, void*))
 {
-    if (myLinkedList_size(myLinkedList0) != myLinkedList_size(myLinkedList1)) 
+    if (myLinkedList_size(myLinkedList0) != myLinkedList_size(myLinkedList1))
         return false;
 
     bool isSame = true;

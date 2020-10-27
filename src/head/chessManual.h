@@ -5,9 +5,12 @@
 #include "ecco.h"
 #include "tools.h"
 
-#define INITINFOLEN 16
+//#define INITINFOLEN 16
 
-extern const char* INFONAMES[INITINFOLEN];
+extern const wchar_t* INFO_NAMES[];
+extern const int ECCO_INDEX;
+extern const int FILENAME_INDEX;
+extern const int INFO_LEN;
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -51,9 +54,9 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
 const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
 
 // 添加/删除一个info条目
-void setInfoItem(ChessManual cm, const wchar_t* name, const wchar_t* value);
-const wchar_t* getInfoValue(ChessManual cm, const wchar_t* name);
-void delInfoItem(ChessManual cm, const wchar_t* name);
+void setInfoItem_cm(ChessManual cm, const wchar_t* name, const wchar_t* value);
+const wchar_t* getInfoValue_name_cm(ChessManual cm, const wchar_t* name);
+void delInfoItem_cm(ChessManual cm, const wchar_t* name);
 
 // 增删改move后，更新zhStr、行列数值
 void setMoveNumZhStr(ChessManual cm);
