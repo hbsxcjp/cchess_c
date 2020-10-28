@@ -88,15 +88,20 @@ static Node newNode__(void* data, Node prev, Node next)
     return node;
 }
 
+static void eraseNode__(Node node, void (*delData)(void*))
+{
+    if (node->data)
+        delData(node->data);
+    free(node);
+}
+
 static void delNode__(Node node, void (*delData)(void*))
 {
     if (node == NULL)
         return;
 
     Node next = node->next;
-    if (node->data)
-        delData(node->data);
-    free(node);
+    eraseNode__(node, delData);
 
     delNode__(next, delData);
 }
@@ -152,6 +157,8 @@ static void removeMyLinkedList__(MyLinkedList myLinkedList, Node node)
 {
     node->next->prev = node->prev;
     node->prev->next = node->next;
+    eraseNode__(node, myLinkedList->delData);
+
     myLinkedList->theSize--;
     myLinkedList->modCount++;
 }
@@ -203,8 +210,7 @@ static void setNodeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* ne
 
 void setMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* newData)
 {
-    Node node = getNodeMyLinkedList_idx__(myLinkedList, idx);
-    setNodeMyLinkedList__(myLinkedList, node, newData);
+    setNodeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx), newData);
 }
 
 void removeMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
@@ -219,20 +225,19 @@ static Node getNodeMyLinkedList_cond__(MyLinkedList myLinkedList, int (*compareC
     while ((node = node->next) != myLinkedList->endMarker
         && compareCond(node->data, condition) != 0)
         ;
-    return node; // myLinkedList->endMarker 或 符合条件的node
+    return node; // 返回：myLinkedList->endMarker 或 符合条件的node
 }
 
 void* getDataMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*), void* condition)
 {
-    // myLinkedList->endMarker->data(NULL) 或 符合条件的node->data
+    // 返回：myLinkedList->endMarker->data(NULL) 或 符合条件的node->data
     return getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition)->data;
 }
 
 void setMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
     void* condition, void* newData)
 {
-    Node node = getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition);
-    setNodeMyLinkedList__(myLinkedList, node, newData);
+    setNodeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition), newData);
 }
 
 void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),

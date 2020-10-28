@@ -509,7 +509,6 @@ static void readXQF__(ChessManual cm, FILE* fin)
         Opening, RMKWriter, Author
     };
     int infoNames_num0 = 9;
-    wchar_t name[WCHARSIZE];
     for (int i = 0; i < infoNames_num0; ++i) {
         // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
         // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
@@ -522,29 +521,19 @@ static void readXQF__(ChessManual cm, FILE* fin)
 #else
         mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
 #endif
-        //mbstowcs(name, INFO_NAMES[i], WCHARSIZE);
-        //setInfoItem_cm(cm, name, tempStr);
         setInfoItem_cm(cm, INFO_NAMES[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    //mbstowcs(name, INFO_NAMES[9], WCHARSIZE); //L"PlayType"
-    //setInfoItem_cm(cm, name, PlayType[headCodeA_H[0]]); // 编码定义存储
     setInfoItem_cm(cm, INFO_NAMES[9], PlayType[headCodeA_H[0]]); // 编码定义存储
 
     getFEN_pieChars(tempStr, pieChars);
-    //mbstowcs(name, INFO_NAMES[FEN_INDEX], WCHARSIZE); // L"FEN"
     wcscat(tempStr, headWhoPlay ? L" -r" : L" -b");
-    //setInfoItem_cm(cm, name, tempStr); // 转换FEN存储
     setInfoItem_cm(cm, INFO_NAMES[FEN_INDEX], tempStr); // 转换FEN存储
 
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    //mbstowcs(name, INFO_NAMES[11], WCHARSIZE); // L"Result"
-    //setInfoItem_cm(cm, name, Result[headPlayResult]); // 编码定义存储
     setInfoItem_cm(cm, INFO_NAMES[10], Result[headPlayResult]); // 编码定义存储
 
     swprintf(tempStr, WIDEWCHARSIZE, L"%d", Version);
-    //mbstowcs(name, INFO_NAMES[12], WCHARSIZE); // L"Version"
-    //setInfoItem_cm(cm, name, tempStr); // 整数存储
     setInfoItem_cm(cm, INFO_NAMES[11], tempStr); // 整数存储
 
     fseek(fin, 1024, SEEK_SET);
@@ -559,8 +548,6 @@ static void readXQF__(ChessManual cm, FILE* fin)
         readMove_XQF__(cm, fin, false);
 
     backFirst(cm);
-
-    //backFirstMoveTree(cm->moveTree);
 }
 
 static wchar_t* readWstring_BIN__(FILE* fin)
@@ -1237,18 +1224,14 @@ static void readChessManual__(ChessManual cm, const char* fileName)
     fclose(fin);
 
     // 文件名存入信息链表
-    wchar_t name[WCHARSIZE], value[WCHARSIZE];
-    //mbstowcs(name, INFO_NAMES[FILENAME_INDEX], WCHARSIZE);
+    wchar_t value[WCHARSIZE];
     mbstowcs(value, fileName, WCHARSIZE);
-    //setInfoItem_cm(cm, name, value);
     setInfoItem_cm(cm, INFO_NAMES[FILENAME_INDEX], value);
 
     // 着法存入信息链表
     if (getNext(cm->rootMove)) {
         wchar_t* movestr = NULL;
         writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
-        //mbstowcs(name, INFO_NAMES[MOVESTR_INDEX], WCHARSIZE);
-        //setInfoItem_cm(cm, name, movestr);
         setInfoItem_cm(cm, INFO_NAMES[MOVESTR_INDEX], movestr);
         free(movestr);
     }
@@ -1418,9 +1401,6 @@ static int info_cmp__(Info info0, Info info1)
         return 1;
 
     // 文件名属性不做比较，视同相等
-    wchar_t file_name[WCHARSIZE];
-    //mbstowcs(file_name, INFO_NAMES[FILENAME_INDEX], WCHARSIZE);
-    //if (wcscmp(getInfoName(info0), getInfoName(info1)) == 0 && wcscmp(getInfoName(info0), file_name) == 0)
     if (wcscmp(getInfoName(info0), getInfoName(info1)) == 0
         && wcscmp(getInfoName(info0), INFO_NAMES[FILENAME_INDEX]) == 0)
         return 0;
