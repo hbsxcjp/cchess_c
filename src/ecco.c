@@ -45,7 +45,7 @@ static BoutStr newBoutStr__(int boutNo, const wchar_t* mvstr[][BOUTMOVEOR_NUM])
     for (int c = RED; c <= BLACK; ++c)
         for (int i = 0; i < BOUTMOVEOR_NUM; ++i) {
             boutStr->mvstr[c][i] = NULL;
-            if (mvstr[c][i] && wcslen(mvstr[c][i]) > 0)
+            if (mvstr && mvstr[c][i]) // && wcslen(mvstr[c][i]) > 0)
                 setPwstr_value(&boutStr->mvstr[c][i], mvstr[c][i]);
         }
     return boutStr;
@@ -520,78 +520,174 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
 // 处理前置着法描述字符串————"局面开始：红方：黑方："
 static bool setStartPreMove__(EccoRec eccoRec, Ecco ecco, void* reg_m, void* reg_sp, void* reg_bp)
 {
-    int ovector[30];
-    const wchar_t* wstr = eccoRec->pre_mvstrs;
-    if (pcrewch_exec(reg_sp, NULL, wstr, wcslen(wstr), 0, 0, ovector, 30) > 2) {
-        wchar_t rbmvstr[WCHARSIZE], mvstrs[PIECECOLORNUM][WCHARSIZE];
-        for (PieceColor c = RED; c <= BLACK; ++c) {
-            copySubStr(rbmvstr, wstr, ovector[2 * c + 2], ovector[2 * c + 3]);
-            getMoveStrs__(mvstrs[c], rbmvstr, false, reg_m, reg_bp);
+    if (eccoRec) {
+        int ovector[30];
+        const wchar_t* wstr = eccoRec->pre_mvstrs;
+        if (pcrewch_exec(reg_sp, NULL, wstr, wcslen(wstr), 0, 0, ovector, 30) > 2) {
+            wchar_t rbmvstr[WCHARSIZE], mvstrs[PIECECOLORNUM][WCHARSIZE];
+            for (PieceColor c = RED; c <= BLACK; ++c) {
+                copySubStr(rbmvstr, wstr, ovector[2 * c + 2], ovector[2 * c + 3]);
+                getMoveStrs__(mvstrs[c], rbmvstr, false, reg_m, reg_bp);
+            }
+
+            const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { mvstrs[RED], NULL }, { mvstrs[BLACK], NULL } };
+            eccoRec->curBoutMoveStr = newBoutMoveStr__(eccoRec->curBoutMoveStr, 1, bmvstr);
+
+            return true;
         }
+        return false;
+    } else {
+        int ovector[30];
+        //const wchar_t* wstr = eccoRec->pre_mvstrs;
+        const wchar_t* wstr = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[PRE_MVSTRS_INDEX]);
+        if (pcrewch_exec(reg_sp, NULL, wstr, wcslen(wstr), 0, 0, ovector, 30) > 2) {
+            wchar_t rbmvstr[WCHARSIZE], mvstrs[PIECECOLORNUM][WCHARSIZE];
+            for (PieceColor c = RED; c <= BLACK; ++c) {
+                copySubStr(rbmvstr, wstr, ovector[2 * c + 2], ovector[2 * c + 3]);
+                getMoveStrs__(mvstrs[c], rbmvstr, false, reg_m, reg_bp);
+            }
 
-        const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { mvstrs[RED], NULL }, { mvstrs[BLACK], NULL } };
-        eccoRec->curBoutMoveStr = newBoutMoveStr__(eccoRec->curBoutMoveStr, 1, bmvstr);
+            const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { mvstrs[RED], NULL }, { mvstrs[BLACK], NULL } };
+            //eccoRec->curBoutMoveStr = newBoutMoveStr__(eccoRec->curBoutMoveStr, 1, bmvstr);
 
-        return true;
+            addMyLinkedList(ecco->boutStrMyLinkedList, newBoutStr__(1, bmvstr));
+            return true;
+        }
+        return false;
     }
-    return false;
 }
 
 // 处理"此前..."着法描述字符串
-static void setBeforePreMove__(EccoRec eccoRec, const wchar_t* wstr,
+static void setBeforePreMove__(EccoRec eccoRec, Ecco ecco, const wchar_t* wstr,
     PieceColor color, int or, int partIndex, void* reg_m, void* reg_bp)
 {
-    int insertBoutIndex = INSERTBOUT(partIndex);
-    wchar_t mvstrs[WCHARSIZE];
-    getMoveStrs__(mvstrs, wstr, true, reg_m, reg_bp);
-    if (wcschr(wstr, L'除'))
-        wcscat(mvstrs, L"除");
+    if (eccoRec) {
+        int insertBoutIndex = INSERTBOUT(partIndex);
+        wchar_t mvstrs[WCHARSIZE];
+        getMoveStrs__(mvstrs, wstr, true, reg_m, reg_bp);
+        if (wcschr(wstr, L'除'))
+            wcscat(mvstrs, L"除");
 
-    BoutMoveStr preBoutMoveStr = getBoutMoveStr__(eccoRec, insertBoutIndex, true);
-    assert(preBoutMoveStr);
-    BoutMoveStr boutMoveStr = preBoutMoveStr->nboutMoveStr;
-    if (boutMoveStr && boutMoveStr->boutNo == insertBoutIndex) {
-        setPwstr_value(&boutMoveStr->bmvstr[color][or], mvstrs);
-        if (or == 1 && boutMoveStr->bmvstr[color][0] == NULL)
-            setPwstr_value(&boutMoveStr->bmvstr[color][0], mvstrs);
+        BoutMoveStr preBoutMoveStr = getBoutMoveStr__(eccoRec, insertBoutIndex, true);
+        assert(preBoutMoveStr);
+        BoutMoveStr boutMoveStr = preBoutMoveStr->nboutMoveStr;
+        if (boutMoveStr && boutMoveStr->boutNo == insertBoutIndex) {
+            setPwstr_value(&boutMoveStr->bmvstr[color][or], mvstrs);
+            if (or == 1 && boutMoveStr->bmvstr[color][0] == NULL)
+                setPwstr_value(&boutMoveStr->bmvstr[color][0], mvstrs);
+        } else {
+            const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
+            bmvstr[color][or] = mvstrs;
+            if (or == 1)
+                bmvstr[color][0] = mvstrs;
+            BoutMoveStr newBoutMoveStr = newBoutMoveStr__(preBoutMoveStr, insertBoutIndex, bmvstr);
+            newBoutMoveStr->nboutMoveStr = boutMoveStr;
+        }
+        if (or == 1 && partIndex == 1
+                && (eccoRec->orBoutNo[1][0] == 0 || eccoRec->orBoutNo[1][0] > insertBoutIndex))
+            eccoRec->orBoutNo[1][0] = insertBoutIndex;
     } else {
-        const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
-        bmvstr[color][or] = mvstrs;
-        if (or == 1)
-            bmvstr[color][0] = mvstrs;
-        BoutMoveStr newBoutMoveStr = newBoutMoveStr__(preBoutMoveStr, insertBoutIndex, bmvstr);
-        newBoutMoveStr->nboutMoveStr = boutMoveStr;
+        int insertBoutIndex = INSERTBOUT(partIndex);
+        wchar_t mvstrs[WCHARSIZE];
+        getMoveStrs__(mvstrs, wstr, true, reg_m, reg_bp);
+        if (wcschr(wstr, L'除'))
+            wcscat(mvstrs, L"除");
+
+        int boutSize = myLinkedList_size(ecco->boutStrMyLinkedList);
+        for (int i = 0; i < boutSize; ++i) {
+            BoutStr boutStr = getDataMyLinkedList_idx(ecco->boutStrMyLinkedList, i);
+            if (boutStr && boutStr->boutNo == insertBoutIndex) {
+                setPwstr_value(&boutStr->mvstr[color][or], mvstrs);
+                if (or == 1 && boutStr->mvstr[color][0] == NULL)
+                    setPwstr_value(&boutStr->mvstr[color][0], mvstrs);
+            } else if (boutStr->boutNo > insertBoutIndex) {
+                const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
+                bmvstr[color][or] = mvstrs;
+                if (or == 1)
+                    bmvstr[color][0] = mvstrs;
+
+                addMyLinkedList_idx(ecco->boutStrMyLinkedList, i, newBoutStr__(insertBoutIndex, bmvstr));
+                break;
+            }
+        }
+        if (or == 1 && partIndex == 1
+                && (ecco->orBoutNo[1][0] == 0 || ecco->orBoutNo[1][0] > insertBoutIndex))
+            ecco->orBoutNo[1][0] = insertBoutIndex;
     }
-    if (or == 1 && partIndex == 1
-            && (eccoRec->orBoutNo[1][0] == 0 || eccoRec->orBoutNo[1][0] > insertBoutIndex))
-        eccoRec->orBoutNo[1][0] = insertBoutIndex;
+}
+
+static int boutNo_comp__(BoutStr boutStr, int* pboutNo)
+{
+    return boutStr->boutNo - *pboutNo;
 }
 
 // 处理"不分先后"着法描述字符串
-static void setNoOrderMove__(EccoRec eccoRec, int firstBoutNo, void* reg_m, void* reg_bp)
+static void setNoOrderMove__(EccoRec eccoRec, Ecco ecco, int firstBoutNo, void* reg_m, void* reg_bp)
 {
-    wchar_t wstr[WCHARSIZE];
-    BoutMoveStr firstBoutMoveStr = getBoutMoveStr__(eccoRec, firstBoutNo, false);
-    for (int c = RED; c <= BLACK; ++c) {
-        for (int i = 0; i < BOUTMOVEOR_NUM; ++i) {
-            BoutMoveStr boutMoveStr = firstBoutMoveStr;
-            wcscpy(wstr, L"");
-            do {
-                if (boutMoveStr->bmvstr[c][i] == NULL
-                    || wcslen(boutMoveStr->bmvstr[c][i]) == 0)
+    if (eccoRec) {
+        wchar_t wstr[WCHARSIZE];
+        BoutMoveStr firstBoutMoveStr = getBoutMoveStr__(eccoRec, firstBoutNo, false);
+        for (int c = RED; c <= BLACK; ++c) {
+            for (int i = 0; i < BOUTMOVEOR_NUM; ++i) {
+                BoutMoveStr boutMoveStr = firstBoutMoveStr;
+                wcscpy(wstr, L"");
+                do {
+                    if (boutMoveStr->bmvstr[c][i] == NULL
+                        || wcslen(boutMoveStr->bmvstr[c][i]) == 0)
+                        continue;
+
+                    wcscat(wstr, boutMoveStr->bmvstr[c][i]);
+                    setPwstr_value(&boutMoveStr->bmvstr[c][i], L"");
+                } while ((boutMoveStr = boutMoveStr->nboutMoveStr));
+
+                if (wcslen(wstr) == 0)
                     continue;
 
-                wcscat(wstr, boutMoveStr->bmvstr[c][i]);
-                setPwstr_value(&boutMoveStr->bmvstr[c][i], L"");
-            } while ((boutMoveStr = boutMoveStr->nboutMoveStr));
-
-            if (wcslen(wstr) == 0)
-                continue;
-
-            wchar_t mvstrs[WCHARSIZE];
-            getMoveStrs__(mvstrs, wstr, false, reg_m, reg_bp);
-            setPwstr_value(&firstBoutMoveStr->bmvstr[c][i], mvstrs);
+                wchar_t mvstrs[WCHARSIZE];
+                getMoveStrs__(mvstrs, wstr, false, reg_m, reg_bp);
+                setPwstr_value(&firstBoutMoveStr->bmvstr[c][i], mvstrs);
+            }
         }
+    } else {
+        wchar_t wstr[WCHARSIZE];
+        BoutStr firstBoutStr = getDataMyLinkedList_cond(ecco->boutStrMyLinkedList,
+            (int (*)(void*, void*))boutNo_comp__, &firstBoutNo);
+        assert(firstBoutStr);
+        //*
+        int boutSize = myLinkedList_size(ecco->boutStrMyLinkedList),
+            firstBoutStr_nextIdx = 0;
+        for (int c = RED; c <= BLACK; ++c) {
+            for (int i = 0; i < BOUTMOVEOR_NUM; ++i) {
+                wcscpy(wstr, L"");
+
+                for (int idx = 0; i < boutSize; ++i) {
+                    BoutStr boutStr = getDataMyLinkedList_idx(ecco->boutStrMyLinkedList, idx);
+                    assert(boutStr);
+                    if (boutStr->boutNo < firstBoutNo
+                        || boutStr->mvstr[c][i] == NULL)
+                        //|| wcslen(boutStr->mvstr[c][i]) == 0)
+                        continue;
+
+                    if (firstBoutStr_nextIdx == 0 && boutStr->boutNo > firstBoutNo)
+                        firstBoutStr_nextIdx = idx; // 设置为第一个着法之后的序号
+
+                    kk/*
+                    wcscat(wstr, boutStr->mvstr[c][i]);
+                    setPwstr_value(&boutStr->mvstr[c][i], L"");
+                //*/
+                }
+
+                if (wcslen(wstr) == 0)
+                    continue;
+
+                wchar_t mvstrs[WCHARSIZE];
+                getMoveStrs__(mvstrs, wstr, false, reg_m, reg_bp);
+                setPwstr_value(&firstBoutStr->mvstr[c][i], mvstrs);
+            }
+        }
+        while (firstBoutStr_nextIdx < myLinkedList_size(ecco->boutStrMyLinkedList))
+            removeMyLinkedList_idx(ecco->boutStrMyLinkedList, firstBoutStr_nextIdx);
+        //*/
     }
 }
 
@@ -599,7 +695,13 @@ static void setNoOrderMove__(EccoRec eccoRec, int firstBoutNo, void* reg_m, void
 static void setEccoRec_boutMoveStr__(EccoRec eccoRec, Ecco ecco, const wchar_t* snStr,
     void* reg_m, void* reg_bm, void* reg_bp, int partIndex)
 {
-    const wchar_t* mvstr = partIndex == 0 ? eccoRec->pre_mvstrs : eccoRec->mvstrs;
+    const wchar_t* mvstr;
+    if (eccoRec)
+        mvstr = partIndex == 0 ? eccoRec->pre_mvstrs : eccoRec->mvstrs;
+    else
+        mvstr = getInfoValue_name(ecco->attrMyLinkedList,
+            ECCOATTR_NAMES[partIndex == 0 ? PRE_MVSTRS_INDEX : MVSTRS_INDEX]);
+
     int first = 0, last = wcslen(mvstr), sn = 0, psn = 0, firstBoutNo = 0, boutNo = 0, or = 0, ovector[30];
     while (first < last) {
         const wchar_t* tempWstr = mvstr + first;
@@ -635,14 +737,28 @@ static void setEccoRec_boutMoveStr__(EccoRec eccoRec, Ecco ecco, const wchar_t* 
                     wstr[0] = L'相';
 
                 swprintf(rbmvstr[color], WCHARSIZE, L"+%ls", wstr);
-                BoutMoveStr boutMoveStr = eccoRec->curBoutMoveStr;
-                if (boutMoveStr->boutNo == boutNo
-                    || (or == 1 && (boutMoveStr = getBoutMoveStr__(eccoRec, boutNo, false))))
-                    setPwstr_value(&boutMoveStr->bmvstr[color][or], rbmvstr[color]);
-                else { //if (or == 0 || boutMoveStr == NULL) {
-                    const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
-                    bmvstr[color][or] = rbmvstr[color];
-                    eccoRec->curBoutMoveStr = newBoutMoveStr__(eccoRec->curBoutMoveStr, boutNo, bmvstr);
+                const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
+                bmvstr[color][or] = rbmvstr[color];
+                if (eccoRec) {
+                    BoutMoveStr boutMoveStr = eccoRec->curBoutMoveStr;
+                    if (boutMoveStr->boutNo == boutNo
+                        || (or == 1 && (boutMoveStr = getBoutMoveStr__(eccoRec, boutNo, false))))
+                        setPwstr_value(&boutMoveStr->bmvstr[color][or], rbmvstr[color]);
+                    else { //if (or == 0 || boutMoveStr == NULL) {
+                        //const wchar_t* bmvstr[][BOUTMOVEOR_NUM] = { { NULL, NULL }, { NULL, NULL } };
+                        //bmvstr[color][or] = rbmvstr[color];
+                        eccoRec->curBoutMoveStr = newBoutMoveStr__(eccoRec->curBoutMoveStr, boutNo, bmvstr);
+                    }
+                } else {
+                    //*
+                    BoutStr boutStr = getEndDataMyLinkedList(ecco->boutStrMyLinkedList);
+                    if ((boutStr && boutStr->boutNo == boutNo)
+                        || (or == 1 && (boutStr = getDataMyLinkedList_cond(ecco->boutStrMyLinkedList, (int (*)(void*, void*))boutNo_comp__, &boutNo))))
+                        setPwstr_value(&boutStr->mvstr[color][or], rbmvstr[color]);
+                    else {
+                        addMyLinkedList(ecco->boutStrMyLinkedList, newBoutStr__(boutNo, bmvstr));
+                    }
+                    //*/
                 }
             } else if (i == 3 || i == 6) { // "不分先后" i=3, 6
                 // 忽略"不分先后"
@@ -650,7 +766,7 @@ static void setEccoRec_boutMoveStr__(EccoRec eccoRec, Ecco ecco, const wchar_t* 
                     || wcscmp(snStr, L"C19") == 0 || wcscmp(snStr, L"C54") == 0)
                     continue; // ? 可能存在少量失误？某些着法和连续着法可以不分先后？
 
-                setNoOrderMove__(eccoRec, firstBoutNo, reg_m, reg_bp);
+                setNoOrderMove__(eccoRec, ecco, firstBoutNo, reg_m, reg_bp);
             } else if (i == 4 || i == 7) { // "此前..."
                 // D29 (此前红可走马八进七，黑可走马２进３、车９平４)
                 if (wcscmp(snStr, L"D29") == 0 && partIndex == 1 && color == BLACK) {
@@ -658,22 +774,33 @@ static void setEccoRec_boutMoveStr__(EccoRec eccoRec, Ecco ecco, const wchar_t* 
                     wcscpy(wstrBak, wstr);
                     copySubStr(wstr, wstrBak, 6 + MOVESTR_LEN, wcslen(wstrBak)); // 复制后两着内容
                     wstrBak[6 + MOVESTR_LEN] = L'\x0'; // 截取前面一着内容
-                    setBeforePreMove__(eccoRec, wstrBak, --color, or, partIndex, reg_m, reg_bp);
+
+                    setBeforePreMove__(eccoRec, ecco, wstrBak, --color, or, partIndex, reg_m, reg_bp);
                 }
                 // D41 (此前红可走马二进三、马八进七、兵三进一和兵七进一) 转移至前面颜色的字段
                 else if (wcscmp(snStr, L"D41") == 0 && partIndex == 1 && color == BLACK)
                     --color;
 
-                setBeforePreMove__(eccoRec, wstr, color, or, partIndex, reg_m, reg_bp);
+                setBeforePreMove__(eccoRec, ecco, wstr, color, or, partIndex, reg_m, reg_bp);
             }
         }
-
-        if (or == 1 && eccoRec->orBoutNo[partIndex][0] == 0)
-            eccoRec->orBoutNo[partIndex][0] = boutNo;
+        if (eccoRec) {
+            if (or == 1 && eccoRec->orBoutNo[partIndex][0] == 0)
+                eccoRec->orBoutNo[partIndex][0] = boutNo;
+        } else {
+            if (or == 1 && ecco->orBoutNo[partIndex][0] == 0)
+                ecco->orBoutNo[partIndex][0] = boutNo;
+        }
         first += ovector[1];
     }
-    if (or == 1)
-        eccoRec->orBoutNo[partIndex][1] = boutNo;
+
+    if (eccoRec) {
+        if (or == 1)
+            eccoRec->orBoutNo[partIndex][1] = boutNo;
+    } else {
+        if (or == 1)
+            ecco->orBoutNo[partIndex][1] = boutNo;
+    }
 }
 
 static int appendIccs__(wchar_t* iccses, const wchar_t* mvstrs, int index, ChessManual cm, ChangeType ct)
@@ -822,6 +949,9 @@ static void getCombIccses__(wchar_t* combStr, wchar_t* anyMove, EccoRec eccoRec,
 
 static void doSetRegStr__(EccoRec eccoRec, Ecco ecco)
 {
+    if (!eccoRec)
+        return;
+
     int combNum = 0;
     //wchar_t* anyMove = L"(?:[a-i]\\d[a-i]\\d)*"; // 精确版
     wchar_t* anyMove = L".*"; // 简易版
@@ -871,30 +1001,23 @@ static void doSetRegStr__(EccoRec eccoRec, Ecco ecco)
     delChessManual(cm);
 }
 
-static void setEcco_regstr__(Ecco ecco, MyLinkedList eccoMyLinkedList, void* _0, void* _1)
+static void setEcco_regstr__(Ecco ecco, MyLinkedList eccoMyLinkedList, void** regs, void* _1)
 {
     const wchar_t *ecco_sn = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[SN_INDEX]),
                   *ecco_mvstrs = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[MVSTRS_INDEX]);
     if (wcslen(ecco_sn) < 3 || wcslen(ecco_mvstrs) < 1)
         return;
 
-    /*
+    //*
     const wchar_t* ecco_pre_mvstrs = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[PRE_MVSTRS_INDEX]);
     if (wcslen(ecco_pre_mvstrs) > 0
-        && !setStartPreMove__(eccoRec, ecco, reg_m, reg_sp, reg_bp))
-        setEccoRec_boutMoveStr__(eccoRec, ecco, eccoRec->sn, reg_m, reg_bm, reg_bp, 0);
+        && !setStartPreMove__(NULL, ecco, regs[0], regs[2], regs[3]))
+        setEccoRec_boutMoveStr__(NULL, ecco, ecco_sn, regs[0], regs[1], regs[3], 0);
 
-    setEccoRec_boutMoveStr__(eccoRec, ecco, eccoRec->sn, reg_m, reg_bm, reg_bp, 1);
+    setEccoRec_boutMoveStr__(NULL, ecco, ecco_sn, regs[0], regs[1], regs[3], 1);
 
-    doSetRegStr__(eccoRec,ecco);
+    doSetRegStr__(NULL, ecco);
     //*/
-
-    //Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))eccoName_cmp__, (void*)sn);
-    //if (tecco == NULL)
-    //    return;
-
-    //setInfoItem(ecco->attrMyLinkedList, ECCOATTR_NAMES[PRE_MVSTRS_INDEX],
-    //    getInfoValue_name(tecco->attrMyLinkedList, ECCOATTR_NAMES[MVSTRS_INDEX]));
 }
 
 static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedList)
@@ -911,13 +1034,15 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedLi
         mvStrs, L"[，、；\\s　和\\(\\)以／]|$", ZhWChars);
     // 捕捉一个回合着法：1.序号，2.一步着法的首着，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
     swprintf(bout_rich_mvStr, WIDEWCHARSIZE, L"([\\da-z]). ?%ls(?:%ls)?", rich_mvStr, rich_mvStr);
-    void *reg_m = pcrewch_compile(mvstr, 0, &error, &errorffset, NULL),
-         *reg_bm = pcrewch_compile(bout_rich_mvStr, 0, &error, &errorffset, NULL),
-         *reg_sp = pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL),
-         *reg_bp = pcrewch_compile(L"(炮二平五)?.(马二进三).*(车一平二).(车二进六)?"
-                                   "|(马８进７).+(车９平８)"
-                                   "|此前可走(马二进三)、(马八进七)、兵三进一和兵七进一",
-             0, &error, &errorffset, NULL);
+    void* regs[] = {
+        pcrewch_compile(mvstr, 0, &error, &errorffset, NULL),
+        pcrewch_compile(bout_rich_mvStr, 0, &error, &errorffset, NULL),
+        pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL),
+        pcrewch_compile(L"(炮二平五)?.(马二进三).*(车一平二).(车二进六)?"
+                        "|(马８进７).+(车９平８)"
+                        "|此前可走(马二进三)、(马八进七)、兵三进一和兵七进一",
+            0, &error, &errorffset, NULL)
+    };
     //fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n\n", ZhWChars, mvStrs, rich_mvStr, bout_rich_mvStr);
 
     int iccsLen = 0, msLen = 0;
@@ -927,10 +1052,10 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedLi
         if (wcslen(eccoRec->sn) < 3 || !mvstrs)
             continue;
 
-        if (eccoRec->pre_mvstrs && !setStartPreMove__(eccoRec, NULL, reg_m, reg_sp, reg_bp))
-            setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, reg_m, reg_bm, reg_bp, 0);
+        if (eccoRec->pre_mvstrs && !setStartPreMove__(eccoRec, NULL, regs[0], regs[2], regs[3]))
+            setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, regs[0], regs[1], regs[3], 0);
 
-        setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, reg_m, reg_bm, reg_bp, 1);
+        setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, regs[0], regs[1], regs[3], 1);
 
         doSetRegStr__(eccoRec, NULL);
         msLen = fmax(msLen, wcslen(mvstrs));
@@ -939,10 +1064,14 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedLi
     }
     //fwprintf(fout, L"eccoRecStr iccsLen:%d mslen:%d", iccsLen, msLen);
 
-    pcrewch_free(reg_m);
-    pcrewch_free(reg_bm);
-    pcrewch_free(reg_sp);
-    pcrewch_free(reg_bp);
+    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))setEcco_regstr__,
+        (void*)eccoMyLinkedList, (void*)regs, NULL);
+
+    for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i)
+        pcrewch_free(regs[i]);
+    //pcrewch_free(reg_bm);
+    //pcrewch_free(reg_sp);
+    //pcrewch_free(reg_bp);
 }
 
 static void getInitEccoSql__(char** initEccoSql, const wchar_t* insertFormat, EccoRec rootEccoRec)

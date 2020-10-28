@@ -41,6 +41,8 @@ void addMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* data);
 
 void* getDataMyLinkedList_idx(MyLinkedList myLinkedList, int idx);
 
+void* getEndDataMyLinkedList(MyLinkedList myLinkedList);
+
 void setMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* newData);
 
 void removeMyLinkedList_idx(MyLinkedList myLinkedList, int idx);

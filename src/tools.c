@@ -119,8 +119,7 @@ wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value)
     if (value == NULL)
         return NULL;
 
-    if (*pwstr)
-        free(*pwstr);
+    free(*pwstr);
     *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
     return wcscpy(*pwstr, value);
 }

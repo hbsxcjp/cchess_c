@@ -198,6 +198,11 @@ void* getDataMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
     return getNodeMyLinkedList_idx__(myLinkedList, idx)->data;
 }
 
+void* getEndDataMyLinkedList(MyLinkedList myLinkedList)
+{
+    return getDataMyLinkedList_idx(myLinkedList, myLinkedList_size(myLinkedList) - 1);
+}
+
 static void setNodeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* newData)
 {
     if (node == myLinkedList->endMarker)
