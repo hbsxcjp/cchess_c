@@ -518,7 +518,7 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
 }
 
 // 处理前置着法描述字符串————"局面开始：红方：黑方："
-static bool setStartPreMove__(EccoRec eccoRec, void* reg_m, void* reg_sp, void* reg_bp)
+static bool setStartPreMove__(EccoRec eccoRec, Ecco ecco, void* reg_m, void* reg_sp, void* reg_bp)
 {
     int ovector[30];
     const wchar_t* wstr = eccoRec->pre_mvstrs;
@@ -596,7 +596,7 @@ static void setNoOrderMove__(EccoRec eccoRec, int firstBoutNo, void* reg_m, void
 }
 
 // 获取回合着法字符串数组,
-static void setEccoRec_boutMoveStr__(EccoRec eccoRec, const wchar_t* snStr,
+static void setEccoRec_boutMoveStr__(EccoRec eccoRec, Ecco ecco, const wchar_t* snStr,
     void* reg_m, void* reg_bm, void* reg_bp, int partIndex)
 {
     const wchar_t* mvstr = partIndex == 0 ? eccoRec->pre_mvstrs : eccoRec->mvstrs;
@@ -820,7 +820,7 @@ static void getCombIccses__(wchar_t* combStr, wchar_t* anyMove, EccoRec eccoRec,
     }
 }
 
-static void doSetRegStr__(EccoRec eccoRec)
+static void doSetRegStr__(EccoRec eccoRec, Ecco ecco)
 {
     int combNum = 0;
     //wchar_t* anyMove = L"(?:[a-i]\\d[a-i]\\d)*"; // 精确版
@@ -871,6 +871,32 @@ static void doSetRegStr__(EccoRec eccoRec)
     delChessManual(cm);
 }
 
+static void setEcco_regstr__(Ecco ecco, MyLinkedList eccoMyLinkedList, void* _0, void* _1)
+{
+    const wchar_t *ecco_sn = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[SN_INDEX]),
+                  *ecco_mvstrs = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[MVSTRS_INDEX]);
+    if (wcslen(ecco_sn) < 3 || wcslen(ecco_mvstrs) < 1)
+        return;
+
+    /*
+    const wchar_t* ecco_pre_mvstrs = getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[PRE_MVSTRS_INDEX]);
+    if (wcslen(ecco_pre_mvstrs) > 0
+        && !setStartPreMove__(eccoRec, ecco, reg_m, reg_sp, reg_bp))
+        setEccoRec_boutMoveStr__(eccoRec, ecco, eccoRec->sn, reg_m, reg_bm, reg_bp, 0);
+
+    setEccoRec_boutMoveStr__(eccoRec, ecco, eccoRec->sn, reg_m, reg_bm, reg_bp, 1);
+
+    doSetRegStr__(eccoRec,ecco);
+    //*/
+
+    //Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))eccoName_cmp__, (void*)sn);
+    //if (tecco == NULL)
+    //    return;
+
+    //setInfoItem(ecco->attrMyLinkedList, ECCOATTR_NAMES[PRE_MVSTRS_INDEX],
+    //    getInfoValue_name(tecco->attrMyLinkedList, ECCOATTR_NAMES[MVSTRS_INDEX]));
+}
+
 static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedList)
 {
     const char* error;
@@ -901,12 +927,12 @@ static void setEccoRec_regstr__(EccoRec rootEccoRec, MyLinkedList eccoMyLinkedLi
         if (wcslen(eccoRec->sn) < 3 || !mvstrs)
             continue;
 
-        if (eccoRec->pre_mvstrs && !setStartPreMove__(eccoRec, reg_m, reg_sp, reg_bp))
-            setEccoRec_boutMoveStr__(eccoRec, eccoRec->sn, reg_m, reg_bm, reg_bp, 0);
+        if (eccoRec->pre_mvstrs && !setStartPreMove__(eccoRec, NULL, reg_m, reg_sp, reg_bp))
+            setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, reg_m, reg_bm, reg_bp, 0);
 
-        setEccoRec_boutMoveStr__(eccoRec, eccoRec->sn, reg_m, reg_bm, reg_bp, 1);
+        setEccoRec_boutMoveStr__(eccoRec, NULL, eccoRec->sn, reg_m, reg_bm, reg_bp, 1);
 
-        doSetRegStr__(eccoRec);
+        doSetRegStr__(eccoRec, NULL);
         msLen = fmax(msLen, wcslen(mvstrs));
         iccsLen = fmax(iccsLen, wcslen(eccoRec->regstr));
         //assert(wcscmp(eccoRec->regstr, eccoRecStr) == 0);
