@@ -116,12 +116,13 @@ void hashToStr(char* str, unsigned char* hash, int length)
 
 wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value)
 {
-    if (value == NULL)
-        return NULL;
-
     free(*pwstr);
-    *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
-    return wcscpy(*pwstr, value);
+    *pwstr = NULL;
+    if (value) {
+        *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+        wcscpy(*pwstr, value);
+    }
+    return *pwstr;
 }
 
 int filterObjects(void** objs, int count, void* arg1, void* arg2,
@@ -305,7 +306,6 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     return tag;
 }
 #endif
-
 
 static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)
 {

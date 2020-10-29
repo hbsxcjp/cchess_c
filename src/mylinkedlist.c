@@ -169,9 +169,8 @@ static Node getNodeMyLinkedList_idx__(MyLinkedList myLinkedList, int idx)
     if (idx < 0 && idx > size)
         return myLinkedList->endMarker;
 
-    Node node;
+    Node node = myLinkedList->beginMarker->next; // 起始索引idx==0
     if (idx < size / 2) {
-        node = myLinkedList->beginMarker->next; // 起始索引idx==0
         for (int i = 0; i < idx; ++i)
             node = node->next;
     } else {
