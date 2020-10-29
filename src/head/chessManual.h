@@ -50,8 +50,8 @@ int goInc(ChessManual cm, int inc);
 // 添加着法
 Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);
 
-// 获取着法ICCS字符串
-const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
+// 获取棋盘转换后当前着法ICCS字符串
+const wchar_t* getCurMoveICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct);
 
 // 添加/删除一个info条目
 void setInfoItem_cm(ChessManual cm, const wchar_t* name, const wchar_t* value);

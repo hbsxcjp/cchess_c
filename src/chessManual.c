@@ -237,7 +237,7 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
     return move;
 }
 
-const wchar_t* getICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
+const wchar_t* getCurMoveICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
 {
     return getICCS_mt(iccs, cm->curMove, cm->board, ct);
 }
@@ -1374,9 +1374,9 @@ const wchar_t* getIccsStr(wchar_t* wIccsStr, ChessManual cm)
     wchar_t iccs[6], redStr[WCHARSIZE] = { 0 }, blackStr[WCHARSIZE] = { 0 };
     backFirst(cm);
     while (go(cm)) {
-        wcscat(redStr, getICCS_cm(iccs, cm, EXCHANGE));
+        wcscat(redStr, getCurMoveICCS_cm(iccs, cm, EXCHANGE));
         if (go(cm))
-            wcscat(blackStr, getICCS_cm(iccs, cm, EXCHANGE));
+            wcscat(blackStr, getCurMoveICCS_cm(iccs, cm, EXCHANGE));
     }
     backFirst(cm);
     swprintf(wIccsStr, WIDEWCHARSIZE, L"%ls&%ls", redStr, blackStr);
