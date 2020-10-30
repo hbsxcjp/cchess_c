@@ -92,7 +92,12 @@ const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
 // 获取棋谱对象链表
-MyLinkedList getChessManualMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
+MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
 
-void printCM_MyLinkedList(FILE* fout, MyLinkedList cm_MyLinkedList);
+// 打印输出棋谱链表
+void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList);
+
+// 存储文件棋谱至数据库
+void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_tblName,
+    const char* dirName, RecFormat fromfmt);
 #endif

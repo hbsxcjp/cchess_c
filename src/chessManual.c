@@ -1473,12 +1473,12 @@ static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList cmMyLinkedList)
     addMyLinkedList(cmMyLinkedList, newChessManual(fileName));
 }
 
-static void setECCO_cm__(void* cm, void* regObjMyLinkedList, void* _0, void* _1)
+static void setECCO_cm__(void* cm, void* regMyLinkedList, void* _0, void* _1)
 {
-    setECCO_cm(cm, regObjMyLinkedList);
+    setECCO_cm(cm, regMyLinkedList);
 }
 
-MyLinkedList getChessManualMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObjMyLinkedList)
+MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regMyLinkedList)
 {
     MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
 
@@ -1486,26 +1486,53 @@ MyLinkedList getChessManualMyLinkedList(const char* dirName, RecFormat fromfmt, 
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, cmMyLinkedList, true);
 
-    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, regObjMyLinkedList, NULL, NULL);
+    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, regMyLinkedList, NULL, NULL);
 
     return cmMyLinkedList;
 }
 
-static void printCM_Str__(ChessManual cm, FILE* fout, void* _, size_t* size)
+static void printCmStr__(ChessManual cm, FILE* fout, int* no, void* _)
 {
-    wchar_t wIccsStr[WIDEWCHARSIZE]; //, ecco[WCHARSIZE], file[WCHARSIZE];
+    wchar_t wIccsStr[WIDEWCHARSIZE]; 
     getIccsStr(wIccsStr, cm);
-    //mbstowcs(ecco, INFO_NAMES[ECCO_INDEX], WCHARSIZE);
-    //mbstowcs(file, INFO_NAMES[FILENAME_INDEX], WCHARSIZE);
     fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-        //(*size)++, getInfoValue_name_cm(cm, ecco), getInfoValue_name_cm(cm, file), wIccsStr);
-        (*size)++, getInfoValue_name_cm(cm, INFO_NAMES[ECCO_INDEX]),
+        (*no)++, getInfoValue_name_cm(cm, INFO_NAMES[ECCO_INDEX]),
         getInfoValue_name_cm(cm, INFO_NAMES[FILENAME_INDEX]), wIccsStr);
 }
 
-void printCM_MyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
+void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
 {
-    size_t size = 1;
-    traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCM_Str__,
-        fout, NULL, &size);
+    int no = 1;
+    printMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCmStr__,
+        fout, &no, NULL);
+}
+
+static void wcscatCmStr__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
+{
+    wchar_t values[SUPERWIDEWCHARSIZE], lineStr[SUPERWIDEWCHARSIZE];
+    wcscpy(values, L"");
+    for (int i = 0; i < INFO_LEN; ++i) {
+        wchar_t value[SUPERWIDEWCHARSIZE];
+        swprintf(value, SUPERWIDEWCHARSIZE, L"\'%ls\' ,", getInfoValue_name_cm(cm, INFO_NAMES[i]));
+        wcscat(values, value);
+    }
+    values[wcslen(values) - 1] = L'\x0';
+    swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat, values);
+    supper_wcscat(pwInsertSql, psize, lineStr);
+}
+
+void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_tblName,
+    const char* dirName, RecFormat fromfmt)
+{
+    // 获取需存储的对象链表
+    MyLinkedList regMyLinkedList = getRegMyLinkedList(db, lib_tblName);
+    MyLinkedList cmMyLinkedList = getCmMyLinkedList(dirName, fromfmt, regMyLinkedList);
+    delMyLinkedList(regMyLinkedList);
+
+    storeObject_db(db, man_tblName, INFO_NAMES, INFO_LEN,
+        cmMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatCmStr__);
+
+    //fwprintf(fout, L"\n\n%ls\n\nwInsertSql len:%d", wInsertSql, wcslen(wInsertSql));
+    //printCmMyLinkedList(fout, cmMyLinkedList);
+    delMyLinkedList(cmMyLinkedList);
 }

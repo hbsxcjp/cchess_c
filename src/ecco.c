@@ -114,20 +114,20 @@ static int addRegObj_MyLinkedList__(void* myLinkedList, int argc, char** argv, c
     mbstowcs(sn, argv[0], size0);
     mbstowcs(regstr, argv[1], size1);
 
-    addMyLinkedList(myLinkedList, newRegObj__(sn, regstr));
+    addMyLinkedList_idx(myLinkedList, 0, newRegObj__(sn, regstr)); // 插入为第一条记录
     return 0; // 表示执行成功
 }
 
-MyLinkedList getRegObjMyLinkedList(sqlite3* db, const char* tblName)
+MyLinkedList getRegMyLinkedList(sqlite3* db, const char* lib_tblName)
 {
     MyLinkedList myLinkedList = newMyLinkedList((void (*)(void*))delRegObj__);
     char sql[WCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT sn, regstr FROM %s "
-                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn DESC;",
-        tblName);
+                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn ASC;",
+        lib_tblName);
     int rc = sqlite3_exec(db, sql, addRegObj_MyLinkedList__, myLinkedList, &zErrMsg);
     if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
+        fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
@@ -140,51 +140,19 @@ static int compare_iccsStr__(RegObj regObj, const wchar_t* iccsStr)
     return (pcrewch_exec(regObj->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, 30) > 0 ? 0 : 1); // 0:匹配成功
 }
 
-bool setECCO_cm(ChessManual cm, MyLinkedList regObjMyLinkedList)
+bool setECCO_cm(ChessManual cm, MyLinkedList regMyLinkedList)
 {
     wchar_t iccsStr[WIDEWCHARSIZE];
     getIccsStr(iccsStr, cm);
-    RegObj regObj = getDataMyLinkedList_cond(regObjMyLinkedList,
+
+    // 从前到后比较对象，获取符合条件的对象
+    RegObj regObj = getDataMyLinkedList_cond(regMyLinkedList,
         (int (*)(void*, void*))compare_iccsStr__, iccsStr);
     if (regObj == NULL)
         return false;
 
     setInfoItem_cm(cm, INFO_NAMES[ECCO_INDEX], regObj->sn);
     return true;
-}
-
-static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr, void* _1)
-{
-    fwprintf(fout, L"\t\t%2d %ls／%ls %ls／%ls\n",
-        boutStr->boutNo,
-        boutStr->mvstr[RED][0] ? boutStr->mvstr[RED][0] : blankStr,
-        boutStr->mvstr[RED][1] ? boutStr->mvstr[RED][1] : blankStr,
-        boutStr->mvstr[BLACK][0] ? boutStr->mvstr[BLACK][0] : blankStr,
-        boutStr->mvstr[BLACK][1] ? boutStr->mvstr[BLACK][1] : blankStr);
-}
-
-static void printEcco__(Ecco ecco, FILE* fout, int* no, void* _)
-{
-    fwprintf(fout, L"No:%d\n", (*no)++);
-    for (int i = 0; i < ECCOATTR_LEN; ++i) {
-        wchar_t value[SUPERWIDEWCHARSIZE];
-        swprintf(value, SUPERWIDEWCHARSIZE, L"\t%ls: %ls\n",
-            ECCOATTR_NAMES[i], getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[i]));
-        fwprintf(fout, value);
-    }
-
-    fwprintf(fout, L"orBoutNo:");
-    for (int p = 0; p < BOUTMOVEPART_NUM; ++p) {
-        for (int i = 0; i < 2; ++i)
-            fwprintf(fout, L" %d", ecco->orBoutNo[p][i]);
-    }
-    fwprintf(fout, L"\n");
-
-    fwprintf(fout, L"boutStr:\n");
-    const wchar_t* blankStr = L"        ";
-    traverseMyLinkedList(ecco->boutStrMyLinkedList, (void (*)(void*, void*, void*, void*))printBoutStr__,
-        fout, (void*)blankStr, NULL);
-    fwprintf(fout, L"\n");
 }
 
 static int eccoName_cmp__(Ecco ecco, const wchar_t* name)
@@ -766,8 +734,50 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
         pcrewch_free(regs[i]);
 }
 
-static void catwInitEccoSql__(Ecco ecco, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
+static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr, void* _1)
 {
+    fwprintf(fout, L"\t\t%2d %ls／%ls %ls／%ls\n",
+        boutStr->boutNo,
+        boutStr->mvstr[RED][0] ? boutStr->mvstr[RED][0] : blankStr,
+        boutStr->mvstr[RED][1] ? boutStr->mvstr[RED][1] : blankStr,
+        boutStr->mvstr[BLACK][0] ? boutStr->mvstr[BLACK][0] : blankStr,
+        boutStr->mvstr[BLACK][1] ? boutStr->mvstr[BLACK][1] : blankStr);
+}
+
+static void printEccoStr__(Ecco ecco, FILE* fout, int* no, void* _)
+{
+    fwprintf(fout, L"No:%d\n", (*no)++);
+    for (int i = 0; i < ECCOATTR_LEN; ++i) {
+        wchar_t value[SUPERWIDEWCHARSIZE];
+        swprintf(value, SUPERWIDEWCHARSIZE, L"\t%ls: %ls\n",
+            ECCOATTR_NAMES[i], getInfoValue_name(ecco->attrMyLinkedList, ECCOATTR_NAMES[i]));
+        fwprintf(fout, value);
+    }
+
+    fwprintf(fout, L"orBoutNo:");
+    for (int p = 0; p < BOUTMOVEPART_NUM; ++p) {
+        for (int i = 0; i < 2; ++i)
+            fwprintf(fout, L" %d", ecco->orBoutNo[p][i]);
+    }
+    fwprintf(fout, L"\n");
+
+    fwprintf(fout, L"boutStr:\n");
+    const wchar_t* blankStr = L"        ";
+    traverseMyLinkedList(ecco->boutStrMyLinkedList, (void (*)(void*, void*, void*, void*))printBoutStr__,
+        fout, (void*)blankStr, NULL);
+    fwprintf(fout, L"\n");
+}
+
+void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList)
+{
+    int no = 1;
+    printMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))printEccoStr__,
+        fout, &no, NULL);
+}
+
+static void wcscatEccoStr__(Ecco ecco, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
+{
+    //*
     wchar_t values[SUPERWIDEWCHARSIZE], lineStr[SUPERWIDEWCHARSIZE];
     wcscpy(values, L"");
     for (int i = 0; i < ECCOATTR_LEN; ++i) {
@@ -781,52 +791,7 @@ static void catwInitEccoSql__(Ecco ecco, wchar_t** pwInsertSql, const wchar_t* i
     supper_wcscat(pwInsertSql, psize, lineStr);
 }
 
-static void setInitEccoSql__(char** initEccoSql, wchar_t* wInsertFormat, MyLinkedList eccoMyLinkedList)
-{
-    size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t* wInitEccoSql = malloc(size * sizeof(wchar_t));
-    assert(wInitEccoSql);
-    wInitEccoSql[0] = L'\x0';
-
-    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))catwInitEccoSql__,
-        &wInitEccoSql, wInsertFormat, &size);
-    //fwprintf(fout, L"%ls\n\nwInitEccoSql len:%d", wInitEccoSql, wcslen(wInitEccoSql));
-
-    size = wcstombs(NULL, wInitEccoSql, 0) + 1;
-    *initEccoSql = malloc(size * sizeof(char));
-    wcstombs(*initEccoSql, wInitEccoSql, size);
-    free(wInitEccoSql);
-}
-
-static wchar_t* catWcolNames__(wchar_t* wcolNames, const wchar_t** wcol_names, int col_len, const wchar_t* sufStr)
-{
-    wcscpy(wcolNames, L"");
-    for (int i = 0; i < col_len; ++i) {
-        wcscat(wcolNames, wcol_names[i]);
-        wcscat(wcolNames, sufStr);
-    }
-    wcolNames[wcslen(wcolNames) - 1] = L'\x0'; //去掉后缀最后的分隔逗号
-    return wcolNames;
-}
-
-static char* catColNames__(char* colNames, const wchar_t** wcol_names, int col_len, const wchar_t* sufStr)
-{
-    wchar_t wcolNames[WIDEWCHARSIZE];
-    catWcolNames__(wcolNames, wcol_names, col_len, sufStr);
-    wcstombs(colNames, wcolNames, WIDEWCHARSIZE);
-    return colNames;
-}
-
-static void setInsertFormat__(wchar_t* wInsertFormat, const char* tblName, const wchar_t** wcol_names, int col_len)
-{
-    wchar_t wtblName[WCHARSIZE], wcolNames[WIDEWCHARSIZE];
-    catWcolNames__(wcolNames, wcol_names, col_len, L" ,");
-    mbstowcs(wtblName, tblName, WCHARSIZE);
-    swprintf(wInsertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%%ls);\n",
-        wtblName, wcolNames);
-}
-
-static void storeEccolib_db__(sqlite3* db, const char* tblName, const char* fileName)
+void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
 {
     char* rm;
 #ifdef __linux
@@ -845,72 +810,11 @@ static void storeEccolib_db__(sqlite3* db, const char* tblName, const char* file
     setEcco_regstrField__(eccoMyLinkedList);
     free(fileWstring);
 
-    int no = 0;
-    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))printEcco__,
-        fout, &no, NULL);
+    storeObject_db(db, lib_tblName, ECCOATTR_NAMES, ECCOATTR_LEN,
+        eccoMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatEccoStr__);
 
-    char colNames[WIDEWCHARSIZE];
-    strcpy(colNames, "ID INTEGER PRIMARY KEY AUTOINCREMENT,");
-    catColNames__(colNames, ECCOATTR_NAMES, ECCOATTR_LEN, L" TEXT,");
-    if (sqlite3_existTable(db, tblName))
-        sqlite3_deleteTable(db, tblName, "1=1");
-    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
-        return;
-
-    // 获取插入记录字符串，并插入
-    char* initEccoSql = NULL;
-    wchar_t wInsertFormat[WIDEWCHARSIZE];
-    setInsertFormat__(wInsertFormat, tblName, ECCOATTR_NAMES, ECCOATTR_LEN);
-
-    setInitEccoSql__(&initEccoSql, wInsertFormat, eccoMyLinkedList);
-    sqlite3_exec_showErrMsg(db, initEccoSql);
-    free(initEccoSql);
+    printEccoMyLinkedList(fout, eccoMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
-}
-
-static void wcscatCM_Str__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
-{
-    wchar_t values[SUPERWIDEWCHARSIZE], lineStr[SUPERWIDEWCHARSIZE];
-    wcscpy(values, L"");
-    for (int i = 0; i < INFO_LEN; ++i) {
-        wchar_t value[SUPERWIDEWCHARSIZE];
-        swprintf(value, SUPERWIDEWCHARSIZE, L"\'%ls\' ,", getInfoValue_name_cm(cm, INFO_NAMES[i]));
-        wcscat(values, value);
-    }
-    values[wcslen(values) - 1] = L'\x0';
-    swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat, values);
-    supper_wcscat(pwInsertSql, psize, lineStr);
-}
-
-void storeManual_db(sqlite3* db, const char* tblName,
-    const char* dirName, RecFormat fromfmt, MyLinkedList regObjMyLinkedList)
-{
-    char colNames[WIDEWCHARSIZE];
-    strcpy(colNames, "ID INTEGER PRIMARY KEY AUTOINCREMENT,");
-    catColNames__(colNames, INFO_NAMES, INFO_LEN, L" TEXT,");
-    if (sqlite3_existTable(db, tblName))
-        sqlite3_deleteTable(db, tblName, "1=1");
-    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
-        return;
-
-    // 获取插入记录字符串，并插入
-    MyLinkedList cm_MyLinkedList = getChessManualMyLinkedList(dirName, fromfmt, regObjMyLinkedList);
-
-    size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
-    setInsertFormat__(wInsertFormat, tblName, INFO_NAMES, INFO_LEN);
-    traverseMyLinkedList(cm_MyLinkedList, (void (*)(void*, void*, void*, void*))wcscatCM_Str__,
-        &wInsertSql, wInsertFormat, &size);
-
-    fwprintf(fout, L"\n\n%ls\n\nwInsertSql len:%d", wInsertSql, wcslen(wInsertSql));
-    printCM_MyLinkedList(fout, cm_MyLinkedList);
-    delMyLinkedList(cm_MyLinkedList);
-
-    size = wcstombs(NULL, wInsertSql, 0) + 1;
-    char insertSql[size];
-    wcstombs(insertSql, wInsertSql, size);
-    sqlite3_exec_showErrMsg(db, insertSql);
-    free(wInsertSql);
 }
 
 void initEcco(char* dbName)
@@ -932,13 +836,11 @@ void initEcco(char* dbName)
     } else {
         const char *lib_tblName = "ecco",
                    *srcFileName = "chessManual/eccolib_src";
-        storeEccolib_db__(db, lib_tblName, srcFileName);
+        storeEccolib_db(db, lib_tblName, srcFileName);
 
         const char *man_tblName = "manual",
                    *manualDirName = "chessManual/示例文件";
-        MyLinkedList regObjMyLinkedList = getRegObjMyLinkedList(db, lib_tblName);
-        storeManual_db(db, man_tblName, manualDirName, XQF, regObjMyLinkedList);
-        delMyLinkedList(regObjMyLinkedList);
+        storeChessManual_db(db, lib_tblName, man_tblName, manualDirName, XQF);
     }
     sqlite3_close(db);
 

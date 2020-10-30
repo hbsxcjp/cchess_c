@@ -61,6 +61,10 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
 void traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3);
 
+// 打印输出链表对象
+void printMyLinkedList(MyLinkedList myLinkedList, void (*printData__)(void*, void*, void*, void*),
+    FILE* fout, void* arg1, void* arg2);
+
 // 比较两个链表对象是否相等
 bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,
     int (*data_cmp)(void*, void*));

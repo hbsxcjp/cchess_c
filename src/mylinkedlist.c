@@ -270,6 +270,12 @@ static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, v
     }
 }
 
+void printMyLinkedList(MyLinkedList myLinkedList, void (*printData__)(void*, void*, void*, void*),
+    FILE* fout, void* arg1, void* arg2)
+{
+    traverseMyLinkedList(myLinkedList, printData__, fout, arg1, arg2);
+}
+
 bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,
     int (*data_cmp)(void*, void*))
 {

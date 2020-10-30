@@ -142,6 +142,8 @@ int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames);
 int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition);
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
-// 数据库类 结束 -------------------------------------------------------------------------------------- //
 
+bool storeObject_db(sqlite3* db, const char* tblName, const wchar_t* wcol_names[], int wcol_len,
+    MyLinkedList objMyLinkedList, void (*wcscatInsertSql__)(void*, void*, void*, void*));
+// 数据库类 结束 -------------------------------------------------------------------------------------- //
 #endif

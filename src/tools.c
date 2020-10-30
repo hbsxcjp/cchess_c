@@ -480,3 +480,52 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
     sqlite3_free(zErrMsg);
     return resultCode;
 }
+
+static wchar_t* catWcolNames__(wchar_t* wcolNames, const wchar_t** wcol_names, int wcol_len, const wchar_t* sufStr)
+{
+    //wcscpy(wcolNames, L"");
+    for (int i = 0; i < wcol_len; ++i) {
+        wcscat(wcolNames, wcol_names[i]);
+        wcscat(wcolNames, sufStr);
+    }
+    wcolNames[wcslen(wcolNames) - 1] = L'\x0'; //去掉后缀最后的分隔逗号
+    return wcolNames;
+}
+
+bool storeObject_db(sqlite3* db, const char* tblName, const wchar_t* wcol_names[], int wcol_len,
+    MyLinkedList objMyLinkedList, void (*wcscatInsertSql__)(void*, void*, void*, void*))
+{
+    // 创建表
+    char colNames[WIDEWCHARSIZE];
+    wchar_t wcolNames[WIDEWCHARSIZE];
+    wcscpy(wcolNames, L"ID INTEGER PRIMARY KEY AUTOINCREMENT,");
+    catWcolNames__(wcolNames, wcol_names, wcol_len, L" TEXT,");
+    wcstombs(colNames, wcolNames, WIDEWCHARSIZE);
+    if (sqlite3_existTable(db, tblName))
+        sqlite3_deleteTable(db, tblName, "1=1");
+    else if (sqlite3_createTable(db, tblName, colNames) != SQLITE_OK)
+        return false;
+
+    // 获取存储写入数据库语句
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
+
+    wchar_t wtblName[WCHARSIZE]; 
+    wcscpy(wcolNames, L"");
+    catWcolNames__(wcolNames, wcol_names, wcol_len, L" ,");
+    mbstowcs(wtblName, tblName, WCHARSIZE);
+    swprintf(wInsertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%%ls);\n",
+        wtblName, wcolNames);
+
+    traverseMyLinkedList(objMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatInsertSql__,
+        &wInsertSql, wInsertFormat, &size);
+    //fwprintf(fout, L"\n%ls\nwInsertSql len:%d\n\n", wInsertSql, wcslen(wInsertSql));
+
+    // 存储写入数据库
+    size = wcstombs(NULL, wInsertSql, 0) + 1;
+    char insertSql[size];
+    wcstombs(insertSql, wInsertSql, size);
+    sqlite3_exec_showErrMsg(db, insertSql);
+    free(wInsertSql);
+    return true;
+}
