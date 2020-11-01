@@ -25,16 +25,22 @@ const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
 
-const wchar_t* INFO_NAMES[] = {
-    L"TitleA", L"Event", L"Date", L"Site", L"Red", L"Black",
-    L"Opening", L"RMKWriter", L"Author", L"PlayType", L"Result", L"Version",
-    L"ECCO", L"FileName", L"FEN", L"movestr"
-};
-const int ECCO_INDEX = 12,
-          FILENAME_INDEX = 13,
-          FEN_INDEX = 14,
-          MOVESTR_INDEX = 15,
-          INFO_LEN = sizeof(INFO_NAMES) / sizeof(INFO_NAMES[0]);
+static const wchar_t* CMINFO_NAMES[] = {
+    L"TITLE", L"EVENT", L"DATE", L"SITE", L"RED", L"BLACK",
+    L"OPENING", L"WRITER", L"AUTHOR", L"TYPE", L"RESULT", L"VERSION",
+    L"FILE", L"FEN", L"ICCSSTR", L"ECCO_SN", L"ECCO_NAME", L"MOVESTR"
+}; // 所有字段构成创建表的SQL语句长度不能超过256字符
+
+static const int PLAYTYPE_INDEX = 9,
+                 RESULT_INDEX = 10,
+                 VERSION_INDEX = 11,
+                 FILENAME_INDEX = 12,
+                 FEN_INDEX = 13,
+                 ICCS_INDEX = 14,
+                 ECCOSN_INDEX = 15,
+                 ECCONAME_INDEX = 16,
+                 MOVESTR_INDEX = 17,
+                 INFO_LEN = sizeof(CMINFO_NAMES) / sizeof(CMINFO_NAMES[0]);
 
 static const char FILETAG[] = "learnchess";
 
@@ -75,6 +81,8 @@ ChessManual newChessManual(const char* fileName)
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
     cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
+    for (int i = 0; i < INFO_LEN; ++i)
+        setInfoItem_cm(cm, CMINFO_NAMES[i], L"");
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
     return cm;
@@ -259,16 +267,13 @@ void delInfoItem_cm(ChessManual cm, const wchar_t* name)
 
 static const wchar_t* getFENFromCM__(ChessManual cm)
 {
-    //wchar_t fen[WCHARSIZE];
-    //mbstowcs(fen, INFO_NAMES[FEN_INDEX], WCHARSIZE);
-    const wchar_t* fen = INFO_NAMES[FEN_INDEX];
+    const wchar_t* fen = CMINFO_NAMES[FEN_INDEX];
     const wchar_t* value = getInfoValue_name_cm(cm, fen);
     if (wcslen(value) > 0)
         return value;
 
     setInfoItem_cm(cm, fen, FEN_INITVALUE);
-    Info info = getDataMyLinkedList_idx(cm->infoMyLinkedList, myLinkedList_size(cm->infoMyLinkedList) - 1);
-    return getInfoValue(info);
+    return FEN_INITVALUE;
 }
 
 static void setMoveNumZhStr__(ChessManual cm, Move move)
@@ -415,7 +420,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
         // 棋盘的左下角为原点(0, 0). 32个棋子的位置从1到32依次为:
         // 红: 车马相士帅士相马车炮炮兵兵兵兵兵 (位置从右到左, 从下到上)
         // 黑: 车马象士将士象马车炮炮卒卒卒卒卒 (位置从右到左, 从下到上)PlayStepNo[2],
-        PlayStepNo[2] = { 0 }, headWhoPlay, headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
+        PlayStepNo[2] = { 0 },
+                  //headWhoPlay,
+        headPlayResult, PlayNodes[4] = { 0 }, PTreePos[4] = { 0 }, Reserved1[4] = { 0 },
                   // 该谁下 0-红先, 1-黑先/最终结果 0-未知, 1-红胜 2-黑胜, 3-和棋
         headCodeA_H[16] = { 0 };
     char TitleA[65] = { 0 }, TitleB[65] = { 0 }, //对局类型(开,中,残等)
@@ -436,7 +443,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     headKeyXYt = xqfData[15]; // = 16 bytes
     memcpy(headQiziXY, xqfData + 16, 32); // = 48 bytes
     memcpy(PlayStepNo, xqfData + 48, 2);
-    headWhoPlay = xqfData[50];
+    //headWhoPlay = xqfData[50];
     headPlayResult = xqfData[51];
     memcpy(PlayNodes, xqfData + 52, 4);
     memcpy(PTreePos, xqfData + 56, 4);
@@ -505,11 +512,9 @@ static void readXQF__(ChessManual cm, FILE* fin)
 
     wchar_t tempStr[WIDEWCHARSIZE] = { 0 };
     char* values[] = {
-        TitleA, Event, Date, Site, Red, Black,
-        Opening, RMKWriter, Author
+        TitleA, Event, Date, Site, Red, Black, Opening, RMKWriter, Author
     };
-    int infoNames_num0 = 9;
-    for (int i = 0; i < infoNames_num0; ++i) {
+    for (int i = 0; i < sizeof(values) / sizeof(values[0]); ++i) {
         // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
         // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 #ifdef __linux
@@ -521,20 +526,20 @@ static void readXQF__(ChessManual cm, FILE* fin)
 #else
         mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
 #endif
-        setInfoItem_cm(cm, INFO_NAMES[i], tempStr);
+        setInfoItem_cm(cm, CMINFO_NAMES[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    setInfoItem_cm(cm, INFO_NAMES[9], PlayType[headCodeA_H[0]]); // 编码定义存储
+    setInfoItem_cm(cm, CMINFO_NAMES[PLAYTYPE_INDEX], PlayType[headCodeA_H[0]]); // 编码定义存储
 
     getFEN_pieChars(tempStr, pieChars);
-    wcscat(tempStr, headWhoPlay ? L" -r" : L" -b");
-    setInfoItem_cm(cm, INFO_NAMES[FEN_INDEX], tempStr); // 转换FEN存储
+    //wcscat(tempStr, headWhoPlay ? L" -r" : L" -b");
+    setInfoItem_cm(cm, CMINFO_NAMES[FEN_INDEX], tempStr); // 转换FEN存储
 
     wchar_t* Result[] = { L"未知", L"红胜", L"黑胜", L"和棋" };
-    setInfoItem_cm(cm, INFO_NAMES[10], Result[headPlayResult]); // 编码定义存储
+    setInfoItem_cm(cm, CMINFO_NAMES[RESULT_INDEX], Result[headPlayResult]); // 编码定义存储
 
     swprintf(tempStr, WIDEWCHARSIZE, L"%d", Version);
-    setInfoItem_cm(cm, INFO_NAMES[11], tempStr); // 整数存储
+    setInfoItem_cm(cm, CMINFO_NAMES[VERSION_INDEX], tempStr); // 整数存储
 
     fseek(fin, 1024, SEEK_SET);
     unsigned char tag = 0;
@@ -1226,13 +1231,13 @@ static void readChessManual__(ChessManual cm, const char* fileName)
     // 文件名存入信息链表
     wchar_t value[WCHARSIZE];
     mbstowcs(value, fileName, WCHARSIZE);
-    setInfoItem_cm(cm, INFO_NAMES[FILENAME_INDEX], value);
+    setInfoItem_cm(cm, CMINFO_NAMES[FILENAME_INDEX], value);
 
     // 着法存入信息链表
     if (getNext(cm->rootMove)) {
         wchar_t* movestr = NULL;
         writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
-        setInfoItem_cm(cm, INFO_NAMES[MOVESTR_INDEX], movestr);
+        setInfoItem_cm(cm, CMINFO_NAMES[MOVESTR_INDEX], movestr);
         free(movestr);
     }
 }
@@ -1383,14 +1388,6 @@ const wchar_t* getIccsStr(wchar_t* wIccsStr, ChessManual cm)
     return wIccsStr;
 }
 
-const char* getIccsStr_c(char* iccsStr, ChessManual cm)
-{
-    wchar_t wIccsStr[WIDEWCHARSIZE] = { 0 };
-    getIccsStr(wIccsStr, cm);
-    wcstombs(iccsStr, wIccsStr, wcstombs(NULL, wIccsStr, 0) + 1);
-    return iccsStr;
-}
-
 static int info_cmp__(Info info0, Info info1)
 {
     if (info0 == NULL && info1 == NULL)
@@ -1402,7 +1399,7 @@ static int info_cmp__(Info info0, Info info1)
 
     // 文件名属性不做比较，视同相等
     if (wcscmp(getInfoName(info0), getInfoName(info1)) == 0
-        && wcscmp(getInfoName(info0), INFO_NAMES[FILENAME_INDEX]) == 0)
+        && wcscmp(getInfoName(info0), CMINFO_NAMES[FILENAME_INDEX]) == 0)
         return 0;
 
     // 两个属性有一个不相等，则不相等
@@ -1464,6 +1461,29 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     return true;
 }
 
+bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList)
+{
+    if (wcscmp(getInfoValue_name_cm(cm, CMINFO_NAMES[FEN_INDEX]), FEN_INITVALUE) != 0)
+        return false;
+
+    wchar_t iccsStr[WIDEWCHARSIZE];
+    getIccsStr(iccsStr, cm);
+    setInfoItem_cm(cm, CMINFO_NAMES[ICCS_INDEX], iccsStr);
+
+    const wchar_t* sn = getEccoSN_iccsStr(eccoMyLinkedList, iccsStr);
+    if (sn == NULL)
+        return false;
+    else {
+        setInfoItem_cm(cm, CMINFO_NAMES[ECCOSN_INDEX], sn);
+        return true;
+    }
+}
+
+static void setECCO_cm__(void* cm, void* eccoMyLinkedList, void* _0, void* _1)
+{
+    setECCO_cm(cm, eccoMyLinkedList);
+}
+
 static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList cmMyLinkedList)
 {
     const char* fileName = fileInfo->name;
@@ -1473,12 +1493,7 @@ static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList cmMyLinkedList)
     addMyLinkedList(cmMyLinkedList, newChessManual(fileName));
 }
 
-static void setECCO_cm__(void* cm, void* regMyLinkedList, void* _0, void* _1)
-{
-    setECCO_cm(cm, regMyLinkedList);
-}
-
-MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regMyLinkedList)
+MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList eccoMyLinkedList)
 {
     MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
 
@@ -1486,53 +1501,64 @@ MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedL
     sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
     operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, cmMyLinkedList, true);
 
-    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, regMyLinkedList, NULL, NULL);
+    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, eccoMyLinkedList, NULL, NULL);
 
     return cmMyLinkedList;
 }
 
 static void printCmStr__(ChessManual cm, FILE* fout, int* no, void* _)
 {
-    wchar_t wIccsStr[WIDEWCHARSIZE]; 
-    getIccsStr(wIccsStr, cm);
-    fwprintf(fout, L"\nNo.%d sn:%ls file:%ls\niccses:%ls\n",
-        (*no)++, getInfoValue_name_cm(cm, INFO_NAMES[ECCO_INDEX]),
-        getInfoValue_name_cm(cm, INFO_NAMES[FILENAME_INDEX]), wIccsStr);
+    fwprintf(fout, L"No:%d\n", (*no)++);
+    traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
+        fout, NULL, NULL);
 }
 
 void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
 {
+    fwprintf(fout, L"cmMyLinkedList:\n");
     int no = 1;
-    printMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCmStr__,
+    traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCmStr__,
         fout, &no, NULL);
 }
 
-static void wcscatCmStr__(ChessManual cm, wchar_t** pwInsertSql, const wchar_t* insertFormat, size_t* psize)
+static void wcscatColNames_cm__(MyLinkedList cmMyLinkedList, wchar_t* wcolNames, const wchar_t* sufStr)
 {
-    wchar_t values[SUPERWIDEWCHARSIZE], lineStr[SUPERWIDEWCHARSIZE];
-    wcscpy(values, L"");
-    for (int i = 0; i < INFO_LEN; ++i) {
-        wchar_t value[SUPERWIDEWCHARSIZE];
-        swprintf(value, SUPERWIDEWCHARSIZE, L"\'%ls\' ,", getInfoValue_name_cm(cm, INFO_NAMES[i]));
-        wcscat(values, value);
-    }
-    values[wcslen(values) - 1] = L'\x0';
-    swprintf(lineStr, SUPERWIDEWCHARSIZE, insertFormat, values);
-    supper_wcscat(pwInsertSql, psize, lineStr);
+    ChessManual cm = getDataMyLinkedList_idx(cmMyLinkedList, 0);
+    if (cm)
+        wcscatColNames(cm->infoMyLinkedList, wcolNames, sufStr);
+}
+
+static void wcscatInsertLineStr_cm__(ChessManual cm, wchar_t** pwInsertSql, size_t* psize,
+    const wchar_t* insertFormat)
+{
+    wcscatInsertLineStr(cm->infoMyLinkedList, pwInsertSql, psize, insertFormat);
+}
+
+static void setEccoNameStr__(ChessManual cm, sqlite3* db, const char* lib_tblName, void* _)
+{
+    const wchar_t* ecco_sn = getInfoValue_name_cm(cm, CMINFO_NAMES[ECCOSN_INDEX]);
+    if (wcslen(ecco_sn) < 1)
+        return;
+
+    wchar_t ecco_name[WCHARSIZE];
+    getEccoName(ecco_name, db, lib_tblName, ecco_sn);
+    setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], ecco_name);
 }
 
 void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_tblName,
     const char* dirName, RecFormat fromfmt)
 {
-    // 获取需存储的对象链表
-    MyLinkedList regMyLinkedList = getRegMyLinkedList(db, lib_tblName);
-    MyLinkedList cmMyLinkedList = getCmMyLinkedList(dirName, fromfmt, regMyLinkedList);
-    delMyLinkedList(regMyLinkedList);
+    MyLinkedList eccoMyLinkedList = getEccoMyLinkedList(db, lib_tblName);
+    MyLinkedList cmMyLinkedList = getCmMyLinkedList(dirName, fromfmt, eccoMyLinkedList);
+    delMyLinkedList(eccoMyLinkedList);
 
-    storeObject_db(db, man_tblName, INFO_NAMES, INFO_LEN,
-        cmMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatCmStr__);
+    storeObject_db(db, man_tblName, cmMyLinkedList, wcscatColNames_cm__,
+        (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_cm__);
 
-    //fwprintf(fout, L"\n\n%ls\n\nwInsertSql len:%d", wInsertSql, wcslen(wInsertSql));
-    //printCmMyLinkedList(fout, cmMyLinkedList);
+    traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))setEccoNameStr__,
+        db, (void*)lib_tblName, NULL);
+
+    extern FILE* fout;
+    printCmMyLinkedList(fout, cmMyLinkedList);
     delMyLinkedList(cmMyLinkedList);
 }

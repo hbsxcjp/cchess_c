@@ -78,6 +78,11 @@ void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name)
     removeMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
 }
 
+void printInfo(Info info, FILE* fout, void* _0, void* _1)
+{
+    fwprintf(fout, L"\t%ls: %ls\n", getInfoName(info), getInfoValue(info));
+}
+
 static Node newNode__(void* data, Node prev, Node next)
 {
     Node node = malloc(sizeof(struct Node));
@@ -268,12 +273,6 @@ static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, v
         *isSame = false;
         *pnode = NULL;
     }
-}
-
-void printMyLinkedList(MyLinkedList myLinkedList, void (*printData__)(void*, void*, void*, void*),
-    FILE* fout, void* arg1, void* arg2)
-{
-    traverseMyLinkedList(myLinkedList, printData__, fout, arg1, arg2);
 }
 
 bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,

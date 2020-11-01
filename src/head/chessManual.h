@@ -5,12 +5,7 @@
 #include "ecco.h"
 #include "tools.h"
 
-//#define INITINFOLEN 16
-
-extern const wchar_t* INFO_NAMES[];
-extern const int ECCO_INDEX;
-extern const int FILENAME_INDEX;
-extern const int INFO_LEN;
+extern const char* EXTNAMES[];
 
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
@@ -87,9 +82,11 @@ void getChessManualNumStr(char* str, ChessManual cm);
 
 // 取得棋谱的拟匹配开局正则表达式的着法字符串(iccs)
 const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm);
-const char* getIccsStr_c(char* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
+
+// 设置棋谱的开局编号
+bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList);
 
 // 获取棋谱对象链表
 MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);

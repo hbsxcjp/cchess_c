@@ -5,11 +5,13 @@
 #include "mylinkedlist.h"
 #include "tools.h"
 
-// 获取局面正则对象链表
-MyLinkedList getRegMyLinkedList(sqlite3* db, const char* lib_tblName);
+// 获取局面对象链表
+MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName);
 
-// 设置开局编号
-bool setECCO_cm(ChessManual cm, MyLinkedList regMyLinkedList);
+// 根据棋谱iccs着法字符串获取开局编号
+const wchar_t* getEccoSN_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr);
+
+void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName,const wchar_t* ecco_sn);
 
 // 打印输出局面库链表
 void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList);

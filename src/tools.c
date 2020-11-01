@@ -426,6 +426,29 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
 #endif
 }
 
+// 初始化表
+int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames)
+{
+    char sql[WCHARSIZE];
+    sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
+    return sqlite3_exec_showErrMsg(db, sql);
+}
+
+bool sqlite3_existTable(sqlite3* db, const char* tblName)
+{
+    char sql[WCHARSIZE];
+    sprintf(sql, "type = 'table' AND name = '%s'", tblName);
+    int count = sqlite3_getRecCount(db, "sqlite_master", sql);
+    return count > 0;
+}
+
+int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition)
+{
+    char sql[WCHARSIZE];
+    sprintf(sql, "DELETE FROM %s WHERE %s;", tblName, condition);
+    return sqlite3_exec_showErrMsg(db, sql);
+}
+
 // 获取查询记录结果的数量
 static int sqlite3_callCount__(void* count, int argc, char** argv, char** colNames)
 {
@@ -448,27 +471,32 @@ int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* condition)
     return count;
 }
 
-bool sqlite3_existTable(sqlite3* db, const char* tblName)
+// 获取查询记录结果的数量
+static int sqlite3_setValue__(void* destColValue, int argc, char** argv, char** colNames)
 {
-    char sql[WCHARSIZE];
-    sprintf(sql, "type = 'table' AND name = '%s'", tblName);
-    int count = sqlite3_getRecCount(db, "sqlite_master", sql);
-    return count > 0;
+    if (argv[0]) {
+        strcpy((char*)destColValue, argv[0]);
+        //printf("\n%s", argv[0]);
+    }
+    return 0;
 }
 
-// 初始化表
-int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames)
+int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
+    char* destColName, char* srcColName, char* srcColValue)
 {
-    char sql[WCHARSIZE];
-    sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
-    return sqlite3_exec_showErrMsg(db, sql);
-}
+    int count = 0;
+    char sql[WCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "SELECT %s FROM %s WHERE %s = '%s';", destColName, tblName, srcColName, srcColValue);
 
-int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition)
-{
-    char sql[WCHARSIZE];
-    sprintf(sql, "DELETE FROM %s WHERE %s;", tblName, condition);
-    return sqlite3_exec_showErrMsg(db, sql);
+    //printf("\n%s", sql);
+    int rc = sqlite3_exec(db, sql, sqlite3_setValue__, destColValue, &zErrMsg);
+    if (rc != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -1;
+    }
+
+    return count;
 }
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
@@ -481,25 +509,57 @@ int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql)
     return resultCode;
 }
 
-static wchar_t* catWcolNames__(wchar_t* wcolNames, const wchar_t** wcol_names, int wcol_len, const wchar_t* sufStr)
+static void wcscatColName__(Info info, wchar_t* wcolNames, const wchar_t* sufStr, void* _)
 {
-    //wcscpy(wcolNames, L"");
-    for (int i = 0; i < wcol_len; ++i) {
-        wcscat(wcolNames, wcol_names[i]);
-        wcscat(wcolNames, sufStr);
-    }
-    wcolNames[wcslen(wcolNames) - 1] = L'\x0'; //去掉后缀最后的分隔逗号
-    return wcolNames;
+    wcscat(wcolNames, getInfoName(info));
+    wcscat(wcolNames, sufStr);
 }
 
-bool storeObject_db(sqlite3* db, const char* tblName, const wchar_t* wcol_names[], int wcol_len,
-    MyLinkedList objMyLinkedList, void (*wcscatInsertSql__)(void*, void*, void*, void*))
+void wcscatColNames(MyLinkedList infoMyLinkedList, wchar_t* wcolNames, const wchar_t* sufStr)
 {
+    traverseMyLinkedList(infoMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatColName__,
+        wcolNames, (void*)sufStr, NULL);
+    if (wcslen(wcolNames) > 0)
+        wcolNames[wcslen(wcolNames) - 1] = L'\x0'; //去掉后缀最后的分隔逗号
+}
+
+static void wcscatColValue__(Info info, wchar_t** pvalues, size_t* psize, void* _)
+{
+    size_t size = wcslen(getInfoValue(info)) + 16;
+    wchar_t value[size];
+    swprintf(value, size, L"\'%ls\' ,", getInfoValue(info));
+    supper_wcscat(pvalues, psize, value);
+}
+
+void wcscatInsertLineStr(MyLinkedList infoMyLinkedList, wchar_t** pwInsertSql, size_t* psize,
+    const wchar_t* insertFormat)
+{
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t* values = calloc(size, sizeof(wchar_t));
+    traverseMyLinkedList(infoMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatColValue__,
+        &values, &size, NULL);
+    values[wcslen(values) - 1] = L'\x0';
+
+    size = wcslen(values) + wcslen(insertFormat) + 1;
+    wchar_t lineStr[size];
+    swprintf(lineStr, size, insertFormat, values);
+    supper_wcscat(pwInsertSql, psize, lineStr);
+    free(values);
+}
+
+bool storeObject_db(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList,
+    void (*wcscatColNames_obj__)(MyLinkedList, wchar_t*, const wchar_t*),
+    void (*wcscatInsertLineStr_obj__)(void*, void*, void*, void*))
+{
+    if (myLinkedList_size(objMyLinkedList) < 1)
+        return false;
+
     // 创建表
     char colNames[WIDEWCHARSIZE];
     wchar_t wcolNames[WIDEWCHARSIZE];
     wcscpy(wcolNames, L"ID INTEGER PRIMARY KEY AUTOINCREMENT,");
-    catWcolNames__(wcolNames, wcol_names, wcol_len, L" TEXT,");
+
+    wcscatColNames_obj__(objMyLinkedList, wcolNames, L" TEXT,");
     wcstombs(colNames, wcolNames, WIDEWCHARSIZE);
     if (sqlite3_existTable(db, tblName))
         sqlite3_deleteTable(db, tblName, "1=1");
@@ -508,24 +568,21 @@ bool storeObject_db(sqlite3* db, const char* tblName, const wchar_t* wcol_names[
 
     // 获取存储写入数据库语句
     size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
-
-    wchar_t wtblName[WCHARSIZE]; 
-    wcscpy(wcolNames, L"");
-    catWcolNames__(wcolNames, wcol_names, wcol_len, L" ,");
+    wchar_t wtblName[WCHARSIZE], wInsertFormat[WIDEWCHARSIZE], *wInsertSql = calloc(sizeof(wchar_t), size);
     mbstowcs(wtblName, tblName, WCHARSIZE);
-    swprintf(wInsertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%%ls);\n",
-        wtblName, wcolNames);
-
-    traverseMyLinkedList(objMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatInsertSql__,
-        &wInsertSql, wInsertFormat, &size);
+    wcscpy(wcolNames, L"");
+    wcscatColNames_obj__(objMyLinkedList, wcolNames, L" ,");
+    swprintf(wInsertFormat, WIDEWCHARSIZE, L"INSERT INTO %ls (%ls) VALUES (%%ls);\n", wtblName, wcolNames);
+    traverseMyLinkedList(objMyLinkedList, wcscatInsertLineStr_obj__, &wInsertSql, &size, wInsertFormat);
     //fwprintf(fout, L"\n%ls\nwInsertSql len:%d\n\n", wInsertSql, wcslen(wInsertSql));
 
     // 存储写入数据库
+    assert(wInsertSql);
     size = wcstombs(NULL, wInsertSql, 0) + 1;
     char insertSql[size];
     wcstombs(insertSql, wInsertSql, size);
-    sqlite3_exec_showErrMsg(db, insertSql);
     free(wInsertSql);
+
+    sqlite3_exec_showErrMsg(db, insertSql);
     return true;
 }

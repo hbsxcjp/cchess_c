@@ -15,7 +15,6 @@
 #include <time.h>
 //#include "head/console.h"
 
-extern const char* EXTNAMES[];
 static char* xqfFileName__ = "chessManual/01.xqf";
 
 static const char* dirNames__[] = {
@@ -543,13 +542,16 @@ static void test_chessManual_xqf(void)
                       "[Red \"\"]\n"
                       "[Black \"\"]\n"
                       "[Opening \"\"]\n"
-                      "[RMKWriter \"\"]\n"
+                      "[Writer \"\"]\n"
                       "[Author \"\"]\n"
-                      "[PlayType \"残局\"]\n"
-                      "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5 -b\"]\n"
+                      "[Type \"残局\"]\n"
                       "[Result \"红胜\"]\n"
                       "[Version \"18\"]\n"
-                      "[FileName \"chessManual/01.xqf\"]\n"
+                      "[File \"chessManual/01.xqf\"]\n"
+                      "[FEN \"5a3/4ak2r/6R2/8p/9/9/9/B4N2B/4K4/3c5\"]\n"
+                      "[iccs \"\"]\n"
+                      "[Ecco_sn \"\"]\n"
+                      "[Ecco_name \"\"]\n"
                       "[movestr \"1. 马四进三  \n"
                       "{　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n"
                       "}\n"
@@ -635,8 +637,8 @@ static void test_chessManual_xqf(void)
     resultStr = malloc(len);
     wcstombs(resultStr, wstr, len);
 
-    //if (strcmp(pgn_ccStr, resultStr) != 0)
-    //    printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+    if (strcmp(pgn_ccStr, resultStr) != 0)
+        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);
@@ -644,7 +646,9 @@ static void test_chessManual_xqf(void)
 
     //*
     char iccsStr[WIDEWCHARSIZE];
-    getIccsStr_c(iccsStr, cm);
+    wchar_t wIccsStr[WIDEWCHARSIZE] = { 0 };
+    getIccsStr(wIccsStr, cm);
+    wcstombs(iccsStr, wIccsStr, wcstombs(NULL, wIccsStr, 0) + 1);
     CU_ASSERT_STRING_EQUAL(iccses, iccsStr);
 
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
