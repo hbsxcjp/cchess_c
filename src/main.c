@@ -3,7 +3,7 @@
 #include "head/unitTest.h"
 
 //* 输出字符串，检查用
-FILE* fout;
+FILE* fout = NULL;
 
 int main(int argc, char const* argv[])
 {
@@ -20,10 +20,15 @@ int main(int argc, char const* argv[])
     wm = "w, ccs=UTF-8";
 #endif
 
-    fout = fopen("test_out", wm);
-    setbuf(fout, NULL);
+    if (argc > 1) {
+        fout = fopen("test_out", wm);
+        setbuf(fout, NULL);
+    }
+    
     unitTest();
-    fclose(fout);
+
+    if (argc > 1)
+        fclose(fout);
 
     setlocale(LC_ALL, oldlocale);
 

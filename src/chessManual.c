@@ -1550,7 +1550,6 @@ void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_t
 {
     MyLinkedList eccoMyLinkedList = getEccoMyLinkedList(db, lib_tblName);
     MyLinkedList cmMyLinkedList = getCmMyLinkedList(dirName, fromfmt, eccoMyLinkedList);
-    delMyLinkedList(eccoMyLinkedList);
 
     storeObject_db(db, man_tblName, cmMyLinkedList, wcscatColNames_cm__,
         (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_cm__);
@@ -1559,6 +1558,9 @@ void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_t
         db, (void*)lib_tblName, NULL);
 
     extern FILE* fout;
-    printCmMyLinkedList(fout, cmMyLinkedList);
+    if (fout)
+        printCmMyLinkedList(fout, cmMyLinkedList);
+
     delMyLinkedList(cmMyLinkedList);
+    delMyLinkedList(eccoMyLinkedList);
 }

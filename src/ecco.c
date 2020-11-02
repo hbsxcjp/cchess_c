@@ -38,7 +38,7 @@ static const int SN_INDEX = 0,
                  MVSTRS_INDEX = 3,
                  NUMS_INDEX = 4,
                  REGSTR_INDEX = 5,
-                 ECCOATTR_LEN = sizeof(ECCOINFO_NAMES) / sizeof(ECCOINFO_NAMES[0]);
+                 ECCOINFO_LEN = sizeof(ECCOINFO_NAMES) / sizeof(ECCOINFO_NAMES[0]);
 
 static BoutStr newBoutStr__(int boutNo)
 {
@@ -77,7 +77,7 @@ static Ecco newEcco__(void)
             ecco->orBoutNo[p][i] = 0;
 
     ecco->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
-    for (int i = 0; i < ECCOATTR_LEN; ++i)
+    for (int i = 0; i < ECCOINFO_LEN; ++i)
         setInfoItem_ecco__(ecco, ECCOINFO_NAMES[i], L"");
     ecco->boutStrMyLinkedList = newMyLinkedList((void (*)(void*))delBoutStr__);
 
@@ -120,7 +120,7 @@ static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, 
         ecco->reg = pcrewch_compile(regstr, 0, &error, &errorffset, NULL);
     }
 
-    addMyLinkedList(eccoMyLinkedList, ecco);
+    addMyLinkedList_idx(eccoMyLinkedList, 0, ecco);
     return 0; // 表示执行成功
 }
 
@@ -129,7 +129,7 @@ MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName)
     MyLinkedList eccoLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
     char sql[WCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT * FROM %s "
-                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn DESC;",
+                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn ASC;",
         lib_tblName);
     int rc = sqlite3_exec(db, sql, addEccoMyLinkedList__, eccoLinkedList, &zErrMsg);
     if (rc != SQLITE_OK) {
@@ -155,9 +155,9 @@ const wchar_t* getEccoSN_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr
     return ecco ? getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]) : NULL;
 }
 
-static int eccoName_cmp__(Ecco ecco, const wchar_t* name)
+static int eccoSN_cmp__(Ecco ecco, const wchar_t* sn)
 {
-    return wcscmp(getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]), name);
+    return wcscmp(getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]), sn);
 }
 
 // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
@@ -165,7 +165,7 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
 {
     const wchar_t *ecco_sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
-    if (wcslen(ecco_sn) < 3 || wcslen(mvstrs) < 1)
+    if (wcslen(ecco_sn) != 3 || wcslen(mvstrs) < 3)
         return;
 
     wchar_t sn[4] = { 0 };
@@ -180,11 +180,10 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
             sn[1] = L'0'; // C0/C1/C5/C6/C7/C8/C9 => C0
         else if (wcscmp(sn, L"D5") == 0)
             wcscpy(sn, L"D51"); // D5 => D51
-    }
-    if (wcslen(sn) < 2)
+    } else
         return;
 
-    Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))eccoName_cmp__, (void*)sn);
+    Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))eccoSN_cmp__, (void*)sn);
     if (tecco == NULL)
         return;
 
@@ -242,7 +241,7 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 copySubStr(wstr, tempWstr, ovector[4], ovector[5]);
                 // C20 C30 C61 C72局面字符串存至g=1数组, 设置前置着法字符串
                 Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList,
-                    (int (*)(void*, void*))eccoName_cmp__, (void*)sn);
+                    (int (*)(void*, void*))eccoSN_cmp__, sn);
                 if (tecco)
                     setInfoItem_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], wstr);
             }
@@ -303,10 +302,9 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
 }
 
 // 处理前置着法描述字符串————"局面开始：红方：黑方："
-static bool setEcco_boutStr_start__(Ecco ecco, void* reg_m, void* reg_sp, void* reg_bp)
+static bool setEcco_boutStr_start__(Ecco ecco, const wchar_t* pre_mvstrs, void* reg_m, void* reg_sp, void* reg_bp)
 {
     int ovector[PCREARRAY_SIZE];
-    const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]);
     if (pcrewch_exec(reg_sp, NULL, pre_mvstrs, wcslen(pre_mvstrs), 0, 0, ovector, PCREARRAY_SIZE) > 2) {
         wchar_t mvstr[WCHARSIZE], mvstr_c[PIECECOLORNUM][WCHARSIZE];
         for (PieceColor c = RED; c <= BLACK; ++c) {
@@ -400,17 +398,14 @@ static void setEcco_boutStr_noOrder__(Ecco ecco, int firstBoutNo, void* reg_m, v
 }
 
 // 获取回合着法字符串数组,
-static void setEcco_boutStr__(Ecco ecco, const wchar_t* snStr,
+static void setEcco_boutStr__(Ecco ecco, const wchar_t* snStr, const wchar_t* mvstrs,
     void* reg_m, void* reg_bm, void* reg_bp, int partIndex)
 {
-    const wchar_t* mvstr = getInfoValue_name_ecco__(ecco,
-        ECCOINFO_NAMES[partIndex == 0 ? PRE_MVSTRS_INDEX : MVSTRS_INDEX]);
-
-    int first = 0, last = wcslen(mvstr),
+    int first = 0, last = wcslen(mvstrs),
         pre_boutNo = 0, firstBoutNo = 0,
         boutNo = 0, or = 0, ovector[PCREARRAY_SIZE];
     while (first < last) {
-        const wchar_t* tempWstr = mvstr + first;
+        const wchar_t* tempWstr = mvstrs + first;
         int count = pcrewch_exec(reg_bm, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
         if (count < 3)
             break;
@@ -673,9 +668,7 @@ static void setRegStr__(Ecco ecco)
     } else
         wcscpy(regStr, combStr);
 
-    //setPwstr_value(&eccoRec->regstr, regStr);
     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[REGSTR_INDEX], regStr);
-
     //fwprintf(fout, L"\nregStr:\n\t%ls", regStr);
 }
 
@@ -688,10 +681,10 @@ static void setEcco_regstr__(Ecco ecco, void** regs, void* _0, void* _1)
 
     const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]);
     if (wcslen(pre_mvstrs) > 0
-        && !setEcco_boutStr_start__(ecco, regs[0], regs[2], regs[3]))
-        setEcco_boutStr__(ecco, sn, regs[0], regs[1], regs[3], 0);
+        && !setEcco_boutStr_start__(ecco, pre_mvstrs, regs[0], regs[2], regs[3]))
+        setEcco_boutStr__(ecco, sn, pre_mvstrs, regs[0], regs[1], regs[3], 0);
 
-    setEcco_boutStr__(ecco, sn, regs[0], regs[1], regs[3], 1);
+    setEcco_boutStr__(ecco, sn, mvstrs, regs[0], regs[1], regs[3], 1);
 
     setRegStr__(ecco);
 }
@@ -822,7 +815,8 @@ void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
     storeObject_db(db, lib_tblName, eccoMyLinkedList, wcscatColNames_ecco__,
         (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
 
-    //printEccoMyLinkedList(fout, eccoMyLinkedList);
+    if (fout)
+        printEccoMyLinkedList(fout, eccoMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
 }
 
@@ -841,5 +835,6 @@ void initEcco(char* dbName)
                    *manualDirName = "chessManual/示例文件";
         storeChessManual_db(db, lib_tblName, man_tblName, manualDirName, XQF);
     }
+
     sqlite3_close(db);
 }
