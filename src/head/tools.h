@@ -114,6 +114,8 @@ int copyFile(const char* SourceFile, const char* NewFile);
 #ifdef __linux
 //代码转换:从一种编码转为另一种编码
 int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen);
+
+size_t gbk_mbstowcs_linux(wchar_t* descWcs, char* src_gbk);
 #endif
 
 // 文件信息结构数组指针

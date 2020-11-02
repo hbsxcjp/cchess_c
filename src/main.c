@@ -20,17 +20,10 @@ int main(int argc, char const* argv[])
     wm = "w, ccs=UTF-8";
 #endif
 
-    if (argc > 1) {
-        fout = fopen("test_out", wm);
-        setbuf(fout, NULL);
-    }
-    
+    fout = fopen("test_out", wm);
     unitTest();
-
-    if (argc > 1)
-        fclose(fout);
+    fclose(fout);
 
     setlocale(LC_ALL, oldlocale);
-
     return 0;
 }

@@ -305,6 +305,18 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     iconv_close(cd);
     return tag;
 }
+
+size_t gbk_mbstowcs_linux(wchar_t* descWcs, char* src_gbk)
+{
+    size_t outlen = (strlen(src_gbk) + 1) * 6;
+    char* desc = malloc(outlen * sizeof(char));
+    code_convert("gbk", "utf-8", src_gbk, desc, &outlen);
+    
+    size_t len = mbstowcs(descWcs, desc, outlen);
+    free(desc);
+
+    return len;
+}
 #endif
 
 static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)

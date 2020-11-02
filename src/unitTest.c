@@ -6,6 +6,7 @@
 #include "head/board.h"
 #include "head/chessManual.h"
 #include "head/ecco.h"
+#include "head/htmlfile.h"
 #include "head/md5.h"
 #include "head/move.h"
 #include "head/piece.h"
@@ -716,7 +717,8 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    initEcco("chess.db");
+    //initEcco("chess.db");
+    html_test();
 }
 
 static CU_TestInfo suite_chessManual[] = {

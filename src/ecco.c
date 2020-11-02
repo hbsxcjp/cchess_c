@@ -815,8 +815,7 @@ void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
     storeObject_db(db, lib_tblName, eccoMyLinkedList, wcscatColNames_ecco__,
         (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
 
-    if (fout)
-        printEccoMyLinkedList(fout, eccoMyLinkedList);
+    //printEccoMyLinkedList(fout, eccoMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
 }
 

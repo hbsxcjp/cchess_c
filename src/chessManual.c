@@ -369,10 +369,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
             assert(*remark);
 
 #ifdef __linux
-            size_t outlen = WIDEWCHARSIZE;
-            char remc[outlen];
-            code_convert("gbk", "utf-8", (char*)rem, remc, &outlen);
-            mbstowcs(*remark, remc, len);
+            gbk_mbstowcs_linux(*remark, (char*)rem);
 #else
             mbstowcs(*remark, (char*)rem, len);
 #endif
@@ -518,11 +515,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
         // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
         // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
 #ifdef __linux
-        size_t len = strlen(values[i]) + 1;
-        size_t outlen = len * 3;
-        char tstr[outlen];
-        code_convert("gbk", "utf-8", values[i], tstr, &outlen);
-        mbstowcs(tempStr, tstr, WIDEWCHARSIZE - 1);
+        gbk_mbstowcs_linux(tempStr, values[i]);
 #else
         mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
 #endif
@@ -1557,9 +1550,8 @@ void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_t
     traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))setEccoNameStr__,
         db, (void*)lib_tblName, NULL);
 
-    extern FILE* fout;
-    if (fout)
-        printCmMyLinkedList(fout, cmMyLinkedList);
+    //extern FILE* fout;
+    //printCmMyLinkedList(fout, cmMyLinkedList);
 
     delMyLinkedList(cmMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
