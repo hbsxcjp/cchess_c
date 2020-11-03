@@ -15,6 +15,7 @@
 //#ifdef WINVER
 #include <conio.h>
 #include <io.h>
+#include <winsock2.h>
 #include <windows.h>
 //printf("Windows\n");
 #endif
@@ -84,6 +85,8 @@ ovector的最后1/3个空间，即[2n~3n-1]，貌似为pcre正则匹配算法预
 
 //*/
 int pcrewch_exec(const void* reg, const void* p, const wchar_t* wstr, int len, int x, int y, int* ovector, int size);
+
+int pcrewch_copy_substring(const wchar_t* wstr, int* ovector, int subStrCount, int subStrNum, wchar_t* subStr, int subSize);
 
 void pcrewch_free(void* reg);
 // 正则类 结束 -------------------------------------------------------------------------------------- //

@@ -22,25 +22,30 @@ int html_test(void)
     curl_global_init(CURL_GLOBAL_ALL);
     CURL* curl = curl_easy_init();
 
+    static char str[SUPERWIDEWCHARSIZE * 200];
     if (curl) {
-        curl_easy_setopt(curl, CURLOPT_URL, "http://www.xqbase.com/ecco/ecco_c.htm"); //请求的url
-        //curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3); //设置超时时间
+        curl_easy_setopt(curl, CURLOPT_URL, "http://www.xqbase.com/ecco/ecco_c.htm");
+        //curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
 
-        char str[SUPERWIDEWCHARSIZE * 200];
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_str__); //数据请求到以后的回调函数
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, str); //选择输出到字符串
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_str__);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, str);
 
-        //curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_file__); //数据请求到以后的回调函数
+        //curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_file__);
         //curl_easy_setopt(curl, CURLOPT_WRITEDATA, fout);
 
         curl_easy_perform(curl); //执行请求
 
         //*
         //printf(str);
-        wchar_t* wstr = malloc((strlen(str) + 1) * sizeof(wchar_t));
+        //wchar_t* wstr = malloc((strlen(str) + 1) * sizeof(wchar_t));
+        wchar_t wstr[strlen(str) + 1];
+#ifdef __linux
         gbk_mbstowcs_linux(wstr, str);
+#else
+        mbstowcs(wstr, str, mbstowcs(NULL, str, 0));
+#endif
         fwprintf(fout, wstr);
-        free(wstr);
+        //free(wstr);
         //*/
 
         curl_easy_cleanup(curl);

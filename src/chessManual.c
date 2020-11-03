@@ -508,9 +508,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     }
 
     wchar_t tempStr[WIDEWCHARSIZE] = { 0 };
-    char* values[] = {
-        TitleA, Event, Date, Site, Red, Black, Opening, RMKWriter, Author
-    };
+    char* values[] = { TitleA, Event, Date, Site, Red, Black, Opening, RMKWriter, Author };
     for (int i = 0; i < sizeof(values) / sizeof(values[0]); ++i) {
         // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
         // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
@@ -818,7 +816,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
 static void readInfo_PGN__(ChessManual cm, FILE* fin)
 {
     const char* error;
-    int erroffset = 0, infoCount = 0, offsetArray[30]; //OVECCOUNT = 10,
+    int erroffset = 0, infoCount = 0, ovector[PCREARRAY_SIZE]; //OVECCOUNT = 10,
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
     void* infoReg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
     assert(infoReg);
@@ -826,13 +824,13 @@ static void readInfo_PGN__(ChessManual cm, FILE* fin)
 
     //printf("\nline:%d %s", __LINE__, "read info...\n");
     while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
-        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, offsetArray, 30);
+        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, ovector, PCREARRAY_SIZE);
         if (infoCount < 0)
             continue;
 
         wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
-        copySubStr(name, infoStr, offsetArray[2], offsetArray[3]);
-        copySubStr(value, infoStr, offsetArray[4], offsetArray[5]);
+        pcrewch_copy_substring(infoStr, ovector, infoCount, 1, name, WIDEWCHARSIZE);
+        pcrewch_copy_substring(infoStr, ovector, infoCount, 2, value, WIDEWCHARSIZE);
         setInfoItem_cm(cm, name, value);
     }
     pcrewch_free(infoReg);
@@ -866,8 +864,8 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
     assert(moveReg);
     assert(remReg);
 
-    int ovector[30] = { 0 },
-        regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, 30);
+    int ovector[PCREARRAY_SIZE] = { 0 },
+        regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, PCREARRAY_SIZE);
     if (regCount <= 0)
         return;
 
@@ -878,7 +876,7 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
     int preOthIndex = 0, length = 0;
     //printf("读取moveStr... \n");
     while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
-        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, 30);
+        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, PCREARRAY_SIZE);
         if (regCount <= 0)
             break;
         // 是否有"("
@@ -888,7 +886,7 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
 
         // 提取字符串
         wchar_t iccs_zhStr[6];
-        copySubStr(iccs_zhStr, tempMoveStr, ovector[4], ovector[5]);
+        pcrewch_copy_substring(tempMoveStr, ovector, regCount, 2, iccs_zhStr, 6);
         remark = getSubStr(tempMoveStr, ovector[6], ovector[7]);
         appendMove(cm, iccs_zhStr, fmt, remark, isOther);
 
@@ -977,7 +975,7 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
     assert(rowNum == rowIndex);
 
     // 读取注解字符串
-    int remCount = 0, regCount = 0, ovector[30] = { 0 };
+    int remCount = 0, regCount = 0, ovector[PCREARRAY_SIZE] = { 0 };
     const wchar_t movePat[] = L"([^…　]{4}[…　])",
                   remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
     const char* error;
@@ -989,16 +987,15 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
 
     wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
     while (tempRemStr != NULL && wcslen(tempRemStr) > 0) {
-        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, 30);
+        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, PCREARRAY_SIZE);
         if (regCount <= 0)
             break;
-        //int rclen = ovector[3] - ovector[2], remlen = ovector[5] - ovector[4];
-        wchar_t *rcKey = malloc((ovector[3] - ovector[2] + 1) * sizeof(wchar_t)),
-                *remark = malloc((ovector[5] - ovector[4] + 1) * sizeof(wchar_t));
-        assert(rcKey);
-        assert(remark);
-        copySubStr(rcKey, tempRemStr, ovector[2], ovector[3]);
-        copySubStr(remark, tempRemStr, ovector[4], ovector[5]);
+        int rclen = ovector[3] - ovector[2] + 1,
+            remlen = ovector[5] - ovector[4] + 1;
+        wchar_t *rcKey = malloc(rclen * sizeof(wchar_t)),
+                *remark = malloc(remlen * sizeof(wchar_t));
+        pcrewch_copy_substring(tempRemStr, ovector, regCount, 1, rcKey, rclen);
+        pcrewch_copy_substring(tempRemStr, ovector, regCount, 2, remark, remlen);
 
         remLines[remCount * 2] = rcKey;
         remLines[remCount * 2 + 1] = remark;

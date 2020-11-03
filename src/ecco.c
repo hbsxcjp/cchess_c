@@ -10,7 +10,6 @@
 #define MOVESTR_LEN 4
 #define BOUTMOVEPART_NUM 2
 #define BOUTMOVEOR_NUM 2
-#define PCREARRAY_SIZE 30
 
 extern FILE* fout;
 
@@ -227,7 +226,7 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 assert(index < 555);
                 Ecco ecco = newEcco__();
                 for (int f = 0; f < count - 1; ++f) {
-                    copySubStr(wstr, tempWstr, ovector[2 * f + 2], ovector[2 * f + 3]);
+                    pcrewch_copy_substring(tempWstr, ovector, count, f + 1, wstr, WCHARSIZE);
                     //    L"SN", L"NAME", L"PRE_MVSTRS", L"MVSTRS", L"NUMS", L"REGSTR"
                     int index = ((g == 2) ? (f > 1 ? f + 1 : f)
                                           : (f > 1 ? (f == 2 ? NUMS_INDEX : MVSTRS_INDEX) : f));
@@ -237,8 +236,8 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 index++;
             } else {
                 wchar_t sn[10];
-                copySubStr(sn, tempWstr, ovector[2], ovector[3]);
-                copySubStr(wstr, tempWstr, ovector[4], ovector[5]);
+                pcrewch_copy_substring(tempWstr, ovector, count, 1, sn, 10);
+                pcrewch_copy_substring(tempWstr, ovector, count, 2, wstr, WCHARSIZE);
                 // C20 C30 C61 C72局面字符串存至g=1数组, 设置前置着法字符串
                 Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList,
                     (int (*)(void*, void*))eccoSN_cmp__, sn);
@@ -273,7 +272,7 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
         if (start == end)
             continue;
 
-        copySubStr(mvstr, wstrBak, start, end);
+        pcrewch_copy_substring(wstrBak, ovector, count, i + 1, mvstr, WCHARSIZE);
         // C83 可选着法"车二进六"不能加入顺序着法，因为需要回退，以便解决与后续“炮８进２”的冲突
         if (wcscmp(mvstr, L"车二进六") == 0
             && wcsstr(wstr, L"红此前可走马二进三、马八进七、车一平二、车二进六、兵三进一和兵七进一"))
@@ -289,10 +288,11 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
     int first = 0, last = wcslen(wstrBak);
     while (first < last) {
         wchar_t* tempWstr = wstrBak + first;
-        if (pcrewch_exec(reg_m, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE) <= 0)
+        int count = pcrewch_exec(reg_m, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
+        if (count <= 0)
             break;
 
-        copySubStr(mvstr, tempWstr, ovector[2], ovector[3]);
+        pcrewch_copy_substring(tempWstr, ovector, count, 1, mvstr, WCHARSIZE);
         // '-','／': 不前进，加‘|’   '*': 前进，加‘|’    '+': 前进，不加‘|’
         wcscat(mvstrs, (isBefore && first != 0 ? L"-" : L"*"));
         wcscat(mvstrs, mvstr);
@@ -305,10 +305,11 @@ static void getMoveStrs__(wchar_t* mvstrs, const wchar_t* wstr, bool isBefore,
 static bool setEcco_boutStr_start__(Ecco ecco, const wchar_t* pre_mvstrs, void* reg_m, void* reg_sp, void* reg_bp)
 {
     int ovector[PCREARRAY_SIZE];
-    if (pcrewch_exec(reg_sp, NULL, pre_mvstrs, wcslen(pre_mvstrs), 0, 0, ovector, PCREARRAY_SIZE) > 2) {
+    int count = pcrewch_exec(reg_sp, NULL, pre_mvstrs, wcslen(pre_mvstrs), 0, 0, ovector, PCREARRAY_SIZE);
+    if (count > 2) {
         wchar_t mvstr[WCHARSIZE], mvstr_c[PIECECOLORNUM][WCHARSIZE];
         for (PieceColor c = RED; c <= BLACK; ++c) {
-            copySubStr(mvstr, pre_mvstrs, ovector[2 * c + 2], ovector[2 * c + 3]);
+            pcrewch_copy_substring(pre_mvstrs, ovector, count, c + 1, mvstr, WCHARSIZE);
             getMoveStrs__(mvstr_c[c], mvstr, false, reg_m, reg_bp);
         }
 
@@ -424,7 +425,7 @@ static void setEcco_boutStr__(Ecco ecco, const wchar_t* snStr, const wchar_t* mv
                 continue;
 
             wchar_t wstr[WCHARSIZE];
-            copySubStr(wstr, tempWstr, start, end);
+            pcrewch_copy_substring(tempWstr, ovector, count, i, wstr, WCHARSIZE);
             //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
             PieceColor color = i / 5;
             if ((i == 2 || i == 5) && wcscmp(wstr, L"……") != 0) { // 回合的着法

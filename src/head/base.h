@@ -23,6 +23,7 @@
 #define WCHARSIZE 256
 #define WIDEWCHARSIZE THOUSAND
 #define SUPERWIDEWCHARSIZE (WIDEWCHARSIZE * 12)
+#define PCREARRAY_SIZE 30
 
 //=================================================================
 //棋子相关的类型
