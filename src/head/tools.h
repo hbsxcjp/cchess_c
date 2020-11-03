@@ -92,6 +92,8 @@ void pcrewch_free(void* reg);
 // 正则类 结束 -------------------------------------------------------------------------------------- //
 
 // 文件类 开始 -------------------------------------------------------------------------------------- //
+// 跨平台的打开文件函数
+FILE* openFile(const char* fileName, const char* modes, const char* charSet);
 
 // 从文件名提取目录名
 void getDirName(char* dirName, const char* fileName);
@@ -117,9 +119,9 @@ int copyFile(const char* SourceFile, const char* NewFile);
 #ifdef __linux
 //代码转换:从一种编码转为另一种编码
 int code_convert(const char* from_charset, const char* to_charset, char* inbuf, char* outbuf, size_t* outlen);
-
-size_t gbk_mbstowcs_linux(wchar_t* descWcs, char* src_gbk);
 #endif
+
+size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk);
 
 // 文件信息结构数组指针
 typedef struct FileInfo* FileInfo;

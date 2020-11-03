@@ -749,14 +749,14 @@ static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr,
         boutStr->mvstr[BLACK][1] ? boutStr->mvstr[BLACK][1] : blankStr);
 }
 
-static void printEccoStr__(Ecco ecco, FILE* fout, int* no, void* _)
+static void printEccoStr__(Ecco ecco, FILE* fout, int* pno, void* _)
 {
     const wchar_t *sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(sn) < 3 || wcslen(mvstrs) < 1)
         return;
 
-    fwprintf(fout, L"No:%d\n", (*no)++);
+    fwprintf(fout, L"No:%d\n", (*pno)++);
     traverseMyLinkedList(ecco->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
         fout, NULL, NULL);
 
@@ -796,14 +796,7 @@ static void wcscatInsertLineStr_ecco__(Ecco ecco, wchar_t** pwInsertSql, size_t*
 
 void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
 {
-    char* rm;
-#ifdef __linux
-    rm = "r";
-#else
-    rm = "r, ccs=UTF-8";
-#endif
-
-    FILE* fin = fopen(fileName, rm);
+    FILE* fin = openFile(fileName, "r", "UTF-8");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
     fclose(fin);

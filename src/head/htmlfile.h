@@ -5,5 +5,7 @@
 #include "mylinkedlist.h"
 #include "tools.h"
 
-int html_test(void);
+void getCleanWebFile(const char* cleanFileName, const char* fileName);
+
+void html_test(void);
 #endif

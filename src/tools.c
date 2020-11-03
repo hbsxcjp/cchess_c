@@ -187,6 +187,7 @@ void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
         *pwstr = realloc(*pwstr, *size * sizeof(wchar_t));
         assert(*pwstr);
     }
+
     wcscat(*pwstr, wstr);
 }
 
@@ -224,6 +225,20 @@ static char* getSplitChar__(const char* fileName)
     if (sp0 && sp1)
         return sp0 > sp1 ? sp0 : sp1;
     return sp0 ? sp0 : sp1;
+}
+
+FILE* openFile(const char* fileName, const char* modes, const char* charSet)
+{
+#ifndef __linux
+    char useModes[WCHARSIZE];
+    strcpy(useModes, modes);
+    strcat(useModes, ", ccs=");
+    strcat(useModes, charSet);
+    //strcat(useModes, ", ccs=UTF-8");
+    return fopen(fileName, useModes);
+#endif
+
+    return fopen(fileName, modes);
 }
 
 void getDirName(char* dirName, const char* fileName)
@@ -308,20 +323,25 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     memset(outbuf, 0, *outlen);
     if (iconv(cd, &inbuf, &inlen, &outbuf, outlen) == (size_t)-1)
         tag = -1;
+
     iconv_close(cd);
     return tag;
 }
 
-size_t gbk_mbstowcs_linux(wchar_t* descWcs, char* src_gbk)
+size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk)
 {
-    size_t outlen = (strlen(src_gbk) + 1) * 6;
-    char* desc = malloc(outlen * sizeof(char));
-    code_convert("gbk", "utf-8", src_gbk, desc, &outlen);
+    size_t size = 0;
+#ifdef __linux
+    size_t src_len = strlen(src_gbk) + 1,
+           utf8_size = src_len * 6;
+    char src_utf8[utf8_size];
+    code_convert("gbk", "utf-8", src_gbk, src_utf8, &utf8_size);
+    size = mbstowcs(dest, src_utf8, src_len);
+#else
+    size = mbstowcs(dest, src_gbk, mbstowcs(NULL, src_gbk, 0));
+#endif
 
-    size_t len = mbstowcs(descWcs, desc, outlen);
-    free(desc);
-
-    return len;
+    return size;
 }
 #endif
 

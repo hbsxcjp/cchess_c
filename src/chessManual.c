@@ -366,15 +366,7 @@ static void readTagRowcolRemark_XQF__(unsigned char* tag, int* fcolrow, int* tco
             rem[RemarkSize] = '\x0';
 
             *remark = calloc(len, sizeof(wchar_t));
-            assert(*remark);
-
-#ifdef __linux
-            gbk_mbstowcs_linux(*remark, (char*)rem);
-#else
-            mbstowcs(*remark, (char*)rem, len);
-#endif
-            //wcstombs(remc, *remark, WIDEWCHARSIZE - 1);
-            //printf("\nsize:%ld %s", strlen(remc), remc);
+            mbstowcs_gbk(*remark, (char*)rem);
         }
     }
 }
@@ -512,11 +504,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
     for (int i = 0; i < sizeof(values) / sizeof(values[0]); ++i) {
         // "TitleA", "Event", "Date", "Site", "Red", "Black", "Opening", "RMKWriter", "Author"
         // "标题: 赛事: 日期: 地点: 红方: 黑方: 结果: 评论: 作者: "
-#ifdef __linux
-        gbk_mbstowcs_linux(tempStr, values[i]);
-#else
-        mbstowcs(tempStr, values[i], WIDEWCHARSIZE - 1);
-#endif
+        mbstowcs_gbk(tempStr, values[i]);
         setInfoItem_cm(cm, CMINFO_NAMES[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
