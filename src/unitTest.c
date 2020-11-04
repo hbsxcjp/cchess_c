@@ -696,9 +696,9 @@ static void test_chessManual_dir(void)
     //bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
-        for (RecFormat fromFmt = XQF; fromFmt <= BIN; ++fromFmt)
-            for (RecFormat toFmt = BIN; toFmt <= BIN; ++toFmt)
-                if (fromFmt != toFmt) { // && fromFmt != PGN_ICCS
+        for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
+            for (RecFormat toFmt = BIN; toFmt <= PGN_ZH; ++toFmt)
+                if (fromFmt != toFmt) { 
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
                 }

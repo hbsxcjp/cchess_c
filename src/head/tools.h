@@ -92,8 +92,8 @@ void pcrewch_free(void* reg);
 // 正则类 结束 -------------------------------------------------------------------------------------- //
 
 // 文件类 开始 -------------------------------------------------------------------------------------- //
-// 跨平台的打开文件函数
-FILE* openFile(const char* fileName, const char* modes, const char* charSet);
+// 跨平台读取utf-8编码文件的打开函数
+FILE* openFile_utf8(const char* fileName, const char* modes);
 
 // 从文件名提取目录名
 void getDirName(char* dirName, const char* fileName);

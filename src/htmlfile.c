@@ -124,7 +124,7 @@ void getWebFile(const char* webFileName, const char* url)
         wchar_t wstr[strlen(str) + 1];
         mbstowcs_gbk(wstr, str);
 
-        FILE* fout = openFile(webFileName, "w", "UTF-8");
+        FILE* fout = openFile_utf8(webFileName, "w");
         fwprintf(fout, wstr);
         fclose(fout);
 
@@ -136,8 +136,8 @@ void getWebFile(const char* webFileName, const char* url)
 
 void getCleanWebFile(const char* cleanFileName, const char* fileName)
 {
-    FILE *fin = openFile(fileName, "r", "UTF-8"),
-         *fout = openFile(fileName, "w", "UTF-8");
+    FILE *fin = openFile_utf8(fileName, "r"),
+         *fout = openFile_utf8(fileName, "w");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
 

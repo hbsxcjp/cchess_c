@@ -14,7 +14,7 @@ int main(int argc, char const* argv[])
     //printf("old:%s\nnew:%s\n", oldlocale, newlocale);
     setbuf(stdout, NULL);
 
-    fout = openFile("test_out", "w", "UTF-8");
+    fout = openFile_utf8("test_out", "w");
 
     unitTest();
     fclose(fout);

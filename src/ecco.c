@@ -796,7 +796,7 @@ static void wcscatInsertLineStr_ecco__(Ecco ecco, wchar_t** pwInsertSql, size_t*
 
 void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
 {
-    FILE* fin = openFile(fileName, "r", "UTF-8");
+    FILE* fin = openFile_utf8(fileName, "r");
     wchar_t* fileWstring = getWString(fin);
     assert(fileWstring);
     fclose(fin);

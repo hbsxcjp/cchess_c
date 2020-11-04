@@ -895,7 +895,7 @@ static wchar_t* getRemark_PGN_CC__(wchar_t* remLines[], int remCount, int row, i
     wchar_t name[12] = { 0 };
     swprintf(name, 12, L"(%d,%d)", row, col);
     for (int index = 0; index < remCount; ++index)
-        if (wcscmp(name, remLines[index * 2]) == 0)
+        if (remLines[index * 2] && wcscmp(name, remLines[index * 2]) == 0)
             return remLines[index * 2 + 1];
     return NULL;
 }
@@ -932,6 +932,7 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
     long start = ftell(fin);
     if (start < 0)
         return;
+
     int rowNum = 0, rowIndex = 0, remArrayLen = 0, lineSize = 3; // lineSize 加回车和空字符位置
     while ((wch = fgetwc(fin)) && wch != L'\n')
         ++lineSize;
@@ -944,9 +945,10 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
     }
     if (colNum == 0 || rowNum == 0)
         return;
+
     while (fgetws(lineStr, lineSize, fin))
         ++remArrayLen;
-    wchar_t **moveLines = calloc((rowNum * colNum), sizeof(wchar_t*)),
+    wchar_t **moveLines = calloc(rowNum * colNum, sizeof(wchar_t*)),
             **remLines = calloc(remArrayLen, sizeof(wchar_t*));
     fseek(fin, start, SEEK_SET); // 回到开始
 
@@ -958,7 +960,7 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
             //wprintf(L"%d: %ls\n", __LINE__, moveLines[rowNum * colNum + col]);
         }
         ++rowIndex;
-        fgetws(lineStr, lineSize, fin);
+        fgetws(lineStr, lineSize, fin); // 读取间隔行
     }
     assert(rowNum == rowIndex);
 
@@ -972,25 +974,21 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
          *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
     assert(moveReg);
     assert(remReg);
-
     wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
     while (tempRemStr != NULL && wcslen(tempRemStr) > 0) {
         regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, PCREARRAY_SIZE);
         if (regCount <= 0)
             break;
-        int rclen = ovector[3] - ovector[2] + 1,
-            remlen = ovector[5] - ovector[4] + 1;
-        wchar_t *rcKey = malloc(rclen * sizeof(wchar_t)),
-                *remark = malloc(remlen * sizeof(wchar_t));
-        pcrewch_copy_substring(tempRemStr, ovector, regCount, 1, rcKey, rclen);
-        pcrewch_copy_substring(tempRemStr, ovector, regCount, 2, remark, remlen);
 
-        remLines[remCount * 2] = rcKey;
-        remLines[remCount * 2 + 1] = remark;
+        remLines[remCount * 2] = getSubStr(tempRemStr, ovector[2], ovector[3]);
+        remLines[remCount * 2 + 1] = getSubStr(tempRemStr, ovector[4], ovector[5]);
         //wprintf(L"%d: %ls: %ls\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
         ++remCount;
         tempRemStr += ovector[1];
     }
+    if (remArrayLen != remCount * 2)
+        printf("a:%d c:%d\n", remArrayLen, remCount);
+    assert(remArrayLen >= remCount * 2);
 
     setRemark(cm->rootMove, getRemark_PGN_CC__(remLines, remCount, 0, 0));
     if (rowNum > 0)
@@ -1057,11 +1055,11 @@ static void writeMove_PGN_ICCSZH__s(wchar_t** pmoveStr, size_t* psize, Move move
 static void writeMove_PGN_CC__(wchar_t* moveStr, int colNum, CMove move)
 {
     int row = getNextNo(move) * 2, firstCol = getCC_ColNo(move) * 5;
-    wcsncpy(&moveStr[row * colNum + firstCol], getZhStr(move), 4);
+    wcsncpy(moveStr + row * colNum + firstCol, getZhStr(move), 4);
 
     if (getOther(move)) {
         int fcol = firstCol + 4, tnum = getCC_ColNo(getOther(move)) * 5 - fcol;
-        wmemset(&moveStr[row * colNum + fcol], L'…', tnum);
+        wmemset(moveStr + row * colNum + fcol, L'…', tnum);
         writeMove_PGN_CC__(moveStr, colNum, getOther(move));
     }
 
@@ -1185,7 +1183,11 @@ static void readChessManual__(ChessManual cm, const char* fileName)
     }
 
     RecFormat fmt = getRecFormat__(getExtName(fileName));
-    FILE* fin = fopen(fileName, (fmt == XQF || fmt == BIN || fmt == JSON) ? "rb" : "r");
+    FILE* fin = ((fmt == XQF || fmt == BIN || fmt == JSON)
+            ? fopen(fileName, "rb")
+            //: openFile_utf8(fileName, "r"));
+            : fopen(fileName, "r"));
+
     if (fin == NULL)
         return;
     switch (fmt) {
@@ -1226,8 +1228,11 @@ void writeChessManual(ChessManual cm, const char* fileName)
         return;
 
     RecFormat fmt = getRecFormat__(getExtName(fileName));
-    FILE* fout = fopen(fileName,
-        (fmt == XQF || fmt == BIN || fmt == JSON) ? "wb" : "w");
+    FILE* fout = ((fmt == XQF || fmt == BIN || fmt == JSON)
+            ? fopen(fileName, "wb")
+            //: openFile_utf8(fileName, "w"));
+            : fopen(fileName, "w"));
+
     if (fout == NULL)
         return;
     switch (fmt) {

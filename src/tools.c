@@ -227,18 +227,18 @@ static char* getSplitChar__(const char* fileName)
     return sp0 ? sp0 : sp1;
 }
 
-FILE* openFile(const char* fileName, const char* modes, const char* charSet)
+FILE* openFile_utf8(const char* fileName, const char* modes)
 {
-#ifndef __linux
+#ifdef __linux
+    return fopen(fileName, modes);
+#else
     char useModes[WCHARSIZE];
     strcpy(useModes, modes);
-    strcat(useModes, ", ccs=");
-    strcat(useModes, charSet);
-    //strcat(useModes, ", ccs=UTF-8");
+    //strcat(useModes, ", ccs=");
+    //strcat(useModes, charSet);
+    strcat(useModes, ", ccs=UTF-8");
     return fopen(fileName, useModes);
 #endif
-
-    return fopen(fileName, modes);
 }
 
 void getDirName(char* dirName, const char* fileName)
@@ -327,6 +327,7 @@ int code_convert(const char* from_charset, const char* to_charset, char* inbuf, 
     iconv_close(cd);
     return tag;
 }
+#endif
 
 size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk)
 {
@@ -338,12 +339,11 @@ size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk)
     code_convert("gbk", "utf-8", src_gbk, src_utf8, &utf8_size);
     size = mbstowcs(dest, src_utf8, src_len);
 #else
-    size = mbstowcs(dest, src_gbk, mbstowcs(NULL, src_gbk, 0));
+    size = mbstowcs(dest, src_gbk, mbstowcs(NULL, src_gbk, 0) + 1);
 #endif
 
     return size;
 }
-#endif
 
 static FileInfo newFileInfo__(char* name, int attrib, long unsigned int size)
 {
@@ -453,6 +453,7 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
             if (recursive)
                 operateDir(findName, operateFile, ptr, recursive);
         } else {
+            //printf("%d: %s\n", __LINE__, findName);
             //strcpy(wfileinfo.name, findName);
             //operateFile(&fileinfo, ptr);
             FileInfo fi = newFileInfo__(findName, wfileinfo.attrib, wfileinfo.size);
