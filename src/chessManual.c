@@ -31,16 +31,16 @@ static const wchar_t* CMINFO_NAMES[] = {
     L"FILE", L"FEN", L"ICCSSTR", L"ECCO_SN", L"ECCO_NAME", L"MOVESTR"
 }; // 所有字段构成创建表的SQL语句长度不能超过256字符
 
-static const int PLAYTYPE_INDEX = 9,
+static const int TYPE_INDEX = 9,
                  RESULT_INDEX = 10,
                  VERSION_INDEX = 11,
-                 FILENAME_INDEX = 12,
+                 FILE_INDEX = 12,
                  FEN_INDEX = 13,
-                 ICCS_INDEX = 14,
+                 ICCSSTR_INDEX = 14,
                  ECCOSN_INDEX = 15,
                  ECCONAME_INDEX = 16,
                  MOVESTR_INDEX = 17,
-                 INFO_LEN = sizeof(CMINFO_NAMES) / sizeof(CMINFO_NAMES[0]);
+                 CMINFO_LEN = sizeof(CMINFO_NAMES) / sizeof(CMINFO_NAMES[0]);
 
 static const char FILETAG[] = "learnchess";
 
@@ -81,7 +81,7 @@ ChessManual newChessManual(const char* fileName)
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
     cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
-    for (int i = 0; i < INFO_LEN; ++i)
+    for (int i = 0; i < CMINFO_LEN; ++i)
         setInfoItem_cm(cm, CMINFO_NAMES[i], L"");
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
     readChessManual__(cm, fileName);
@@ -508,7 +508,7 @@ static void readXQF__(ChessManual cm, FILE* fin)
         setInfoItem_cm(cm, CMINFO_NAMES[i], tempStr);
     }
     wchar_t* PlayType[] = { L"全局", L"开局", L"中局", L"残局" };
-    setInfoItem_cm(cm, CMINFO_NAMES[PLAYTYPE_INDEX], PlayType[headCodeA_H[0]]); // 编码定义存储
+    setInfoItem_cm(cm, CMINFO_NAMES[TYPE_INDEX], PlayType[headCodeA_H[0]]); // 编码定义存储
 
     getFEN_pieChars(tempStr, pieChars);
     //wcscat(tempStr, headWhoPlay ? L" -r" : L" -b");
@@ -801,6 +801,26 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     cJSON_Delete(manualJSON); // 释放自身及所有子对象
 }
 
+static const wchar_t* readInfo_PGN_wstr__(ChessManual cm, wchar_t* fileWstring)
+{
+    const char* error;
+    int erroffset = 0, infoCount = 0, ovector[PCREARRAY_SIZE];
+    const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
+    void* infoReg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
+    wchar_t* infoStr = fileWstring;
+    while ((infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, ovector, PCREARRAY_SIZE)) > 0) {
+        wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
+        pcrewch_copy_substring(infoStr, ovector, infoCount, 1, name, WIDEWCHARSIZE);
+        pcrewch_copy_substring(infoStr, ovector, infoCount, 2, value, WIDEWCHARSIZE);
+        setInfoItem_cm(cm, name, value);
+
+        infoStr += ovector[1];
+    }
+    pcrewch_free(infoReg);
+
+    return infoStr;
+}
+
 static void readInfo_PGN__(ChessManual cm, FILE* fin)
 {
     const char* error;
@@ -835,8 +855,10 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
     //printf("\n读取文件内容到字符串... ");
     wchar_t *moveStr = getWString(fin), *tempMoveStr = moveStr;
-    if (moveStr == NULL)
+    if (moveStr == NULL) {
+        printf("line:%d file:%s\n", __LINE__, "fileName");
         return;
+    }
 
     bool isPGN_ZH = fmt == PGN_ZH;
     const wchar_t* remStr = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
@@ -854,11 +876,8 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
 
     int ovector[PCREARRAY_SIZE] = { 0 },
         regCount = pcrewch_exec(remReg, NULL, moveStr, wcslen(moveStr), 0, 0, ovector, PCREARRAY_SIZE);
-    if (regCount <= 0)
-        return;
-
-    wchar_t* remark = getSubStr(moveStr, ovector[2], ovector[3]);
-    setRemark(cm->rootMove, remark); // 赋值一个动态分配内存的指针
+    if (regCount > 0 && ovector[2] < ovector[3])
+        setRemark(cm->rootMove, getSubStr(moveStr, ovector[2], ovector[3])); // 赋值一个动态分配内存的指针
 
     Move preOtherMoves[WIDEWCHARSIZE] = { NULL };
     int preOthIndex = 0, length = 0;
@@ -875,7 +894,7 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
         // 提取字符串
         wchar_t iccs_zhStr[6];
         pcrewch_copy_substring(tempMoveStr, ovector, regCount, 2, iccs_zhStr, 6);
-        remark = getSubStr(tempMoveStr, ovector[6], ovector[7]);
+        wchar_t* remark = getSubStr(tempMoveStr, ovector[6], ovector[7]);
         appendMove(cm, iccs_zhStr, fmt, remark, isOther);
 
         // 是否有一个以上的")"
@@ -905,6 +924,9 @@ static void addMove_PGN_CC__(ChessManual cm, void* moveReg,
     wchar_t* remLines[], int remCount, bool isOther)
 {
     wchar_t* zhStr = moveLines[row * colNum + col];
+    if (zhStr == NULL)
+        return;
+
     while (zhStr[0] == L'…')
         zhStr = moveLines[row * colNum + (++col)];
     int ovector[9],
@@ -923,6 +945,79 @@ static void addMove_PGN_CC__(ChessManual cm, void* moveReg,
         && moveLines[(row + 1) * colNum + col][0] != L'　') {
         addMove_PGN_CC__(cm, moveReg, moveLines, rowNum, colNum, row + 1, col, remLines, remCount, false);
     }
+}
+
+static void readMove_PGN_CC_wstr__(ChessManual cm, wchar_t* moveWstring)
+{
+    if (wcslen(moveWstring) < 5)
+        return;
+
+    // 读取着法字符串
+    wchar_t* lineStr = wcschr(moveWstring + 1, L'\n'); // +1:前进回车字符
+    while (lineStr && (++lineStr)[0] && lineStr[0] != L'\n') { // 空行截止
+        wchar_t* lineEndStr = wcschr(lineStr, L'\n');
+        if (lineEndStr == NULL)
+            break;
+
+
+        lineStr = wcschr(lineEndStr + 1, L'\n'); // 间隔行则弃掉
+    }
+
+    /*
+    while (fgetws(lineStr, lineSize, fin) && lineStr[0] != L'\n') { // 空行截止
+        //wprintf(L"%d: %ls", __LINE__, lineStr);
+        for (int col = 0; col < colNum; ++col) {
+            moveLines[rowIndex * colNum + col] = getSubStr(lineStr, col * 5, col * 5 + 5);
+            //wprintf(L"%d: %ls\n", __LINE__, moveLines[rowNum * colNum + col]);
+        }
+        ++rowIndex;
+        fgetws(lineStr, lineSize, fin); // 读取间隔行
+    }
+    assert(rowNum == rowIndex);
+
+    // 读取注解字符串
+    int remCount = 0, regCount = 0, ovector[PCREARRAY_SIZE] = { 0 };
+    const wchar_t movePat[] = L"([^…　]{4}[…　])",
+                  remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
+    const char* error;
+    int erroffset = 0;
+    void *moveReg = pcrewch_compile(movePat, 0, &error, &erroffset, NULL),
+         *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
+    assert(moveReg);
+    assert(remReg);
+    wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
+    while (tempRemStr != NULL && wcslen(tempRemStr) > 0) {
+        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, PCREARRAY_SIZE);
+        if (regCount <= 0)
+            break;
+
+        remLines[remCount * 2] = getSubStr(tempRemStr, ovector[2], ovector[3]);
+        remLines[remCount * 2 + 1] = getSubStr(tempRemStr, ovector[4], ovector[5]);
+        //wprintf(L"%d: %ls: %ls\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
+        ++remCount;
+        tempRemStr += ovector[1];
+    }
+    //if (remArrayLen != remCount * 2)
+    //    printf("a:%d c:%d\n", remArrayLen, remCount);
+    //assert(remArrayLen >= remCount * 2);
+
+    setRemark(cm->rootMove, getRemark_PGN_CC__(remLines, remCount, 0, 0));
+    if (rowNum > 0)
+        addMove_PGN_CC__(cm, moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount, false);
+    backFirst(cm);
+
+    free(remarkStr);
+    for (int i = 0; i < remCount; ++i) {
+        free(remLines[i * 2]);
+        //free(remLines[i * 2 + 1]); // 已赋值给move->remark
+    }
+    for (int i = rowNum * colNum - 1; i >= 0; --i)
+        free(moveLines[i]);
+    free(remLines);
+    free(moveLines);
+    pcrewch_free(remReg);
+    pcrewch_free(moveReg);
+    //*/
 }
 
 static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
@@ -986,9 +1081,9 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
         ++remCount;
         tempRemStr += ovector[1];
     }
-    if (remArrayLen != remCount * 2)
-        printf("a:%d c:%d\n", remArrayLen, remCount);
-    assert(remArrayLen >= remCount * 2);
+    //if (remArrayLen != remCount * 2)
+    //    printf("a:%d c:%d\n", remArrayLen, remCount);
+    //assert(remArrayLen >= remCount * 2);
 
     setRemark(cm->rootMove, getRemark_PGN_CC__(remLines, remCount, 0, 0));
     if (rowNum > 0)
@@ -1024,9 +1119,10 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 
 static void writeRemark_PGN_ICCSZH__s(wchar_t** pmoveStr, size_t* psize, CMove move)
 {
-    if (getRemark(move)) {
+    const wchar_t* remark = getRemark(move);
+    if (remark && wcslen(remark) > 0) {
         wchar_t remarkstr[WIDEWCHARSIZE];
-        swprintf(remarkstr, WIDEWCHARSIZE, L" \n{%ls}\n ", getRemark(move));
+        swprintf(remarkstr, WIDEWCHARSIZE, L" \n{%ls}\n ", remark);
         supper_wcscat(pmoveStr, psize, remarkstr);
     }
 }
@@ -1141,6 +1237,9 @@ void writeMoveRemark_PGN_ICCSZHtoWstr(wchar_t** pmoveStr, ChessManual cm, RecFor
     writeRemark_PGN_ICCSZH__s(pmoveStr, &size, cm->rootMove);
     if (getNext(cm->rootMove))
         writeMove_PGN_ICCSZH__s(pmoveStr, &size, getNext(cm->rootMove), fmt == PGN_ZH, false);
+    else
+        printf("line:%d file:%s\n", __LINE__, "fileName");
+
     supper_wcscat(pmoveStr, &size, L"\n");
 }
 
@@ -1206,20 +1305,24 @@ static void readChessManual__(ChessManual cm, const char* fileName)
     }
     if (getNext(cm->rootMove))
         setMoveNumZhStr(cm); // 驱动函数
+    else
+        printf("line:%d file:%s\n", __LINE__, fileName);
+
     fclose(fin);
 
     // 文件名存入信息链表
     wchar_t value[WCHARSIZE];
     mbstowcs(value, fileName, WCHARSIZE);
-    setInfoItem_cm(cm, CMINFO_NAMES[FILENAME_INDEX], value);
+    setInfoItem_cm(cm, CMINFO_NAMES[FILE_INDEX], value);
 
-    // 着法存入信息链表
+    /*/ 着法存入信息链表
     if (getNext(cm->rootMove)) {
         wchar_t* movestr = NULL;
         writeMoveRemark_PGN_ICCSZHtoWstr(&movestr, cm, PGN_ZH);
         setInfoItem_cm(cm, CMINFO_NAMES[MOVESTR_INDEX], movestr);
         free(movestr);
     }
+    //*/
 }
 
 void writeChessManual(ChessManual cm, const char* fileName)
@@ -1232,9 +1335,12 @@ void writeChessManual(ChessManual cm, const char* fileName)
             ? fopen(fileName, "wb")
             //: openFile_utf8(fileName, "w"));
             : fopen(fileName, "w"));
-
     if (fout == NULL)
         return;
+
+    if (getNext(cm->rootMove) == NULL)
+        printf("line:%d file:%s\n", __LINE__, fileName);
+
     switch (fmt) {
     case XQF:
         wprintf(L"未实现的写入文件扩展名！");
@@ -1382,7 +1488,7 @@ static int info_cmp__(Info info0, Info info1)
 
     // 文件名属性不做比较，视同相等
     if (wcscmp(getInfoName(info0), getInfoName(info1)) == 0
-        && wcscmp(getInfoName(info0), CMINFO_NAMES[FILENAME_INDEX]) == 0)
+        && wcscmp(getInfoName(info0), CMINFO_NAMES[FILE_INDEX]) == 0)
         return 0;
 
     // 两个属性有一个不相等，则不相等
@@ -1451,7 +1557,7 @@ bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList)
 
     wchar_t iccsStr[WIDEWCHARSIZE];
     getIccsStr(iccsStr, cm);
-    setInfoItem_cm(cm, CMINFO_NAMES[ICCS_INDEX], iccsStr);
+    setInfoItem_cm(cm, CMINFO_NAMES[ICCSSTR_INDEX], iccsStr);
 
     const wchar_t* sn = getEccoSN_iccsStr(eccoMyLinkedList, iccsStr);
     if (sn == NULL)

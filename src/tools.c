@@ -337,7 +337,7 @@ size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk)
            utf8_size = src_len * 6;
     char src_utf8[utf8_size];
     code_convert("gbk", "utf-8", src_gbk, src_utf8, &utf8_size);
-    size = mbstowcs(dest, src_utf8, src_len);
+    size = mbstowcs(dest, src_utf8, utf8_size);
 #else
     size = mbstowcs(dest, src_gbk, mbstowcs(NULL, src_gbk, 0) + 1);
 #endif

@@ -553,6 +553,8 @@ static void test_chessManual_xqf(void)
                       "[ICCSSTR \"\"]\n"
                       "[ECCO_SN \"\"]\n"
                       "[ECCO_NAME \"\"]\n"
+                      "[MOVESTR \"\"]\n"
+                      /*
                       "[MOVESTR \"1. 马四进三  \n"
                       "{　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n"
                       "}\n"
@@ -573,6 +575,7 @@ static void test_chessManual_xqf(void)
                       "}\n"
                       "  士５进６ 4. 马五进三 \n"
                       "\"]\n"
+                      //*/
                       "\n"
                       "　开始　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
                       "　　↓　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　\n"
@@ -697,7 +700,7 @@ static void test_chessManual_dir(void)
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
         for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
-            for (RecFormat toFmt = BIN; toFmt <= PGN_ZH; ++toFmt)
+            for (RecFormat toFmt = BIN; toFmt <= PGN_CC; ++toFmt)
                 if (fromFmt != toFmt) { 
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
