@@ -553,8 +553,8 @@ static void test_chessManual_xqf(void)
                       "[ICCSSTR \"\"]\n"
                       "[ECCO_SN \"\"]\n"
                       "[ECCO_NAME \"\"]\n"
-                      "[MOVESTR \"\"]\n"
-                      /*
+                      //"[MOVESTR \"\"]\n"
+                      //*
                       "[MOVESTR \"1. 马四进三  \n"
                       "{　　从相肩进马是取胜的正确途径。其它着法，均不能取胜。\r\n"
                       "}\n"
@@ -642,7 +642,7 @@ static void test_chessManual_xqf(void)
     wcstombs(resultStr, wstr, len);
 
     if (strcmp(pgn_ccStr, resultStr) != 0)
-        printf("\n%s\n\n%s\n", pgn_ccStr, resultStr);
+        printf("\n%s\n\n%s\n s:%ld r:%ld\n", pgn_ccStr, resultStr, strlen(pgn_ccStr), strlen(resultStr));
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);
@@ -701,7 +701,7 @@ static void test_chessManual_dir(void)
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
         for (RecFormat fromFmt = XQF; fromFmt <= BIN; ++fromFmt)
             for (RecFormat toFmt = BIN; toFmt <= BIN; ++toFmt)
-                if (fromFmt != toFmt) { 
+                if (fromFmt != toFmt) {
                     //printf("\nline:%d %s %d->%d", __LINE__, dirNames__[dir], fromFmt, toFmt);
                     transDir(dirNames__[dir], fromFmt, toFmt, isPrint);
                 }
@@ -727,7 +727,7 @@ static void test_chessManual_sqlite(void)
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_xqf", test_chessManual_xqf },
     { "test_chessManual_otherExt", test_chessManual_otherExt },
-    /*
+    //*
     { "test_chessManual_dir", test_chessManual_dir },
     { "test_chessManual_go", test_chessManual_go },
     { "test_chessManual_sqlite", test_chessManual_sqlite },
