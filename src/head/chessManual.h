@@ -7,6 +7,8 @@
 
 extern const char* EXTNAMES[];
 
+extern FILE* fout;
+
 // 新建chessManual
 ChessManual newChessManual(const char* fileName);
 

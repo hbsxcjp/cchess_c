@@ -801,7 +801,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     cJSON_Delete(manualJSON); // 释放自身及所有子对象
 }
 
-static const wchar_t* readInfo_PGN_wstr__(ChessManual cm, wchar_t* fileWstring)
+static wchar_t* readInfo_PGN_wstr__(ChessManual cm, wchar_t* fileWstring)
 {
     const char* error;
     int erroffset = 0, infoCount = 0, ovector[PCREARRAY_SIZE];
@@ -821,34 +821,61 @@ static const wchar_t* readInfo_PGN_wstr__(ChessManual cm, wchar_t* fileWstring)
     return infoStr;
 }
 
-static void readInfo_PGN__(ChessManual cm, FILE* fin)
-{
-    const char* error;
-    int erroffset = 0, infoCount = 0, ovector[PCREARRAY_SIZE]; //OVECCOUNT = 10,
-    const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
-    void* infoReg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
-    assert(infoReg);
-    wchar_t infoStr[WIDEWCHARSIZE] = { 0 };
-
-    //printf("\nline:%d %s", __LINE__, "read info...\n");
-    while (fgetws(infoStr, WIDEWCHARSIZE, fin) && infoStr[0] != L'\n') { // 以空行为终止特征
-        infoCount = pcrewch_exec(infoReg, NULL, infoStr, wcslen(infoStr), 0, 0, ovector, PCREARRAY_SIZE);
-        if (infoCount < 0)
-            continue;
-
-        wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
-        pcrewch_copy_substring(infoStr, ovector, infoCount, 1, name, WIDEWCHARSIZE);
-        pcrewch_copy_substring(infoStr, ovector, infoCount, 2, value, WIDEWCHARSIZE);
-        setInfoItem_cm(cm, name, value);
-    }
-    pcrewch_free(infoReg);
-}
-
 wchar_t* getZhWChars(wchar_t* ZhWChars)
 {
     swprintf(ZhWChars, WCHARSIZE, L"%ls%ls%ls%ls%ls",
         PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
     return ZhWChars;
+}
+
+static void readMove_PGN_ICCSZH_wstr__(ChessManual cm, wchar_t* moveWstring, RecFormat fmt)
+{
+    bool isPGN_ZH = fmt == PGN_ZH;
+    const wchar_t* remStr = L"(?:[\\s\\n]*\\{([\\s\\S]*?)\\})?";
+    wchar_t ZhWChars[WCHARSIZE], movePat[WCHARSIZE], remPat[WCHARSIZE];
+    swprintf(movePat, WCHARSIZE, L"(\\()?(?:[\\d\\.\\s]+)([%ls]{4})%ls(?:[\\s\\n]*(\\)+))?",
+        isPGN_ZH ? getZhWChars(ZhWChars) : L"a-i\\d", remStr); // 可能存在多个右括号
+    swprintf(remPat, WCHARSIZE, L"%ls1\\.", remStr);
+
+    const char* error;
+    int erroffset = 0;
+    void *moveReg = pcrewch_compile(movePat, 0, &error, &erroffset, NULL),
+         *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
+
+    int ovector[PCREARRAY_SIZE] = { 0 },
+        regCount = pcrewch_exec(remReg, NULL, moveWstring, wcslen(moveWstring), 0, 0, ovector, PCREARRAY_SIZE);
+    if (regCount > 0 && ovector[2] < ovector[3])
+        setRemark(cm->rootMove, getSubStr(moveWstring, ovector[2], ovector[3])); // 赋值一个动态分配内存的指针
+
+    Move preOtherMoves[WIDEWCHARSIZE] = { NULL };
+    int preOthIndex = 0, length = 0;
+    //printf("读取moveStr... \n");
+    wchar_t* tempMoveStr = moveWstring;
+    while ((tempMoveStr += ovector[1]) && (length = wcslen(tempMoveStr)) > 0) {
+        regCount = pcrewch_exec(moveReg, NULL, tempMoveStr, length, 0, 0, ovector, PCREARRAY_SIZE);
+        if (regCount <= 0)
+            break;
+
+        // 是否有"("
+        bool isOther = ovector[3] > ovector[2];
+        if (isOther)
+            preOtherMoves[preOthIndex++] = cm->curMove;
+
+        // 提取字符串
+        wchar_t iccs_zhStr[6];
+        pcrewch_copy_substring(tempMoveStr, ovector, regCount, 2, iccs_zhStr, 6);
+        wchar_t* remark = getSubStr(tempMoveStr, ovector[6], ovector[7]);
+        appendMove(cm, iccs_zhStr, fmt, remark, isOther);
+
+        // 是否有一个以上的")"
+        int num = ovector[9] - ovector[8];
+        while (num--)
+            backTo(cm, preOtherMoves[--preOthIndex]);
+    }
+    backFirst(cm);
+
+    pcrewch_free(remReg);
+    pcrewch_free(moveReg);
 }
 
 static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
@@ -909,6 +936,17 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, FILE* fin, RecFormat fmt)
     free(moveStr);
 }
 
+static wchar_t* getRemark_PGN_CC_wstr__(MyLinkedList mvstrMyLinkedList, int row, int col)
+{
+    wchar_t name[WCHARSIZE];
+    swprintf(name, WCHARSIZE, L"(%d,%d)", row, col);
+    const wchar_t* value = getInfoValue_name(mvstrMyLinkedList, name);
+    if (value)
+        return getSubStr(value, 0, wcslen(value));
+
+    return NULL;
+}
+
 static wchar_t* getRemark_PGN_CC__(wchar_t* remLines[], int remCount, int row, int col)
 {
     wchar_t name[12] = { 0 };
@@ -917,6 +955,33 @@ static wchar_t* getRemark_PGN_CC__(wchar_t* remLines[], int remCount, int row, i
         if (remLines[index * 2] && wcscmp(name, remLines[index * 2]) == 0)
             return remLines[index * 2 + 1];
     return NULL;
+}
+
+static void addMove_PGN_CC_wstr__(ChessManual cm, MyLinkedList mvstrMyLinkedList,
+    int rowNum, int row, int col, bool isOther)
+{
+    wchar_t name[WCHARSIZE] = { 0 };
+    swprintf(name, WCHARSIZE, L"%d,%d", row, col);
+    const wchar_t* mvstr = getInfoValue_name(mvstrMyLinkedList, name);
+    if (mvstr == NULL || mvstr[0] == L'　')
+        return;
+
+    while (mvstr[0] == L'…') {
+        swprintf(name, WCHARSIZE, L"%d,%d", row, ++col);
+        mvstr = getInfoValue_name(mvstrMyLinkedList, name);
+    }
+    assert(mvstr);
+
+    wchar_t zhStr[MOVESTR_LEN + 1];
+    copySubStr(zhStr, mvstr, 0, MOVESTR_LEN);
+    Move move = appendMove(cm, zhStr, PGN_CC, getRemark_PGN_CC_wstr__(mvstrMyLinkedList, row, col), isOther);
+
+    if (mvstr[MOVESTR_LEN] == L'…')
+        addMove_PGN_CC_wstr__(cm, mvstrMyLinkedList, rowNum, row, col + 1, true);
+
+    backTo(cm, move);
+    if (getNextNo(move) < rowNum - 1)
+        addMove_PGN_CC_wstr__(cm, mvstrMyLinkedList, rowNum, row + 1, col, false);
 }
 
 static void addMove_PGN_CC__(ChessManual cm, void* moveReg,
@@ -953,71 +1018,51 @@ static void readMove_PGN_CC_wstr__(ChessManual cm, wchar_t* moveWstring)
         return;
 
     // 读取着法字符串
-    wchar_t* lineStr = wcschr(moveWstring + 1, L'\n'); // +1:前进回车字符
-    while (lineStr && (++lineStr)[0] && lineStr[0] != L'\n') { // 空行截止
-        wchar_t* lineEndStr = wcschr(lineStr, L'\n');
-        if (lineEndStr == NULL)
-            break;
-
-
-        lineStr = wcschr(lineEndStr + 1, L'\n'); // 间隔行则弃掉
-    }
-
-    /*
-    while (fgetws(lineStr, lineSize, fin) && lineStr[0] != L'\n') { // 空行截止
-        //wprintf(L"%d: %ls", __LINE__, lineStr);
+    MyLinkedList mvstrMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
+    wchar_t name[WCHARSIZE], value[WCHARSIZE],
+        *moveWstrEnd = moveWstring + (wcslen(moveWstring) - 1),
+        *lineStart = wcschr(moveWstring + 1, L'\n'),
+        *lineEnd = wcschr(moveWstring, L'(') ? wcschr(moveWstring, L'(') : moveWstrEnd;
+    int rowIndex = 0,
+        wchNum = wcschr(lineStart, L'\n') - lineStart,
+        colNum = wchNum / (MOVESTR_LEN + 1);
+    while (lineStart && (++lineStart)[0] && lineStart + wchNum <= lineEnd) {
         for (int col = 0; col < colNum; ++col) {
-            moveLines[rowIndex * colNum + col] = getSubStr(lineStr, col * 5, col * 5 + 5);
-            //wprintf(L"%d: %ls\n", __LINE__, moveLines[rowNum * colNum + col]);
+            int subStart = col * (MOVESTR_LEN + 1);
+            swprintf(name, WCHARSIZE, L"%d,%d", rowIndex++, col);
+            copySubStr(value, lineStart, subStart, subStart + MOVESTR_LEN + 1);
+            addMyLinkedList(mvstrMyLinkedList, newInfo(name, value));
         }
-        ++rowIndex;
-        fgetws(lineStr, lineSize, fin); // 读取间隔行
+        lineStart = wcschr(lineStart, L'\n'); // 间隔行则弃掉
     }
-    assert(rowNum == rowIndex);
 
     // 读取注解字符串
-    int remCount = 0, regCount = 0, ovector[PCREARRAY_SIZE] = { 0 };
-    const wchar_t movePat[] = L"([^…　]{4}[…　])",
-                  remPat[] = L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}";
     const char* error;
-    int erroffset = 0;
-    void *moveReg = pcrewch_compile(movePat, 0, &error, &erroffset, NULL),
-         *remReg = pcrewch_compile(remPat, 0, &error, &erroffset, NULL);
-    assert(moveReg);
-    assert(remReg);
-    wchar_t *remarkStr = getWString(fin), *tempRemStr = remarkStr;
-    while (tempRemStr != NULL && wcslen(tempRemStr) > 0) {
-        regCount = pcrewch_exec(remReg, NULL, tempRemStr, wcslen(tempRemStr), 0, 0, ovector, PCREARRAY_SIZE);
-        if (regCount <= 0)
+    int erroffset = 0, ovector[PCREARRAY_SIZE] = { 0 };
+    void *moveReg = pcrewch_compile(L"([^…　]{4}[…　])",
+             0, &error, &erroffset, NULL),
+         *remReg = pcrewch_compile(L"(\\(\\d+,\\d+\\)): \\{([\\s\\S]*?)\\}",
+             0, &error, &erroffset, NULL);
+    while (lineEnd && wcslen(lineEnd) > 0) {
+        int remCount = pcrewch_exec(remReg, NULL, lineEnd, wcslen(lineEnd), 0, 0, ovector, PCREARRAY_SIZE);
+        if (remCount <= 0)
             break;
 
-        remLines[remCount * 2] = getSubStr(tempRemStr, ovector[2], ovector[3]);
-        remLines[remCount * 2 + 1] = getSubStr(tempRemStr, ovector[4], ovector[5]);
-        //wprintf(L"%d: %ls: %ls\n", __LINE__, remLines[remCount * 2], remLines[remCount * 2 + 1]);
-        ++remCount;
-        tempRemStr += ovector[1];
+        pcrewch_copy_substring(lineEnd, ovector, remCount, 1, name, WIDEWCHARSIZE);
+        pcrewch_copy_substring(lineEnd, ovector, remCount, 2, value, WIDEWCHARSIZE);
+        addMyLinkedList(mvstrMyLinkedList, newInfo(name, value));
+        lineEnd += ovector[1];
     }
-    //if (remArrayLen != remCount * 2)
-    //    printf("a:%d c:%d\n", remArrayLen, remCount);
-    //assert(remArrayLen >= remCount * 2);
 
-    setRemark(cm->rootMove, getRemark_PGN_CC__(remLines, remCount, 0, 0));
-    if (rowNum > 0)
-        addMove_PGN_CC__(cm, moveReg, moveLines, rowNum, colNum, 1, 0, remLines, remCount, false);
+    setRemark(cm->rootMove, getRemark_PGN_CC_wstr__(mvstrMyLinkedList, 0, 0));
+    if (rowIndex > 0)
+        addMove_PGN_CC_wstr__(cm, mvstrMyLinkedList, rowIndex, 1, 0, false);
     backFirst(cm);
 
-    free(remarkStr);
-    for (int i = 0; i < remCount; ++i) {
-        free(remLines[i * 2]);
-        //free(remLines[i * 2 + 1]); // 已赋值给move->remark
-    }
-    for (int i = rowNum * colNum - 1; i >= 0; --i)
-        free(moveLines[i]);
-    free(remLines);
-    free(moveLines);
+    traverseMyLinkedList(mvstrMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo, fout, NULL, NULL);
     pcrewch_free(remReg);
     pcrewch_free(moveReg);
-    //*/
+    delMyLinkedList(mvstrMyLinkedList);
 }
 
 static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
@@ -1106,15 +1151,22 @@ static void readMove_PGN_CC__(ChessManual cm, FILE* fin)
 static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
     //printf("\n准备读取info... ");
-    readInfo_PGN__(cm, fin);
+    wchar_t *fileWstring = getWString(fin),
+            *moveWstring = readInfo_PGN_wstr__(cm, fileWstring);
+    //fwprintf(fout, moveWstring);
+
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     setBoard_FEN(cm->board, getFENFromCM__(cm));
 
     //printf("\n准备读取move... ");
     if (fmt == PGN_CC)
-        readMove_PGN_CC__(cm, fin);
+        //readMove_PGN_CC__(cm, fin);
+        readMove_PGN_CC_wstr__(cm, moveWstring);
     else
-        readMove_PGN_ICCSZH__(cm, fin, fmt);
+        //readMove_PGN_ICCSZH__(cm, fin, fmt);
+        readMove_PGN_ICCSZH_wstr__(cm, moveWstring, fmt);
+
+    free(fileWstring);
 }
 
 static void writeRemark_PGN_ICCSZH__s(wchar_t** pmoveStr, size_t* psize, CMove move)
