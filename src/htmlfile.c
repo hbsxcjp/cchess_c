@@ -76,7 +76,7 @@ static wchar_t* getClearStr__(wchar_t* destWstr, const wchar_t* wstr)
     wchar_t* regStr[] = {
         L"</?(?:div|font|img|strong|center|meta|dl|dt|table|tr|td|em|p|li|dir"
         "|html|head|body|title|a)[^>]*>",
-        L"(?<=\\n)\\s+" //(?=\\n)
+        L"(?<=\\n|\\r)\\s+" //(?=\\n)
     };
     wcscpy(destWstr, L"");
     for (int i = 0; i < sizeof(regStr) / sizeof(regStr[0]); ++i) {
@@ -161,10 +161,8 @@ void getCleanWebFile(const char* cleanFileName, const char* fileName)
 {
     FILE *fin = openFile_utf8(fileName, "r"),
          *fout = openFile_utf8(cleanFileName, "w");
-    wchar_t* fileWstring = getWString(fin);
-    assert(fileWstring);
-
-    wchar_t clearwstr[wcslen(fileWstring) + 1];
+    wchar_t *fileWstring = getWString(fin),
+            clearwstr[wcslen(fileWstring) + 1];
     getClearStr__(clearwstr, fileWstring);
     fwprintf(fout, clearwstr);
 
@@ -175,8 +173,8 @@ void getCleanWebFile(const char* cleanFileName, const char* fileName)
 
 void html_test(void)
 {
-    char *webFileName = "ecco.htm",
-         *txtFileName = "ecco.txt";
+    char *webFileName = "chessManual/ecco.htm",
+         *txtFileName = "chessManual/ecco.txt";
     //getEccoLibSrcFile(webFileName);
 
     getCleanWebFile(txtFileName, webFileName);

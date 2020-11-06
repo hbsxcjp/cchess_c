@@ -641,8 +641,10 @@ static void test_chessManual_xqf(void)
     resultStr = malloc(len);
     wcstombs(resultStr, wstr, len);
 
-    if (strcmp(pgn_ccStr, resultStr) != 0)
-        printf("\n%s\n\n%s\n s:%ld r:%ld\n", pgn_ccStr, resultStr, strlen(pgn_ccStr), strlen(resultStr));
+    if (strcmp(pgn_ccStr, resultStr) != 0) {
+        int srclen = strlen(pgn_ccStr), reslen = strlen(resultStr);
+        printf("\n%s\n\n%s\n s:%d r:%d\n", pgn_ccStr, resultStr, srclen, reslen);
+    }
     CU_ASSERT_STRING_EQUAL(pgn_ccStr, resultStr);
     free(wstr);
     free(resultStr);
@@ -720,8 +722,8 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    //initEcco("chess.db");
     html_test();
+    //initEcco("chess.db");
 }
 
 static CU_TestInfo suite_chessManual[] = {

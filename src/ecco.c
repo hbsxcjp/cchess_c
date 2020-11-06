@@ -200,12 +200,17 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)",
             0, &error, &errorffset, NULL),
         // field: sn name nums mvstr B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
-        pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-                        "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",
+        //pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
+        //                "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",//(?![\\s\\n　]+[A-E]\\d．)
+        pcrewch_compile(L"([A-E]\\d)(?:．|\\. )(?:空|(\\S+)\\((共[\\s\\S]+?局)\\)[\\s\\n　]*([\\s\\S]*?))(?=[\\s\\n　]*[A-E]\\d0．)",
             0, &error, &errorffset, NULL),
         // field: sn name mvstr nums
-        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
-                        "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
+        //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
+        //                "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
+        //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
+        //                "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
+        pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s\\n　]+"
+                        "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s\\n　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
             0, &error, &errorffset, NULL),
         // field: sn mvstr C20 C30 C61 C72局面字符串
         pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
@@ -246,12 +251,15 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
 
             first += ovector[1];
         }
+        printf("\nline:%d index:%d\n", __LINE__, index);
         pcrewch_free(regs[g]);
     }
 
     // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
     traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))setEcco_pre_mvstrs__,
         eccoMyLinkedList, NULL, NULL);
+    //if (index != 555)
+    //    printf("\nline:%d index:%d\n", __LINE__, index);
     assert(index == 555);
 }
 
@@ -820,7 +828,7 @@ void initEcco(char* dbName)
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
         const char *lib_tblName = "ecco",
-                   *srcFileName = "chessManual/eccolib_src";
+                   *srcFileName = "chessManual/ecco.txt";
         storeEccolib_db(db, lib_tblName, srcFileName);
 
         const char *man_tblName = "manual",
