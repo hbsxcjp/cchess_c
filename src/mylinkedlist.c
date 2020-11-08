@@ -78,9 +78,15 @@ void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name)
     removeMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
 }
 
-void printInfo(Info info, FILE* fout, void* _0, void* _1)
+static void printInfo__(Info info, FILE* fout, void* _0, void* _1)
 {
     fwprintf(fout, L"\t%ls: %ls\n", getInfoName(info), getInfoValue(info));
+}
+
+void printInfoMyLinkedList(FILE* fout, MyLinkedList myLinkedList)
+{
+    traverseMyLinkedList(myLinkedList, (void (*)(void*, void*, void*, void*))printInfo__,
+        fout, NULL, NULL);
 }
 
 static Node newNode__(void* data, Node prev, Node next)
@@ -255,12 +261,16 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
     removeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition));
 }
 
-void traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
+int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3)
 {
+    int result = 0;
     Node node = myLinkedList->beginMarker;
-    while ((node = node->next) != myLinkedList->endMarker)
+    while ((node = node->next) != myLinkedList->endMarker) {
         operatorData(node->data, arg1, arg2, arg3);
+        ++result;
+    }
+    return result;
 }
 
 static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, void*), bool* isSame)

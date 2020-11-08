@@ -202,7 +202,8 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
         // field: sn name nums mvstr B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
         //pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
         //                "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",//(?![\\s\\n　]+[A-E]\\d．)
-        pcrewch_compile(L"([A-E]\\d)(?:．|\\. )(?:空|(\\S+)\\((共[\\s\\S]+?局)\\)[\\s\\n　]*([\\s\\S]*?))(?=[\\s\\n　]*[A-E]\\d0．)",
+        pcrewch_compile(L"([A-E]\\d)(?:．|\\. )(?:空|(\\S+)\\((共[\\s\\S]+?局)\\)"
+                        "[\\s\\n　]*([\\s\\S]*?))(?=[\\s\\n　]*[A-E]\\d0．)",
             0, &error, &errorffset, NULL),
         // field: sn name mvstr nums
         //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
@@ -251,7 +252,7 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
 
             first += ovector[1];
         }
-        printf("\nline:%d index:%d\n", __LINE__, index);
+        //printf("\nline:%d index:%d\n", __LINE__, index);
         pcrewch_free(regs[g]);
     }
 
@@ -507,6 +508,7 @@ static int wcscatIccses__(wchar_t* iccses, const wchar_t* mvstr, int index, Ches
     wchar_t iccs[MOVESTR_LEN + 1];
     wcscat(iccses, getCurMoveICCS_cm(iccs, cm, ct));
     firstGroupSplit_success = true; // 本着成功后重置状态
+    //fwprintf(fout, L"\n\tmvstr:%ls iccs:%ls", mvstr, iccs);
 
     // 返回1：成功 返回2：成功且分组
     return 1 + split;
@@ -653,7 +655,7 @@ static void setRegStr__(Ecco ecco)
         wcscat(combStr, L"(?:");
         for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
             //backFirst(cm); // 棋盘位置复原
-            ChessManual cm = newChessManual(NULL);
+            ChessManual cm = newChessManual();
             wcscat(combStr, L"(?:^");
 
             getCombIccses__(combStr, anyMove, ecco, partBoutNo, combPartOr[comb], cm, ct);
@@ -716,7 +718,7 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
         mvStrs, L"[，、；\\s　和\\(\\)以／]|$", ZhWChars);
 
     // 捕捉一个回合着法：1.序号，2.一步着法的首着，3-5.着法或“此前”，4-6.着法或“此前”或“／\\n...$”
-    swprintf(bout_rich_mvStr, WIDEWCHARSIZE, L"([\\da-z]). ?%ls(?:%ls)?", rich_mvStr, rich_mvStr);
+    swprintf(bout_rich_mvStr, WIDEWCHARSIZE, L"([\\da-z]).[ \\n\\r\\s]?%ls(?:%ls)?", rich_mvStr, rich_mvStr);
     void* regs[] = {
         pcrewch_compile(mvstr, 0, &error, &errorffset, NULL),
         pcrewch_compile(bout_rich_mvStr, 0, &error, &errorffset, NULL),
@@ -738,9 +740,9 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
 void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const wchar_t* ecco_sn)
 {
     char name[WCHARSIZE], destColName[WCHARSIZE], srcColName[WCHARSIZE], sn[WCHARSIZE];
-    wcstombs(destColName, ECCOINFO_NAMES[NAME_INDEX], WCHARSIZE);
-    wcstombs(srcColName, ECCOINFO_NAMES[SN_INDEX], WCHARSIZE);
     wcstombs(sn, ecco_sn, WCHARSIZE);
+    wcstombs(srcColName, ECCOINFO_NAMES[SN_INDEX], WCHARSIZE);
+    wcstombs(destColName, ECCOINFO_NAMES[NAME_INDEX], WCHARSIZE);
 
     sqlite3_getValue(name, db, lib_tblName, destColName, srcColName, sn);
     mbstowcs(ecco_name, name, WCHARSIZE);
@@ -764,8 +766,9 @@ static void printEccoStr__(Ecco ecco, FILE* fout, int* pno, void* _)
         return;
 
     fwprintf(fout, L"No:%d\n", (*pno)++);
-    traverseMyLinkedList(ecco->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
-        fout, NULL, NULL);
+    //traverseMyLinkedList(ecco->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
+    //    fout, NULL, NULL);
+    printInfoMyLinkedList(fout, ecco->infoMyLinkedList);
 
     fwprintf(fout, L"orBoutNo:");
     for (int p = 0; p < BOUTMOVEPART_NUM; ++p) {
@@ -801,40 +804,28 @@ static void wcscatInsertLineStr_ecco__(Ecco ecco, wchar_t** pwInsertSql, size_t*
     wcscatInsertLineStr(ecco->infoMyLinkedList, pwInsertSql, psize, insertFormat);
 }
 
-void storeEccolib_db(sqlite3* db, const char* lib_tblName, const char* fileName)
-{
-    FILE* fin = openFile_utf8(fileName, "r");
-    wchar_t* fileWstring = getWString(fin);
-    assert(fileWstring);
-    fclose(fin);
-
-    MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
-    setEcco_someField__(eccoMyLinkedList, fileWstring);
-    setEcco_regstrField__(eccoMyLinkedList);
-    free(fileWstring);
-
-    storeObject_db(db, lib_tblName, eccoMyLinkedList, wcscatColNames_ecco__,
-        (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
-
-    //printEccoMyLinkedList(fout, eccoMyLinkedList);
-    delMyLinkedList(eccoMyLinkedList);
-}
-
-void initEcco(char* dbName)
+int storeEccolib_db(const char* dbName, const char* lib_tblName)
 {
     sqlite3* db = NULL;
-    int rc = sqlite3_open(dbName, &db);
+    int result = 0, rc = sqlite3_open(dbName, &db);
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        const char *lib_tblName = "ecco",
-                   *srcFileName = "chessManual/ecco.txt";
-        storeEccolib_db(db, lib_tblName, srcFileName);
+        wchar_t* eccoSrcWstr = getXqbaseEccoLibSrcWstring();
+        //fwprintf(fout, eccoSrcWstr);
 
-        const char *man_tblName = "manual",
-                   *manualDirName = "chessManual/示例文件";
-        storeChessManual_db(db, lib_tblName, man_tblName, manualDirName, XQF);
+        MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
+        setEcco_someField__(eccoMyLinkedList, eccoSrcWstr);
+        setEcco_regstrField__(eccoMyLinkedList);
+
+        result = storeObject_db(db, lib_tblName, true, eccoMyLinkedList, wcscatColNames_ecco__,
+            (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
+
+        printEccoMyLinkedList(fout, eccoMyLinkedList);
+        delMyLinkedList(eccoMyLinkedList);
+        free(eccoSrcWstr);
     }
 
     sqlite3_close(db);
+    return result;
 }

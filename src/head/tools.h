@@ -65,6 +65,9 @@ wchar_t* getSubStr(const wchar_t* srcWstr, int first, int last);
 
 // 字符串连接，根据需要重新分配内存空间
 void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
+
+// 用于遍历链表的打印字符串回调函数
+void printWstr(wchar_t* wstr, FILE* fout, void* _0, void* _1);
 // 结构和字符串类 结束 -------------------------------------------------------------------------------------- //
 
 // 正则类 开始 -------------------------------------------------------------------------------------- //
@@ -158,7 +161,7 @@ void wcscatColNames(MyLinkedList infoMyLinkedList, wchar_t* wcolNames, const wch
 void wcscatInsertLineStr(MyLinkedList infoMyLinkedList, wchar_t** pwInsertSql, size_t* psize,
     const wchar_t* insertFormat);
 
-bool storeObject_db(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList,
+int storeObject_db(sqlite3* db, const char* tblName, bool clearTable, MyLinkedList objMyLinkedList,
     void (*wcscatColNames_obj__)(MyLinkedList, wchar_t*, const wchar_t*),
     void (*wcscatInsertLineStr_obj__)(void*, void*, void*, void*));
 // 数据库类 结束 -------------------------------------------------------------------------------------- //

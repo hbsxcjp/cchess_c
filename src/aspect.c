@@ -224,7 +224,7 @@ static void appendAspects_mb__(Move move, Board board, void* asps)
 
 void appendAspects_file(Aspects asps, const char* fileName)
 {
-    ChessManual cm = newChessManual(fileName);
+    ChessManual cm = getChessManual_file(fileName);
     moveMap(cm, appendAspects_mb__, asps);
     delChessManual(cm);
 }

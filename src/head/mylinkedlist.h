@@ -23,7 +23,8 @@ void setInfoItem(MyLinkedList myLinkedList, const wchar_t* name, const wchar_t* 
 
 void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name);
 
-void printInfo(Info info, FILE* fout, void* _0, void* _1);
+void printInfoMyLinkedList(FILE* fout, MyLinkedList myLinkedList);
+//void printInfo(Info info, FILE* fout, void* _0, void* _1);
 
 MyLinkedList newMyLinkedList(void (*delData)(void*));
 
@@ -59,7 +60,7 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
     void* condition);
 
 // 遍历全部对象，执行指定操作
-void traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
+int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3);
 
 // 比较两个链表对象是否相等

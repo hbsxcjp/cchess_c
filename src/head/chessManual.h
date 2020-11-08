@@ -3,6 +3,7 @@
 
 #include "base.h"
 #include "ecco.h"
+#include "htmlfile.h"
 #include "tools.h"
 
 extern const char* EXTNAMES[];
@@ -10,7 +11,9 @@ extern const char* EXTNAMES[];
 extern FILE* fout;
 
 // 新建chessManual
-ChessManual newChessManual(const char* fileName);
+ChessManual newChessManual(void);
+
+ChessManual getChessManual_file(const char* fileName);
 
 // 从文件读取重置chessManual
 ChessManual resetChessManual(ChessManual* cm, const char* fileName);
@@ -59,11 +62,11 @@ void delInfoItem_cm(ChessManual cm, const wchar_t* name);
 void setMoveNumZhStr(ChessManual cm);
 
 // 将PGN_CC格式的info、move、remark信息写入字符串
-void writeInfo_PGNtoWstr(wchar_t** pinfoStr, ChessManual cm);
+void writeInfo_PGN(wchar_t** pinfoStr, ChessManual cm);
 
-void writeMoveRemark_PGN_ICCSZHtoWstr(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt);
-void writeMove_PGN_CCtoWstr(wchar_t** pmoveStr, ChessManual cm);
-void writeRemark_PGN_CCtoWstr(wchar_t** premStr, ChessManual cm);
+void writeMoveRemark_PGN_ICCSZH(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt);
+void writeMove_PGN_CC(wchar_t** pmoveStr, ChessManual cm);
+void writeRemark_PGN_CC(wchar_t** premStr, ChessManual cm);
 
 void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt);
 
@@ -87,16 +90,19 @@ const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm);
 
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
 
+// 打印输出棋谱链表
+void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList);
+
 // 设置棋谱的开局编号
 bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList);
 
 // 获取棋谱对象链表
-MyLinkedList getCmMyLinkedList(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
-
-// 打印输出棋谱链表
-void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList);
+MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
 
 // 存储文件棋谱至数据库
-void storeChessManual_db(sqlite3* db, const char* lib_tblName, const char* man_tblName,
+int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char* man_tblName,
     const char* dirName, RecFormat fromfmt);
+
+// 存储网页棋谱至数据库
+int storeChessManual_xqbase(const char* dbName, const char* man_tblName);
 #endif

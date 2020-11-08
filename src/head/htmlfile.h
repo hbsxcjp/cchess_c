@@ -5,11 +5,11 @@
 #include "mylinkedlist.h"
 #include "tools.h"
 
-wchar_t* getWebWstr(const char* url);
+wchar_t* getWebWstr(const wchar_t* wurl);
 
-void getEccoLibSrcFile(const char* fileName);
+wchar_t* getXqbaseEccoLibSrcWstring(void);
 
-void getCleanWebFile(const char* cleanFileName, const char* fileName);
+MyLinkedList getXqbaseGameidMyLinkedList(void);
 
 void html_test(void);
 #endif
