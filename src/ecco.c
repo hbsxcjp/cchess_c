@@ -821,7 +821,7 @@ int storeEccolib_db(const char* dbName, const char* lib_tblName)
         result = storeObject_db(db, lib_tblName, true, eccoMyLinkedList, wcscatColNames_ecco__,
             (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
 
-        printEccoMyLinkedList(fout, eccoMyLinkedList);
+        //printEccoMyLinkedList(fout, eccoMyLinkedList);
         delMyLinkedList(eccoMyLinkedList);
         free(eccoSrcWstr);
     }

@@ -15,6 +15,7 @@ int main(int argc, char const* argv[])
     setbuf(stdout, NULL);
 
     fout = openFile_utf8("test_out", "w");
+    setbuf(fout, NULL);
 
     unitTest();
     fclose(fout);

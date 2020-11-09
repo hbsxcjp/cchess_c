@@ -114,8 +114,10 @@ static wchar_t* getEccoSrcWstring__(void)
     for (wchar_t c = L'a'; c <= L'e'; ++c) {
         swprintf(wurl_x, WCHARSIZE, wurl, c);
         wchar_t* tempWstr = getWebWstr(wurl_x);
-        if (!tempWstr)
+        if (!tempWstr) {
+            fwprintf(fout, L"\n页面没有找到：%ls\n", wurl_x);
             continue;
+        }
 
         supper_wcscat(&wstr, &size, tempWstr);
         free(tempWstr);
@@ -154,20 +156,14 @@ wchar_t* getXqbaseEccoLibSrcWstring(void)
     return clearwstr;
 }
 
-static MyLinkedList getEccoUrlMyLinkedList__(void)
+static MyLinkedList getEccoUrlMyLinkedList__(void* reg_sn)
 {
     MyLinkedList eccoUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
-
-    const char* error;
-    int ovector[PCREARRAY_SIZE], errorffset;
-    void* reg = pcrewch_compile(L"(http://www.xqbase.com/xqbase/\\?ecco=[A-E]\\d{2})",
-        0, &error, &errorffset, NULL);
     wchar_t* wstr = getEccoSrcWstring__();
-
-    int first = 0, last = wcslen(wstr);
+    int first = 0, last = wcslen(wstr), ovector[PCREARRAY_SIZE];
     while (first < last) {
         wchar_t* tempWstr = wstr + first;
-        int count = pcrewch_exec(reg, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
+        int count = pcrewch_exec(reg_sn, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
         if (count <= 0)
             break;
 
@@ -216,19 +212,21 @@ static void appendGameidMyLinkedList__(const wchar_t* wurl, MyLinkedList gameidM
 
 MyLinkedList getXqbaseGameidMyLinkedList(void)
 {
-    MyLinkedList eccoUrlMyLinkedList = getEccoUrlMyLinkedList__(),
-                 gameidMyLinkedList = newMyLinkedList((void (*)(void*))free);
-    //traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
+    MyLinkedList gameidMyLinkedList = newMyLinkedList((void (*)(void*))free);
 
     const char* error;
     int errorffset;
-    void *reg_ids = pcrewch_compile(L"gameids = \\[([^\\]]+)\\]", 0, &error, &errorffset, NULL),
+    void *reg_sn = pcrewch_compile(L"(http://www.xqbase.com/xqbase/\\?ecco=[A-E]\\d{2})",
+             0, &error, &errorffset, NULL),
+         *reg_ids = pcrewch_compile(L"gameids = \\[([^\\]]+)\\]", 0, &error, &errorffset, NULL),
          *reg_id = pcrewch_compile(L"\\b(\\d+)\\b", 0, &error, &errorffset, NULL);
+
+    MyLinkedList eccoUrlMyLinkedList = getEccoUrlMyLinkedList__(reg_sn);
+    //traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
     traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))appendGameidMyLinkedList__,
         gameidMyLinkedList, reg_ids, reg_id);
 
     //traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
-
     delMyLinkedList(eccoUrlMyLinkedList);
     return gameidMyLinkedList;
 }

@@ -1552,16 +1552,21 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
     return result;
 }
 
-static void storeCm_xqbase_gameid__(const wchar_t* gameid, sqlite3* db, const char* man_tblName, void** regs)
+static void addCm_xqbase_gameid__(const wchar_t* gameid, MyLinkedList cmMyLinkedList, void** regs, int* regNum)
 {
-    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
-    ChessManual cm = newChessManual();
     wchar_t wurl[WCHARSIZE];
     swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%ls", gameid);
+    wchar_t* wstr = getWebWstr(wurl);
+    if (!wstr) {
+        fwprintf(fout, L"\n页面没有找到：%ls\n", wurl);
+        return;
+    }
+
+    ChessManual cm = newChessManual();
     setInfoItem_cm(cm, CMINFO_NAMES[SOURCE_INDEX], wurl);
-    wchar_t *wstr = getWebWstr(wurl), *tempWstr, value[SUPERWIDEWCHARSIZE];
+    wchar_t *tempWstr, value[SUPERWIDEWCHARSIZE];
     int ovector[PCREARRAY_SIZE], first = 0, last = wcslen(wstr);
-    for (int i = 0; i < 7; ++i) { // regNum==7
+    for (int i = 0; i < *regNum; ++i) {
         tempWstr = wstr + first;
         int count = pcrewch_exec(regs[i], NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
         for (int c = 1; c < count; ++c) {
@@ -1579,9 +1584,10 @@ static void storeCm_xqbase_gameid__(const wchar_t* gameid, sqlite3* db, const ch
         first += ovector[1];
     }
     free(wstr);
-    /* 验证读取棋谱的正确性
-    int no = 1;
+
+    static int no = 1;
     printCmStr__(cm, fout, &no, NULL);
+    /* 验证读取棋谱的正确性
 
     wcscpy(value, getInfoValue_name_cm(cm, CMINFO_NAMES[MOVESTR_INDEX]));
     readMove_PGN_ICCSZH__(cm, value, PGN_ZH);
@@ -1593,13 +1599,6 @@ static void storeCm_xqbase_gameid__(const wchar_t* gameid, sqlite3* db, const ch
     //*/
 
     addMyLinkedList(cmMyLinkedList, cm);
-    storeObject_db(db, man_tblName, false, cmMyLinkedList, wcscatColNames_cm__,
-        (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_cm__);
-
-    static int no = 0;
-    fwprintf(fout, L"No:%d %ls\n", ++no, wurl);
-    printCmMyLinkedList(fout, cmMyLinkedList);
-    delMyLinkedList(cmMyLinkedList);
 }
 
 static int storeAllCm_xqbase_gameid__(sqlite3* db, const char* man_tblName, MyLinkedList gameidMyLinkedList)
@@ -1619,10 +1618,14 @@ static int storeAllCm_xqbase_gameid__(sqlite3* db, const char* man_tblName, MyLi
     for (int i = 0; i < regNum; ++i)
         regs[i] = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
 
-    k// 如何分解下载量？
-    int result = traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))storeCm_xqbase_gameid__,
-        db, (void*)man_tblName, regs);
+    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
+    int result = traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))addCm_xqbase_gameid__,
+        cmMyLinkedList, regs, &regNum);
+    storeObject_db(db, man_tblName, false, cmMyLinkedList, wcscatColNames_cm__,
+        (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_cm__);
 
+    //printCmMyLinkedList(fout, cmMyLinkedList);
+    delMyLinkedList(cmMyLinkedList);
     for (int i = 0; i < regNum; ++i)
         pcrewch_free(regs[i]);
 
@@ -1636,16 +1639,17 @@ int storeChessManual_xqbase(const char* dbName, const char* man_tblName)
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
+        // 如何分解下载量？
         MyLinkedList gameidMyLinkedList = getXqbaseGameidMyLinkedList();
         /*
         MyLinkedList gameidMyLinkedList = newMyLinkedList((void (*)(void*))free);
         addMyLinkedList(gameidMyLinkedList, getSubStr(L"2010", 0, 4));
+        addMyLinkedList(gameidMyLinkedList, getSubStr(L"2020", 0, 4));
         //*/
 
-        result = traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr,
-            fout, NULL, NULL);
+        //result = traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
+        result = storeAllCm_xqbase_gameid__(db, man_tblName, gameidMyLinkedList);
 
-        //result = storeAllCm_xqbase_gameid__(db, man_tblName, gameidMyLinkedList);
         delMyLinkedList(gameidMyLinkedList);
     }
 

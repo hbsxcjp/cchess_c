@@ -725,7 +725,7 @@ static void test_chessManual_sqlite(void)
 {
     int result = 0;
     const char* dbName = "chess.db";
-    const char* lib_tblName = "ecco";
+    //const char* lib_tblName = "ecco";
     const char* man_tblName = "manual";
     /*
     result = storeEccolib_db(dbName, lib_tblName);
@@ -741,7 +741,7 @@ static void test_chessManual_sqlite(void)
     //* 存储网页棋谱至数据库
     result = storeChessManual_xqbase(dbName, man_tblName);
     printf("result:%d\n", result);
-    CU_ASSERT_DOUBLE_EQUAL(result, 1, 0.01);
+    CU_ASSERT_DOUBLE_EQUAL(result, 2, 0.01);
     //*/
 }
 
