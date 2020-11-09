@@ -792,16 +792,9 @@ void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList)
         fout, &no, NULL);
 }
 
-static void wcscatColNames_ecco__(MyLinkedList eccoMyLinkedList, wchar_t* wcolNames, const wchar_t* sufStr)
+static void storeEccoInfo__(Ecco ecco, sqlite3* db, const char* tblName, void*_)
 {
-    Ecco ecco = getDataMyLinkedList_idx(eccoMyLinkedList, 0);
-    if (ecco)
-        wcscatColNames(ecco->infoMyLinkedList, wcolNames, sufStr);
-}
-
-static void wcscatInsertLineStr_ecco__(Ecco ecco, wchar_t** pwInsertSql, size_t* psize, const wchar_t* insertFormat)
-{
-    wcscatInsertLineStr(ecco->infoMyLinkedList, pwInsertSql, psize, insertFormat);
+    storeObject_db(db, tblName, ecco->infoMyLinkedList);
 }
 
 int storeEccolib_db(const char* dbName, const char* lib_tblName)
@@ -818,8 +811,8 @@ int storeEccolib_db(const char* dbName, const char* lib_tblName)
         setEcco_someField__(eccoMyLinkedList, eccoSrcWstr);
         setEcco_regstrField__(eccoMyLinkedList);
 
-        result = storeObject_db(db, lib_tblName, true, eccoMyLinkedList, wcscatColNames_ecco__,
-            (void (*)(void*, void*, void*, void*))wcscatInsertLineStr_ecco__);
+        result = traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))storeEccoInfo__,
+            db, (void*)lib_tblName, NULL);
 
         //printEccoMyLinkedList(fout, eccoMyLinkedList);
         delMyLinkedList(eccoMyLinkedList);

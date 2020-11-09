@@ -15,8 +15,8 @@
 //#ifdef WINVER
 #include <conio.h>
 #include <io.h>
-#include <winsock2.h>
 #include <windows.h>
+#include <winsock2.h>
 //printf("Windows\n");
 #endif
 
@@ -156,13 +156,7 @@ int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
-void wcscatColNames(MyLinkedList infoMyLinkedList, wchar_t* wcolNames, const wchar_t* sufStr);
-
-void wcscatInsertLineStr(MyLinkedList infoMyLinkedList, wchar_t** pwInsertSql, size_t* psize,
-    const wchar_t* insertFormat);
-
-int storeObject_db(sqlite3* db, const char* tblName, bool clearTable, MyLinkedList objMyLinkedList,
-    void (*wcscatColNames_obj__)(MyLinkedList, wchar_t*, const wchar_t*),
-    void (*wcscatInsertLineStr_obj__)(void*, void*, void*, void*));
+// 存储信息链表至数据库（name对应数据表列名，value对应该列的记录值）clearTable:是否清除原有记录
+int storeObject_db(sqlite3* db, const char* tblName, MyLinkedList infoMyLinkedList);
 // 数据库类 结束 -------------------------------------------------------------------------------------- //
 #endif
