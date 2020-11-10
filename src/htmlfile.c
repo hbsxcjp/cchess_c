@@ -117,7 +117,7 @@ static wchar_t* getEccoWebWstring__(wchar_t sn_0)
     return wstr;
 }
 
-wchar_t* getEccoLibWebClearWstring(void)
+static wchar_t* getAllEccoWebWstring__(void)
 {
     size_t size = SUPERWIDEWCHARSIZE;
     wchar_t* webWstr = malloc(size * sizeof(wchar_t));
@@ -130,7 +130,13 @@ wchar_t* getEccoLibWebClearWstring(void)
         free(tempWstr);
     }
 
-    wchar_t* clearwstr = malloc((wcslen(webWstr) + 1) * sizeof(wchar_t));
+    return webWstr;
+}
+
+wchar_t* getEccoLibWebClearWstring(void)
+{
+    wchar_t *webWstr = getAllEccoWebWstring__(),
+            *clearwstr = malloc((wcslen(webWstr) + 1) * sizeof(wchar_t));
     const char* error;
     int errorffset;
     wchar_t* regStr[] = {
@@ -232,6 +238,18 @@ MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0)
 
     //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
     delMyLinkedList(eccoUrlMyLinkedList);
+    return idUrlMyLinkedList;
+}
+
+MyLinkedList getIdUrlMyLinkedList_xqbase_2(int start, int end)
+{
+    MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
+    for (int id = start; id <= end; ++id) {
+        wchar_t wurl[WCHARSIZE];
+        swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%d", id);
+        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
+    }
+
     return idUrlMyLinkedList;
 }
 

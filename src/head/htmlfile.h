@@ -11,5 +11,7 @@ wchar_t* getEccoLibWebClearWstring(void);
 
 MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0);
 
+MyLinkedList getIdUrlMyLinkedList_xqbase_2(int start, int end);
+
 void html_test(void);
 #endif

@@ -1534,7 +1534,7 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
 
         result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
 
-        //printCmMyLinkedList(fout, cmMyLinkedList);
+        printCmMyLinkedList(fout, cmMyLinkedList);
         delMyLinkedList(cmMyLinkedList);
         delMyLinkedList(eccoMyLinkedList);
     }
@@ -1593,7 +1593,8 @@ static MyLinkedList getCmMyLinkedList_xqbase__(wchar_t sn_0)
     MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
 
     // 获取网页idUrl链表
-    MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase(sn_0);
+    //MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase(sn_0);
+    MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase_2(1, 100); // id = 1-12141
     //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
 
     // 获取棋谱cm链表
@@ -1627,14 +1628,16 @@ int storeChessManual_xqbase(const char* dbName, const char* man_tblName)
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        for (wchar_t sn_0 = L'a'; sn_0 <= L'e'; ++sn_0) {
+        //for (wchar_t sn_0 = L'a'; sn_0 <= L'e'; ++sn_0) { 
+        for (wchar_t sn_0 = L'a'; sn_0 <= L'a'; ++sn_0) {
             MyLinkedList cmMyLinkedList = getCmMyLinkedList_xqbase__(sn_0);
 
             // 执行存储对象
-            result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
+            result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList,
+                (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
 
             printCmMyLinkedList(fout, cmMyLinkedList);
-            fwprintf(fout, L"首字母：%lc 下载棋谱OK！", sn_0);
+            //fwprintf(fout, L"首字母：%lc 下载棋谱OK！", sn_0);
             delMyLinkedList(cmMyLinkedList);
         }
     }

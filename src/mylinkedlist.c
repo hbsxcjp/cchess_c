@@ -166,6 +166,9 @@ static void addBeforeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* 
 
 static void removeMyLinkedList__(MyLinkedList myLinkedList, Node node)
 {
+    if (node == myLinkedList->beginMarker || node == myLinkedList->endMarker)
+        return;
+
     node->next->prev = node->prev;
     node->prev->next = node->next;
     eraseNode__(node, myLinkedList->delData);
@@ -215,7 +218,7 @@ void* getEndDataMyLinkedList(MyLinkedList myLinkedList)
 
 static void setNodeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* newData)
 {
-    if (node == myLinkedList->endMarker)
+    if (node == myLinkedList->beginMarker || node == myLinkedList->endMarker)
         addMyLinkedList(myLinkedList, newData);
     else {
         myLinkedList->delData(node->data);

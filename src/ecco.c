@@ -185,8 +185,15 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
     if (tecco == NULL)
         return;
 
-    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX],
-        getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[MVSTRS_INDEX]));
+    const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]);
+    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], pre_mvstrs);
+    /*
+    if (mvstrs[0] == L'从') {
+        static int no = 1;
+        fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
+            no++, sn, pre_mvstrs, ecco_sn, getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
+    }
+    //*/
 }
 
 // 读取开局着法内容至数据表
@@ -214,7 +221,7 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                         "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s\\n　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
             0, &error, &errorffset, NULL),
         // field: sn mvstr C20 C30 C61 C72局面字符串
-        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\n]*?)(?=[\\s　]*[A-E]\\d{2}．)",
+        pcrewch_compile(L"([A-E]\\d)\\d局面 =([\\s\\S\\n]*?)(?=[\\s\\n　]*[A-E]\\d{2}．)",
             0, &error, &errorffset, NULL)
     };
 
@@ -243,11 +250,14 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 wchar_t sn[10];
                 pcrewch_copy_substring(tempWstr, ovector, count, 1, sn, 10);
                 pcrewch_copy_substring(tempWstr, ovector, count, 2, wstr, WCHARSIZE);
+
                 // C20 C30 C61 C72局面字符串存至g=1数组, 设置前置着法字符串
                 Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList,
                     (int (*)(void*, void*))eccoSN_cmp__, sn);
                 if (tecco)
                     setInfoItem_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], wstr);
+                //fwprintf(fout, L"\nline:%d sn:%ls pre:%ls\n", __LINE__, sn,
+                //    getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
             }
 
             first += ovector[1];
@@ -722,7 +732,7 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
     void* regs[] = {
         pcrewch_compile(mvstr, 0, &error, &errorffset, NULL),
         pcrewch_compile(bout_rich_mvStr, 0, &error, &errorffset, NULL),
-        pcrewch_compile(L"红方：(.+)\\n黑方：(.+)", 0, &error, &errorffset, NULL),
+        pcrewch_compile(L"红方：(.+)[\\n\\r]+黑方：(.+)", 0, &error, &errorffset, NULL),
         pcrewch_compile(L"(炮二平五)?.(马二进三).*(车一平二).(车二进六)?"
                         "|(马８进７).+(车９平８)"
                         "|此前可走(马二进三)、(马八进七)、兵三进一和兵七进一",
@@ -762,7 +772,7 @@ static void printEccoStr__(Ecco ecco, FILE* fout, int* pno, void* _)
 {
     const wchar_t *sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
-    if (wcslen(sn) < 3 || wcslen(mvstrs) < 1)
+    if (wcslen(sn) != 3 || wcslen(mvstrs) < 1)
         return;
 
     fwprintf(fout, L"No:%d\n", (*pno)++);
