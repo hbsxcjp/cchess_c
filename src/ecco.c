@@ -792,31 +792,31 @@ void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList)
         fout, &no, NULL);
 }
 
-static void storeEccoInfo__(Ecco ecco, sqlite3* db, const char* tblName, void*_)
+static MyLinkedList getInfoMyLinkedList_ecco__(Ecco eccoObj)
 {
-    storeObject_db(db, tblName, ecco->infoMyLinkedList);
+    return eccoObj->infoMyLinkedList;
 }
 
-int storeEccolib_db(const char* dbName, const char* lib_tblName)
+int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
 {
     sqlite3* db = NULL;
     int result = 0, rc = sqlite3_open(dbName, &db);
     if (rc) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
-        wchar_t* eccoSrcWstr = getXqbaseEccoLibSrcWstring();
-        //fwprintf(fout, eccoSrcWstr);
+        wchar_t* eccoClearWstring = getEccoLibWebClearWstring();
+        //fwprintf(fout, eccoClearWstring);
 
         MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
-        setEcco_someField__(eccoMyLinkedList, eccoSrcWstr);
+        setEcco_someField__(eccoMyLinkedList, eccoClearWstring);
         setEcco_regstrField__(eccoMyLinkedList);
 
-        result = traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))storeEccoInfo__,
-            db, (void*)lib_tblName, NULL);
+        // 执行存储对象
+        result = storeObjMyLinkedList(db, lib_tblName, eccoMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_ecco__);
 
         //printEccoMyLinkedList(fout, eccoMyLinkedList);
         delMyLinkedList(eccoMyLinkedList);
-        free(eccoSrcWstr);
+        free(eccoClearWstring);
     }
 
     sqlite3_close(db);

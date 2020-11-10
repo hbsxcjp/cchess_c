@@ -17,6 +17,6 @@ void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const
 void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList);
 
 // 存储开局初始化数据至数据库
-int storeEccolib_db(const char* dbName, const char* lib_tblName);
+int storeEccolib_xqbase(const char* dbName, const char* lib_tblName);
 
 #endif

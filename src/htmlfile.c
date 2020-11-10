@@ -105,32 +105,32 @@ static void wcscatDestStr__(NoMatchOffset noMatchOffset, wchar_t* destWstr, cons
     wcscat(destWstr, subStr);
 }
 
-static wchar_t* getEccoSrcWstring__(void)
+static wchar_t* getEccoWebWstring__(wchar_t sn_0)
 {
-    size_t size = SUPERWIDEWCHARSIZE;
-    wchar_t *wstr = malloc(size * sizeof(wchar_t)),
-            *wurl = L"http://www.xqbase.com/ecco/ecco_%c.htm",
+    wchar_t *wurl = L"http://www.xqbase.com/ecco/ecco_%c.htm",
             wurl_x[WCHARSIZE];
-    for (wchar_t c = L'a'; c <= L'e'; ++c) {
-        swprintf(wurl_x, WCHARSIZE, wurl, c);
-        wchar_t* tempWstr = getWebWstr(wurl_x);
-        if (!tempWstr) {
-            fwprintf(fout, L"\n页面没有找到：%ls\n", wurl_x);
-            continue;
-        }
-
-        supper_wcscat(&wstr, &size, tempWstr);
-        free(tempWstr);
-    }
+    swprintf(wurl_x, WCHARSIZE, wurl, sn_0);
+    wchar_t* wstr = getWebWstr(wurl_x);
+    if (!wstr)
+        fwprintf(fout, L"\n页面没有找到：%ls\n", wurl_x);
 
     return wstr;
 }
 
-wchar_t* getXqbaseEccoLibSrcWstring(void)
+wchar_t* getEccoLibWebClearWstring(void)
 {
-    wchar_t *wstr = getEccoSrcWstring__(),
-            *clearwstr = malloc((wcslen(wstr) + 1) * sizeof(wchar_t));
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t* webWstr = malloc(size * sizeof(wchar_t));
+    for (wchar_t sn_0 = L'a'; sn_0 <= L'e'; ++sn_0) {
+        wchar_t* tempWstr = getEccoWebWstring__(sn_0);
+        if (!tempWstr)
+            continue;
 
+        supper_wcscat(&webWstr, &size, tempWstr);
+        free(tempWstr);
+    }
+
+    wchar_t* clearwstr = malloc((wcslen(webWstr) + 1) * sizeof(wchar_t));
     const char* error;
     int errorffset;
     wchar_t* regStr[] = {
@@ -138,7 +138,7 @@ wchar_t* getXqbaseEccoLibSrcWstring(void)
         "|html|head|body|title|a|b|tbody|script|br|span)[^>]*>",
         L"(?<=\\n|\\r)\\s+" //(?=\\n)
     };
-    wchar_t* tempWstr = wstr;
+    wchar_t* tempWstr = webWstr;
     for (int i = 0; i < sizeof(regStr) / sizeof(regStr[0]); ++i) {
         void* reg = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
         MyLinkedList noMatchOffsetMyLinkedList = getNoMatchOffsetMyLinkedList__(tempWstr, reg);
@@ -152,14 +152,15 @@ wchar_t* getXqbaseEccoLibSrcWstring(void)
         pcrewch_free(reg);
     }
 
-    free(wstr);
+    free(webWstr);
     return clearwstr;
 }
 
-static MyLinkedList getEccoUrlMyLinkedList__(void* reg_sn)
+static MyLinkedList getEccoUrlMyLinkedList__(void* reg_sn, wchar_t sn_0)
 {
     MyLinkedList eccoUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
-    wchar_t* wstr = getEccoSrcWstring__();
+    wchar_t* wstr = getEccoWebWstring__(sn_0);
+    //wchar_t* wstr = L"http://www.xqbase.com/xqbase/?ecco=A02";
     int first = 0, last = wcslen(wstr), ovector[PCREARRAY_SIZE];
     while (first < last) {
         wchar_t* tempWstr = wstr + first;
@@ -175,7 +176,7 @@ static MyLinkedList getEccoUrlMyLinkedList__(void* reg_sn)
     return eccoUrlMyLinkedList;
 }
 
-static void addGameidMyLinkedList__(MyLinkedList gameidMyLinkedList, const wchar_t* gameids, void* reg_id)
+static void addIdUrlMyLinkedList__(MyLinkedList idUrlMyLinkedList, const wchar_t* gameids, void* reg_id)
 {
     int ovector[PCREARRAY_SIZE];
     int first = 0, last = wcslen(gameids);
@@ -185,12 +186,15 @@ static void addGameidMyLinkedList__(MyLinkedList gameidMyLinkedList, const wchar
         if (count <= 0)
             break;
 
-        addMyLinkedList(gameidMyLinkedList, getSubStr(tempWstr, ovector[2], ovector[3]));
+        wchar_t id[WCHARSIZE], wurl[WCHARSIZE];
+        pcrewch_copy_substring(tempWstr, ovector, count, 1, id, WCHARSIZE);
+        swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%ls", id);
+        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
         first += ovector[1];
     }
 }
 
-static void appendGameidMyLinkedList__(const wchar_t* wurl, MyLinkedList gameidMyLinkedList,
+static void appendIdUrlMyLinkedList__(const wchar_t* wurl, MyLinkedList idUrlMyLinkedList,
     void* reg_ids, void* reg_id)
 {
     wchar_t* wstr = getWebWstr(wurl);
@@ -204,15 +208,15 @@ static void appendGameidMyLinkedList__(const wchar_t* wurl, MyLinkedList gameidM
     if (count > 0) {
         wchar_t gameids[SUPERWIDEWCHARSIZE];
         pcrewch_copy_substring(wstr, ovector, count, 1, gameids, SUPERWIDEWCHARSIZE);
-        addGameidMyLinkedList__(gameidMyLinkedList, gameids, reg_id);
+        addIdUrlMyLinkedList__(idUrlMyLinkedList, gameids, reg_id);
     }
 
     free(wstr);
 }
 
-MyLinkedList getXqbaseGameidMyLinkedList(void)
+MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0)
 {
-    MyLinkedList gameidMyLinkedList = newMyLinkedList((void (*)(void*))free);
+    MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
 
     const char* error;
     int errorffset;
@@ -221,14 +225,14 @@ MyLinkedList getXqbaseGameidMyLinkedList(void)
          *reg_ids = pcrewch_compile(L"gameids = \\[([^\\]]+)\\]", 0, &error, &errorffset, NULL),
          *reg_id = pcrewch_compile(L"\\b(\\d+)\\b", 0, &error, &errorffset, NULL);
 
-    MyLinkedList eccoUrlMyLinkedList = getEccoUrlMyLinkedList__(reg_sn);
+    MyLinkedList eccoUrlMyLinkedList = getEccoUrlMyLinkedList__(reg_sn, sn_0);
     //traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
-    traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))appendGameidMyLinkedList__,
-        gameidMyLinkedList, reg_ids, reg_id);
+    traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))appendIdUrlMyLinkedList__,
+        idUrlMyLinkedList, reg_ids, reg_id);
 
-    //traverseMyLinkedList(gameidMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
+    //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
     delMyLinkedList(eccoUrlMyLinkedList);
-    return gameidMyLinkedList;
+    return idUrlMyLinkedList;
 }
 
 void html_test(void)
@@ -243,7 +247,7 @@ void html_test(void)
     free(webwstr);
     //*/
 
-    //ChessManual cm = getChessManual_gameid(L"2010");
+    //ChessManual cm = getChessManual_idUrl(L"2010");
     //printCmMyLinkedList(fout, );
     //delChessManual(cm);
 

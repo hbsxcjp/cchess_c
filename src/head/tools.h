@@ -15,8 +15,8 @@
 //#ifdef WINVER
 #include <conio.h>
 #include <io.h>
-#include <windows.h>
 #include <winsock2.h>
+#include <windows.h>
 //printf("Windows\n");
 #endif
 
@@ -156,7 +156,7 @@ int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
-// 存储信息链表至数据库（name对应数据表列名，value对应该列的记录值）clearTable:是否清除原有记录
-int storeObject_db(sqlite3* db, const char* tblName, MyLinkedList infoMyLinkedList);
+// 存储对象链表至数据库
+int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList, MyLinkedList (*getInfoMyLinkedList)(void*));
 // 数据库类 结束 -------------------------------------------------------------------------------------- //
 #endif

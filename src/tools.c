@@ -588,8 +588,10 @@ static void wcscatInsertLineStr__(wchar_t** pwInsertSql, size_t* psize, const wc
     free(values);
 }
 
-int storeObject_db(sqlite3* db, const char* tblName, MyLinkedList infoMyLinkedList)
+// 存储信息链表至数据库（name对应数据表列名，value对应该列的记录值）clearTable:是否清除原有记录
+static int storeInfoMyLinkedList__(void* obj, sqlite3* db, const char* tblName, MyLinkedList (*getInfoMyLinkedList)(void*))
 {
+    MyLinkedList infoMyLinkedList = getInfoMyLinkedList(obj);
     if (myLinkedList_size(infoMyLinkedList) < 1)
         return 0;
 
@@ -622,4 +624,10 @@ int storeObject_db(sqlite3* db, const char* tblName, MyLinkedList infoMyLinkedLi
 
     sqlite3_exec_showErrMsg(db, insertSql);
     return 1;
+}
+
+int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList, MyLinkedList (*getInfoMyLinkedList)(void*))
+{
+    return traverseMyLinkedList(objMyLinkedList, (void (*)(void*, void*, void*, void*))storeInfoMyLinkedList__,
+        db, (void*)tblName, getInfoMyLinkedList);
 }
