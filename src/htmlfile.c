@@ -244,10 +244,11 @@ MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0)
 MyLinkedList getIdUrlMyLinkedList_xqbase_2(int start, int end)
 {
     MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
-    for (int id = start; id <= end; ++id) {
-        wchar_t wurl[WCHARSIZE];
-        swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%d", id);
-        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
+    const wchar_t* wurl = L"http://www.xqbase.com/xqbase/?gameid=";
+    wchar_t wurl_id[WCHARSIZE];
+    for (int id = start; id < end; ++id) {
+        swprintf(wurl_id, WCHARSIZE, L"%ls%d", wurl, id);
+        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl_id, 0, wcslen(wurl_id)));
     }
 
     return idUrlMyLinkedList;

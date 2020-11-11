@@ -732,13 +732,13 @@ static void test_chessManual_sqlite(void)
     CU_ASSERT_DOUBLE_EQUAL(result, 555, 0.01);
     //*/
 
-    /* 读取目录文件存入数据库
+    //* 读取目录文件存入数据库
     const char* manualDirName = "chessManual/示例文件";
     result = storeChessManual_dir(dbName, lib_tblName, man_tblName, manualDirName, XQF);
     CU_ASSERT_DOUBLE_EQUAL(result, 34, 0.01);
     //*/
 
-    //* 存储网页棋谱至数据库
+    /* 存储网页棋谱至数据库
     result = storeChessManual_xqbase(dbName, man_tblName);
     printf("result:\n%d\n", result);
     CU_ASSERT_DOUBLE_EQUAL(result, 3, 0.01);

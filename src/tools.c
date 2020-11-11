@@ -496,7 +496,7 @@ int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition)
 // 获取查询记录结果的数量
 static int sqlite3_callCount__(void* count, int argc, char** argv, char** colNames)
 {
-    *(int*)count = (argv[0] ? atoi(argv[0]) : 0);
+    *(int*)count = (argv ? atoi(argv[0]) : 0);
     return 0;
 }
 
@@ -518,7 +518,7 @@ int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* condition)
 // 获取查询记录结果
 static int sqlite3_setValue__(void* destColValue, int argc, char** argv, char** colNames)
 {
-    strcpy((char*)destColValue, argc > 0 ? argv[0] : "");
+    strcpy((char*)destColValue, argv ? argv[0] : "");
     //printf("\n%s", argv[0]);
     return 0;
 }

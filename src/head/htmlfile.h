@@ -5,6 +5,8 @@
 #include "mylinkedlist.h"
 #include "tools.h"
 
+#define ECCO_IDMAX 12141
+
 wchar_t* getWebWstr(const wchar_t* wurl);
 
 wchar_t* getEccoLibWebClearWstring(void);

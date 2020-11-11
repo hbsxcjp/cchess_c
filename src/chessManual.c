@@ -1531,7 +1531,9 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
 
         traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))setEccoNameStr__,
             db, (void*)lib_tblName, NULL);
+        /*
 
+        //*/
         result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
 
         printCmMyLinkedList(fout, cmMyLinkedList);
@@ -1588,14 +1590,15 @@ static void addCm_xqbase_idUrl__(const wchar_t* idUrl, MyLinkedList cmMyLinkedLi
     addMyLinkedList(cmMyLinkedList, cm);
 }
 
-static MyLinkedList getCmMyLinkedList_xqbase__(wchar_t sn_0)
+int storeChessManual_xqbase(const char* dbName, const char* man_tblName)
 {
-    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
-
-    // 获取网页idUrl链表
-    //MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase(sn_0);
-    MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase_2(1, 100); // id = 1-12141
-    //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
+    sqlite3* db = NULL;
+    int result = 0, rc = sqlite3_open(dbName, &db);
+    if (rc) {
+        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return result;
+    }
 
     // 获取棋谱cm链表
     wchar_t* regStr[] = {
@@ -1612,36 +1615,41 @@ static MyLinkedList getCmMyLinkedList_xqbase__(wchar_t sn_0)
     void* regs[regNum];
     for (int i = 0; i < regNum; ++i)
         regs[i] = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
-    traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))addCm_xqbase_idUrl__,
-        cmMyLinkedList, regs, &regNum);
-    for (int i = 0; i < regNum; ++i)
-        pcrewch_free(regs[i]);
-    delMyLinkedList(idUrlMyLinkedList);
 
-    return cmMyLinkedList;
-}
-
-int storeChessManual_xqbase(const char* dbName, const char* man_tblName)
-{
-    sqlite3* db = NULL;
-    int result = 0, rc = sqlite3_open(dbName, &db);
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
-    } else {
+    /*
         //for (wchar_t sn_0 = L'a'; sn_0 <= L'e'; ++sn_0) { 
-        for (wchar_t sn_0 = L'a'; sn_0 <= L'a'; ++sn_0) {
+        //for (wchar_t sn_0 = L'a'; sn_0 <= L'a'; ++sn_0) {
             MyLinkedList cmMyLinkedList = getCmMyLinkedList_xqbase__(sn_0);
+            //*/
 
-            // 执行存储对象
-            result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList,
-                (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
+    // 获取网页idUrl链表
+    //MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase(sn_0);
+    //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
 
-            printCmMyLinkedList(fout, cmMyLinkedList);
-            //fwprintf(fout, L"首字母：%lc 下载棋谱OK！", sn_0);
-            delMyLinkedList(cmMyLinkedList);
-        }
+    int step = 100;
+    for (int id_start = 1, id_end = id_start + step; id_start <= ECCO_IDMAX;
+         id_start = id_end, id_end = min(id_end + step, ECCO_IDMAX + 1)) {
+        MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase_2(id_start, id_end);
+        MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
+        traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))addCm_xqbase_idUrl__,
+            cmMyLinkedList, regs, &regNum);
+
+        // 执行存储对象
+        result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
+
+        printCmMyLinkedList(fout, cmMyLinkedList);
+        fwprintf(fout, L"\nGameid:%d-%d 下载棋谱完成！\n\n", id_start, id_end);
+
+        delMyLinkedList(cmMyLinkedList);
+        delMyLinkedList(idUrlMyLinkedList);
+
+        if (id_end > 1000)
+            break;
     }
 
+    for (int i = 0; i < regNum; ++i)
+        pcrewch_free(regs[i]);
     sqlite3_close(db);
+
     return result;
 }

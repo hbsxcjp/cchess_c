@@ -98,6 +98,9 @@ static const wchar_t* getInfoValue_name_ecco__(Ecco ecco, const wchar_t* name)
 
 static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, char** colNames)
 {
+    if (!argv)
+        return -1;
+
     Ecco ecco = newEcco__();
     for (int i = 0; i < argc; ++i) {
         size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
@@ -135,6 +138,7 @@ MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName)
         sqlite3_free(zErrMsg);
     }
 
+    assert(myLinkedList_size(eccoLinkedList) == 260);
     return eccoLinkedList;
 }
 
@@ -185,14 +189,14 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
     if (tecco == NULL)
         return;
 
-    const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]);
+    const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], pre_mvstrs);
-    /*
-    if (mvstrs[0] == L'从') {
+    //*
+    //if (mvstrs[0] == L'从') {
         static int no = 1;
         fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
             no++, sn, pre_mvstrs, ecco_sn, getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
-    }
+    //}
     //*/
 }
 
@@ -255,7 +259,7 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList,
                     (int (*)(void*, void*))eccoSN_cmp__, sn);
                 if (tecco)
-                    setInfoItem_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], wstr);
+                    setInfoItem_ecco__(tecco, ECCOINFO_NAMES[MVSTRS_INDEX], wstr);
                 //fwprintf(fout, L"\nline:%d sn:%ls pre:%ls\n", __LINE__, sn,
                 //    getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
             }
@@ -815,7 +819,7 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
     } else {
         wchar_t* eccoClearWstring = getEccoLibWebClearWstring();
-        //fwprintf(fout, eccoClearWstring);
+        fwprintf(fout, eccoClearWstring);
 
         MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
         setEcco_someField__(eccoMyLinkedList, eccoClearWstring);
@@ -824,7 +828,7 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
         // 执行存储对象
         result = storeObjMyLinkedList(db, lib_tblName, eccoMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_ecco__);
 
-        //printEccoMyLinkedList(fout, eccoMyLinkedList);
+        printEccoMyLinkedList(fout, eccoMyLinkedList);
         delMyLinkedList(eccoMyLinkedList);
         free(eccoClearWstring);
     }
