@@ -15,8 +15,8 @@
 //#ifdef WINVER
 #include <conio.h>
 #include <io.h>
-#include <winsock2.h>
 #include <windows.h>
+#include <winsock2.h>
 //printf("Windows\n");
 #endif
 
@@ -147,7 +147,7 @@ int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames);
 
 bool sqlite3_existTable(sqlite3* db, const char* tblName);
 
-int sqlite3_deleteTable(sqlite3* db, const char* tblName, char* condition);
+int sqlite3_deleteTable(sqlite3* db, const char* tblName);
 
 int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* where);
 
@@ -157,6 +157,7 @@ int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
 // 存储对象链表至数据库
-int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList, MyLinkedList (*getInfoMyLinkedList)(void*));
+int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList,
+    MyLinkedList (*getInfoMyLinkedList)(void*));
 // 数据库类 结束 -------------------------------------------------------------------------------------- //
 #endif
