@@ -727,7 +727,7 @@ static void test_chessManual_sqlite(void)
     const char* dbName = "chess.db";
     const char* lib_tblName = "ecco";
     const char* man_tblName = "manual";
-    /*
+    //*
     result = storeEccolib_xqbase(dbName, lib_tblName);
     CU_ASSERT_DOUBLE_EQUAL(result, 555, 0.01);
     //*/

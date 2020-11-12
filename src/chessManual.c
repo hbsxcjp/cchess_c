@@ -1459,6 +1459,7 @@ void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
 
 bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList)
 {
+    // 非全局棋谱不设置
     if (wcscmp(getInfoValue_name_cm(cm, CMINFO_NAMES[FEN_INDEX]), FEN_INITVALUE) != 0)
         return false;
 
@@ -1466,11 +1467,12 @@ bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList)
     getIccsStr(iccsStr, cm);
     setInfoItem_cm(cm, CMINFO_NAMES[ICCSSTR_INDEX], iccsStr);
 
-    const wchar_t* sn = getEccoSN_iccsStr(eccoMyLinkedList, iccsStr);
-    if (sn == NULL)
+    Ecco ecco = getEcco_iccsStr(eccoMyLinkedList, iccsStr);
+    if (ecco == NULL)
         return false;
     else {
-        setInfoItem_cm(cm, CMINFO_NAMES[ECCOSN_INDEX], sn);
+        setInfoItem_cm(cm, CMINFO_NAMES[ECCOSN_INDEX], getEccoSn(ecco));
+        setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], getEccoName(ecco));
         return true;
     }
 }
@@ -1502,6 +1504,7 @@ MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLin
     return cmMyLinkedList;
 }
 
+/*
 static void setEccoNameStr__(ChessManual cm, sqlite3* db, const char* lib_tblName, void* _)
 {
     const wchar_t* ecco_sn = getInfoValue_name_cm(cm, CMINFO_NAMES[ECCOSN_INDEX]);
@@ -1512,6 +1515,7 @@ static void setEccoNameStr__(ChessManual cm, sqlite3* db, const char* lib_tblNam
     getEccoName(ecco_name, db, lib_tblName, ecco_sn);
     setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], ecco_name);
 }
+//*/
 
 static MyLinkedList getInfoMyLinkedList_cm__(ChessManual cm)
 {
@@ -1529,9 +1533,9 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
         MyLinkedList eccoMyLinkedList = getEccoMyLinkedList(db, lib_tblName);
         MyLinkedList cmMyLinkedList = getCmMyLinkedList_dir(dirName, fromfmt, eccoMyLinkedList);
 
+        /*
         traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))setEccoNameStr__,
             db, (void*)lib_tblName, NULL);
-        /*
 
         //*/
         result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);

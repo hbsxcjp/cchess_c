@@ -18,7 +18,6 @@ struct BoutStr {
     wchar_t* mvstr[PIECECOLORNUM][BOUTMOVEOR_NUM];
 };
 
-typedef struct Ecco* Ecco;
 struct Ecco {
     int orBoutNo[BOUTMOVEPART_NUM][2];
     MyLinkedList infoMyLinkedList;
@@ -96,6 +95,16 @@ static const wchar_t* getInfoValue_name_ecco__(Ecco ecco, const wchar_t* name)
     return getInfoValue_name(ecco->infoMyLinkedList, name);
 }
 
+const wchar_t* getEccoSn(Ecco ecco)
+{
+    return getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]);
+}
+
+const wchar_t* getEccoName(Ecco ecco)
+{
+    return getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[NAME_INDEX]);
+}
+
 static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, char** colNames)
 {
     if (!argv)
@@ -149,23 +158,21 @@ static int compare_iccsStr__(Ecco ecco, wchar_t* iccsStr)
     return (pcrewch_exec(ecco->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, PCREARRAY_SIZE) > 0 ? 0 : 1);
 }
 
-const wchar_t* getEccoSN_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr)
+Ecco getEcco_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr)
 {
     // 从前到后比较对象，获取符合条件的对象
-    Ecco ecco = getDataMyLinkedList_cond(eccoMyLinkedList,
-        (int (*)(void*, void*))compare_iccsStr__, iccsStr);
-    return ecco ? getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]) : NULL;
+    return getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))compare_iccsStr__, iccsStr);
 }
 
 static int eccoSN_cmp__(Ecco ecco, const wchar_t* sn)
 {
-    return wcscmp(getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]), sn);
+    return wcscmp(getEccoSn(ecco), sn);
 }
 
 // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
 static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void* _0, void* _1)
 {
-    const wchar_t *ecco_sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
+    const wchar_t *ecco_sn = getEccoSn(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(ecco_sn) != 3 || wcslen(mvstrs) < 3)
         return;
@@ -193,9 +200,9 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], pre_mvstrs);
     //*
     //if (mvstrs[0] == L'从') {
-        static int no = 1;
-        fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
-            no++, sn, pre_mvstrs, ecco_sn, getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
+    static int no = 1;
+    fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
+        no++, sn, pre_mvstrs, ecco_sn, getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
     //}
     //*/
 }
@@ -698,7 +705,7 @@ static void setRegStr__(Ecco ecco)
 
 static void setEcco_regstr__(Ecco ecco, void** regs, void* _0, void* _1)
 {
-    const wchar_t *sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
+    const wchar_t *sn = getEccoSn(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(sn) != 3 || wcslen(mvstrs) < 1)
         return;
@@ -751,6 +758,7 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
         pcrewch_free(regs[i]);
 }
 
+/*
 void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const wchar_t* ecco_sn)
 {
     char name[WCHARSIZE], destColName[WCHARSIZE], srcColName[WCHARSIZE], sn[WCHARSIZE];
@@ -761,6 +769,7 @@ void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const
     sqlite3_getValue(name, db, lib_tblName, destColName, srcColName, sn);
     mbstowcs(ecco_name, name, WCHARSIZE);
 }
+//*/
 
 static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr, void* _1)
 {
@@ -774,7 +783,7 @@ static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr,
 
 static void printEccoStr__(Ecco ecco, FILE* fout, int* pno, void* _)
 {
-    const wchar_t *sn = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]),
+    const wchar_t *sn = getEccoSn(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(sn) != 3 || wcslen(mvstrs) < 1)
         return;
