@@ -180,7 +180,7 @@ static void removeMyLinkedList__(MyLinkedList myLinkedList, Node node)
 static Node getNodeMyLinkedList_idx__(MyLinkedList myLinkedList, int idx)
 {
     int size = myLinkedList_size(myLinkedList);
-    if (idx < 0 && idx > size)
+    if (idx < 0 && idx >= size)
         return myLinkedList->endMarker;
 
     Node node = myLinkedList->beginMarker->next; // 起始索引idx==0
@@ -264,9 +264,31 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
     removeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition));
 }
 
+int traverseRangeNode__(Node startNode, Node endNode,
+    void (*operatorData)(void*, void*, void*, void*), void* arg1, void* arg2, void* arg3)
+{
+    int result = 0;
+    Node node = startNode;
+    while (node != endNode) {
+        operatorData(node->data, arg1, arg2, arg3);
+        node = node->next;
+        ++result;
+    }
+    return result;
+}
+
+int traverseMyLinkedList_range(MyLinkedList myLinkedList, int start, int end,
+    void (*operatorData)(void*, void*, void*, void*), void* arg1, void* arg2, void* arg3)
+{
+    Node startNode = getNodeMyLinkedList_idx__(myLinkedList, start),
+         endNode = getNodeMyLinkedList_idx__(myLinkedList, end);
+    return traverseRangeNode__(startNode, endNode, operatorData, arg1, arg2, arg3);
+}
+
 int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3)
 {
+    /*
     int result = 0;
     Node node = myLinkedList->beginMarker;
     while ((node = node->next) != myLinkedList->endMarker) {
@@ -274,6 +296,10 @@ int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, 
         ++result;
     }
     return result;
+    //*/
+    //Node startNode = myLinkedList->beginMarker->next, endNode = myLinkedList->endMarker;
+    //return traverseRangeNode__(startNode, endNode, operatorData, arg1, arg2, arg3);
+    return traverseMyLinkedList_range(myLinkedList, 0, myLinkedList_size(myLinkedList), operatorData, arg1, arg2, arg3);
 }
 
 static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, void*), bool* isSame)

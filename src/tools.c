@@ -473,14 +473,14 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
 // 初始化表
 int sqlite3_createTable(sqlite3* db, const char* tblName, const char* colNames)
 {
-    char sql[WCHARSIZE];
+    char sql[WIDEWCHARSIZE];
     sprintf(sql, "CREATE TABLE %s(%s);", tblName, colNames);
     return sqlite3_exec_showErrMsg(db, sql);
 }
 
 bool sqlite3_existTable(sqlite3* db, const char* tblName)
 {
-    char sql[WCHARSIZE];
+    char sql[WIDEWCHARSIZE];
     sprintf(sql, "type = 'table' AND name = '%s'", tblName);
     int count = sqlite3_getRecCount(db, "sqlite_master", sql);
     return count > 0;
@@ -488,7 +488,7 @@ bool sqlite3_existTable(sqlite3* db, const char* tblName)
 
 int sqlite3_deleteTable(sqlite3* db, const char* tblName)
 {
-    char sql[WCHARSIZE];
+    char sql[WIDEWCHARSIZE];
     sprintf(sql, "DROP TABLE %s;", tblName);
     return sqlite3_exec_showErrMsg(db, sql);
 }
@@ -504,7 +504,7 @@ static int sqlite3_callCount__(void* count, int argc, char** argv, char** colNam
 int sqlite3_getRecCount(sqlite3* db, const char* tblName, char* condition)
 {
     int count = 0;
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT count(*) FROM %s WHERE %s;", tblName, condition);
     int rc = sqlite3_exec(db, sql, sqlite3_callCount__, &count, &zErrMsg);
     if (rc != SQLITE_OK) {
@@ -527,7 +527,7 @@ static int sqlite3_setValue__(void* destColValue, int argc, char** argv, char** 
 int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
     char* destColName, char* srcColName, char* srcColValue)
 {
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT %s FROM %s WHERE %s = '%s';", destColName, tblName, srcColName, srcColValue);
 
     //printf("\n%s", sql);

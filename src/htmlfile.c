@@ -182,6 +182,20 @@ static MyLinkedList getEccoUrlMyLinkedList__(void* reg_sn, wchar_t sn_0)
     return eccoUrlMyLinkedList;
 }
 
+static void addWidMyLinkedList_wid__(MyLinkedList idUrlMyLinkedList, const wchar_t* wid)
+{
+    wchar_t wurl[WCHARSIZE];
+    swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%ls", wid);
+    addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
+}
+
+static void addWidMyLinkedList_id__(MyLinkedList idUrlMyLinkedList, int id)
+{
+    wchar_t wid[WCHARSIZE];
+    swprintf(wid, WCHARSIZE, L"%d", id);
+    addWidMyLinkedList_wid__(idUrlMyLinkedList, wid);
+}
+
 static void addIdUrlMyLinkedList__(MyLinkedList idUrlMyLinkedList, const wchar_t* gameids, void* reg_id)
 {
     int ovector[PCREARRAY_SIZE];
@@ -192,10 +206,9 @@ static void addIdUrlMyLinkedList__(MyLinkedList idUrlMyLinkedList, const wchar_t
         if (count <= 0)
             break;
 
-        wchar_t id[WCHARSIZE], wurl[WCHARSIZE];
-        pcrewch_copy_substring(tempWstr, ovector, count, 1, id, WCHARSIZE);
-        swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%ls", id);
-        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
+        wchar_t wid[WCHARSIZE];
+        pcrewch_copy_substring(tempWstr, ovector, count, 1, wid, WCHARSIZE);
+        addWidMyLinkedList_wid__(idUrlMyLinkedList, wid);
         first += ovector[1];
     }
 }
@@ -220,7 +233,7 @@ static void appendIdUrlMyLinkedList__(const wchar_t* wurl, MyLinkedList idUrlMyL
     free(wstr);
 }
 
-MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0)
+MyLinkedList getIdUrlMyLinkedList_xqbase_sn(wchar_t sn_0)
 {
     MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
 
@@ -232,24 +245,34 @@ MyLinkedList getIdUrlMyLinkedList_xqbase(wchar_t sn_0)
          *reg_id = pcrewch_compile(L"\\b(\\d+)\\b", 0, &error, &errorffset, NULL);
 
     MyLinkedList eccoUrlMyLinkedList = getEccoUrlMyLinkedList__(reg_sn, sn_0);
-    //traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
+    //traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
     traverseMyLinkedList(eccoUrlMyLinkedList, (void (*)(void*, void*, void*, void*))appendIdUrlMyLinkedList__,
         idUrlMyLinkedList, reg_ids, reg_id);
 
-    //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr__, fout, NULL, NULL);
+    //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
     delMyLinkedList(eccoUrlMyLinkedList);
     return idUrlMyLinkedList;
 }
 
-MyLinkedList getIdUrlMyLinkedList_xqbase_2(int start, int end)
+MyLinkedList getIdUrlMyLinkedList_xqbase_range(MyLinkedList _, int start, int end)
 {
     MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
-    const wchar_t* wurl = L"http://www.xqbase.com/xqbase/?gameid=";
-    wchar_t wurl_id[WCHARSIZE];
-    for (int id = start; id < end; ++id) {
-        swprintf(wurl_id, WCHARSIZE, L"%ls%d", wurl, id);
-        addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl_id, 0, wcslen(wurl_id)));
-    }
+    for (int id = start; id < end; ++id)
+        addWidMyLinkedList_id__(idUrlMyLinkedList, id);
+
+    return idUrlMyLinkedList;
+}
+
+static void addMyLinkedList_wid_call__(const wchar_t* wid, MyLinkedList idUrlMyLinkedList, void* _0, void* _1)
+{
+    addWidMyLinkedList_wid__(idUrlMyLinkedList, wid);
+}
+
+MyLinkedList getIdUrlMyLinkedList_xqbase_list(MyLinkedList widMyLinkedList, int start, int end)
+{
+    MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
+    traverseMyLinkedList_range(widMyLinkedList, start, end,
+        (void (*)(void*, void*, void*, void*))addMyLinkedList_wid_call__, idUrlMyLinkedList, NULL, NULL);
 
     return idUrlMyLinkedList;
 }

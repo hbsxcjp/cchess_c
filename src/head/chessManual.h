@@ -103,6 +103,9 @@ MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLin
 int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char* man_tblName,
     const char* dirName, RecFormat fromfmt);
 
-// 存储网页棋谱至数据库
-int storeChessManual_xqbase(const char* dbName, const char* man_tblName);
+// 存储网页棋谱至数据库(根据id顺序)
+int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, int step);
+
+// 存储网页棋谱至数据库(根据widList)
+int storeChessManual_xqbase_log(const char* dbName, const char* man_tblName, int step, const char* logFileName);
 #endif

@@ -725,26 +725,27 @@ static void test_chessManual_sqlite(void)
 {
     int result = 0;
     const char* dbName = "chess.db";
-    const char* lib_tblName = "ecco";
+    //const char* lib_tblName = "ecco";
     const char* man_tblName = "manual";
-    //*
+    /*
     result = storeEccolib_xqbase(dbName, lib_tblName);
-    printf("\nresult:%d\n", result);
     CU_ASSERT_DOUBLE_EQUAL(result, 555, 0.01);
     //*/
 
-    //* 读取目录文件存入数据库
+    /* 读取目录文件存入数据库
     const char* manualDirName = "chessManual/示例文件";
     result = storeChessManual_dir(dbName, lib_tblName, man_tblName, manualDirName, XQF);
-    printf("result:\n%d\n", result);
     CU_ASSERT_DOUBLE_EQUAL(result, 34, 0.01);
     //*/
 
-    //* 存储网页棋谱至数据库
-    //sleep(3);
-    result = storeChessManual_xqbase(dbName, man_tblName);
-    printf("result:%d\n", result);
-    CU_ASSERT_DOUBLE_EQUAL(result, 3, 0.01);
+    /* 存储网页棋谱至数据库
+    result = storeChessManual_xqbase_range(dbName, man_tblName, 100);
+    CU_ASSERT_DOUBLE_EQUAL(result, ECCO_IDMAX, 0.01);
+    //*/
+
+    //* 存储网页棋谱至数据库(补缺)
+    result = storeChessManual_xqbase_log(dbName, man_tblName, 100, "log");
+    CU_ASSERT_DOUBLE_EQUAL(result, ECCO_IDMAX, 0.01);
     //*/
 }
 

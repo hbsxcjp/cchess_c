@@ -113,7 +113,7 @@ static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, 
     Ecco ecco = newEcco__();
     for (int i = 0; i < argc; ++i) {
         size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
-               size_v = mbstowcs(NULL, argv[i], 0) + 1;
+               size_v = mbstowcs(NULL, argv[i], 0) + 1; 
         wchar_t colName[size_n], colValue[size_v];
         mbstowcs(colName, colNames[i], size_n);
         mbstowcs(colValue, argv[i], size_v);
@@ -136,19 +136,19 @@ static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, 
 
 MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName)
 {
-    MyLinkedList eccoLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
-    char sql[WCHARSIZE], *zErrMsg = 0;
+    MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
+    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
     sprintf(sql, "SELECT * FROM %s "
                  "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn ASC;",
         lib_tblName);
-    int rc = sqlite3_exec(db, sql, addEccoMyLinkedList__, eccoLinkedList, &zErrMsg);
+    int rc = sqlite3_exec(db, sql, addEccoMyLinkedList__, eccoMyLinkedList, &zErrMsg);
     if (rc != SQLITE_OK) {
         fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
         sqlite3_free(zErrMsg);
     }
 
-    assert(myLinkedList_size(eccoLinkedList) == 260);
-    return eccoLinkedList;
+    assert(myLinkedList_size(eccoMyLinkedList) == 260);
+    return eccoMyLinkedList;
 }
 
 // 返回0:匹配成功
@@ -198,7 +198,7 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
 
     const wchar_t* pre_mvstrs = getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX], pre_mvstrs);
-    //*
+    /*
     //if (mvstrs[0] == L'从') {
     static int no = 1;
     fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
@@ -831,7 +831,7 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
     }
 
     wchar_t* eccoClearWstring = getEccoLibWebClearWstring();
-    fwprintf(fout, eccoClearWstring);
+    //fwprintf(fout, eccoClearWstring);
 
     MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
     setEcco_someField__(eccoMyLinkedList, eccoClearWstring);
@@ -843,7 +843,7 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
     result = storeObjMyLinkedList(db, lib_tblName, eccoMyLinkedList,
         (MyLinkedList(*)(void*))getInfoMyLinkedList_ecco__);
 
-    printEccoMyLinkedList(fout, eccoMyLinkedList);
+    //printEccoMyLinkedList(fout, eccoMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
     free(eccoClearWstring);
 

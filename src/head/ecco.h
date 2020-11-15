@@ -10,7 +10,7 @@ typedef struct Ecco* Ecco;
 // 获取局面对象链表
 MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName);
 
-// 根据棋谱iccs着法字符串获取开局编号
+// 根据棋谱iccs着法字符串获取开局
 Ecco getEcco_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr);
 
 const wchar_t* getEccoSn(Ecco ecco);

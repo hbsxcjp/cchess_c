@@ -59,6 +59,10 @@ void setMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, v
 void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
     void* condition);
 
+// 遍历某区间范围对象，执行指定操作
+int traverseMyLinkedList_range(MyLinkedList myLinkedList, int start, int end,
+    void (*operatorData)(void*, void*, void*, void*), void* arg1, void* arg2, void* arg3);
+
 // 遍历全部对象，执行指定操作
 int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3);
