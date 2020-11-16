@@ -104,8 +104,6 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
     const char* dirName, RecFormat fromfmt);
 
 // 存储网页棋谱至数据库(根据id顺序)
-int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, int step);
+int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, int first, int last, int step);
 
-// 存储网页棋谱至数据库(根据widList)
-int storeChessManual_xqbase_log(const char* dbName, const char* man_tblName, int step, const char* logFileName);
 #endif

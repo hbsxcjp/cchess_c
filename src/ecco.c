@@ -113,7 +113,7 @@ static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, 
     Ecco ecco = newEcco__();
     for (int i = 0; i < argc; ++i) {
         size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
-               size_v = mbstowcs(NULL, argv[i], 0) + 1; 
+               size_v = mbstowcs(NULL, argv[i], 0) + 1;
         wchar_t colName[size_n], colValue[size_v];
         mbstowcs(colName, colNames[i], size_n);
         mbstowcs(colValue, argv[i], size_v);
@@ -834,6 +834,12 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
     //fwprintf(fout, eccoClearWstring);
 
     MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
+    Ecco ecco = newEcco__();
+    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX], L"0");
+    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[NAME_INDEX], L"开局库原始文本————下载网页清理后的字符串文本");
+    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX], eccoClearWstring);
+    addMyLinkedList(eccoMyLinkedList, ecco);
+
     setEcco_someField__(eccoMyLinkedList, eccoClearWstring);
     setEcco_regstrField__(eccoMyLinkedList);
 
