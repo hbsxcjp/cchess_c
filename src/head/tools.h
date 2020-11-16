@@ -15,9 +15,9 @@
 //#ifdef WINVER
 #include <conio.h>
 #include <io.h>
-#include <windows.h>
 #include <winsock2.h>
 //printf("Windows\n");
+#include <windows.h>
 #endif
 
 // 结构和字符串类 开始 -------------------------------------------------------------------------------------- //
