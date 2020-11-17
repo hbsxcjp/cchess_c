@@ -4,6 +4,9 @@
 #include "head/board.h"
 #include "head/cJSON.h"
 #include "head/move.h"
+#include "head/operatefile.h"
+#include "head/operatesqlite3.h"
+#include "head/pcre_wch.h"
 #include "head/piece.h"
 //#include <regex.h>
 //#include <sys/types.h>
@@ -102,7 +105,7 @@ ChessManual newChessManual(void)
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
-    cm->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
+    cm->infoMyLinkedList = newInfoMyLinkedList();
     for (int i = 0; i < CMINFO_LEN; ++i)
         setInfoItem_cm(cm, CMINFO_NAMES[i], L"");
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
@@ -658,8 +661,8 @@ static void writeMove_BIN__(FILE* fout, CMove move)
 
 static void writeInfo_BIN__(Info info, FILE* fout, void* _0, void* _1)
 {
-    writeWstring_BIN__(fout, getInfoName(info));
-    writeWstring_BIN__(fout, getInfoValue(info));
+    writeWstring_BIN__(fout, info->name);
+    writeWstring_BIN__(fout, info->value);
 }
 
 static void writeBIN__(FILE* fout, ChessManual cm)
@@ -786,11 +789,11 @@ static void writeMove_JSON__(cJSON* moveJSON, CMove move)
 
 static void writeInfo_JSON__(Info info, cJSON* infoJSON, void* _0, void* _1)
 {
-    size_t namelen = wcstombs(NULL, getInfoName(info), 0) + 1,
-           valuelen = wcstombs(NULL, getInfoValue(info), 0) + 1;
+    size_t namelen = wcstombs(NULL, info->name, 0) + 1,
+           valuelen = wcstombs(NULL, info->value, 0) + 1;
     char name[namelen], value[valuelen];
-    wcstombs(name, getInfoName(info), namelen);
-    wcstombs(value, getInfoValue(info), valuelen);
+    wcstombs(name, info->name, namelen);
+    wcstombs(value, info->value, valuelen);
     cJSON_AddItemToArray(infoJSON,
         cJSON_CreateStringArray((const char* const[]) { name, value }, 2));
 }
@@ -818,7 +821,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     fwrite(manualString, sizeof(char), strlen(manualString), fout);
     free(manualString);
     cJSON_Delete(manualJSON); // 释放自身及所有子对象
-}
+} 
 
 static wchar_t* readInfo_PGN__(ChessManual cm, wchar_t* fileWstring)
 {
@@ -940,7 +943,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
         return;
 
     // 读取着法字符串
-    MyLinkedList mvstrMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
+    MyLinkedList mvstrMyLinkedList = newInfoMyLinkedList();
     wchar_t name[WCHARSIZE], value[WCHARSIZE],
         *moveWstrEnd = moveWstring + (wcslen(moveWstring) - 1),
         *lineStart = wcschr(moveWstring + 1, L'\n'),
@@ -954,7 +957,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
             int subStart = col * (MOVESTR_LEN + 1);
             swprintf(name, WCHARSIZE, L"%d,%d", rowIndex, col);
             copySubStr(value, lineStart, subStart, subStart + MOVESTR_LEN + 1);
-            addMyLinkedList(mvstrMyLinkedList, newInfo(name, value));
+            setInfoItem(mvstrMyLinkedList, name, value);
         }
         ++rowIndex;
         lineStart = wcschr(lineStart, L'\n'); // 弃掉间隔行
@@ -975,7 +978,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
 
         pcrewch_copy_substring(lineEnd, ovector, remCount, 1, name, WIDEWCHARSIZE);
         pcrewch_copy_substring(lineEnd, ovector, remCount, 2, value, WIDEWCHARSIZE);
-        addMyLinkedList(mvstrMyLinkedList, newInfo(name, value));
+        setInfoItem(mvstrMyLinkedList, name, value);
         lineEnd += ovector[1];
     }
 
@@ -1075,9 +1078,9 @@ static void writeRemark_PGN_CC__(wchar_t** pstr, size_t* psize, CMove move)
 
 static void writeInfo_PGN__(Info info, wchar_t** pinfoStr, size_t* size, void* _)
 {
-    int len = wcslen(getInfoName(info)) + wcslen(getInfoValue(info)) + WCHARSIZE;
+    int len = wcslen(info->name) + wcslen(info->value) + WCHARSIZE;
     wchar_t tmpWstr[len];
-    swprintf(tmpWstr, len, L"[%ls \"%ls\"]\n", getInfoName(info), getInfoValue(info));
+    swprintf(tmpWstr, len, L"[%ls \"%ls\"]\n", info->name, info->value);
     supper_wcscat(pinfoStr, size, tmpWstr);
 }
 
@@ -1368,33 +1371,6 @@ const wchar_t* getIccsStr(wchar_t* wIccsStr, ChessManual cm)
     return wIccsStr;
 }
 
-static int info_cmp__(Info info0, Info info1)
-{
-    if (info0 == NULL && info1 == NULL)
-        return 0;
-
-    // 其中有一个为空指针，不相等
-    if (!(info0 && info1))
-        return 1;
-
-    // 文件名属性不做比较，视同相等
-    if (wcscmp(getInfoName(info0), getInfoName(info1)) == 0
-        && wcscmp(getInfoName(info0), CMINFO_NAMES[SOURCE_INDEX]) == 0)
-        return 0;
-
-    // 两个属性有一个不相等，则不相等
-    if (wcscmp(getInfoName(info0), getInfoName(info1)) != 0 || wcscmp(getInfoValue(info0), getInfoValue(info1)) != 0) {
-        int nameLen0 = wcslen(getInfoName(info0)),
-            nameLen1 = wcslen(getInfoName(info1)),
-            valueLen0 = wcslen(getInfoValue(info0)),
-            valueLen1 = wcslen(getInfoValue(info1));
-        printf("len:%d %d %d %d\n", nameLen0, nameLen1, valueLen0, valueLen1);
-        return 1;
-    }
-
-    return 0;
-}
-
 bool chessManual_equal(ChessManual cm0, ChessManual cm1)
 {
     if (cm0 == NULL && cm1 == NULL)
@@ -1420,9 +1396,9 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
         return false;
     }
 
-    //*
+    /*
     if (!myLinkedList_equal(cm0->infoMyLinkedList, cm1->infoMyLinkedList,
-            (int (*)(void*, void*))info_cmp__)) {
+            (int (*)(void*, void*))infoCmp)) {
         printf("\n!(info0 && info1) %d %s", __LINE__, __FILE__);
         return false;
     }

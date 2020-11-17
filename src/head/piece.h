@@ -2,6 +2,13 @@
 #define PIECE_H
 
 #include "base.h"
+#include <assert.h>
+#include <ctype.h>
+#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
+#include <wctype.h>
 
 // 生成一副棋子
 Pieces newPieces(void);

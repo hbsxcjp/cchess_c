@@ -8,7 +8,7 @@ Play newPlay(const char* fileName)
 {
     Play play = malloc(sizeof(struct Play));
     assert(play);
-    play->cm = newChessManual(fileName);
+    play->cm = getChessManual_file(fileName);
     return play;
 }
 

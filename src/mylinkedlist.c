@@ -1,10 +1,5 @@
 #include "head/mylinkedlist.h"
 
-struct Info {
-    wchar_t* name;
-    wchar_t* value;
-};
-
 // 内部节点类
 typedef struct Node* Node;
 struct Node {
@@ -24,70 +19,6 @@ struct MyLinkedList {
     // 节点内数据对象内存释放函数
     void (*delData)(void*);
 };
-
-Info newInfo(const wchar_t* name, const wchar_t* value)
-{
-    Info info = malloc(sizeof(struct Info));
-    info->name = NULL;
-    info->value = NULL;
-    if (name && value) {
-        info->name = malloc((wcslen(name) + 1) * sizeof(wchar_t));
-        wcscpy(info->name, name);
-        info->value = malloc((wcslen(value) + 1) * sizeof(wchar_t));
-        wcscpy(info->value, value);
-    }
-    return info;
-}
-
-void delInfo(Info info)
-{
-    free(info->name);
-    free(info->value);
-    free(info);
-}
-
-const wchar_t* getInfoName(Info info)
-{
-    return info->name;
-}
-
-const wchar_t* getInfoValue(Info info)
-{
-    return info->value;
-}
-
-static int infoName_cmp__(Info info, const wchar_t* name)
-{
-    return wcscmp(getInfoName(info), name);
-}
-
-const wchar_t* getInfoValue_name(MyLinkedList myLinkedList, const wchar_t* name)
-{
-    Info info = getDataMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
-    return info ? getInfoValue(info) : L"";
-}
-
-void setInfoItem(MyLinkedList myLinkedList, const wchar_t* name, const wchar_t* value)
-{
-    setMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__,
-        (void*)name, newInfo(name, value));
-}
-
-void delInfoItem(MyLinkedList myLinkedList, const wchar_t* name)
-{
-    removeMyLinkedList_cond(myLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
-}
-
-static void printInfo__(Info info, FILE* fout, void* _0, void* _1)
-{
-    fwprintf(fout, L"\t%ls: %ls\n", getInfoName(info), getInfoValue(info));
-}
-
-void printInfoMyLinkedList(FILE* fout, MyLinkedList myLinkedList)
-{
-    traverseMyLinkedList(myLinkedList, (void (*)(void*, void*, void*, void*))printInfo__,
-        fout, NULL, NULL);
-}
 
 static Node newNode__(void* data, Node prev, Node next)
 {
@@ -133,18 +64,8 @@ MyLinkedList newMyLinkedList(void (*delData)(void*))
 
 void delMyLinkedList(MyLinkedList myLinkedList)
 {
-    clearMyLinkedList(myLinkedList);
-    free(myLinkedList);
-}
-
-void clearMyLinkedList(MyLinkedList myLinkedList)
-{
     delNode__(myLinkedList->beginMarker, myLinkedList->delData);
-    myLinkedList->beginMarker = NULL;
-    myLinkedList->endMarker = NULL;
-
-    myLinkedList->theSize = 0;
-    myLinkedList->modCount++;
+    free(myLinkedList);
 }
 
 int myLinkedList_size(MyLinkedList myLinkedList)
@@ -159,14 +80,15 @@ bool myLinkedList_isempty(MyLinkedList myLinkedList)
 
 static void addBeforeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* data)
 {
-    node->prev = node->prev->next = newNode__(data, node->prev, node); // 见数据结构与算法分析 P59.
+    node->prev = node->prev->next = newNode__(data, node->prev, node); // 见数据结构与算法分析(Java版) P59.
     myLinkedList->theSize++;
     myLinkedList->modCount++;
 }
 
+// 参数node：静态函数返回的符合索引或条件的node 或 myLinkedList->endMarker
 static void removeMyLinkedList__(MyLinkedList myLinkedList, Node node)
 {
-    if (node == myLinkedList->beginMarker || node == myLinkedList->endMarker)
+    if (node == myLinkedList->endMarker)
         return;
 
     node->next->prev = node->prev;
@@ -177,6 +99,7 @@ static void removeMyLinkedList__(MyLinkedList myLinkedList, Node node)
     myLinkedList->modCount++;
 }
 
+// 返回：符合索引的node 或 myLinkedList->endMarker
 static Node getNodeMyLinkedList_idx__(MyLinkedList myLinkedList, int idx)
 {
     int size = myLinkedList_size(myLinkedList);
@@ -198,12 +121,7 @@ static Node getNodeMyLinkedList_idx__(MyLinkedList myLinkedList, int idx)
 
 void addMyLinkedList(MyLinkedList myLinkedList, void* data)
 {
-    addMyLinkedList_idx(myLinkedList, myLinkedList_size(myLinkedList), data);
-}
-
-void addMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* data)
-{
-    addBeforeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx), data);
+    addBeforeMyLinkedList__(myLinkedList, myLinkedList->endMarker, data);
 }
 
 void* getDataMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
@@ -211,14 +129,19 @@ void* getDataMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
     return getNodeMyLinkedList_idx__(myLinkedList, idx)->data;
 }
 
-void* getEndDataMyLinkedList(MyLinkedList myLinkedList)
+void addMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* data)
 {
-    return getDataMyLinkedList_idx(myLinkedList, myLinkedList_size(myLinkedList) - 1);
+    addBeforeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx), data);
+}
+
+void removeMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
+{
+    removeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx));
 }
 
 static void setNodeMyLinkedList__(MyLinkedList myLinkedList, Node node, void* newData)
 {
-    if (node == myLinkedList->beginMarker || node == myLinkedList->endMarker)
+    if (node == myLinkedList->endMarker || node == myLinkedList->beginMarker)
         addMyLinkedList(myLinkedList, newData);
     else {
         myLinkedList->delData(node->data);
@@ -231,31 +154,19 @@ void setMyLinkedList_idx(MyLinkedList myLinkedList, int idx, void* newData)
     setNodeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx), newData);
 }
 
-void removeMyLinkedList_idx(MyLinkedList myLinkedList, int idx)
-{
-    removeMyLinkedList__(myLinkedList, getNodeMyLinkedList_idx__(myLinkedList, idx));
-}
-
+// 返回：符合条件的node 或 myLinkedList->endMarker
 static Node getNodeMyLinkedList_cond__(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
     void* condition)
 {
     Node node = myLinkedList->beginMarker;
-    while ((node = node->next) != myLinkedList->endMarker
-        && compareCond(node->data, condition) != 0)
+    while ((node = node->next) != myLinkedList->endMarker && compareCond(node->data, condition) != 0)
         ;
-    return node; // 返回：myLinkedList->endMarker 或 符合条件的node
+    return node;
 }
 
 void* getDataMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*), void* condition)
-{
-    // 返回：myLinkedList->endMarker->data(NULL) 或 符合条件的node->data
+{    
     return getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition)->data;
-}
-
-void setMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
-    void* condition, void* newData)
-{
-    setNodeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition), newData);
 }
 
 void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
@@ -264,31 +175,15 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
     removeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition));
 }
 
-int traverseRangeNode__(Node startNode, Node endNode,
-    void (*operatorData)(void*, void*, void*, void*), void* arg1, void* arg2, void* arg3)
+void setMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
+    void* condition, void* newData)
 {
-    int result = 0;
-    Node node = startNode;
-    while (node != endNode) {
-        operatorData(node->data, arg1, arg2, arg3);
-        node = node->next;
-        ++result;
-    }
-    return result;
-}
-
-int traverseMyLinkedList_range(MyLinkedList myLinkedList, int start, int end,
-    void (*operatorData)(void*, void*, void*, void*), void* arg1, void* arg2, void* arg3)
-{
-    Node startNode = getNodeMyLinkedList_idx__(myLinkedList, start),
-         endNode = getNodeMyLinkedList_idx__(myLinkedList, end);
-    return traverseRangeNode__(startNode, endNode, operatorData, arg1, arg2, arg3);
+    setNodeMyLinkedList__(myLinkedList, getNodeMyLinkedList_cond__(myLinkedList, compareCond, condition), newData);
 }
 
 int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3)
 {
-    /*
     int result = 0;
     Node node = myLinkedList->beginMarker;
     while ((node = node->next) != myLinkedList->endMarker) {
@@ -296,33 +191,63 @@ int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, 
         ++result;
     }
     return result;
-    //*/
-    //Node startNode = myLinkedList->beginMarker->next, endNode = myLinkedList->endMarker;
-    //return traverseRangeNode__(startNode, endNode, operatorData, arg1, arg2, arg3);
-    return traverseMyLinkedList_range(myLinkedList, 0, myLinkedList_size(myLinkedList), operatorData, arg1, arg2, arg3);
 }
 
-static void operator_compare__(void* data, Node* pnode, int (*data_cmp)(void*, void*), bool* isSame)
+static Info newInfo__(const wchar_t* name, const wchar_t* value)
 {
-    if (*pnode == NULL)
-        return;
-
-    *pnode = (*pnode)->next;
-    if (data_cmp(data, (*pnode)->data) != 0) {
-        *isSame = false;
-        *pnode = NULL;
+    Info info = malloc(sizeof(struct Info));
+    info->name = NULL;
+    info->value = NULL;
+    if (name && value) {
+        info->name = malloc((wcslen(name) + 1) * sizeof(wchar_t));
+        info->value = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+        wcscpy(info->name, name);
+        wcscpy(info->value, value);
     }
+    return info;
 }
 
-bool myLinkedList_equal(MyLinkedList myLinkedList0, MyLinkedList myLinkedList1,
-    int (*data_cmp)(void*, void*))
+static void delInfo__(Info info)
 {
-    if (myLinkedList_size(myLinkedList0) != myLinkedList_size(myLinkedList1))
-        return false;
+    free(info->name);
+    free(info->value);
+    free(info);
+}
 
-    bool isSame = true;
-    Node node = myLinkedList1->beginMarker;
-    traverseMyLinkedList(myLinkedList0, (void (*)(void*, void*, void*, void*))operator_compare__,
-        &node, data_cmp, &isSame);
-    return isSame;
+MyLinkedList newInfoMyLinkedList(void)
+{
+    return newMyLinkedList((void (*)(void*))delInfo__);
+}
+
+static int infoName_cmp__(Info info, const wchar_t* name)
+{
+    return wcscmp(info->name, name);
+}
+
+const wchar_t* getInfoValue_name(MyLinkedList infoMyLinkedList, const wchar_t* name)
+{
+    Info info = getDataMyLinkedList_cond(infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
+    return info ? info->value : L"";
+}
+
+void setInfoItem(MyLinkedList infoMyLinkedList, const wchar_t* name, const wchar_t* value)
+{
+    setMyLinkedList_cond(infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__,
+        (void*)name, newInfo__(name, value));
+}
+
+void delInfoItem(MyLinkedList infoMyLinkedList, const wchar_t* name)
+{
+    removeMyLinkedList_cond(infoMyLinkedList, (int (*)(void*, void*))infoName_cmp__, (void*)name);
+}
+
+static void printInfo__(Info info, FILE* fout, void* _0, void* _1)
+{
+    fwprintf(fout, L"\t%ls: %ls\n", info->name, info->value);
+}
+
+void printInfoMyLinkedList(FILE* fout, MyLinkedList infoMyLinkedList)
+{
+    traverseMyLinkedList(infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo__,
+        fout, NULL, NULL);
 }

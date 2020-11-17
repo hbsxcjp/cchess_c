@@ -1,23 +1,6 @@
 #ifndef BASE_H
 #define BASE_H
 
-// 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'
-
-#include "pcre.h"
-#include "sqlite3.h"
-#include <assert.h>
-#include <ctype.h>
-#include <locale.h>
-#include <math.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-#include <wchar.h>
-#include <wctype.h>
 
 #define THOUSAND 1024
 #define WCHARSIZE 256

@@ -3,7 +3,8 @@
 
 #include "base.h"
 #include "mylinkedlist.h"
-#include "tools.h"
+#include "sqlite3.h"
+//#include "tools.h"
 
 typedef struct Ecco* Ecco;
 

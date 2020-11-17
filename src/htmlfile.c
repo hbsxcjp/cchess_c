@@ -1,5 +1,7 @@
 #include "head/htmlfile.h"
 #include "head/chessManual.h"
+#include "head/operatefile.h"
+#include "head/pcre_wch.h"
 #include <curl/curl.h>
 
 extern FILE* fout;

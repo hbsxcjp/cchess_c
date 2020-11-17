@@ -2,6 +2,9 @@
 #include "head/board.h"
 #include "head/chessManual.h"
 #include "head/move.h"
+#include "head/operatefile.h"
+#include "head/operatesqlite3.h"
+#include "head/pcre_wch.h"
 
 #define BOUT_MAX 80
 #define INSERTBOUT_INDEX 10
@@ -72,8 +75,8 @@ static Ecco newEcco__(void)
     for (int p = 0; p < BOUTMOVEPART_NUM; ++p)
         for (int i = 0; i < 2; ++i)
             ecco->orBoutNo[p][i] = 0;
-
-    ecco->infoMyLinkedList = newMyLinkedList((void (*)(void*))delInfo);
+ 
+    ecco->infoMyLinkedList = newInfoMyLinkedList();
     for (int i = 0; i < ECCOINFO_LEN; ++i)
         setInfoItem_ecco__(ecco, ECCOINFO_NAMES[i], L"");
     ecco->boutStrMyLinkedList = newMyLinkedList((void (*)(void*))delBoutStr__);

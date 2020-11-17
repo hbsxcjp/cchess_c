@@ -4,6 +4,7 @@
 #include "base.h"
 #include "md5.h"
 #include "sha1.h"
+#include <stdbool.h>
 
 //#define MD5Hash
 
@@ -47,7 +48,7 @@ void storeAspectHash(char* fileName, CAspects aspects);
 // 分析局面库并储存状况
 void analyzeAspects(char* fileName, CAspects aspects);
 
-// 检查数据文件的数据记录是否一致 
+// 检查数据文件的数据记录是否一致
 bool aspects_equal(CAspects asps0, CAspects asps1);
 
 #endif

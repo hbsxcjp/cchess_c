@@ -2,6 +2,7 @@
 #include "head/board.h"
 #include "head/chessManual.h"
 #include "head/move.h"
+#include "head/operatefile.h"
 #include "head/tools.h"
 
 struct MoveRec {

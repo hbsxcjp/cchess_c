@@ -9,6 +9,7 @@
 #include "head/htmlfile.h"
 #include "head/md5.h"
 #include "head/move.h"
+#include "head/operatefile.h"
 #include "head/piece.h"
 #include "head/play.h"
 #include "head/sha1.h"
@@ -723,16 +724,16 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
+    /*
     int result = 0;
     const char* dbName = "chess.db";
     const char* man_tblName = "manual";
-    /*
     const char* lib_tblName = "ecco";
     result = storeEccolib_xqbase(dbName, lib_tblName);
     CU_ASSERT_DOUBLE_EQUAL(result, 555 + 1, 0.01);
     //*/
 
-    //* 存储网页棋谱至数据库
+    /* 存储网页棋谱至数据库
     result = storeChessManual_xqbase_range(dbName, man_tblName, 1, ECCO_IDMAX, 100);
     CU_ASSERT_DOUBLE_EQUAL(result, ECCO_IDMAX, 0.01);
     //*/

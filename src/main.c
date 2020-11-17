@@ -1,7 +1,9 @@
 //#define NDEBUG
 #include "head/base.h"
+#include "head/operatefile.h"
 #include "head/tools.h"
 #include "head/unitTest.h"
+#include <locale.h>
 
 //* 输出字符串，检查用
 FILE* fout = NULL;
