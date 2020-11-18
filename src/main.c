@@ -1,7 +1,5 @@
 //#define NDEBUG
-#include "head/base.h"
 #include "head/operatefile.h"
-#include "head/tools.h"
 #include "head/unitTest.h"
 #include <locale.h>
 

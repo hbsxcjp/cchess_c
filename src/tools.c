@@ -1,4 +1,11 @@
 #include "head/tools.h"
+#include <assert.h>
+#include <ctype.h>
+#include <math.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wctype.h>
 
 bool isPrime(int n)
 {
@@ -112,33 +119,6 @@ void hashToStr(char* str, unsigned char* hash, int length)
     }
 }
 
-wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value)
-{
-    free(*pwstr);
-    *pwstr = NULL;
-    if (value) {
-        *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
-        wcscpy(*pwstr, value);
-    }
-    return *pwstr;
-}
-
-int filterObjects(void** objs, int count, void* arg1, void* arg2,
-    bool (*filterFunc__)(void*, void*, void*), bool sure)
-{
-    int index = 0;
-    while (index < count) {
-        // 如符合条件，先减少count再比较序号，如小于则需要交换；如不小于则指向同一元素，不需要交换；
-        if (filterFunc__(arg1, arg2, objs[index]) == sure && index < --count) {
-            void* tempObj = objs[count];
-            objs[count] = objs[index];
-            objs[index] = tempObj;
-        } else
-            ++index; // 不符合筛选条件，index前进一个
-    }
-    return count; // 以返回的count分界，大于count的对象，均为已过滤对象
-}
-
 char* trim(char* str)
 {
     size_t first = 0, last = strlen(str);
@@ -192,4 +172,31 @@ void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr)
 void printWstr(wchar_t* wstr, FILE* fout, void* _0, void* _1)
 {
     fwprintf(fout, L"%ls\n", wstr);
+}
+
+wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value)
+{
+    free(*pwstr);
+    *pwstr = NULL;
+    if (value) {
+        *pwstr = malloc((wcslen(value) + 1) * sizeof(wchar_t));
+        wcscpy(*pwstr, value);
+    }
+    return *pwstr;
+}
+
+int filterObjects(void** objs, int count, void* arg1, void* arg2,
+    bool (*filterFunc__)(void*, void*, void*), bool sure)
+{
+    int index = 0;
+    while (index < count) {
+        // 如符合条件，先减少count再比较序号，如小于则需要交换；如不小于则指向同一元素，不需要交换；
+        if (filterFunc__(arg1, arg2, objs[index]) == sure && index < --count) {
+            void* tempObj = objs[count];
+            objs[count] = objs[index];
+            objs[index] = tempObj;
+        } else
+            ++index; // 不符合筛选条件，index前进一个
+    }
+    return count; // 以返回的count分界，大于count的对象，均为已过滤对象
 }

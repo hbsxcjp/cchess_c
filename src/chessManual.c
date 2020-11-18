@@ -8,6 +8,7 @@
 #include "head/operatesqlite3.h"
 #include "head/pcre_wch.h"
 #include "head/piece.h"
+#include <math.h>
 //#include <regex.h>
 //#include <sys/types.h>
 
@@ -821,7 +822,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     fwrite(manualString, sizeof(char), strlen(manualString), fout);
     free(manualString);
     cJSON_Delete(manualJSON); // 释放自身及所有子对象
-} 
+}
 
 static wchar_t* readInfo_PGN__(ChessManual cm, wchar_t* fileWstring)
 {

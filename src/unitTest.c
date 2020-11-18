@@ -724,7 +724,7 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    /*
+    //*
     int result = 0;
     const char* dbName = "chess.db";
     const char* man_tblName = "manual";

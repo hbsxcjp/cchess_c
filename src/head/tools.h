@@ -1,19 +1,10 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-#include <assert.h>
-#include <ctype.h>
-#include <iconv.h>
-#include <math.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <wchar.h>
-#include <wctype.h>
 
-// 结构和字符串类 开始 -------------------------------------------------------------------------------------- //
 bool isPrime(int n);
 
 int getPrimes(int* primes, int bitCount);
@@ -36,13 +27,6 @@ bool chars_equal(const char* dst, const char* src, int len);
 // 取得hash的字符串表示
 void hashToStr(char* str, unsigned char* hash, int length);
 
-// 设置结构内宽字符字段的值
-wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value);
-
-// 根据给定的参数、对象、过滤函数和函数结果是否确认值，过滤掉给定数组中的对象
-int filterObjects(void** objs, int count, void* arg1, void* arg2,
-    bool (*filterFunc__)(void*, void*, void*), bool sure);
-
 //未测试
 // 去掉字符串前后的空白字符
 char* trim(char* str);
@@ -61,6 +45,11 @@ void supper_wcscat(wchar_t** pwstr, size_t* size, const wchar_t* wstr);
 
 // 用于遍历链表的打印字符串回调函数
 void printWstr(wchar_t* wstr, FILE* fout, void* _0, void* _1);
-// 结构和字符串类 结束 -------------------------------------------------------------------------------------- //
 
+// 设置结构内宽字符字段的值
+wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value);
+
+// 根据给定的参数、对象、过滤函数和函数结果是否确认值，过滤掉给定数组中的对象
+int filterObjects(void** objs, int count, void* arg1, void* arg2,
+    bool (*filterFunc__)(void*, void*, void*), bool sure);
 #endif
