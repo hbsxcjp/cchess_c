@@ -260,7 +260,7 @@ static int getLiveSeats_bcnc__(Seat* seats, Board board, PieceColor color, wchar
         count = getLiveSeats_bc(seats, board, color);
     while (index < count) {
         if (getPieName(getPiece_s(seats[index])) == name
-            && (col == INT32_MAX || col == getCol_s(seats[index])))
+            && (col < 0 || col == getCol_s(seats[index])))
             ++index;
         else
             seats[index] = seats[--count];
@@ -271,7 +271,7 @@ static int getLiveSeats_bcnc__(Seat* seats, Board board, PieceColor color, wchar
 
 static int getLiveSeats_bcn__(Seat* seats, Board board, PieceColor color, wchar_t name)
 {
-    return getLiveSeats_bcnc__(seats, board, color, name, INT32_MAX);
+    return getLiveSeats_bcnc__(seats, board, color, name, -1);
 }
 
 static int getSortPawnLiveSeats__(Seat* seats, Board board, PieceColor color, wchar_t name)
