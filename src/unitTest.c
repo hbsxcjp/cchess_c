@@ -750,12 +750,12 @@ static void test_chessManual_sqlite(void)
     const char* dbName = "chess.db";
     const char* man_tblName = "manual";
     const char* lib_tblName = "ecco";
-    /*
+    
     result = storeEccolib_xqbase(dbName, lib_tblName);
     CU_ASSERT_DOUBLE_EQUAL(result, 555 + 1, 0.01);
     //*/
 
-    //* 存储网页棋谱至数据库
+    /* 存储网页棋谱至数据库
     int first = 1, last = 150; //ECCO_IDMAX
     result = storeChessManual_xqbase_range(dbName, man_tblName, first, last, 100);
     CU_ASSERT_DOUBLE_EQUAL(result, last, 0.01);
