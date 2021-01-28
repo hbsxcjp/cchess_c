@@ -35,7 +35,7 @@ static void test_md5(void)
     //unsigned char str[] = "陈建平", str1[] = "21bb705f61cb371b96a9f0c48ec68896"; // 未成功！
 
     unsigned char md5[MD5HashSize];
-    ustrToMD5(md5, str);
+    ustrToMD5(md5, str); // 测试函数
     char str2[33];
     hashToStr(str2, md5, MD5HashSize);
 
@@ -51,13 +51,33 @@ static void test_sha1(void)
     //unsigned char str[] = "陈建平", str1[] = "2b86ed62ae08865d16c6d4f86c5b79f695e6c723"; // 未成功！
 
     unsigned char sha1[SHA1HashSize];
-    ustrToSHA1(sha1, str);
+    ustrToSHA1(sha1, str); // 测试函数
     char str2[41];
     hashToStr(str2, sha1, SHA1HashSize);
 
     //printf("\n%s\n%s\n", str1, str2);
     CU_ASSERT_STRING_EQUAL(str1, str2);
     //testsha1();
+}
+
+static void test_strfuns(void)
+{
+    char str1[][100] = { "abc  ", "  abc", " ab c ", "a", " " },
+         str2[][100] = { "abc", "abc", "ab c", "a", "" };
+    for (int i = 0; i < sizeof(str1) / sizeof(str1[0]); ++i) {
+        char* str = trim(str1[i]); // 测试函数
+        CU_ASSERT_STRING_EQUAL(str, str2[i]);
+    }
+
+    wchar_t wstr1[][100] = { L"象棋  ", L"  象棋", L" 象 棋 ", L"象", L" " },
+            wstr2[][100] = { L"象棋", L"象棋", L"象 棋", L"象", L"" };
+    for (int i = 0; i < sizeof(wstr1) / sizeof(wstr1[0]); ++i) {
+        char str[WIDEWCHARSIZE], str2[WIDEWCHARSIZE];
+        wchar_t* wstr = wtrim(wstr1[i]); // 测试函数
+        wcstombs(str, wstr, WIDEWCHARSIZE);
+        wcstombs(str2, wstr2[i], WIDEWCHARSIZE);
+        CU_ASSERT_STRING_EQUAL(str, str2);
+    }
 }
 
 static void test_fileInfos(void)
@@ -78,6 +98,7 @@ static void test_fileInfos(void)
 static CU_TestInfo tests_tools[] = {
     { "test_md5", test_md5 },
     { "test_sha1", test_sha1 },
+    { "test_strfuns", test_strfuns },
     { "test_fileInfos", test_fileInfos },
     CU_TEST_INFO_NULL,
 };
@@ -724,7 +745,7 @@ static void test_chessManual_go(void)
 
 static void test_chessManual_sqlite(void)
 {
-    //*
+    /*
     int result = 0;
     const char* dbName = "chess.db";
     const char* man_tblName = "manual";

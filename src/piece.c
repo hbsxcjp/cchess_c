@@ -22,8 +22,8 @@ Pieces newPieces(void)
     Pieces pieces = malloc(sizeof(struct Pieces));
     assert(pieces);
     int count[PIECEKINDNUM] = { 1, 2, 2, 2, 2, 2, 5 }; // 每种棋子的数量，共16个
-    for (int c = RED; c < NOTCOLOR; ++c) {
-        for (int k = KING; k < NOTKIND; ++k) {
+    for (PieceColor c = RED; c < NOTCOLOR; ++c) {
+        for (PieceKind k = KING; k < NOTKIND; ++k) {
             Piece apiece = pieces->piece[c][k] = malloc(count[k] * sizeof(struct Piece));
             pieces->count[k] = count[k];
             for (int i = 0; i < count[k]; ++i) {
@@ -31,11 +31,6 @@ Pieces newPieces(void)
                 piece->color = c;
                 piece->kind = k;
                 setSeat(piece, NULL);
-
-                wchar_t wstr[120];
-                char str[120];
-                getPieString(wstr, piece);
-                wcstombs(str, wstr, 120);
             }
         }
     }
@@ -44,17 +39,17 @@ Pieces newPieces(void)
 
 void delPieces(Pieces pieces)
 {
-    for (int c = RED; c < NOTCOLOR; ++c)
-        for (int k = KING; k < NOTKIND; ++k)
+    for (PieceColor c = RED; c < NOTCOLOR; ++c)
+        for (PieceKind k = KING; k < NOTKIND; ++k)
             free(pieces->piece[c][k]);
     free(pieces);
 }
 
 void piecesMap(Pieces pieces, void apply(Piece, void*), void* ptr)
 {
-    //assert(apply);
-    for (int c = RED; c < NOTCOLOR; ++c)
-        for (int k = KING; k < NOTKIND; ++k) {
+    assert(apply);
+    for (PieceColor c = RED; c < NOTCOLOR; ++c)
+        for (PieceKind k = KING; k < NOTKIND; ++k) {
             Piece apiece = getPieces__(pieces, c, k);
             for (int i = 0; i < pieces->count[k]; ++i)
                 apply(apiece++, ptr);
@@ -74,12 +69,18 @@ static PieceKind getKind_ch(wchar_t ch)
 inline PieceKind getKind(CPiece piece) { return piece->kind; }
 
 inline wchar_t getBlankChar() { return L'_'; }
-inline wchar_t getChar(CPiece piece) { return piece == getBlankPiece() ? getBlankChar() : Chars__[getColor(piece)][getKind(piece)]; }
+inline wchar_t getChar(CPiece piece)
+{
+    return piece == getBlankPiece() ? getBlankChar() : Chars__[getColor(piece)][getKind(piece)];
+}
 
 static const wchar_t* Names__[] = { L"帅仕相马车炮兵", L"将士象马车炮卒", L"将士象馬車砲卒" };
 static wchar_t getPieName_ch(wchar_t ch) { return Names__[getColor_ch(ch)][getKind_ch(ch)]; }
 inline wchar_t getPieName(CPiece piece) { return getPieName_ch(getChar(piece)); }
-wchar_t getPieName_T_ch(wchar_t ch) { return getColor_ch(ch) == RED ? getPieName_ch(ch) : Names__[BLACK + 1][getKind_ch(ch)]; }
+wchar_t getPieName_T_ch(wchar_t ch)
+{
+    return getColor_ch(ch) == RED ? getPieName_ch(ch) : Names__[BLACK + 1][getKind_ch(ch)];
+}
 wchar_t getPieName_T(CPiece piece) { return getPieName_T_ch(getChar(piece)); }
 const wchar_t* getPieceNames(void) { return L"帅仕相马车炮兵将士象卒"; }
 

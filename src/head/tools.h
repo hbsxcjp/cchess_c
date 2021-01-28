@@ -5,9 +5,11 @@
 #include <stdio.h>
 #include <wchar.h>
 
+/*
 bool isPrime(int n);
 
 int getPrimes(int* primes, int bitCount);
+//*/
 
 // 取得大于等于size的质数
 int getPrime(int size);
@@ -27,11 +29,9 @@ bool chars_equal(const char* dst, const char* src, int len);
 // 取得hash的字符串表示
 void hashToStr(char* str, unsigned char* hash, int length);
 
-//未测试
 // 去掉字符串前后的空白字符
 char* trim(char* str);
 
-//未测试
 // 去掉宽字符串前后的空白字符
 wchar_t* wtrim(wchar_t* wstr);
 
@@ -52,4 +52,6 @@ wchar_t* setPwstr_value(wchar_t** pwstr, const wchar_t* value);
 // 根据给定的参数、对象、过滤函数和函数结果是否确认值，过滤掉给定数组中的对象
 int filterObjects(void** objs, int count, void* arg1, void* arg2,
     bool (*filterFunc__)(void*, void*, void*), bool sure);
+
+
 #endif
