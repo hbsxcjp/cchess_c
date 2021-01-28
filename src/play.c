@@ -1,4 +1,5 @@
 #include "head/play.h"
+#include <assert.h>
 
 struct Play {
     ChessManual cm;

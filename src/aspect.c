@@ -4,6 +4,7 @@
 #include "head/move.h"
 #include "head/operatefile.h"
 #include "head/tools.h"
+#include <math.h>
 
 struct MoveRec {
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
