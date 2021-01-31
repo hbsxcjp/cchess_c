@@ -2,6 +2,7 @@
 #include "head/move.h"
 #include "head/piece.h"
 #include "head/tools.h"
+#include <math.h>
 
 // 棋子马的移动方向
 typedef enum {
@@ -221,7 +222,7 @@ void setBoard_pieChars(Board board, const wchar_t* pieChars)
     int index = 0;
     for (int row = BOARDROW - 1; row >= 0; --row)
         for (int col = 0; col < BOARDCOL; ++col)
-            setPiece_rc__(board, row, col, getPiece_ch(board->pieces, pieChars[index++]));
+            setPiece_rc__(board, row, col, getNotLivePiece_ch(board->pieces, pieChars[index++]));
     board->bottomColor = getRow_s(getKingSeat(board, RED)) < RowLowUpIndex_ ? RED : BLACK;
 }
 
@@ -532,52 +533,21 @@ int moveSeats(Seat* seats, Board board, Seat fseat)
         }
     } break;
     }
-    return filterObjects((void**)seats, count, (void*)board, (void*)fseat, (bool (*)(void*, void*, void*))moveSameColor__, true);
+    return filterObjects((void**)seats, count, (void*)board, (void*)fseat,
+        (bool (*)(void*, void*, void*))moveSameColor__, true);
 }
 
-static bool moveFailed__(Board board, Seat fseat, Seat tseat)
+// 着法走之后，判断是否将帅对面
+static bool isFace__(Board board)
 {
-    PieceColor fcolor = getColor(getPiece_s(fseat));
-    Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
-    bool failed = kingIsEated(board, fcolor);
-    movePiece(tseat, fseat, eatPiece);
-    return failed;
-}
-
-int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure)
-{
-    int count = moveSeats(seats, board, fseat);
-    return filterObjects((void**)seats, count, (void*)board, (void*)fseat, (bool (*)(void*, void*, void*))moveFailed__, sure);
-}
-
-static void exchangePiece__(Piece piece, void* ptr)
-{
-    assert(ptr);
-    if (getColor(piece) == BLACK)
-        return; // 只执行一半棋子即已完成交换
-    Pieces pieces = (Pieces)ptr;
-    Piece othPiece = getOtherPiece(pieces, piece);
-    Seat seat = getSeat_p(piece),
-         othSeat = getSeat_p(othPiece);
-    setSeat(piece, NULL);
-    setSeat(othPiece, NULL);
-    if (seat)
-        setPiece_s__(seat, othPiece);
-    if (othSeat)
-        setPiece_s__(othSeat, piece);
-}
-
-bool isFace(Board board, PieceColor color)
-{
-    bool isBottom = isBottomSide(board, color);
-    Seat kingSeat = getKingSeat(board, color),
-         othKingSeat = getKingSeat(board, getOtherColor(color));
-    int fcol = getCol_s(kingSeat);
-    if (fcol != getCol_s(othKingSeat))
+    Seat redKingSeat = getKingSeat(board, RED),
+         blkKingSeat = getKingSeat(board, BLACK);
+    int fcol = getCol_s(redKingSeat);
+    if (fcol != getCol_s(blkKingSeat))
         return false;
 
-    int frow = getRow_s(kingSeat), trow = getRow_s(othKingSeat),
-        rowLow = isBottom ? frow : trow, rowUp = isBottom ? trow : frow;
+    int frow = getRow_s(redKingSeat), trow = getRow_s(blkKingSeat),
+        rowLow = fmin(frow, trow), rowUp = fmax(trow, frow);
     for (int row = rowLow + 1; row < rowUp; ++row)
         if (!isBlankPiece(getPiece_rc(board, row, fcol)))
             return false;
@@ -586,14 +556,12 @@ bool isFace(Board board, PieceColor color)
     return true;
 }
 
-bool isKilled(Board board, PieceColor color)
+// 判断某方是否被将军
+static bool isPassiveKilling__(Board board, PieceColor color)
 {
     Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
     int count = getLiveSeats_bc(seats, board, getOtherColor(color));
     for (int i = 0; i < count; ++i) {
-        if (!isStronge(getPiece_s(seats[i])))
-            continue;
-
         int mcount = moveSeats(mseats, board, seats[i]);
         for (int m = 0; m < mcount; ++m)
             // 本方将帅位置在对方强子可走位置范围内
@@ -604,28 +572,150 @@ bool isKilled(Board board, PieceColor color)
     return false;
 }
 
-bool isUnableMove(Board board, PieceColor color)
+// 28.1　将
+//　　凡走子直接攻击对方帅(将) 者，称为“照将”，简称“将”。
+bool isKilling(Board board, Seat fseat, Seat tseat)
+{
+    if (!isStronge(getPiece_s(fseat)))
+        return false;
+
+    return isPassiveKilling__(board, getColor(getPiece_s(tseat)));
+}
+
+// 判断移动是否失败(将帅对面、自身被将则属失败)
+static bool moveFailed__(Board board, Seat fseat, Seat tseat)
+{
+    PieceColor fcolor = getColor(getPiece_s(fseat));
+    Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
+    bool failed = isFace__(board) || isPassiveKilling__(board, fcolor);
+    movePiece(tseat, fseat, eatPiece);
+    return failed;
+}
+
+// 获取可移动位置集合(规则允许着法，且排除移动失败情形)
+int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure)
+{
+    int count = moveSeats(seats, board, fseat);
+    return filterObjects((void**)seats, count, (void*)board, (void*)fseat,
+        (bool (*)(void*, void*, void*))moveFailed__, sure);
+}
+
+// 某方是否已没有可移动位置(规则允许着法，且排除移动失败情形)
+bool isFail(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
     int count = getLiveSeats_bc(fseats, board, color);
     for (int i = 0; i < count; ++i)
-        if (moveSeats(mseats, board, fseats[i]) > 0)
+        if (canMoveSeats(mseats, board, fseats[i], true) > 0)
             return false;
+
     return true;
 }
 
-bool isWillKill(Board board, PieceColor color) { return false; } // 待完善
-
-bool isCatch(Board board, PieceColor color) { return false; } // 待完善
-
-bool kingIsEated(Board board, PieceColor color)
+// 判断某方是否被连续将军至将死
+static bool isPassiveWillKill__(Board board, PieceColor color)
 {
-    return isFace(board, color) || isKilled(board, color);
+    Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
+    int pieCount = getLiveSeats_bc(fseats, board, getOtherColor(color));
+    for (int i = 0; i < pieCount; ++i) {
+        int mseatCount = canMoveSeats(mseats, board, fseats[i], true);
+        for (int j = 0; j < mseatCount; ++j) {
+            bool willKill = false;
+            Piece eatPiece = movePiece(fseats[i], mseats[j], getBlankPiece()); // 对方走一着
+            if (isKilling(board, fseats[i], mseats[j])) {
+                if (isFail(board, color))
+                    willKill = true; // 是为杀着
+                else {
+                    //  int othPieCount = ;
+                    //  willKill = isPassiveWillKill__(board, color); // 递归判断连续照将的情况?
+                }
+            }
+            movePiece(mseats[j], fseats[i], eatPiece);
+            if (willKill)
+                return true;
+        }
+    }
+
+    return false;
 }
 
-bool isFail(Board board, PieceColor color)
+// 28.2　杀
+//　　凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”。
+bool isWillKill(Board board, Seat fseat, Seat tseat)
 {
-    return kingIsEated(board, color) || isUnableMove(board, color);
+    return isPassiveWillKill__(board, getColor(getPiece_s(tseat)));
+}
+
+// 是否子力
+// (25.3　车、马、炮、过河兵(卒)、士、相(象)，均算“子力”。帅(将)、未过河兵(卒)，不算“子力”。“子力”简称“子”
+// 子力价值是衡量子力得失的尺度，也是判断是否“捉子”的依据之一。原则上，一车相当于双马、双炮或一马一炮；
+// 马炮相等；士相(象)相等；过河兵(卒)价值浮动，一兵换取数子或一子换取数兵均不算得子。)
+static bool isForce__(Board board, Seat tseat)
+{
+    Piece piece = getPiece_s(tseat);
+    PieceKind kind = getKind(piece);
+    return !(kind == KING
+        || (kind == PAWN
+            && (getColor(piece) == board->bottomColor
+                    ? getRow_s(tseat) > RowLowUpIndex_
+                    : getRow_s(tseat) <= RowLowUpIndex_)));
+}
+
+// 是否有根子
+// (28.16　有根子和无根子
+//　　凡有己方其他棋子(包括暗根)充分保护的子，称为“有根子”；反之，称为“无根子”。
+//　　形式上是根，实际上起不到充分保护作用，称为假根或少根、假根子和少根子按无根子处理。)
+static bool isProtectedForce__(Board board, Seat fseat, Seat tseat)
+{
+    if (!isForce__(board, tseat))
+        return false;
+
+    Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
+    int pieCount = getLiveSeats_bc(fseats, board, getColor(getPiece_s(tseat)));
+    for (int i = 0; i < pieCount; ++i) {
+        int mseatCount = canMoveSeats(mseats, board, fseats[i], true);
+        for (int j = 0; j < mseatCount; ++j) {
+            if (mseats[j] == tseat) {
+                Piece eatPiece0 = movePiece(fseat, tseat, getBlankPiece()); // 对方走一着
+                Piece eatPiece1 = movePiece(fseats[i], tseat, getBlankPiece()); // 己方走一着
+                
+                bool willKill=false;
+                //bool willKill = isWillKill(board, getColor(getPiece_s(tseat))); // 是否被杀
+
+                movePiece(tseat, fseats[i], eatPiece1);
+                movePiece(tseat, fseat, eatPiece0);
+                if (!willKill)
+                    return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+// 构成“捉子”，应符合下列条件：
+//　　29.1　捉子的形式可以有：能够直接吃子；能够通过连续照将吃子；能够通过完整的交换过程得子。
+//　　29.2　“捉”产生于刚走的这着棋，上一着尚不存在。
+//　　29.3　直接或间接被捉的，是有子力价值的无根子(含：假根子、少根子)。
+//　　29.4　下一着吃子或得子后，不致被将死。
+bool isCatch(Board board, Seat fseat, Seat tseat)
+{
+    if (isProtectedForce__(board, fseat, tseat))
+        return false;
+
+    return false;
+}
+
+bool isClout(Board board, Seat fseat, Seat tseat)
+{
+    return isKilling(board, fseat, tseat) || isWillKill(board, fseat, tseat) || isCatch(board, fseat, tseat);
+}
+
+// 28.9　闲
+//　　凡走子性质不属于将、杀、捉，统称为“闲”。兑、献、拦、跟，均属“闲”的范畴。
+bool isIdle(Board board, Seat fseat, Seat tseat)
+{
+    return !isClout(board, fseat, tseat);
 }
 
 bool isCanMove(Board board, Seat fseat, Seat tseat)
@@ -647,6 +737,23 @@ bool isCanMove(Board board, Seat fseat, Seat tseat)
     //*/
 
     return false;
+}
+
+static void exchangePiece__(Piece piece, void* ptr)
+{
+    assert(ptr);
+    if (getColor(piece) == BLACK)
+        return; // 只执行一半棋子即已完成交换
+    Pieces pieces = (Pieces)ptr;
+    Piece othPiece = getOtherPiece(pieces, piece);
+    Seat seat = getSeat_p(piece),
+         othSeat = getSeat_p(othPiece);
+    setSeat(piece, NULL);
+    setSeat(othPiece, NULL);
+    if (seat)
+        setPiece_s__(seat, othPiece);
+    if (othSeat)
+        setPiece_s__(othSeat, piece);
 }
 
 void changeBoard(Board board, ChangeType ct)

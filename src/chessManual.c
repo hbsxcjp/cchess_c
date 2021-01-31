@@ -194,7 +194,7 @@ static bool back__(ChessManual cm)
 
 bool back(ChessManual cm)
 {
-    if (hasPreOther(cm->curMove))
+    if (isPreOther(cm->curMove))
         return backOther(cm);
     else if (getSimplePre(cm->curMove))
         return back__(cm);
@@ -203,7 +203,7 @@ bool back(ChessManual cm)
 
 bool backNext(ChessManual cm)
 {
-    if (getSimplePre(cm->curMove) && !hasPreOther(cm->curMove)) {
+    if (getSimplePre(cm->curMove) && !isPreOther(cm->curMove)) {
         back__(cm);
         return true;
     }
@@ -212,7 +212,7 @@ bool backNext(ChessManual cm)
 
 bool backOther(ChessManual cm)
 {
-    if (hasPreOther(cm->curMove)) {
+    if (isPreOther(cm->curMove)) {
         back__(cm); // 变着回退
         doMove(cm->curMove); // 前变执行
         return true;
@@ -223,7 +223,7 @@ bool backOther(ChessManual cm)
 int backToPre(ChessManual cm)
 {
     int count = 0;
-    while (hasPreOther(cm->curMove)) {
+    while (isPreOther(cm->curMove)) {
         backOther(cm);
         ++count;
     }

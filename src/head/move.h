@@ -15,10 +15,12 @@ void delMove(Move move);
 
 // 取得简单前着（数据内部表示的前个链接），可能是前着，也可能是前变着
 Move getSimplePre(CMove move);
+
 // 取得前着，非前变着
 Move getPre(CMove move);
 Move getNext(CMove move);
 Move getOther(CMove move);
+
 void cutMove(Move move); //(未测试)
 int getPreMoves(Move* moves, Move move);
 int getSufMoves(Move* moves, Move move);
@@ -28,14 +30,8 @@ int getNextNo(CMove move);
 int getOtherNo(CMove move);
 int getCC_ColNo(CMove move);
 
-bool isStart(CMove move);
-bool hasPreOther(CMove move);
 bool isRootMove(CMove move);
-
-// 判断着法是否相同
-//bool isSameRowCol(CMove lmove, CMove pmove);
-// 判断着法是否连通（是直接前后着关系，而不是平行的变着关系）
-bool isConnected(CMove lmove, CMove pmove);
+bool isPreOther(CMove move);
 
 // 设置remark
 void setRemark(Move move, wchar_t* remark);
@@ -75,12 +71,21 @@ void undoMove(CMove move);
 wchar_t* getMoveStr(wchar_t* wstr, CMove move);
 wchar_t* getMoveString(wchar_t* wstr, CMove move);
 
+// 判断着法是否相同
+//bool isSameRowCol(CMove pmove, CMove nmove);
+
+// 判断着法是否连通（是直接前后着关系，而不是平行的变着关系）
+bool isConnected(CMove pmove, CMove nmove);
+
 // 判断给定着法及回合数内，是否未吃一子
 bool isNotEat(Move move, int boutCount); //(未测试)
+
 // 凡走子连续不停照将，而形成循环者，称为“长将”
 bool isContinuousKill(Move move, int boutCount); //(未测试)
+
 // 凡走子连续不停杀着，而形成循环者，称为“长杀”
 bool isContinuousWillKill(Move move, int boutCount); //(未测试)
+
 // 凡走子连续追捉一子或数子，而形成循环者，称为“长捉”
 bool isContinuousCatch(Move move, int boutCount); //(未测试)
 

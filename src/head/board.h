@@ -70,24 +70,39 @@ Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind);
 // 某棋盘局面下某位置的棋子“行走规则(筛除同色，未筛将军)”可移入位置的集合（至多17个）
 int moveSeats(Seat* seats, Board board, Seat fseat);
+
+// 28.1　将
+//　　凡走子直接攻击对方帅(将) 者，称为“照将”，简称“将”。
+bool isKilling(Board board, Seat fseat, Seat tseat);
+
 // 某棋盘局面下某位置的棋子在“行走规则”基础上筛除将帅对面、被将军的位置后可移入位置的集合（至多17个）
 int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure);
 
-// 着法走之后，判断是否将帅对面
-bool isFace(Board board, PieceColor color);
-// 着法走之后，判断是否将（凡走子直接攻击对方帅(将)者，称为“照将”，简称“将”）
-bool isKilled(Board board, PieceColor color);
-// 着法走之后，判断是否困毙
-bool isUnableMove(Board board, PieceColor color);
-// 着法走之后，判断是否杀（凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”）
-bool isWillKill(Board board, PieceColor color);
-// 着法走之后，判断是否捉（凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段)吃掉对方某个无根子，称为“捉”）
-bool isCatch(Board board, PieceColor color);
-
-// 着法走之后，判断将帅是否将帅对面、被将军
-bool kingIsEated(Board board, PieceColor color);
-// 着法走之后，判断是否已输棋 (根据象棋规则，还需添加更多条件)
+// 着法走之后，判断是否已输棋 (将死、对面、困毙)
+// 第3条　将死和困毙
+//　　3.1　一方的棋子攻击对方的帅(将) ，并在下一着要把它吃掉，称为“照将”，或简称“将”。“照将”不必声明。
+//　　被“照将”的一方必须立即“应将”，即用自己的着法去化解被“将”的状态。
+//　　如果被“照将”而无法“应将”，就算被“将死”。
+//　　3.2　轮到走棋的一方，无子可走，就算被“困毙”。
 bool isFail(Board board, PieceColor color);
+
+// 未测试
+// 28.2　杀
+//　　凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”。
+bool isWillKill(Board board, Seat fseat, Seat tseat);
+
+// 未测试
+// 28.3　捉
+//　　凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段) 吃掉对方某个无根子，称为“捉”。
+bool isCatch(Board board, Seat fseat, Seat tseat);
+
+// 28.4　打
+//　　将、杀、捉等攻击手段，统称为“打”。
+bool isClout(Board board, Seat fseat, Seat tseat);
+
+// 28.9　闲
+//　　凡走子性质不属于将、杀、捉，统称为“闲”。兑、献、拦、跟，均属“闲”的范畴。
+bool isIdle(Board board, Seat fseat, Seat tseat);
 
 // 着法走之前，判断起止位置是可走的位置(遵守“行走规则”，并排除：棋子同色、将帅对面、被将军等的情况)
 bool isCanMove(Board board, Seat fseat, Seat tseat);

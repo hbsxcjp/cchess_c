@@ -23,7 +23,7 @@
 typedef enum {
     RED,
     BLACK,
-    NOTCOLOR
+    NOTCOLOR // 空棋子使用
 } PieceColor;
 
 // 棋子种类类型
@@ -35,7 +35,7 @@ typedef enum {
     ROOK,
     CANNON,
     PAWN,
-    NOTKIND
+    NOTKIND // 空棋子使用
 } PieceKind;
 
 // 棋子指针类型（不透明）
