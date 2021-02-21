@@ -40,10 +40,13 @@ Piece getPiece_rowcol(Board board, int rowcol);
 
 // 取得棋盘局面的pieChars字符串表示, 包含90个字符
 wchar_t* getPieChars_board(wchar_t* pieChars, Board board);
+
 // pieChars表示的棋盘局面转换成FEN字符串，返回FEN
 wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars);
+
 // 取得棋盘局面的FEN字符串表示
 wchar_t* getFEN_board(wchar_t* FEN, Board board);
+
 // FEN字符串转换成pieChars表示的棋盘局面
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);
 
@@ -61,7 +64,7 @@ bool isBottomSide(CBoard board, PieceColor color);
 Seat getKingSeat(Board board, PieceColor color);
 
 // 取得活的棋子位置
-int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color);
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color, bool filterStronge);
 
 // 移动棋子，返回目的地棋子
 Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
@@ -70,14 +73,12 @@ Piece movePiece(Seat fseat, Seat tseat, Piece eatPiece);
 int putSeats(Seat* seats, Board board, bool isBottom, PieceKind kind);
 // 某棋盘局面下某位置的棋子“行走规则(筛除同色，未筛将军)”可移入位置的集合（至多17个）
 int moveSeats(Seat* seats, Board board, Seat fseat);
+// 某棋盘局面下某位置的棋子在“行走规则”基础上筛除将帅对面、被将军的位置后可移入位置的集合（至多17个）
+int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure);
 
 // 28.1　将
 //　　凡走子直接攻击对方帅(将) 者，称为“照将”，简称“将”。
 bool isKilling(Board board, Seat fseat, Seat tseat);
-
-// 某棋盘局面下某位置的棋子在“行走规则”基础上筛除将帅对面、被将军的位置后可移入位置的集合（至多17个）
-int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure);
-
 // 着法走之后，判断是否已输棋 (将死、对面、困毙)
 // 第3条　将死和困毙
 //　　3.1　一方的棋子攻击对方的帅(将) ，并在下一着要把它吃掉，称为“照将”，或简称“将”。“照将”不必声明。
@@ -85,21 +86,17 @@ int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure);
 //　　如果被“照将”而无法“应将”，就算被“将死”。
 //　　3.2　轮到走棋的一方，无子可走，就算被“困毙”。
 bool isFail(Board board, PieceColor color);
-
 // 未测试
 // 28.2　杀
 //　　凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”。
 bool isWillKill(Board board, Seat fseat, Seat tseat);
-
 // 未测试
 // 28.3　捉
 //　　凡走子后能够造成在下一着(包括从下一着开始运用连续照将或连续交换的手段) 吃掉对方某个无根子，称为“捉”。
 bool isCatch(Board board, Seat fseat, Seat tseat);
-
 // 28.4　打
 //　　将、杀、捉等攻击手段，统称为“打”。
 bool isClout(Board board, Seat fseat, Seat tseat);
-
 // 28.9　闲
 //　　凡走子性质不属于将、杀、捉，统称为“闲”。兑、献、拦、跟，均属“闲”的范畴。
 bool isIdle(Board board, Seat fseat, Seat tseat);

@@ -63,7 +63,7 @@ Seat getSeat_p(CPiece piece);
 void setSeat(Piece piece, Seat seat);
 
 // 取得活的棋子位置
-int getLiveSeats_pieces(Seat* seats, Pieces pieces, PieceColor color);
+int getLiveSeats_pieces(Seat* seats, Pieces pieces, PieceColor color, bool filterStronge);
 
 // 取得表示棋子表示字符串的名称
 wchar_t* getPieString(wchar_t* pieStr, CPiece piece);

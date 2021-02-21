@@ -250,15 +250,15 @@ static int seatCmp__(const void* first, const void* second)
         return rowdiff;
 }
 
-int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color)
+int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color, bool filterStronge)
 {
-    return getLiveSeats_pieces(seats, board->pieces, color);
+    return getLiveSeats_pieces(seats, board->pieces, color, filterStronge);
 }
 
 static int getLiveSeats_bcnc__(Seat* seats, Board board, PieceColor color, wchar_t name, int col)
 {
     int index = 0,
-        count = getLiveSeats_bc(seats, board, color);
+        count = getLiveSeats_bc(seats, board, color, false);
     while (index < count) {
         if (getPieName(getPiece_s(seats[index])) == name
             && (col < 0 || col == getCol_s(seats[index])))
@@ -559,8 +559,10 @@ static bool isFace__(Board board)
 // 判断某方是否被将军
 static bool isPassiveKilling__(Board board, PieceColor color)
 {
-    Seat kingSeat = getKingSeat(board, color), seats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int count = getLiveSeats_bc(seats, board, getOtherColor(color));
+    Seat kingSeat = getKingSeat(board, color),
+         seats[SIDEPIECENUM],
+         mseats[BOARDROW + BOARDCOL];
+    int count = getLiveSeats_bc(seats, board, getOtherColor(color), true);
     for (int i = 0; i < count; ++i) {
         int mcount = moveSeats(mseats, board, seats[i]);
         for (int m = 0; m < mcount; ++m)
@@ -572,24 +574,27 @@ static bool isPassiveKilling__(Board board, PieceColor color)
     return false;
 }
 
-// 28.1　将
-//　　凡走子直接攻击对方帅(将) 者，称为“照将”，简称“将”。
-bool isKilling(Board board, Seat fseat, Seat tseat)
+// 模拟移动棋子，判断取得棋子移动后的棋局状态是否符合指定函数意义
+static bool isStatusIfMoved__(Board board, Seat fseat, Seat tseat,
+    bool (*isFunc__)(Board board, PieceColor color), bool isFromColor)
 {
-    if (!isStronge(getPiece_s(fseat)))
-        return false;
+    PieceColor color = getColor(getPiece_s(isFromColor ? fseat : tseat));
+    Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
+    bool isStatus = isFunc__(board, color);
+    movePiece(tseat, fseat, eatPiece);
+    return isStatus;
+}
 
-    return isPassiveKilling__(board, getColor(getPiece_s(tseat)));
+// 是否处于将帅对面、被将军状态
+static bool isFaceOrPassiveKilling__(Board board, PieceColor color)
+{
+    return isFace__(board) || isPassiveKilling__(board, color);
 }
 
 // 判断移动是否失败(将帅对面、自身被将则属失败)
 static bool moveFailed__(Board board, Seat fseat, Seat tseat)
 {
-    PieceColor fcolor = getColor(getPiece_s(fseat));
-    Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
-    bool failed = isFace__(board) || isPassiveKilling__(board, fcolor);
-    movePiece(tseat, fseat, eatPiece);
-    return failed;
+    return isStatusIfMoved__(board, fseat, tseat, isFaceOrPassiveKilling__, true); // 己方
 }
 
 // 获取可移动位置集合(规则允许着法，且排除移动失败情形)
@@ -600,11 +605,18 @@ int canMoveSeats(Seat* seats, Board board, Seat fseat, bool sure)
         (bool (*)(void*, void*, void*))moveFailed__, sure);
 }
 
+// 28.1　将
+//　　凡走子直接攻击对方帅(将) 者，称为“照将”，简称“将”。
+bool isKilling(Board board, Seat fseat, Seat tseat)
+{
+    return isStatusIfMoved__(board, fseat, tseat, isPassiveKilling__, false); // 对方
+}
+
 // 某方是否已没有可移动位置(规则允许着法，且排除移动失败情形)
 bool isFail(Board board, PieceColor color)
 {
     Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int count = getLiveSeats_bc(fseats, board, color);
+    int count = getLiveSeats_bc(fseats, board, color, false);
     for (int i = 0; i < count; ++i)
         if (canMoveSeats(mseats, board, fseats[i], true) > 0)
             return false;
@@ -612,38 +624,52 @@ bool isFail(Board board, PieceColor color)
     return true;
 }
 
-// 判断某方是否被连续将军至将死
-static bool isPassiveWillKill__(Board board, PieceColor color)
+// 判断是否照将或连续照将，将死对方者
+static bool isContinuousKilling__(Board board, Seat fseat, Seat tseat)
 {
-    Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int pieCount = getLiveSeats_bc(fseats, board, getOtherColor(color));
-    for (int i = 0; i < pieCount; ++i) {
-        int mseatCount = canMoveSeats(mseats, board, fseats[i], true);
-        for (int j = 0; j < mseatCount; ++j) {
-            bool willKill = false;
-            Piece eatPiece = movePiece(fseats[i], mseats[j], getBlankPiece()); // 对方走一着
-            if (isKilling(board, fseats[i], mseats[j])) {
-                if (isFail(board, color))
-                    willKill = true; // 是为杀着
-                else {
-                    //  int othPieCount = ;
-                    //  willKill = isPassiveWillKill__(board, color); // 递归判断连续照将的情况?
+    PieceColor color = getColor(getPiece_s(tseat));
+    Piece eatTPiece = movePiece(fseat, tseat, getBlankPiece()); // 走一着
+    bool killed = false;
+    if (isPassiveKilling__(board, color)) {
+        Seat tseats[SIDEPIECENUM], mtseats[BOARDROW + BOARDCOL];
+        int tpieCount = getLiveSeats_bc(tseats, board, color, false);
+        for (int i = 0; i < tpieCount; ++i) {
+            int mtseatCount = canMoveSeats(mtseats, board, tseats[i], true);
+            killed = mtseatCount == 0; // 对方无棋子可走，退出递归调用
+            for (int j = 0; j < mtseatCount; ++j) {
+                Piece eatFPiece = movePiece(tseats[i], mtseats[j], getBlankPiece()); // 走一着
+
+                Seat fseats[SIDEPIECENUM], mfseats[BOARDROW + BOARDCOL];
+                int fpieCount = getLiveSeats_bc(fseats, board, color, false);
+                for (int k = 0; k < fpieCount; ++k) {
+                    int mfseatCount = canMoveSeats(mfseats, board, fseats[k], true);
+                    for (int l = 0; l < mfseatCount; ++l) {
+                        killed = isContinuousKilling__(board, fseats[k], mfseats[l]); // 递归调用
+                        if (killed)
+                            break;
+                    }
+                    if (killed)
+                        break;
                 }
+
+                movePiece(mtseats[j], tseats[i], eatFPiece);
+                if (killed)
+                    break;
             }
-            movePiece(mseats[j], fseats[i], eatPiece);
-            if (willKill)
-                return true;
+            if (killed)
+                break;
         }
     }
 
-    return false;
+    movePiece(tseat, fseat, eatTPiece);
+    return killed;
 }
 
 // 28.2　杀
 //　　凡走子企图在下一着照将或连续照将，将死对方者，称为“杀着”，简称“杀”。
 bool isWillKill(Board board, Seat fseat, Seat tseat)
 {
-    return isPassiveWillKill__(board, getColor(getPiece_s(tseat)));
+    return isContinuousKilling__(board, fseat, tseat);
 }
 
 // 是否子力
@@ -671,15 +697,15 @@ static bool isProtectedForce__(Board board, Seat fseat, Seat tseat)
         return false;
 
     Seat fseats[SIDEPIECENUM], mseats[BOARDROW + BOARDCOL];
-    int pieCount = getLiveSeats_bc(fseats, board, getColor(getPiece_s(tseat)));
+    int pieCount = getLiveSeats_bc(fseats, board, getColor(getPiece_s(tseat)), false);
     for (int i = 0; i < pieCount; ++i) {
         int mseatCount = canMoveSeats(mseats, board, fseats[i], true);
         for (int j = 0; j < mseatCount; ++j) {
             if (mseats[j] == tseat) {
                 Piece eatPiece0 = movePiece(fseat, tseat, getBlankPiece()); // 对方走一着
                 Piece eatPiece1 = movePiece(fseats[i], tseat, getBlankPiece()); // 己方走一着
-                
-                bool willKill=false;
+
+                bool willKill = false;
                 //bool willKill = isWillKill(board, getColor(getPiece_s(tseat))); // 是否被杀
 
                 movePiece(tseat, fseats[i], eatPiece1);

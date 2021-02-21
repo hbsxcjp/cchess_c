@@ -216,6 +216,24 @@ void ustrToMD5(unsigned char* md5, unsigned char* source)
     MD5Final(&context, md5);
 }
 
+bool chars_equal(const char* dst, const char* src, int len)
+{
+    for (int i = 0; i < len; ++i)
+        if (dst[i] != src[i])
+            return false;
+    return true;
+}
+
+void hashToStr(char* str, unsigned char* hash, int length)
+{
+    str[0] = '\x0';
+    char tmpStr[3];
+    for (int i = 0; i < length; i++) {
+        sprintf(tmpStr, "%02x", hash[i]);
+        strcat(str, tmpStr);
+    }
+}
+
 void testMD5_1(void)
 {
     int i;

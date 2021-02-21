@@ -128,14 +128,15 @@ inline Seat getSeat_p(CPiece piece) { return piece->seat; }
 
 inline void setSeat(Piece piece, Seat seat) { piece->seat = seat; }
 
-int getLiveSeats_pieces(Seat* seats, Pieces pieces, PieceColor color)
+int getLiveSeats_pieces(Seat* seats, Pieces pieces, PieceColor color, bool filterStronge)
 {
     int count = 0;
-    Seat seat;
     for (int k = KING; k < NOTKIND; ++k) {
         Piece apiece = getPieces__(pieces, color, k);
         for (int i = 0; i < pieces->count[k]; ++i) {
-            if ((seat = getSeat_p(apiece + i)) != NULL)
+            Seat seat = getSeat_p(apiece + i);
+            if (seat != NULL
+                && (!filterStronge || isStronge(apiece)))
                 seats[count++] = seat;
         }
     }

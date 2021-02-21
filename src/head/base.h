@@ -85,12 +85,14 @@ typedef enum {
     NOTFMT
 } RecFormat;
 
+/*
 // 局面存储类型
 typedef enum {
     //FEN_MovePtr,
     FEN_MRValue,
     Hash_MRValue
 } AspFormat;
+//*/
 
 // 着法类型
 typedef struct Move* Move;
@@ -99,6 +101,7 @@ typedef const struct Move* CMove;
 // 局面记录类型
 typedef struct Aspects* Aspects;
 typedef const struct Aspects* CAspects;
+
 // 棋局类型
 typedef struct ChessManual* ChessManual;
 typedef const struct ChessManual* CChessManual;
