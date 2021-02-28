@@ -10,8 +10,8 @@
 static int getPrime(int size)
 {
     //static int primes[] = { 509, 509, 1021, 2053, 4093, 8191, 16381, 32771, 65521, INT_MAX };
-    //3, 7, 13, 31, 61, 127, 251, 509,
-    int primes[] = { 1021, 2039, 4093, 8191, 16381, 32749, 65521,
+    //3, 7, 13,
+    int primes[] = { 31, 61, 127, 251, 509, 1021, 2039, 4093, 8191, 16381, 32749, 65521,
         131071, 262139, 524287, 1048573, 2097143, 4194301, 8388593, 16777213, 33554393,
         67108859, 134217689, 268435399, 536870909, 1073741789, INT32_MAX };
     int i = 0;
@@ -34,7 +34,7 @@ static unsigned int BKDRHash(const char* src)
 
 typedef struct binding* Binding;
 struct binding {
-    const char* key;
+    char* key;
     void* value;
 
     Binding link;
@@ -66,7 +66,7 @@ Table newTable(int hint, void delValue(void*))
 // 释放桶外的一个binding结构
 static void cutBinding__(Table table, Binding p)
 {
-    free((char*)p->key);
+    free(p->key);
     table->delValue(p->value);
     free(p);
 }
@@ -87,6 +87,7 @@ void delTable(Table table)
     assert(table);
     for (size_t i = 0; i < table->size; i++)
         delBinding__(table, table->buckets[i]);
+    free(table->buckets);
     free(table);
 }
 
@@ -102,10 +103,10 @@ int getTableLength(Table table)
     return table->length;
 }
 
-// 取得某个键的内部桶首指针
+// 取得某个键的桶首指针
 inline static Binding* getHeadBinding__(Table table, const char* key)
 {
-    return &table->buckets[BKDRHash(key) % table->size];
+    return table->buckets + (BKDRHash(key) % table->size);
 }
 
 // 取得某个桶中与某个键相等的内部结构指针
@@ -117,7 +118,7 @@ static Binding getBinding__(Binding* pp, const char* key)
     return p; // 空指针 或 目标对象指针
 }
 
-static void insertBinding__(const char* key, void* value, Binding* pp)
+static void insertBinding__(char* key, void* value, Binding* pp)
 {
     Binding p = malloc(sizeof(*p));
     p->key = key;
@@ -126,48 +127,51 @@ static void insertBinding__(const char* key, void* value, Binding* pp)
     *pp = p;
 }
 
-static void loadBinding__(const char* key, void* value, Table* ptable)
+static void loadBinding__(char* key, void* value, Table table)
 {
-    insertBinding__(key, value, getHeadBinding__(*ptable, key));
+    Binding* pp = getHeadBinding__(table, key);
+    insertBinding__(key, value, pp);
 }
 
 // 源表内容迁移至新表
 static void reloadTable__(Table* ptable)
 {
-    //*
-    Table oldTable = *ptable;
-    *ptable = newTable(oldTable->size + 1, oldTable->delValue);
-    mapTable(oldTable, (void (*)(const char*, void*, void*))loadBinding__, ptable);
-    (*ptable)->length = oldTable->length;
+    Table oldTable = *ptable,
+          nTable = newTable(oldTable->size + 1, oldTable->delValue);
+    mapTable(oldTable, (void (*)(char*, void*, void*))loadBinding__, nTable);
+    nTable->length = oldTable->length;
 
     for (size_t i = 0; i < oldTable->size; i++) {
-        Binding p = oldTable->buckets[i], q;
+        Binding p = oldTable->buckets[i];
         while (p) {
-            q = p->link;
-            free(p); // 不释放原有的binding结构内字段(key,value)
+            Binding q = p->link;
+            free(p); // 不释放原有的binding结构内字段(key, value)
             p = q;
         }
     }
+    free(oldTable->buckets);
     free(oldTable);
-    //*/
+
+    *ptable = nTable;
 }
 
-void putTable(Table* ptable, const char* key, void* value)
+void putTable(Table* ptable, char* key, void* value)
 {
-    //assert(*ptable);
+    assert(ptable && *ptable);
     assert(key);
     Table table = *ptable;
     Binding *pp = getHeadBinding__(table, key),
             p = getBinding__(pp, key);
     if (p == NULL) {
-        /*/ 检查容量，如果超出装载因子则扩容
-         if (table->length >= table->size * TableLoadFactor && table->size < INT32_MAX){
+        // 检查容量，如果超出装载因子则扩容
+        if (table->length >= table->size * TableLoadFactor
+            && table->size < INT32_MAX) {
             reloadTable__(ptable);
             table = *ptable;
-         }
-         //*/
+            pp = getHeadBinding__(table, key);
+        }
 
-     //   insertBinding__(key, value, pp);
+        insertBinding__(key, value, pp);
         table->length++;
     } else {
         table->delValue(p->value);
@@ -200,7 +204,7 @@ void removeTable(Table table, const char* key)
 }
 
 // 对每个键值对调用apply指向的函数
-void mapTable(Table table, void apply(const char* key, void* value, void* cl), void* cl)
+void mapTable(Table table, void apply(char* key, void* value, void* cl), void* cl)
 {
     assert(table);
     assert(apply);

@@ -2,6 +2,6 @@
 
 git status
 git add --no-all src/*.c src/head/*.h
-git commit -am "E580 commit."
+git commit -am "GeekPro commit."
 git push origin linux
 git branch -av

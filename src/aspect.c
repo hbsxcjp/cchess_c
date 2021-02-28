@@ -118,7 +118,7 @@ static void putMoveRec__(MoveReces mrs, int rowcols, int number, int weight)
     mrs->mrCount++;
 }
 
-static MoveReces putMoveReces__(Aspects asps, const char* key)
+static MoveReces putMoveReces__(Aspects asps, char* key)
 {
     assert(asps);
     MoveReces mrs = getTable(asps->table, key);
@@ -134,12 +134,12 @@ static void appendAspects__(Move move, Board board, Aspects asps)
 {
     wchar_t FEN[SEATNUM];
     getFEN_board(FEN, board);
-    char fen[SEATNUM];
+    char* fen = malloc(SEATNUM * sizeof(char));
     wcstombs(fen, FEN, SEATNUM);
     int rowcols = getRowCols_m(move);
 
     MoveReces mrs = putMoveReces__(asps, fen);
-    /*
+    //*
     MoveRec mr = mrs->rootMR;
     while (mr) {
         // 找到相同着法，调增number后退出
@@ -179,7 +179,6 @@ void appendAspectsFromCMdir(Aspects asps, const char* dirName)
 
 Aspects getAspectsFromAspsfile(const char* fileName)
 {
-    Aspects asps = newAspects(0);
 
     FILE* fin = fopen(fileName, "r");
     char tag[FILENAME_MAX];
@@ -187,7 +186,8 @@ Aspects getAspectsFromAspsfile(const char* fileName)
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
 
     int mrCount = 0, rowcols = 0, number = 0, weight = 0;
-    char fen[SEATNUM];
+    Aspects asps = newAspects(0);
+    char* fen = malloc(SEATNUM * sizeof(char));
     while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
         if (fscanf(fin, "%d", &mrCount) != 1)
             continue;
@@ -201,13 +201,15 @@ Aspects getAspectsFromAspsfile(const char* fileName)
             putMoveRec__(mrs, rowcols, number, weight);
             asps->mrCount++;
         }
+        fen = malloc(SEATNUM * sizeof(char));
     }
+    free(fen);
 
     fclose(fin);
     return asps;
 }
 
-static void writefMoveRecesShow__(const char* key, MoveReces mrs, void* fout)
+static void writefMoveRecesShow__(char* key, MoveReces mrs, void* fout)
 {
     fprintf(fout, "\nFEN:%s ", key);
     //fprintf(fout, "\nFEN:%s ", mrs->key);
@@ -222,7 +224,7 @@ static void writefMoveRecesShow__(const char* key, MoveReces mrs, void* fout)
 void writeAspectsShow(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "w");
-    mapTable(asps->table, (void (*)(const char*, void*, void*))writefMoveRecesShow__, fout);
+    mapTable(asps->table, (void (*)(char*, void*, void*))writefMoveRecesShow__, fout);
 
     int aspSize = getTableSize(asps->table),
         aspCount = getTableLength(asps->table);
@@ -232,7 +234,7 @@ void writeAspectsShow(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static void storeMoveRecesFEN__(const char* key, MoveReces mrs, void* fout)
+static void storeMoveRecesFEN__(char* key, MoveReces mrs, void* fout)
 {
     fprintf(fout, "\n%s %d ", key, mrs->mrCount);
 
@@ -247,7 +249,7 @@ void storeAspectsFEN(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "w");
     fprintf(fout, "%s\n", ASPLIB_MARK);
-    mapTable(asps->table, (void (*)(const char*, void*, void*))storeMoveRecesFEN__, fout);
+    mapTable(asps->table, (void (*)(char*, void*, void*))storeMoveRecesFEN__, fout);
     fprintf(fout, "\n");
 
     fclose(fout);
@@ -259,7 +261,7 @@ static AspectAnalysis newAspectAnalysis__(void)
     aa->move = malloc(sizeof(struct NumArray));
     aa->mr = malloc(sizeof(struct NumArray));
     aa->mrs = malloc(sizeof(struct NumArray));
-    aa->move->size = aa->mr->size = aa->mrs->size = 2 << 9;
+    aa->move->size = aa->mr->size = aa->mrs->size = 2 << 4;
     aa->move->count = aa->mr->count = aa->mrs->count = 0;
     aa->move->num = malloc(aa->move->size * sizeof(int));
     aa->mr->num = malloc(aa->mr->size * sizeof(int));
@@ -288,7 +290,7 @@ static void appendNumArray__(NumArray na, int value)
     na->num[na->count++] = value;
 }
 
-static void calMRNumber__(const char* key, MoveReces mrs, AspectAnalysis aa)
+static void calMRNumber__(char* key, MoveReces mrs, AspectAnalysis aa)
 {
     appendNumArray__(aa->mr, mrs->mrCount);
 
@@ -300,7 +302,7 @@ static void calMRNumber__(const char* key, MoveReces mrs, AspectAnalysis aa)
 }
 
 // 待完善
-static void calMrsNumber__(const char* key, MoveReces mrs, AspectAnalysis aa)
+static void calMrsNumber__(char* key, MoveReces mrs, AspectAnalysis aa)
 {
     static int count = 0;
     appendNumArray__(aa->mrs, count);
@@ -310,6 +312,7 @@ static void calWriteOut__(FILE* fout, const char* entry, NumArray na)
 {
     if (na->count <= 0 || na->size <= 0)
         return;
+
     int imax = 0, total = 0;
     for (int i = 0; i < na->count; ++i) {
         imax = fmax(imax, (na->num)[i]);
@@ -350,10 +353,10 @@ void analyzeAspects(char* fileName, CAspects asps)
     }
     //*/
     // 加入局面表每个桶的局面个数
-    mapTable(asps->table, (void (*)(const char*, void*, void*))calMrsNumber__, aa);
+    mapTable(asps->table, (void (*)(char*, void*, void*))calMrsNumber__, aa);
 
     // 加入单链表的着法记录个数、每个着法重复次数
-    mapTable(asps->table, (void (*)(const char*, void*, void*))calMRNumber__, aa);
+    mapTable(asps->table, (void (*)(char*, void*, void*))calMRNumber__, aa);
 
     int aspSize = getTableSize(asps->table),
         aspCount = getTableLength(asps->table);
@@ -389,9 +392,8 @@ static bool aspect_equal__(MoveReces asp0, MoveReces asp1, bool isSame)
     if (!(asp0->mrCount == asp1->mrCount
             && (!isSame
                 // 以下为isSame为真时进行比较
-                || (asp0->klen == asp1->klen
-                    && asp0->key && asp1->key
-                    && chars_equal(asp0->key, asp1->key, asp0->klen))))) {
+                || (asp0->key && asp1->key
+                    && strcmp(asp0->key, asp1->key))))) {
         //printf("\n%d %s", __LINE__, __FILE__);
         return false;
     }

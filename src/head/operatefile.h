@@ -61,7 +61,6 @@ size_t mbstowcs_gbk(wchar_t* dest, char* src_gbk);
 
 // 文件信息结构数组指针
 typedef struct FileInfo* FileInfo;
-
 struct FileInfo {
     char* name;
     unsigned int attrib;

@@ -3,6 +3,7 @@
 #include "head/mylinkedlist.h"
 #include "head/tools.h"
 
+
 // 返回指向目录与文件的分界字符指针，如不存在则返回NULL
 static char* getSplitChar__(const char* fileName)
 {
@@ -222,18 +223,21 @@ void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, 
 
 #else
     //#ifdef _WIN32
-    long hFile = 0; //文件句柄
+    intptr_t hFile = 0; //文件句柄
     struct _finddata_t wfileinfo = { 0 }; //文件信息
     char findName[FILENAME_MAX];
     snprintf(findName, FILENAME_MAX, "%s/*", dirName);
+
     //printf("%d: %s\n", __LINE__, findName);
     //fflush(stdout);
+
     if ((hFile = _findfirst(findName, &wfileinfo)) == -1)
         return;
 
     do {
         if (strcmp(wfileinfo.name, ".") == 0 || strcmp(wfileinfo.name, "..") == 0)
             continue;
+
         snprintf(findName, FILENAME_MAX, "%s/%s", dirName, wfileinfo.name);
         //如果是目录且要求递归，则递归调用
         if (wfileinfo.attrib & _A_SUBDIR) {

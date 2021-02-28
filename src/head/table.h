@@ -18,7 +18,7 @@ int getTableSize(Table table);
 int getTableLength(Table table);
 
 // 添加一个新的键值对,或改变一个现存键值对中的值
-void putTable(Table* table, const char* key, void* value);
+void putTable(Table* table, char* key, void* value);
 
 // 取得与某个键关联的值
 void* getTable(Table table, const char* key);
@@ -27,6 +27,6 @@ void* getTable(Table table, const char* key);
 void removeTable(Table table, const char* key);
 
 // 对每个键值对调用apply指向的函数
-void mapTable(Table table, void apply(const char* key, void* value, void* cl), void* cl);
+void mapTable(Table table, void apply( char* key, void* value, void* cl), void* cl);
 
 #endif

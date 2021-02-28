@@ -788,11 +788,12 @@ static void testAspects__(CAspects asps)
 
     writeAspectsShow(show, asps);
     storeAspectsFEN(libs, asps);
+    //analyzeAspects(log, asps);
 
     Aspects asps0 = getAspectsFromAspsfile(libs),
             asps1 = getAspectsFromAspsfile(libs);
-    //analyzeAspects(log, asps0);
-    //CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
+    analyzeAspects(log, asps0);
+    CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
     
     delAspects(asps0);
     delAspects(asps1);
@@ -802,7 +803,7 @@ static void test_aspect_file(void)
 {
     Aspects asps = newAspects(0);
     appendAspectsFromCMfile(asps, xqfFileName__);
-   // testAspects__(asps);
+    testAspects__(asps);
 
     delAspects(asps);
 }
@@ -814,7 +815,6 @@ static void test_aspect_dir(void)
         char fromDir[FILENAME_MAX];
         sprintf(fromDir, "%s%s", dirNames__[dir], ".xqf");
         //printf("%d: %s\n", __LINE__, fromDir);
-
         appendAspectsFromCMdir(asps, fromDir);
     }
     testAspects__(asps);
@@ -824,7 +824,7 @@ static void test_aspect_dir(void)
 
 static CU_TestInfo suite_aspect[] = {
     { "test_aspect_file", test_aspect_file },
- //   { "test_aspect_dir", test_aspect_dir },
+    { "test_aspect_dir", test_aspect_dir },
     CU_TEST_INFO_NULL,
 };
 
