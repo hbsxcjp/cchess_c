@@ -27,6 +27,9 @@ void* getTable(Table table, const char* key);
 void removeTable(Table table, const char* key);
 
 // 对每个键值对调用apply指向的函数
-void mapTable(Table table, void apply( char* key, void* value, void* cl), void* cl);
+void mapTable(Table table, void apply(char* key, void* value, void* cl), void* cl);
+
+// 对每个桶调用apply指向的函数
+void mapTable_Buckets(Table table, void apply(int count, void* cl), void* cl);
 
 #endif

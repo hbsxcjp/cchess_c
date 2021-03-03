@@ -11,6 +11,8 @@
 typedef struct MoveRec* MoveRec;
 typedef struct MoveReces* MoveReces;
 
+#define FEN_MAXSIZE 80
+
 struct MoveRec {
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
     int number; // 历史棋谱中某局面下该着法已发生的次数(0:重复标记，表示后续有相同着法);本局面的重复次数
@@ -126,20 +128,20 @@ static MoveReces putMoveReces__(Aspects asps, char* key)
         mrs = newMoveReces__();
         putTable(&asps->table, key, mrs);
         asps->mrsCount++;
-    }
+    } else
+        free(key);
     return mrs;
 }
 
 static void appendAspects__(Move move, Board board, Aspects asps)
 {
-    wchar_t FEN[SEATNUM];
+    wchar_t FEN[FEN_MAXSIZE];
     getFEN_board(FEN, board);
-    char* fen = malloc(SEATNUM * sizeof(char));
-    wcstombs(fen, FEN, SEATNUM);
+    char* fen = malloc(FEN_MAXSIZE * sizeof(char));
+    wcstombs(fen, FEN, FEN_MAXSIZE);
     int rowcols = getRowCols_m(move);
 
     MoveReces mrs = putMoveReces__(asps, fen);
-    //*
     MoveRec mr = mrs->rootMR;
     while (mr) {
         // 找到相同着法，调增number后退出
@@ -154,7 +156,6 @@ static void appendAspects__(Move move, Board board, Aspects asps)
 
     // 未找到相同着法，插入新着法记录
     putMoveRec__(mrs, rowcols, 1, 0);
-    //*/
     asps->mrCount++;
 }
 
@@ -179,16 +180,15 @@ void appendAspectsFromCMdir(Aspects asps, const char* dirName)
 
 Aspects getAspectsFromAspsfile(const char* fileName)
 {
-
     FILE* fin = fopen(fileName, "r");
     char tag[FILENAME_MAX];
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
 
+    Aspects asps = newAspects(1024);
     int mrCount = 0, rowcols = 0, number = 0, weight = 0;
-    Aspects asps = newAspects(0);
-    char* fen = malloc(SEATNUM * sizeof(char));
-    while (fscanf(fin, "%s", fen) == 1) { // 遇到空行(只有字符'\n')则结束
+    char* fen = malloc(FEN_MAXSIZE * sizeof(char));
+    while (fscanf(fin, "%s", fen) == 1) {
         if (fscanf(fin, "%d", &mrCount) != 1)
             continue;
 
@@ -201,7 +201,7 @@ Aspects getAspectsFromAspsfile(const char* fileName)
             putMoveRec__(mrs, rowcols, number, weight);
             asps->mrCount++;
         }
-        fen = malloc(SEATNUM * sizeof(char));
+        fen = malloc(FEN_MAXSIZE * sizeof(char));
     }
     free(fen);
 
@@ -211,7 +211,7 @@ Aspects getAspectsFromAspsfile(const char* fileName)
 
 static void writefMoveRecesShow__(char* key, MoveReces mrs, void* fout)
 {
-    fprintf(fout, "\nFEN:%s ", key);
+    fprintf(fout, "\nFEN_%d:%s %d ", (int)strlen(key), key, mrs->mrCount);
     //fprintf(fout, "\nFEN:%s ", mrs->key);
 
     MoveRec mr = mrs->rootMR;
@@ -248,7 +248,7 @@ static void storeMoveRecesFEN__(char* key, MoveReces mrs, void* fout)
 void storeAspectsFEN(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "w");
-    fprintf(fout, "%s\n", ASPLIB_MARK);
+    fprintf(fout, "%s", ASPLIB_MARK);
     mapTable(asps->table, (void (*)(char*, void*, void*))storeMoveRecesFEN__, fout);
     fprintf(fout, "\n");
 
@@ -261,7 +261,7 @@ static AspectAnalysis newAspectAnalysis__(void)
     aa->move = malloc(sizeof(struct NumArray));
     aa->mr = malloc(sizeof(struct NumArray));
     aa->mrs = malloc(sizeof(struct NumArray));
-    aa->move->size = aa->mr->size = aa->mrs->size = 2 << 4;
+    aa->move->size = aa->mr->size = aa->mrs->size = 2 << 9;
     aa->move->count = aa->mr->count = aa->mrs->count = 0;
     aa->move->num = malloc(aa->move->size * sizeof(int));
     aa->mr->num = malloc(aa->mr->size * sizeof(int));
@@ -282,7 +282,7 @@ static void delAspectAnalysis__(AspectAnalysis aa)
 
 static void appendNumArray__(NumArray na, int value)
 {
-    if (na->count >= na->size) {
+    if (na->count == na->size) {
         na->size *= 2;
         na->num = realloc(na->num, na->size * sizeof(int));
     }
@@ -301,10 +301,8 @@ static void calMRNumber__(char* key, MoveReces mrs, AspectAnalysis aa)
     }
 }
 
-// 待完善
-static void calMrsNumber__(char* key, MoveReces mrs, AspectAnalysis aa)
+static void calMrsNumber__(int count, AspectAnalysis aa)
 {
-    static int count = 0;
     appendNumArray__(aa->mrs, count);
 }
 
@@ -340,21 +338,8 @@ void analyzeAspects(char* fileName, CAspects asps)
     FILE* fout = fopen(fileName, "a");
     AspectAnalysis aa = newAspectAnalysis__();
 
-    /*
-    MoveReces mrs;
-    for (int i = 0; i < asps->size; ++i) {
-        if ((mrs = asps->rootAsps[i])) {
-            int count = 1;
-            while ((mrs = mrs->link))
-                count++;
-            // 加入单链表的局面个数
-            appendNumArray__(aa->mrs, count);
-        }
-    }
-    //*/
     // 加入局面表每个桶的局面个数
-    mapTable(asps->table, (void (*)(char*, void*, void*))calMrsNumber__, aa);
-
+    mapTable_Buckets(asps->table, (void (*)(int, void*))calMrsNumber__, aa);
     // 加入单链表的着法记录个数、每个着法重复次数
     mapTable(asps->table, (void (*)(char*, void*, void*))calMRNumber__, aa);
 
@@ -371,58 +356,35 @@ void analyzeAspects(char* fileName, CAspects asps)
     fclose(fout);
 }
 
-static bool moveRec_equal__(MoveRec mr0, MoveRec mr1)
+static void mrs_equal__(const char* key, MoveReces mrs0, Aspects asps1)
 {
-    return ((mr0 == NULL && mr1 == NULL)
-        || (mr0 && mr1
-            && mr0->rowcols == mr1->rowcols
-            && mr0->number == mr1->number
-            && mr0->weight == mr1->weight));
-}
+    MoveReces mrs1 = getTable(asps1->table, key);
+    assert((mrs0 == NULL) == (mrs1 == NULL));
+    assert(mrs0 && mrs1);
 
-static bool aspect_equal__(MoveReces asp0, MoveReces asp1, bool isSame)
-{
-    if (asp0 == NULL && asp1 == NULL)
-        return true;
-    // 其中有一个为空指针
-    if (!(asp0 && asp1))
-        return false;
+    assert(mrs0->mrCount == mrs1->mrCount
+        && mrs0->moveColor == mrs1->moveColor
+        && mrs0->fail == mrs1->fail);
 
-    /*
-    if (!(asp0->mrCount == asp1->mrCount
-            && (!isSame
-                // 以下为isSame为真时进行比较
-                || (asp0->key && asp1->key
-                    && strcmp(asp0->key, asp1->key))))) {
-        //printf("\n%d %s", __LINE__, __FILE__);
-        return false;
-    }
-    //*/
-    if (asp0->mrCount != asp1->mrCount) {
-        //printf("\n%d %s", __LINE__, __FILE__);
-        return false;
-    }
-
-    MoveRec mr0 = asp0->rootMR, mr1 = asp1->rootMR;
-    assert(mr0 && mr1);
+    MoveRec mr0 = mrs0->rootMR, mr1 = mrs1->rootMR;
     while (mr0 && mr1) {
-        if (!(moveRec_equal__(mr0, mr1))) {
-            //printf("\n%d %s", __LINE__, __FILE__);
-            return false;
-        }
+        assert((mr0 == NULL) == (mr1 == NULL)
+            || (mr0 && mr1
+                && mr0->rowcols == mr1->rowcols
+                && mr0->number == mr1->number
+                && mr0->weight == mr1->weight
+                && mr0->killing == mr1->killing
+                && mr0->weight == mr1->weight
+                && mr0->willKill == mr1->willKill));
+
         mr0 = mr0->link;
         mr1 = mr1->link;
     }
     // mr0、mr1未同时抵达终点（空指针）
-    if (mr0 != NULL || mr1 != NULL) {
-        //printf("\n%d %s", __LINE__, __FILE__);
-        return false;
-    }
-
-    return true;
+    assert((mr0 == NULL) == (mr1 == NULL));
 }
 
-bool aspects_equal(CAspects asps0, CAspects asps1)
+bool aspects_equal(CAspects asps0, Aspects asps1)
 {
     if (asps0 == NULL && asps1 == NULL)
         return true;
@@ -432,50 +394,14 @@ bool aspects_equal(CAspects asps0, CAspects asps1)
 
     if (!(getTableSize(asps0->table) == getTableSize(asps1->table)
             && getTableLength(asps0->table) == getTableLength(asps1->table)
-            //if (!(asps0->size == asps1->size
-            //&& asps0->aspCount == asps1->aspCount
-            && asps0->mrCount && asps1->mrCount)) {
-        //printf("\n%d %s", __LINE__, __FILE__);
+            && asps0->mrCount == asps1->mrCount
+            && asps0->mrsCount == asps1->mrsCount)) {
         return false;
     }
 
-    /*
-    int aspCount = 0;
-    bool isSame = asps0->aspFormat == asps1->aspFormat;
-    // 格式不相同，且前一个为Hash格式则需更换
-    if (!isSame && (asps0->aspFormat == Hash_MRValue)) {
-        CAspects tmpAsps = asps0;
-        asps0 = asps1;
-        asps1 = tmpAsps;
-    }
+    // 断言全部值记录相等
+    mapTable(asps0->table, (void (*)(char*, void*, void*))mrs_equal__, asps1);
 
-    for (int i = 0; i < asps0->size; ++i) {
-        MoveReces asp0 = asps0->rootAsps[i], asp1 = NULL;
-        if (asp0 == NULL)
-            continue;
-
-        do {
-            if (isSame)
-                asp1 = getMoveReces__(asps1, asp0->key, asp0->klen);
-            else {
-                unsigned char hash[HashSize];
-                getHashFun(hash, (unsigned char*)asp0->key);
-
-                //getHashFun(hash, (const unsigned char*)asp0->key);
-                asp1 = getMoveReces__(asps1, (char*)hash, HashSize);
-            }
-            if (!(aspect_equal__(asp0, asp1, isSame))) {
-                //printf("\n%d %s", __LINE__, __FILE__);
-                return false;
-            }
-            aspCount++;
-        } while ((asp0 = asp0->link));
-    }
-    if (aspCount != asps0->aspCount) {
-        //printf("\n%d %s", __LINE__, __FILE__);
-        return false;
-    }
-    //*/
-
+    printf("\n断言局面对象相等成功！%d %s. ", __LINE__, __FILE__);
     return true;
 }

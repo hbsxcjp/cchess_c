@@ -31,6 +31,6 @@ void storeAspectsFEN(char* fileName, CAspects aspects);
 void analyzeAspects(char* fileName, CAspects aspects);
 
 // 检查数据文件的数据记录是否一致
-bool aspects_equal(CAspects asps0, CAspects asps1);
+bool aspects_equal(CAspects asps0, Aspects asps1);
 
 #endif

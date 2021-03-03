@@ -193,17 +193,19 @@ void removeTable(Table table, const char* key)
     assert(table);
     assert(key);
     //table->timestamp++;
-    Binding* pp = getHeadBinding__(table, key);
-    for (Binding p = *pp; p != NULL; pp = &p, p = p->link)
+    Binding *pp = getHeadBinding__(table, key), p = *pp, q = p;
+    for (; p != NULL; q = p, p = p->link)
         if (strcmp(key, p->key) == 0) {
-            *pp = p->link;
+            if (p == *pp) // 桶首第一个
+                *pp = p->link;
+            else
+                q->link = p->link;
             cutBinding__(table, p);
             table->length--;
             return;
         }
 }
 
-// 对每个键值对调用apply指向的函数
 void mapTable(Table table, void apply(char* key, void* value, void* cl), void* cl)
 {
     assert(table);
@@ -213,6 +215,21 @@ void mapTable(Table table, void apply(char* key, void* value, void* cl), void* c
         for (Binding p = table->buckets[i]; p != NULL; p = p->link) {
             apply(p->key, p->value, cl);
             // assert(table->timestamp == stamp); // 检查apply是否修改了table（使用put或remove）
+        }
+    }
+}
+
+void mapTable_Buckets(Table table, void apply(int count, void* cl), void* cl)
+{
+    assert(table);
+    assert(apply);
+    for (size_t i = 0; i < table->size; i++) {
+        Binding p = table->buckets[i];
+        if (p != NULL) {
+            int count = 0;
+            for (; p != NULL; p = p->link)
+                ++count;
+            apply(count, cl);
         }
     }
 }
