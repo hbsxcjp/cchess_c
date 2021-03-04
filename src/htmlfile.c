@@ -31,6 +31,8 @@ wchar_t* getWebWstr(const wchar_t* wurl)
     if (curl) {
         char url[WIDEWCHARSIZE];
         wcstombs(url, wurl, WIDEWCHARSIZE);
+        //printf("\n%d: %s\n", __LINE__, url);
+
         curl_easy_setopt(curl, CURLOPT_URL, url);
         //curl_easy_setopt(curl, CURLOPT_TIMEOUT, 3);
 
@@ -41,9 +43,11 @@ wchar_t* getWebWstr(const wchar_t* wurl)
         //curl_easy_setopt(curl, CURLOPT_WRITEDATA, fout);
 
         curl_easy_perform(curl); //执行请求
+        //assert(strlen(str) > 0);
 
         wstr = malloc((strlen(str) + 1) * sizeof(wchar_t));
         mbstowcs_gbk(wstr, str);
+        //assert(wcslen(wstr) > 0);
 
         curl_easy_cleanup(curl);
     }
@@ -109,10 +113,13 @@ static void wcscatDestStr__(NoMatchOffset noMatchOffset, wchar_t* destWstr, cons
 
 static wchar_t* getEccoWebWstring__(wchar_t sn_0)
 {
-    wchar_t *wurl = L"http://www.xqbase.com/ecco/ecco_%c.htm",
+    wchar_t *wurl = L"https://www.xqbase.com/ecco/ecco_%c.htm",
             wurl_x[WCHARSIZE];
     swprintf(wurl_x, WCHARSIZE, wurl, sn_0);
+    //fwprintf(fout, L"%ls\n", wurl_x);
+
     wchar_t* wstr = getWebWstr(wurl_x);
+    //assert(wcslen(wstr) > 0);
     if (!wstr)
         fwprintf(fout, L"\n页面没有找到：%ls\n", wurl_x);
 
@@ -169,32 +176,9 @@ MyLinkedList getIdUrlMyLinkedList_xqbase_range(int start, int end)
     MyLinkedList idUrlMyLinkedList = newMyLinkedList((void (*)(void*))free);
     for (int id = start; id < end; ++id) {
         wchar_t wurl[WCHARSIZE];
-        swprintf(wurl, WCHARSIZE, L"http://www.xqbase.com/xqbase/?gameid=%d", id);
+        swprintf(wurl, WCHARSIZE, L"https://www.xqbase.com/xqbase/?gameid=%d", id);
         addMyLinkedList(idUrlMyLinkedList, getSubStr(wurl, 0, wcslen(wurl)));
     }
 
     return idUrlMyLinkedList;
-}
-
-void html_test(void)
-{
-    //char* webFileName = "chessManual/ecco.htm";
-    //getEccoLibSrcFile(webFileName);
-
-    /*
-    FILE* fout = openFile_utf8(webFileName, "w");
-    fwprintf(fout, webwstr);
-    fclose(fout);
-    free(webwstr);
-    //*/
-
-    //ChessManual cm = getChessManual_idUrl(L"2010");
-    //printCmMyLinkedList(fout, );
-    //delChessManual(cm);
-
-    //char* cleanFileName = "chessManual/ecco_lib.txt";
-    //getCleanWebFile(cleanFileName, webFileName);
-
-    //* 读取网页文件存入数据库
-    //*/
 }

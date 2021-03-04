@@ -402,6 +402,6 @@ bool aspects_equal(CAspects asps0, Aspects asps1)
     // 断言全部值记录相等
     mapTable(asps0->table, (void (*)(char*, void*, void*))mrs_equal__, asps1);
 
-    printf("\n断言局面对象相等成功！%d %s. ", __LINE__, __FILE__);
+    //printf("\n断言局面对象相等成功！%d %s. ", __LINE__, __FILE__);
     return true;
 }

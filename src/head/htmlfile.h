@@ -12,7 +12,7 @@ wchar_t* getWebWstr(const wchar_t* wurl);
 wchar_t* getEccoLibWebClearWstring(void);
 
 MyLinkedList getIdUrlMyLinkedList_xqbase_range(int start, int end);
+
 //traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))printWstr, fout, NULL, NULL);
 
-void html_test(void);
 #endif

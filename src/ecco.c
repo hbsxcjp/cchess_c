@@ -254,9 +254,9 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 for (int f = 0; f < count - 1; ++f) {
                     pcrewch_copy_substring(tempWstr, ovector, count, f + 1, wstr, WCHARSIZE);
                     //    L"SN", L"NAME", L"PRE_MVSTRS", L"MVSTRS", L"NUMS", L"REGSTR"
-                    int index = ((g == 2) ? (f > 1 ? f + 1 : f)
+                    int idx = ((g == 2) ? (f > 1 ? f + 1 : f)
                                           : (f > 1 ? (f == 2 ? NUMS_INDEX : MVSTRS_INDEX) : f));
-                    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[index], wstr);
+                    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[idx], wstr);
                 }
                 addMyLinkedList(eccoMyLinkedList, ecco);
                 index++;
@@ -283,8 +283,9 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
     // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
     traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))setEcco_pre_mvstrs__,
         eccoMyLinkedList, NULL, NULL);
-    //if (index != 555)
-    //    printf("\nline:%d index:%d\n", __LINE__, index);
+
+    if (index != 555)
+        printf("\nline:%d index:%d\n", __LINE__, index);
     assert(index == 555);
 }
 
@@ -834,6 +835,7 @@ int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
     }
 
     wchar_t* eccoClearWstring = getEccoLibWebClearWstring();
+    //assert(wcslen(eccoClearWstring) > 0);
     //fwprintf(fout, eccoClearWstring);
 
     MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);

@@ -722,8 +722,6 @@ static void test_chessManual_dir(void)
     //bool isPrint = true;
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
         // 调节控制转换目录  XQF, BIN, JSON, PGN_ICCS, PGN_ZH, PGN_CC
-        //for (RecFormat fromFmt = XQF; fromFmt <= PGN_CC; ++fromFmt)
-        //    for (RecFormat toFmt = BIN; toFmt <= PGN_CC; ++toFmt)
         for (RecFormat fromFmt = XQF; fromFmt <= BIN; ++fromFmt)
             for (RecFormat toFmt = BIN; toFmt <= BIN; ++toFmt)
                 if (fromFmt != toFmt) {
@@ -751,17 +749,18 @@ static void test_chessManual_sqlite(void)
     const char* man_tblName = "manual";
     const char* lib_tblName = "ecco";
     
+    // 初始化数据库
     result = storeEccolib_xqbase(dbName, lib_tblName);
     CU_ASSERT_DOUBLE_EQUAL(result, 555 + 1, 0.01);
-    //*/
+    //
 
-    /* 存储网页棋谱至数据库
+    // 存储网页棋谱至数据库
     int first = 1, last = 150; //ECCO_IDMAX
     result = storeChessManual_xqbase_range(dbName, man_tblName, first, last, 100);
     CU_ASSERT_DOUBLE_EQUAL(result, last, 0.01);
-    //*/
+    //
 
-    /* 读取目录文件存入数据库
+    // 读取目录文件存入数据库
     const char* manualDirName = "chessManual/示例文件";
     result = storeChessManual_dir(dbName, lib_tblName, man_tblName, manualDirName, XQF);
     CU_ASSERT_DOUBLE_EQUAL(result, 34, 0.01);
@@ -794,7 +793,7 @@ static void testAspects__(CAspects asps)
             asps1 = getAspectsFromAspsfile(libs);
     analyzeAspects(log, asps0);
     CU_ASSERT_TRUE(aspects_equal(asps0, asps1));
-    
+
     delAspects(asps0);
     delAspects(asps1);
 }
