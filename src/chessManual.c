@@ -12,6 +12,8 @@
 //#include <regex.h>
 //#include <sys/types.h>
 
+extern FILE* test_out;
+
 struct ChessManual {
     Board board;
     Move rootMove, curMove;
@@ -399,19 +401,29 @@ static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
     unsigned char tag = 0;
     int fcolrow = 0, tcolrow = 0;
     wchar_t* remark = NULL;
+
     readTagRowcolRemark_XQF__(&tag, &fcolrow, &tcolrow, &remark, fin);
+
     int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
     Move move;
-    if (isXQFStoreError(cm->curMove, frow, fcol, trow, tcol)) {
+    if (isColRowValue(cm->curMove, frow, fcol, trow, tcol)) {        
         move = cm->curMove;
         if (remark)
             setRemark(move, remark);
     } else {
         wchar_t rcStr[5];
         getRcStr_rowcol__(rcStr, getRowCol_rc(frow, fcol), getRowCol_rc(trow, tcol));
+
+        /*
+        wchar_t wstr[WIDEWCHARSIZE];
+        getBoardString(wstr, cm->board);
+        fwprintf(test_out, L"rcStr:%ls\n%ls\n\n", rcStr, wstr);
+        //*/
+
         move = appendMove(cm, rcStr, XQF, remark, isOther);
     }
 
+    //printf("%x ", tag);
     if (tag & 0x80) //# 有左子树
         readMove_XQF__(cm, fin, false);
 
@@ -553,6 +565,8 @@ static void readXQF__(ChessManual cm, FILE* fin)
     setBoard_FEN(cm->board, getFENFromCM__(cm));
     if (tag & 0x80)
         readMove_XQF__(cm, fin, false);
+
+    //printf("\nline:%d\n", __LINE__);
 
     backFirst(cm);
 }
@@ -952,7 +966,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
     int rowIndex = 0,
         wchNum = wcschr(lineStart + 1, L'\n') - lineStart - 1,
         colNum = wchNum / (MOVESTR_LEN + 1);
-    //fwprintf(fout, L"\nline:%d r:%d w:%d c:%d\n", __LINE__, rowIndex, wchNum, colNum);
+    //fwprintf(test_out, L"\nline:%d r:%d w:%d c:%d\n", __LINE__, rowIndex, wchNum, colNum);
     while (lineStart && (++lineStart)[0] && lineStart + wchNum <= lineEnd) {
         for (int col = 0; col < colNum; ++col) {
             int subStart = col * (MOVESTR_LEN + 1);
@@ -988,8 +1002,8 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
         addMove_PGN_CC__(cm, mvstrMyLinkedList, rowIndex, 1, 0, false);
     backFirst(cm);
 
-    //traverseMyLinkedList(mvstrMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo, fout, NULL, NULL);
-    //printInfoMyLinkedList(fout, mvstrMyLinkedList);
+    //traverseMyLinkedList(mvstrMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo, test_out, NULL, NULL);
+    //printInfoMyLinkedList(test_out, mvstrMyLinkedList);
 
     pcrewch_free(remReg);
     pcrewch_free(moveReg);
@@ -1000,7 +1014,7 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
 {
     wchar_t *fileWstring = getWString(fin),
             *moveWstring = readInfo_PGN__(cm, fileWstring);
-    //fwprintf(fout, moveWstring);
+    //fwprintf(test_out, moveWstring);
 
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
     setBoard_FEN(cm->board, getFENFromCM__(cm));
@@ -1288,16 +1302,19 @@ static void transFile__(FileInfo fileInfo, OperateDirData odata)
     const char* fileName = fileInfo->name;
     if (!fileIsRight__(fileName))
         return;
+
     //printf("line:%d %s\n", __LINE__, fileName);
 
     ChessManual cm = getChessManual_file(fileName);
-    //printf("\nline:%d %s", __LINE__, fileName);
+
+    //printf("line:%d %s\n", __LINE__, fileName);
 
     char toDirName[FILENAME_MAX], toFileName[FILENAME_MAX];
     //替换源目录名
-    snprintf(toFileName, FILENAME_MAX, "%s/%s", odata->toDir, fileName + strlen(odata->fromDir));
+    snprintf(toFileName, FILENAME_MAX, "%s/%s", odata->toDir, fileName + strlen(odata->fromDir) + 1);
     getDirName(toDirName, toFileName);
     transFileExtName(toFileName, EXTNAMES[odata->tofmt]);
+
     //printf("%d: %s\n", __LINE__, toFileName);
 
     // 检查并创建(多级)目录
@@ -1315,7 +1332,8 @@ static void transFile__(FileInfo fileInfo, OperateDirData odata)
     }
 
     writeChessManual(cm, toFileName);
-    //printf("\nline:%d %s\n", __LINE__, toFileName);
+
+    //printf("line:%d %s\n\n", __LINE__, toFileName);
 
     ++odata->fcount;
     odata->movCount += cm->movCount_;
@@ -1341,12 +1359,12 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
         makeDir(toDir);
         //printf("\nline:%d %s\n", __LINE__, toDir);
     }
-    //printf("\nline:%d %s -> %s", __LINE__, fromDir, toDir);
+    //printf("\nline:%d %s -> %s\n", __LINE__, fromDir, toDir);
 
     operateDir(fromDir, (void (*)(void*, void*))transFile__, odata, true);
 
     if (isPrint)
-        printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d",
+        printf("\n%s =>%s: %d files, %d dirs.\n   movCount: %d, remCount: %d, remLenMax: %d\n",
             fromDir, toDir, odata->fcount, odata->dcount, odata->movCount, odata->remCount, odata->remLenMax);
 
     free(odata);
@@ -1518,8 +1536,8 @@ int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char
     MyLinkedList cmMyLinkedList = getCmMyLinkedList_dir(dirName, fromfmt, eccoMyLinkedList);
     result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
 
-    //printEccoMyLinkedList(fout, eccoMyLinkedList);
-    //printCmMyLinkedList(fout, cmMyLinkedList);
+    //printEccoMyLinkedList(test_out, eccoMyLinkedList);
+    //printCmMyLinkedList(test_out, cmMyLinkedList);
     delMyLinkedList(cmMyLinkedList);
     delMyLinkedList(eccoMyLinkedList);
 
@@ -1557,22 +1575,22 @@ static void addCm_xqbase_idUrl__(const wchar_t* idUrl, MyLinkedList cmMyLinkedLi
         }
         free(wstr);
         if (wcslen(getInfoValue_name_cm(cm, CMINFO_NAMES[TITLE_INDEX])) == 0) {
-            fwprintf(fout, L"Gameid: %ls 下载失败 %3d 次！\n", wcschr(idUrl, L'=') + 1, ++repeat);
+            fwprintf(test_out, L"Gameid: %ls 下载失败 %3d 次！\n", wcschr(idUrl, L'=') + 1, ++repeat);
         } else
             break;
     } while (true);
     addMyLinkedList(cmMyLinkedList, cm);
     /* 验证读取棋谱的正确性
     static int no = 1;
-    printCmStr__(cm, fout, &no, NULL);
+    printCmStr__(cm, test_out, &no, NULL);
 
     wcscpy(value, getInfoValue_name_cm(cm, CMINFO_NAMES[MOVESTR_INDEX]));
     readMove_PGN_ICCSZH__(cm, value, PGN_ZH);
     if (getNext(cm->rootMove))
         setMoveNumZhStr(cm); // 驱动函数
 
-    writePGN__(fout, cm, PGN_ICCS);
-    writePGN__(fout, cm, PGN_CC);
+    writePGN__(test_out, cm, PGN_ICCS);
+    writePGN__(test_out, cm, PGN_CC);
     //*/
 }
 
@@ -1587,7 +1605,7 @@ static int storeChessManual_idurl__(sqlite3* db, const char* man_tblName, void**
     // 存储对象
     result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
 
-    //printCmMyLinkedList(fout, cmMyLinkedList);
+    //printCmMyLinkedList(test_out, cmMyLinkedList);
     delMyLinkedList(cmMyLinkedList);
     return result;
 }
@@ -1628,7 +1646,7 @@ int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, i
         result += storeChessManual_idurl__(db, man_tblName, regs, &regNum, idUrlMyLinkedList);
 
         delMyLinkedList(idUrlMyLinkedList);
-        fwprintf(fout, L"Gameid:%5d-%5d 下载棋谱完成！\n", start, end - 1);
+        fwprintf(test_out, L"Gameid:%5d-%5d 下载棋谱完成！\n", start, end - 1);
     }
 
     for (int i = 0; i < regNum; ++i)

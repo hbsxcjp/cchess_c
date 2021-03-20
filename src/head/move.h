@@ -51,8 +51,9 @@ const wchar_t* getICCS_m(wchar_t* iccs, CMove move);
 // 获取棋盘转换后的iccs着法描述
 const wchar_t* getICCS_mt(wchar_t* iccs, CMove move, Board board, ChangeType ct);
 
-// 检测是否存在一个XQF文件存储时的错误
-bool isXQFStoreError(CMove move, int frow, int fcol, int trow, int tcol);
+// 检测某个着法的行列值
+// (可用于检测XQF文件存储时的重复着法错误)
+bool isColRowValue(CMove move, int frow, int fcol, int trow, int tcol);
 
 // 添加着法
 Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wchar_t* remark, bool isOther);

@@ -4,7 +4,7 @@
 #include "head/pcre_wch.h"
 #include <curl/curl.h>
 
-extern FILE* fout;
+extern FILE* test_out;
 
 // 输出到字符串
 static size_t write_str__(void* inbuf, size_t size, size_t nmemb, void* str)
@@ -116,12 +116,12 @@ static wchar_t* getEccoWebWstring__(wchar_t sn_0)
     wchar_t *wurl = L"https://www.xqbase.com/ecco/ecco_%c.htm",
             wurl_x[WCHARSIZE];
     swprintf(wurl_x, WCHARSIZE, wurl, sn_0);
-    //fwprintf(fout, L"%ls\n", wurl_x);
+    //fwprintf(test_out, L"%ls\n", wurl_x);
 
     wchar_t* wstr = getWebWstr(wurl_x);
     //assert(wcslen(wstr) > 0);
     if (!wstr)
-        fwprintf(fout, L"\n页面没有找到：%ls\n", wurl_x);
+        fwprintf(test_out, L"\n页面没有找到：%ls\n", wurl_x);
 
     return wstr;
 }
@@ -162,7 +162,7 @@ wchar_t* getEccoLibWebClearWstring(void)
             clearwstr, (void*)tempWstr, NULL);
 
         tempWstr = clearwstr;
-        //printNoMatchOffsetMyLinkedList__(fout, noMatchOffsetMyLinkedList);
+        //printNoMatchOffsetMyLinkedList__(test_out, noMatchOffsetMyLinkedList);
         delMyLinkedList(noMatchOffsetMyLinkedList);
         pcrewch_free(reg);
     }

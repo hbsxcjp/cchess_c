@@ -28,7 +28,7 @@
 #include <windows.h>
 #endif
 
-// 跨平台读取utf-8编码文件的打开函数
+// 跨平台打开utf-8编码文件的函数
 FILE* openFile_utf8(const char* fileName, const char* modes);
 
 // 从文件名提取目录名

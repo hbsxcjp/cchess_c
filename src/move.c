@@ -135,9 +135,10 @@ void setMoveZhStr(Move move, Board board)
 
 inline const wchar_t* getRemark(CMove move) { return move->remark; }
 
-bool isXQFStoreError(CMove move, int frow, int fcol, int trow, int tcol)
+bool isColRowValue(CMove move, int frow, int fcol, int trow, int tcol)
 {
-    return (move->fseat && move->tseat && getRow_s(move->fseat) == frow && getCol_s(move->fseat) == fcol
+    return (move->fseat && move->tseat
+        && getRow_s(move->fseat) == frow && getCol_s(move->fseat) == fcol
         && getRow_s(move->tseat) == trow && getCol_s(move->tseat) == tcol);
 }
 
@@ -197,11 +198,13 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         success = setMoveSeat_zh__(move, board, wstr);
         break;
     }
-    //*
-    if (!success || !isCanMove(board, move->fseat, move->tseat)) {
-        delMove(move);
-        return NULL; // 添加着法失败
-    }
+    //* 检查添加着法的合法性，如果是XQF文件则不检测（疑难文件存有错误着法，不能通过检测！）
+    // 存有错误的XQF文件导出到其他格式，添加着法时将不能通过检测！
+    if (fmt != XQF)
+        if (!success || !isCanMove(board, move->fseat, move->tseat)) {
+            delMove(move);
+            return NULL; // 添加着法失败
+        }
     //*/
 
     // 以下在fmt==pgn_iccs时未成功？

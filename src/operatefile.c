@@ -15,13 +15,13 @@ static char* getSplitChar__(const char* fileName)
     return sp0 ? sp0 : sp1;
 }
 
-FILE* openFile_utf8(const char* fileName, const char* modes)
+FILE* openFile_utf8(const char* fileName, const char* mode)
 {
 #ifdef __linux
-    return fopen(fileName, modes);
+    return fopen(fileName, mode);
 #else
     char useModes[WCHARSIZE];
-    strcpy(useModes, modes);
+    strcpy(useModes, mode);
     //strcat(useModes, ", ccs=");
     //strcat(useModes, charSet);
     strcat(useModes, ", ccs=UTF-8");
