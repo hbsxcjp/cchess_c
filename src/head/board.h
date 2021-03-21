@@ -13,6 +13,9 @@ Board newBoard(void);
 // 释放board
 void delBoard(Board board);
 
+int getOtherRow(int row);
+int getOtherCol(int col);
+
 // 获取行列值
 int getRow_s(CSeat seat);
 int getCol_s(CSeat seat);
@@ -25,6 +28,7 @@ int getRowCol_rc(int row, int col);
 int getRowCol_s(CSeat seat);
 int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);
+int getOtherRowCol(int rowcol);
 
 // 根据中文着法取得走棋颜色
 PieceColor getColor_zh(const wchar_t* zhStr);
@@ -46,6 +50,10 @@ wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars);
 
 // 取得棋盘局面的FEN字符串表示
 wchar_t* getFEN_board(wchar_t* FEN, Board board);
+
+// 取得棋盘局面为红棋在底部的FEN字符串标准表示，返回改变类型
+wchar_t* changeFEN(wchar_t* FEN, ChangeType ct);
+ChangeType getBottomRedFEN_board(wchar_t* FEN, Board board);
 
 // FEN字符串转换成pieChars表示的棋盘局面
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);

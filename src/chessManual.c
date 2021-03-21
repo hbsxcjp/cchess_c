@@ -966,6 +966,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
     int rowIndex = 0,
         wchNum = wcschr(lineStart + 1, L'\n') - lineStart - 1,
         colNum = wchNum / (MOVESTR_LEN + 1);
+        
     //fwprintf(test_out, L"\nline:%d r:%d w:%d c:%d\n", __LINE__, rowIndex, wchNum, colNum);
     while (lineStart && (++lineStart)[0] && lineStart + wchNum <= lineEnd) {
         for (int col = 0; col < colNum; ++col) {

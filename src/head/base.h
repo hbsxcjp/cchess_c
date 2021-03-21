@@ -59,7 +59,8 @@ typedef enum {
     EXCHANGE,
     ROTATE,
     SYMMETRY_H,
-    SYMMETRY_V
+    SYMMETRY_V,
+    NOCHANGE
 } ChangeType;
 
 // 棋盘位置类型

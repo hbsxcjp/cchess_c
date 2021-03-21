@@ -33,6 +33,7 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = BOARDCOL - 1;
 
 // 着法相关的字符数组静态全局变量
+static const wchar_t SPLITCHAR = L'/'; // FEN的行分隔符;
 static const wchar_t PRECHAR[] = L"前中后";
 static const wchar_t MOVCHAR[] = L"退平进";
 static const wchar_t NUMWCHAR[PIECECOLORNUM][BOARDCOL + 1] = { L"一二三四五六七八九", L"１２３４５６７８９" };
@@ -40,34 +41,41 @@ static const wchar_t NUMWCHAR[PIECECOLORNUM][BOARDCOL + 1] = { L"一二三四五
 static bool isValidRow__(int row) { return row >= RowLowIndex_ && row <= RowUpIndex_; }
 static bool isValidCol__(int col) { return col >= ColLowIndex_ && col <= ColUpIndex_; }
 
+inline int getOtherRow(int row) { return BOARDROW - 1 - row; }
+inline int getOtherCol(int col) { return BOARDCOL - 1 - col; }
+
 inline int getRow_s(CSeat seat) { return seat->row; }
 inline int getCol_s(CSeat seat) { return seat->col; }
-
-int getOtherRow_r(int row) { return BOARDROW - 1 - row; }
-int getOtherCol_c(int col) { return BOARDCOL - 1 - col; }
 
 Seat getOtherSeat(Board board, Seat seat, ChangeType ct)
 {
     if (ct == ROTATE)
-        return getSeat_rc(board, getOtherRow_r(getRow_s(seat)), getOtherCol_c(getCol_s(seat)));
+        return getSeat_rc(board, getOtherRow(getRow_s(seat)), getOtherCol(getCol_s(seat)));
     else if (ct == SYMMETRY_H)
-        return getSeat_rc(board, getRow_s(seat), getOtherCol_c(getCol_s(seat)));
+        return getSeat_rc(board, getRow_s(seat), getOtherCol(getCol_s(seat)));
     else if (ct == SYMMETRY_V)
-        return getSeat_rc(board, getOtherRow_r(getRow_s(seat)), getCol_s(seat));
+        return getSeat_rc(board, getOtherRow(getRow_s(seat)), getCol_s(seat));
     else // ct==EXCHANGE, 则位置不需要更改
         return seat;
 }
 
 inline int getRowCol_rc(int row, int col) { return (row << 4) | col; }
 inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_s(seat)); }
+
 inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
 inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
+
+int getOtherRowCol(int rowcol)
+{
+    return getRowCol_rc(getOtherRow(getRow_rowcol(rowcol)),
+        getOtherCol(getCol_rowcol(rowcol)));
+}
 
 inline static int getIndex__(const wchar_t* str, const wchar_t ch) { return wcschr(str, ch) - str; }
 inline static int getNum__(PieceColor color, wchar_t numChar) { return getIndex__(NUMWCHAR[color], numChar) + 1; }
 inline static wchar_t getNumChar__(PieceColor color, int num) { return NUMWCHAR[color][num - 1]; }
 inline static int getCol__(bool isBottom, int num) { return isBottom ? BOARDCOL - num : num - 1; }
-inline static int getNum_Col__(bool isBottom, int col) { return (isBottom ? getOtherCol_c(col) : col) + 1; }
+inline static int getNum_Col__(bool isBottom, int col) { return (isBottom ? getOtherCol(col) : col) + 1; }
 inline static int getMovDir__(bool isBottom, wchar_t mch) { return (getIndex__(MOVCHAR, mch) - 1) * (isBottom ? 1 : -1); }
 inline PieceColor getColor_zh(const wchar_t* zhStr) { return wcschr(NUMWCHAR[RED], zhStr[3]) ? RED : BLACK; }
 
@@ -175,7 +183,7 @@ wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars)
         }
         if (blankNum > 0)
             FEN[fi++] = L'0' + blankNum;
-        FEN[fi++] = L'/'; // 插入行分隔符
+        FEN[fi++] = SPLITCHAR;
     }
     FEN[--fi] = L'\x0';
     return FEN;
@@ -185,6 +193,50 @@ wchar_t* getFEN_board(wchar_t* FEN, Board board)
 {
     wchar_t pieChars[SEATNUM + 1];
     return getFEN_pieChars(FEN, getPieChars_board(pieChars, board));
+}
+
+wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
+{
+    if (ct == NOCHANGE)
+        return FEN;
+
+    wchar_t tempFEN[SEATNUM];
+    wcscpy(tempFEN, FEN);
+    int len = wcslen(tempFEN), index = 0;
+    if (ct == EXCHANGE) {
+    } else if (ct == ROTATE) {
+        for (int i = len - 1; i >= 0; --i)
+            FEN[index++] = tempFEN[i];
+    } else if (ct == SYMMETRY_H) {
+        for (wchar_t *lineStart = tempFEN, *lineEnd = wcschr(lineStart, SPLITCHAR);
+             lineEnd - tempFEN != len;
+             lineStart = lineEnd + 1, lineEnd = wcschr(lineStart, SPLITCHAR)) {
+            if (lineEnd == NULL)
+                lineEnd = tempFEN + len;
+            int lineLen = lineEnd - lineStart;
+            while (lineLen-- > 0)
+                FEN[index++] = *(lineStart + lineLen);// L'/'?
+        }
+    } else if (ct == SYMMETRY_V) {
+        for (wchar_t *lineStart = wcsrchr(tempFEN, SPLITCHAR), *lineEnd = tempFEN + len;
+             lineStart != tempFEN;
+             lineEnd = lineStart - 1, *lineStart = L'\x0', lineStart = wcsrchr(tempFEN, SPLITCHAR)) {
+            if (lineStart == NULL)
+                lineStart = tempFEN;
+            int lineLen = lineEnd - lineStart;
+            while (lineLen-- > 0)
+                FEN[index++] = *lineStart++; // L'/'?
+        }
+    }
+    return FEN;
+}
+
+ChangeType getBottomRedFEN_board(wchar_t* FEN, Board board)
+{
+    ChangeType ct = board->bottomColor == RED ? NOCHANGE : ROTATE;
+    getFEN_board(FEN, board);
+    changeFEN(FEN, ct);
+    return ct;
 }
 
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
@@ -788,7 +840,7 @@ void changeBoard(Board board, ChangeType ct)
         // 复制结构, 以保存和使用最初的位置棋子布局
         struct Board boardBak = *board;
         piecesMap(boardBak.pieces, exchangePiece__, boardBak.pieces);
-    } else { // BOTATE, SYMMETRY_H, SYMMETRY_V
+    } else { // ROTATE, SYMMETRY_H, SYMMETRY_V
         int rowLimit = ct == SYMMETRY_H ? BOARDROW : BOARDROW / 2,
             colLimit = ct == SYMMETRY_H ? BOARDCOL / 2 : BOARDCOL;
         for (int row = 0; row < rowLimit; ++row)

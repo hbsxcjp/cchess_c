@@ -146,7 +146,23 @@ int getFromRowCol_m(CMove move) { return getRowCol_s(move->fseat); }
 
 int getToRowCol_m(CMove move) { return getRowCol_s(move->tseat); }
 
-int getRowCols_m(CMove move) { return (getFromRowCol_m(move) << 8) | getToRowCol_m(move); }
+inline static int getRowCols__(int frowcol, int trowcol)
+{
+    return (frowcol << 8) | trowcol;
+}
+
+int getRowCols_m(CMove move)
+{
+    return getRowCols__(getFromRowCol_m(move), getToRowCol_m(move));
+}
+
+int getOtherRowCols(int rowcols)
+{
+    int frowcol = (rowcols >> 8) & 0xFF, trowcol = rowcols & 0xFF;
+    return getRowCols__(getOtherRowCol(frowcol), getOtherRowCol(trowcol));
+}
+
+PieceColor getFromColor(CMove move) { return getColor(getPiece_s(move->fseat)); }
 
 const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 

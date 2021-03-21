@@ -45,6 +45,12 @@ int getFromRowCol_m(CMove move);
 int getToRowCol_m(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
+// 获取对称行列值
+int getOtherRowCols(int rowcols);
+
+// 获取走棋方
+PieceColor getFromColor(CMove move);
+
 const wchar_t* getZhStr(CMove move);
 // 获取iccs着法描述
 const wchar_t* getICCS_m(wchar_t* iccs, CMove move);

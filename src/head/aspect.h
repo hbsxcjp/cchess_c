@@ -4,6 +4,9 @@
 #include "base.h"
 #include <stdbool.h>
 
+// 着法记录类型
+typedef struct MoveRec* MoveRec;
+typedef struct MoveReces* MoveReces;
 
 // 新建、删除局面类型
 Aspects newAspects(int size);
@@ -11,6 +14,9 @@ Aspects newAspects(int size);
 void delAspects(Aspects aspects);
 
 int getAspectsLength(Aspects aspects);
+
+// 获取着法记录（或空记录）
+MoveReces getMoveReces(Aspects asps, const char* key, ChangeType* pct, PieceColor* pfcolor);
 
 // 存储文件到局面记录库
 void appendAspectsFromCMfile(Aspects aspects, const char* fileName);

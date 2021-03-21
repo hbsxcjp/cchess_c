@@ -7,11 +7,7 @@
 #include "head/tools.h"
 #include <math.h>
 
-// 着法记录类型
-typedef struct MoveRec* MoveRec;
-typedef struct MoveReces* MoveReces;
-
-#define FEN_MAXSIZE 80
+extern FILE* test_out;
 
 struct MoveRec {
     int rowcols; // "rcrc"(主要用途：确定某局面下着法，根据count，weight分析着法优劣)
@@ -112,6 +108,13 @@ int getAspectsLength(Aspects asps)
     return getTableLength(asps->table);
 }
 
+MoveReces getMoveReces(Aspects asps, const char* key, ChangeType* pct, PieceColor* pfcolor)
+{
+    MoveReces mrs = getTable(asps->table, key);
+
+    return mrs;
+}
+
 static void putMoveRec__(MoveReces mrs, int rowcols, int number, int weight)
 {
     MoveRec mr = newMoveRec__(rowcols, number, weight);
@@ -123,7 +126,9 @@ static void putMoveRec__(MoveReces mrs, int rowcols, int number, int weight)
 static MoveReces putMoveReces__(Aspects asps, char* key)
 {
     assert(asps);
-    MoveReces mrs = getTable(asps->table, key);
+    ChangeType pct = NOCHANGE;
+    PieceColor pfcolor = RED;
+    MoveReces mrs = getMoveReces(asps, key, &pct, &pfcolor);
     if (mrs == NULL) {
         mrs = newMoveReces__();
         putTable(&asps->table, key, mrs);
@@ -135,11 +140,29 @@ static MoveReces putMoveReces__(Aspects asps, char* key)
 
 static void appendAspects__(Move move, Board board, Aspects asps)
 {
-    wchar_t FEN[FEN_MAXSIZE];
-    getFEN_board(FEN, board);
-    char* fen = malloc(FEN_MAXSIZE * sizeof(char));
-    wcstombs(fen, FEN, FEN_MAXSIZE);
+    wchar_t FEN[SEATNUM];
+    // 底部为红棋的FEN字符串
+    ChangeType ct = getBottomRedFEN_board(FEN, board);
+    // 增加走棋标志（-:底部走棋，*:顶部走棋）
+    wcscat(FEN, (ct == NOCHANGE) == (getFromColor(move) == RED) ? L"-" : L"*");
+    size_t size = wcstombs(NULL, FEN, SEATNUM) + 1;
+    char* fen = malloc(size * sizeof(char));
+    wcstombs(fen, FEN, size);
+
     int rowcols = getRowCols_m(move);
+    // 如果FEN已旋转，着法也要旋转
+    if (ct != NOCHANGE) {
+        //int prowcols = rowcols;
+        rowcols = getOtherRowCols(rowcols);
+
+        /*
+        wchar_t wstr[WIDEWCHARSIZE], mstr[WIDEWCHARSIZE];
+        getBoardString(wstr, board);
+        getMoveString(mstr, move);
+        fwprintf(test_out, L"FEN:%ls\n%ls %04x_%04x\n%ls\n\n",
+            mstr, FEN, prowcols, rowcols, wstr);
+        //*/
+    }
 
     MoveReces mrs = putMoveReces__(asps, fen);
     MoveRec mr = mrs->rootMR;
@@ -185,6 +208,7 @@ Aspects getAspectsFromAspsfile(const char* fileName)
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
 
+#define FEN_MAXSIZE 80
     Aspects asps = newAspects(1024);
     int mrCount = 0, rowcols = 0, number = 0, weight = 0;
     char* fen = malloc(FEN_MAXSIZE * sizeof(char));
@@ -358,7 +382,10 @@ void analyzeAspects(char* fileName, CAspects asps)
 
 static void mrs_equal__(const char* key, MoveReces mrs0, Aspects asps1)
 {
-    MoveReces mrs1 = getTable(asps1->table, key);
+    ChangeType pct = NOCHANGE;
+    PieceColor pfcolor = RED;
+    MoveReces mrs1 = getMoveReces(asps1, key, &pct, &pfcolor);
+    //MoveReces mrs1 = getMoveReces(asps1, key);
     assert((mrs0 == NULL) == (mrs1 == NULL));
     assert(mrs0 && mrs1);
 
