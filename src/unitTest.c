@@ -17,6 +17,8 @@
 #include <time.h>
 //#include "head/console.h"
 
+extern FILE* test_out;
+
 static char* xqfFileName__ = "chessManual/01.xqf";
 
 static const char* dirNames__[] = {
@@ -128,6 +130,25 @@ static wchar_t* FENs[] = {
     L"4kab2/4a4/4b4/3N5/9/4N4/4n4/4B4/4A4/3AK1B2"
 };
 
+static wchar_t* ChangeFENs[][4] = {
+    { L"RNBAKABNR/9/1C5C1/P1P1P1P1P/9/9/p1p1p1p1p/1c5c1/9/rnbakabnr",
+        L"RNBAKABNR/9/1C5C1/P1P1P1P1P/9/9/p1p1p1p1p/1c5c1/9/rnbakabnr",
+        L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR",
+        L"RNBAKABNR/9/1C5C1/P1P1P1P1P/9/9/p1p1p1p1p/1c5c1/9/rnbakabnr" },
+    { L"5A3/4AK2R/6r2/8P/9/9/9/b4n2b/4k4/3C5",
+        L"5c3/4K4/B2N4B/9/9/9/p8/2R6/r2ka4/3a5",
+        L"3a5/r2ka4/2R6/p8/9/9/9/B2N4B/4K4/5c3",
+        L"3c5/4K4/B4N2B/9/9/9/8p/6R2/4ak2r/5a3" },
+    { L"2B1KAB2/4A4/4C4/9/9/3r5/9/1c7/4R4/2bk2b2",
+        L"2B2KB2/4r4/7C1/9/5R3/9/9/4c4/4a4/2bak1b2",
+        L"2bak1b2/4a4/4c4/9/9/5R3/9/7C1/4r4/2B2KB2",
+        L"2BK2B2/4r4/1C7/9/3R5/9/9/4c4/4a4/2b1kab2" },
+    { L"4KAB2/4A4/4B4/3n5/9/4n4/4N4/4b4/4a4/3ak1b2",
+        L"2B1KA3/4A4/4B4/4n4/4N4/9/5N3/4b4/4a4/2bak4",
+        L"2bak4/4a4/4b4/5N3/9/4N4/4n4/4B4/4A4/2B1KA3",
+        L"3AK1B2/4A4/4B4/4n4/4N4/9/3N5/4b4/4a4/4kab2" }
+};
+
 static void setBoard__(Board board, wchar_t* FEN)
 {
     wchar_t pieChars[SEATNUM + 1];
@@ -138,7 +159,8 @@ static void setBoard__(Board board, wchar_t* FEN)
 static void test_board_FEN_str(void)
 {
     wchar_t pieChars[SEATNUM + 1], pieChars2[SEATNUM + 1], FEN[SEATNUM + 1];
-    char str1[SEATNUM + 1], str2[SEATNUM + 1], str3[SEATNUM + 1], resultStr[SEATNUM + 1];
+    char str1[SEATNUM + 1], str2[SEATNUM + 1],
+        str3[SEATNUM + 1], resultStr[SEATNUM + 1];
     Board board = newBoard(), board1 = newBoard();
     for (int i = 0; i < sizeof(FENs) / sizeof(FENs[0]); ++i) {
         setBoard__(board, FENs[i]);
@@ -157,6 +179,16 @@ static void test_board_FEN_str(void)
         getFEN_pieChars(FEN, pieChars);
         wcstombs(resultStr, FEN, WIDEWCHARSIZE);
         CU_ASSERT_STRING_EQUAL(str3, resultStr);
+
+        // 转换FEN
+        //fwprintf(test_out, L"{");
+        for (ChangeType ct = EXCHANGE; ct < NOCHANGE; ++ct) {
+            wcscpy(FEN, FENs[i]);
+            changeFEN(FEN, ct);
+            CU_ASSERT_STRING_EQUAL(ChangeFENs[i][ct], FEN);
+            //fwprintf(test_out, L"L\"%ls\",\n", FEN);
+        }
+        //fwprintf(test_out, L"},\n");
     }
     delBoard(board);
     delBoard(board1);

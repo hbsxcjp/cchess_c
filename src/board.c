@@ -203,30 +203,48 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
     wchar_t tempFEN[SEATNUM];
     wcscpy(tempFEN, FEN);
     int len = wcslen(tempFEN), index = 0;
-    if (ct == EXCHANGE) {
-    } else if (ct == ROTATE) {
+    switch (ct) {
+    case EXCHANGE: // 交换颜色
+        for (int i = 0; i < len; ++i) {
+            wchar_t c = tempFEN[i];
+            FEN[index++] = iswalpha(c) ? (isupper(c) ? tolower(c) : toupper(c)) : c;
+        }
+        break;
+    case ROTATE: // 旋转
         for (int i = len - 1; i >= 0; --i)
             FEN[index++] = tempFEN[i];
-    } else if (ct == SYMMETRY_H) {
-        for (wchar_t *lineStart = tempFEN, *lineEnd = wcschr(lineStart, SPLITCHAR);
-             lineEnd - tempFEN != len;
+        break;
+    case SYMMETRY_H: // 左右对称交换
+        for (wchar_t *lineStart = tempFEN, *lineEnd = wcschr(lineStart, SPLITCHAR);;
              lineStart = lineEnd + 1, lineEnd = wcschr(lineStart, SPLITCHAR)) {
-            if (lineEnd == NULL)
-                lineEnd = tempFEN + len;
-            int lineLen = lineEnd - lineStart;
-            while (lineLen-- > 0)
-                FEN[index++] = *(lineStart + lineLen);// L'/'?
+            for (int lineLen = (lineEnd ? lineEnd : tempFEN + len) - lineStart - 1;
+                 lineLen >= 0; --lineLen)
+                FEN[index++] = *(lineStart + lineLen);
+            if (lineEnd)
+                FEN[index++] = SPLITCHAR;
+            else
+                break;
         }
-    } else if (ct == SYMMETRY_V) {
-        for (wchar_t *lineStart = wcsrchr(tempFEN, SPLITCHAR), *lineEnd = tempFEN + len;
-             lineStart != tempFEN;
-             lineEnd = lineStart - 1, *lineStart = L'\x0', lineStart = wcsrchr(tempFEN, SPLITCHAR)) {
-            if (lineStart == NULL)
+        break;
+    case SYMMETRY_V: // 上下对称交换
+        for (wchar_t *lineStart = wcsrchr(tempFEN, SPLITCHAR), *lineEnd = tempFEN + len;;
+             lineEnd = lineStart, *lineEnd = L'\x0', lineStart = wcsrchr(tempFEN, SPLITCHAR)) {
+            int offset = 1;
+            if (lineStart == NULL){
                 lineStart = tempFEN;
-            int lineLen = lineEnd - lineStart;
-            while (lineLen-- > 0)
-                FEN[index++] = *lineStart++; // L'/'?
+                offset = 0;
+            }
+            for (int lineLen = lineEnd - lineStart - offset, i = 0;
+                 i < lineLen; ++i)
+                FEN[index++] = *(lineStart + offset + i);
+            if (lineStart != tempFEN)
+                FEN[index++] = SPLITCHAR;
+            else
+                break;
         }
+        break;
+    default:
+        break;
     }
     return FEN;
 }
