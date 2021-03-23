@@ -195,6 +195,21 @@ wchar_t* getFEN_board(wchar_t* FEN, Board board)
     return getFEN_pieChars(FEN, getPieChars_board(pieChars, board));
 }
 
+wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
+{
+    int len = wcslen(FEN);
+    for (int i = 0, index = 0; i < len && index < SEATNUM; ++i) {
+        wchar_t ch = FEN[i];
+        if (iswdigit(ch))
+            for (int j = ch - L'0'; j > 0; --j)
+                pieChars[index++] = getBlankChar();
+        else if (iswalpha(ch))
+            pieChars[index++] = ch;
+    }
+    pieChars[SEATNUM] = L'\x0';
+    return pieChars;
+}
+
 wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
 {
     if (ct == NOCHANGE)
@@ -230,7 +245,7 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
         for (wchar_t *lineStart = wcsrchr(tempFEN, SPLITCHAR), *lineEnd = tempFEN + len;;
              lineEnd = lineStart, *lineEnd = L'\x0', lineStart = wcsrchr(tempFEN, SPLITCHAR)) {
             int offset = 1;
-            if (lineStart == NULL){
+            if (lineStart == NULL) {
                 lineStart = tempFEN;
                 offset = 0;
             }
@@ -247,29 +262,6 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
         break;
     }
     return FEN;
-}
-
-ChangeType getBottomRedFEN_board(wchar_t* FEN, Board board)
-{
-    ChangeType ct = board->bottomColor == RED ? NOCHANGE : ROTATE;
-    getFEN_board(FEN, board);
-    changeFEN(FEN, ct);
-    return ct;
-}
-
-wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
-{
-    int len = wcslen(FEN);
-    for (int i = 0, index = 0; i < len && index < SEATNUM; ++i) {
-        wchar_t ch = FEN[i];
-        if (iswdigit(ch))
-            for (int j = ch - L'0'; j > 0; --j)
-                pieChars[index++] = getBlankChar();
-        else if (iswalpha(ch))
-            pieChars[index++] = ch;
-    }
-    pieChars[SEATNUM] = L'\x0';
-    return pieChars;
 }
 
 static void resetPiece__(Piece piece, void* ptr)

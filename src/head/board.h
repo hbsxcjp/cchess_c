@@ -51,12 +51,10 @@ wchar_t* getFEN_pieChars(wchar_t* FEN, const wchar_t* pieChars);
 // 取得棋盘局面的FEN字符串表示
 wchar_t* getFEN_board(wchar_t* FEN, Board board);
 
-wchar_t* changeFEN(wchar_t* FEN, ChangeType ct);
-// 取得棋盘局面为红棋在底部的FEN字符串标准表示，返回改变类型
-ChangeType getBottomRedFEN_board(wchar_t* FEN, Board board);
-
 // FEN字符串转换成pieChars表示的棋盘局面
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);
+
+wchar_t* changeFEN(wchar_t* FEN, ChangeType ct);
 
 // 棋盘复位
 void resetBoard(Board board);

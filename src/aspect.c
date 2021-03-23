@@ -22,11 +22,10 @@ struct MoveRec {
 };
 
 struct MoveReces {
-    PieceColor moveColor; // 走棋方
-    int mrCount; // 本局面下着法数
-    bool fail; // 失败
+    int mrCount[PIECECOLORNUM]; // 本局面下着法数
+    bool fail[PIECECOLORNUM]; // 失败
 
-    MoveRec rootMR; // 着法根链接
+    MoveRec rootMR[PIECECOLORNUM]; // 着法根链接
 };
 
 struct Aspects {
@@ -72,17 +71,18 @@ static void delMoveRec__(MoveRec mr)
 static MoveReces newMoveReces__()
 {
     MoveReces mrs = malloc(sizeof(*mrs));
-    mrs->moveColor = RED;
-    mrs->mrCount = 0;
-    mrs->fail = false;
-
-    mrs->rootMR = NULL;
+    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+        mrs->mrCount[color] = 0;
+        mrs->fail[color] = false;
+        mrs->rootMR[color] = NULL;
+    }
     return mrs;
 }
 
 static void delMoveReces__(MoveReces mrs)
 {
-    delMoveRec__(mrs->rootMR);
+    for (PieceColor color = RED; color < NOTCOLOR; ++color)
+        delMoveRec__(mrs->rootMR[color]);
     free(mrs);
 }
 
@@ -108,43 +108,31 @@ int getAspectsLength(Aspects asps)
     return getTableLength(asps->table);
 }
 
-MoveReces getMoveReces(Aspects asps, const char* key, ChangeType* pct, PieceColor* pfcolor)
-{
-    MoveReces mrs = getTable(asps->table, key);
-
-    return mrs;
-}
-
-static void putMoveRec__(MoveReces mrs, int rowcols, int number, int weight)
+static void putMoveRec__(MoveReces mrs, PieceColor color, int rowcols, int number, int weight)
 {
     MoveRec mr = newMoveRec__(rowcols, number, weight);
-    mr->link = mrs->rootMR;
-    mrs->rootMR = mr;
-    mrs->mrCount++;
+    mr->link = mrs->rootMR[color];
+    mrs->rootMR[color] = mr;
+    mrs->mrCount[color]++;
 }
 
 static MoveReces putMoveReces__(Aspects asps, char* key)
 {
-    assert(asps);
-    ChangeType pct = NOCHANGE;
-    PieceColor pfcolor = RED;
-    MoveReces mrs = getMoveReces(asps, key, &pct, &pfcolor);
-    if (mrs == NULL) {
-        mrs = newMoveReces__();
-        putTable(&asps->table, key, mrs);
-        asps->mrsCount++;
-    } else
-        free(key);
+    MoveReces mrs = newMoveReces__();
+    putTable(&asps->table, key, mrs);
+    asps->mrsCount++;
     return mrs;
 }
 
 static void appendAspects__(Move move, Board board, Aspects asps)
 {
     wchar_t FEN[SEATNUM];
-    // 底部为红棋的FEN字符串
-    ChangeType ct = getBottomRedFEN_board(FEN, board);
-    // 增加走棋标志（-:底部走棋，*:顶部走棋）
-    wcscat(FEN, (ct == NOCHANGE) == (getFromColor(move) == RED) ? L"-" : L"*");
+    getFEN_board(FEN, board);
+    ChangeType ct = isBottomSide(board, RED) ? NOCHANGE : ROTATE;
+    if (ct == ROTATE)
+        changeFEN(FEN, ct);
+
+    PieceColor color = getFromColor(move);
     size_t size = wcstombs(NULL, FEN, SEATNUM) + 1;
     char* fen = malloc(size * sizeof(char));
     wcstombs(fen, FEN, size);
@@ -164,8 +152,12 @@ static void appendAspects__(Move move, Board board, Aspects asps)
         //*/
     }
 
-    MoveReces mrs = putMoveReces__(asps, fen);
-    MoveRec mr = mrs->rootMR;
+    MoveReces mrs = getTable(asps->table, fen);
+    if (mrs == NULL)
+        mrs = putMoveReces__(asps, fen);
+    else
+        free(fen);
+    MoveRec mr = mrs->rootMR[color];
     while (mr) {
         // 找到相同着法，调增number后退出
         if (mr->rowcols == rowcols) {
@@ -178,7 +170,7 @@ static void appendAspects__(Move move, Board board, Aspects asps)
     }
 
     // 未找到相同着法，插入新着法记录
-    putMoveRec__(mrs, rowcols, 1, 0);
+    putMoveRec__(mrs, color, rowcols, 1, 0);
     asps->mrCount++;
 }
 
@@ -208,24 +200,25 @@ Aspects getAspectsFromAspsfile(const char* fileName)
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
 
-#define FEN_MAXSIZE 80
     Aspects asps = newAspects(1024);
-    int mrCount = 0, rowcols = 0, number = 0, weight = 0;
-    char* fen = malloc(FEN_MAXSIZE * sizeof(char));
+    int mrCount[PIECECOLORNUM] = { 0, 0 }, rowcols = 0, number = 0, weight = 0;
+    char* fen = malloc(SEATNUM * sizeof(char));
     while (fscanf(fin, "%s", fen) == 1) {
-        if (fscanf(fin, "%d", &mrCount) != 1)
-            continue;
+        for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+            if (fscanf(fin, "%d", &mrCount[color]) != 1)
+                continue;
 
-        MoveReces mrs = putMoveReces__(asps, fen);
-        for (int i = 0; i < mrCount; ++i) {
-            if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3) {
-                //printf("\n%d %s", __LINE__, __FILE__);
-                break;
+            MoveReces mrs = putMoveReces__(asps, fen);
+            for (int i = 0; i < mrCount[color]; ++i) {
+                if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3) {
+                    //printf("\n%d %s", __LINE__, __FILE__);
+                    break;
+                }
+                putMoveRec__(mrs, color, rowcols, number, weight);
+                asps->mrCount++;
             }
-            putMoveRec__(mrs, rowcols, number, weight);
-            asps->mrCount++;
+            fen = malloc(SEATNUM * sizeof(char));
         }
-        fen = malloc(FEN_MAXSIZE * sizeof(char));
     }
     free(fen);
 
@@ -235,13 +228,16 @@ Aspects getAspectsFromAspsfile(const char* fileName)
 
 static void writefMoveRecesShow__(char* key, MoveReces mrs, void* fout)
 {
-    fprintf(fout, "\nFEN_%d:%s %d ", (int)strlen(key), key, mrs->mrCount);
+    fprintf(fout, "\nFEN_%d:%s ", (int)strlen(key), key);
     //fprintf(fout, "\nFEN:%s ", mrs->key);
 
-    MoveRec mr = mrs->rootMR;
-    while (mr) {
-        fprintf(fout, "\t0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
-        mr = mr->link;
+    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+        fprintf(fout, "%d ", mrs->mrCount[color]);
+        MoveRec mr = mrs->rootMR[color];
+        while (mr) {
+            fprintf(fout, "\t0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
+            mr = mr->link;
+        }
     }
 }
 
@@ -260,12 +256,14 @@ void writeAspectsShow(char* fileName, CAspects asps)
 
 static void storeMoveRecesFEN__(char* key, MoveReces mrs, void* fout)
 {
-    fprintf(fout, "\n%s %d ", key, mrs->mrCount);
-
-    MoveRec mr = mrs->rootMR;
-    while (mr) {
-        fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
-        mr = mr->link;
+    fprintf(fout, "\n%s ", key);
+    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+        fprintf(fout, "%d ", mrs->mrCount[color]);
+        MoveRec mr = mrs->rootMR[color];
+        while (mr) {
+            fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
+            mr = mr->link;
+        }
     }
 }
 
@@ -316,12 +314,14 @@ static void appendNumArray__(NumArray na, int value)
 
 static void calMRNumber__(char* key, MoveReces mrs, AspectAnalysis aa)
 {
-    appendNumArray__(aa->mr, mrs->mrCount);
+    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+        appendNumArray__(aa->mr, mrs->mrCount[color]);
 
-    MoveRec mr = mrs->rootMR;
-    while (mr) {
-        appendNumArray__(aa->move, mr->number);
-        mr = mr->link;
+        MoveRec mr = mrs->rootMR[color];
+        while (mr) {
+            appendNumArray__(aa->move, mr->number);
+            mr = mr->link;
+        }
     }
 }
 
@@ -382,33 +382,31 @@ void analyzeAspects(char* fileName, CAspects asps)
 
 static void mrs_equal__(const char* key, MoveReces mrs0, Aspects asps1)
 {
-    ChangeType pct = NOCHANGE;
-    PieceColor pfcolor = RED;
-    MoveReces mrs1 = getMoveReces(asps1, key, &pct, &pfcolor);
-    //MoveReces mrs1 = getMoveReces(asps1, key);
+    MoveReces mrs1 = getTable(asps1->table, key);
     assert((mrs0 == NULL) == (mrs1 == NULL));
     assert(mrs0 && mrs1);
 
-    assert(mrs0->mrCount == mrs1->mrCount
-        && mrs0->moveColor == mrs1->moveColor
-        && mrs0->fail == mrs1->fail);
+    for (PieceColor color = RED; color < NOTCOLOR; ++color) {
+        assert(mrs0->mrCount[color] == mrs1->mrCount[color]
+            && mrs0->fail[color] == mrs1->fail[color]);
 
-    MoveRec mr0 = mrs0->rootMR, mr1 = mrs1->rootMR;
-    while (mr0 && mr1) {
-        assert((mr0 == NULL) == (mr1 == NULL)
-            || (mr0 && mr1
-                && mr0->rowcols == mr1->rowcols
-                && mr0->number == mr1->number
-                && mr0->weight == mr1->weight
-                && mr0->killing == mr1->killing
-                && mr0->weight == mr1->weight
-                && mr0->willKill == mr1->willKill));
+        MoveRec mr0 = mrs0->rootMR[color], mr1 = mrs1->rootMR[color];
+        while (mr0 && mr1) {
+            assert((mr0 == NULL) == (mr1 == NULL)
+                || (mr0 && mr1
+                    && mr0->rowcols == mr1->rowcols
+                    && mr0->number == mr1->number
+                    && mr0->weight == mr1->weight
+                    && mr0->killing == mr1->killing
+                    && mr0->weight == mr1->weight
+                    && mr0->willKill == mr1->willKill));
 
-        mr0 = mr0->link;
-        mr1 = mr1->link;
+            mr0 = mr0->link;
+            mr1 = mr1->link;
+        }
+        // mr0、mr1未同时抵达终点（空指针）
+        assert((mr0 == NULL) == (mr1 == NULL));
     }
-    // mr0、mr1未同时抵达终点（空指针）
-    assert((mr0 == NULL) == (mr1 == NULL));
 }
 
 bool aspects_equal(CAspects asps0, Aspects asps1)
