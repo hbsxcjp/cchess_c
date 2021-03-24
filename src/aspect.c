@@ -141,12 +141,14 @@ static void appendAspects__(Move move, Board board, Aspects asps)
     ChangeType ct = NOCHANGE;
     int rowcols = getRowCols_m(move);
     MoveReces mrs = getTable(asps->table, fen);
+    /* // 寻找左右对称局面
     if (mrs == NULL) {
         changeFEN_c(fen, (ct = SYMMETRY_H));
         mrs = getTable(asps->table, fen);
-        if (mrs != NULL) // 找到左右对称局面
+        if (mrs != NULL) 
             rowcols = getRowCols_SYMMETRY_H(rowcols);
     }
+    //*/
     if (mrs == NULL) {
         if (ct == SYMMETRY_H)
             changeFEN_c(fen, SYMMETRY_H); // 换回原局面
