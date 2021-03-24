@@ -65,10 +65,9 @@ inline int getRowCol_s(CSeat seat) { return getRowCol_rc(getRow_s(seat), getCol_
 inline int getRow_rowcol(int rowcol) { return rowcol >> 4; }
 inline int getCol_rowcol(int rowcol) { return rowcol & 0x0F; }
 
-int getOtherRowCol(int rowcol)
+int getRowCol_SYMMETRY_H(int rowcol)
 {
-    return getRowCol_rc(getOtherRow(getRow_rowcol(rowcol)),
-        getOtherCol(getCol_rowcol(rowcol)));
+    return getRowCol_rc(getRow_rowcol(rowcol), getOtherCol(getCol_rowcol(rowcol)));
 }
 
 inline static int getIndex__(const wchar_t* str, const wchar_t ch) { return wcschr(str, ch) - str; }
@@ -262,6 +261,28 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
         break;
     }
     return FEN;
+}
+
+char* changeFEN_c(char* fen, ChangeType ct)
+{
+    if (ct != SYMMETRY_H)
+        return fen;
+
+    // 左右对称交换
+    char tempFEN[SEATNUM];
+    strcpy(tempFEN, fen);
+    int len = strlen(tempFEN), index = 0;
+    for (char *lineStart = tempFEN, *lineEnd = strchr(lineStart, SPLITCHAR);;
+         lineStart = lineEnd + 1, lineEnd = strchr(lineStart, SPLITCHAR)) {
+        for (int lineLen = (lineEnd ? lineEnd : tempFEN + len) - lineStart - 1;
+             lineLen >= 0; --lineLen)
+            fen[index++] = *(lineStart + lineLen);
+        if (lineEnd)
+            fen[index++] = '/';
+        else
+            break;
+    }
+    return fen;
 }
 
 static void resetPiece__(Piece piece, void* ptr)

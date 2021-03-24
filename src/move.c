@@ -156,10 +156,10 @@ int getRowCols_m(CMove move)
     return getRowCols__(getFromRowCol_m(move), getToRowCol_m(move));
 }
 
-int getOtherRowCols(int rowcols)
+int getRowCols_SYMMETRY_H(int rowcols)
 {
     int frowcol = (rowcols >> 8) & 0xFF, trowcol = rowcols & 0xFF;
-    return getRowCols__(getOtherRowCol(frowcol), getOtherRowCol(trowcol));
+    return getRowCols__(getRowCol_SYMMETRY_H(frowcol), getRowCol_SYMMETRY_H(trowcol));
 }
 
 PieceColor getFromColor(CMove move) { return getColor(getPiece_s(move->fseat)); }

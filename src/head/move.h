@@ -45,8 +45,8 @@ int getFromRowCol_m(CMove move);
 int getToRowCol_m(CMove move);
 // 获取行列整数值 "rcrc"
 int getRowCols_m(CMove move);
-// 获取对称行列值
-int getOtherRowCols(int rowcols);
+// 获取左右对称行列值对
+int getRowCols_SYMMETRY_H(int rowcols);
 
 // 获取走棋方
 PieceColor getFromColor(CMove move);

@@ -128,35 +128,32 @@ static void appendAspects__(Move move, Board board, Aspects asps)
 {
     wchar_t FEN[SEATNUM];
     getFEN_board(FEN, board);
-    ChangeType ct = isBottomSide(board, RED) ? NOCHANGE : ROTATE;
-    if (ct == ROTATE)
-        changeFEN(FEN, ct);
-
     PieceColor color = getFromColor(move);
+    if (!isBottomSide(board, RED)) {
+        changeFEN(FEN, EXCHANGE); // 交换局面字符串
+        color = color == RED ? BLACK : RED; // 变换走棋颜色
+    }
+
     size_t size = wcstombs(NULL, FEN, SEATNUM) + 1;
     char* fen = malloc(size * sizeof(char));
     wcstombs(fen, FEN, size);
 
+    ChangeType ct = NOCHANGE;
     int rowcols = getRowCols_m(move);
-    // 如果FEN已旋转，着法也要旋转
-    if (ct != NOCHANGE) {
-        //int prowcols = rowcols;
-        rowcols = getOtherRowCols(rowcols);
-
-        /*
-        wchar_t wstr[WIDEWCHARSIZE], mstr[WIDEWCHARSIZE];
-        getBoardString(wstr, board);
-        getMoveString(mstr, move);
-        fwprintf(test_out, L"FEN:%ls\n%ls %04x_%04x\n%ls\n\n",
-            mstr, FEN, prowcols, rowcols, wstr);
-        //*/
-    }
-
     MoveReces mrs = getTable(asps->table, fen);
-    if (mrs == NULL)
+    if (mrs == NULL) {
+        changeFEN_c(fen, (ct = SYMMETRY_H));
+        mrs = getTable(asps->table, fen);
+        if (mrs != NULL) // 找到左右对称局面
+            rowcols = getRowCols_SYMMETRY_H(rowcols);
+    }
+    if (mrs == NULL) {
+        if (ct == SYMMETRY_H)
+            changeFEN_c(fen, SYMMETRY_H); // 换回原局面
         mrs = putMoveReces__(asps, fen);
-    else
+    } else
         free(fen);
+
     MoveRec mr = mrs->rootMR[color];
     while (mr) {
         // 找到相同着法，调增number后退出
@@ -204,11 +201,12 @@ Aspects getAspectsFromAspsfile(const char* fileName)
     int mrCount[PIECECOLORNUM] = { 0, 0 }, rowcols = 0, number = 0, weight = 0;
     char* fen = malloc(SEATNUM * sizeof(char));
     while (fscanf(fin, "%s", fen) == 1) {
+        MoveReces mrs = putMoveReces__(asps, fen);
+        fen = malloc(SEATNUM * sizeof(char));
         for (PieceColor color = RED; color < NOTCOLOR; ++color) {
-            if (fscanf(fin, "%d", &mrCount[color]) != 1)
+            if (fscanf(fin, "%d", &mrCount[color]) != 1 || mrCount[color] == 0)
                 continue;
 
-            MoveReces mrs = putMoveReces__(asps, fen);
             for (int i = 0; i < mrCount[color]; ++i) {
                 if (fscanf(fin, "%x%d%d", &rowcols, &number, &weight) != 3) {
                     //printf("\n%d %s", __LINE__, __FILE__);
@@ -217,7 +215,6 @@ Aspects getAspectsFromAspsfile(const char* fileName)
                 putMoveRec__(mrs, color, rowcols, number, weight);
                 asps->mrCount++;
             }
-            fen = malloc(SEATNUM * sizeof(char));
         }
     }
     free(fen);

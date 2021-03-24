@@ -188,6 +188,9 @@ static void test_board_FEN_str(void)
             CU_ASSERT_STRING_EQUAL(ChangeFENs[i][ct], FEN);
             //fwprintf(test_out, L"L\"%ls\",\n", FEN);
         }
+        changeFEN_c(str3, SYMMETRY_H);
+        wcstombs(resultStr, ChangeFENs[i][SYMMETRY_H], WIDEWCHARSIZE);
+        CU_ASSERT_STRING_EQUAL(str3, resultStr);
         //fwprintf(test_out, L"},\n");
     }
     delBoard(board);

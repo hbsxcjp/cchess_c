@@ -28,7 +28,8 @@ int getRowCol_rc(int row, int col);
 int getRowCol_s(CSeat seat);
 int getRow_rowcol(int rowcol);
 int getCol_rowcol(int rowcol);
-int getOtherRowCol(int rowcol);
+// 获取左右对称行列值
+int getRowCol_SYMMETRY_H(int rowcol);
 
 // 根据中文着法取得走棋颜色
 PieceColor getColor_zh(const wchar_t* zhStr);
@@ -55,6 +56,7 @@ wchar_t* getFEN_board(wchar_t* FEN, Board board);
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);
 
 wchar_t* changeFEN(wchar_t* FEN, ChangeType ct);
+char* changeFEN_c(char* fen, ChangeType ct);
 
 // 棋盘复位
 void resetBoard(Board board);
