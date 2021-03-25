@@ -55,7 +55,6 @@ wchar_t* getFEN_board(wchar_t* FEN, Board board);
 // FEN字符串转换成pieChars表示的棋盘局面
 wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN);
 
-wchar_t* changeFEN(wchar_t* FEN, ChangeType ct);
 char* changeFEN_c(char* fen, ChangeType ct);
 
 // 棋盘复位

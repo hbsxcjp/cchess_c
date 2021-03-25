@@ -33,6 +33,7 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
                  ColLowIndex_ = 0, ColMidLowIndex_ = 3, ColMidUpIndex_ = 5, ColUpIndex_ = BOARDCOL - 1;
 
 // 着法相关的字符数组静态全局变量
+static const char SplitChar = '/'; // FEN的行分隔符;
 static const wchar_t SPLITCHAR = L'/'; // FEN的行分隔符;
 static const wchar_t PRECHAR[] = L"前中后";
 static const wchar_t MOVCHAR[] = L"退平进";
@@ -209,40 +210,41 @@ wchar_t* getPieChars_FEN(wchar_t* pieChars, const wchar_t* FEN)
     return pieChars;
 }
 
-wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
+char* changeFEN_c(char* fen, ChangeType ct)
 {
     if (ct == NOCHANGE)
-        return FEN;
+        return fen;
 
-    wchar_t tempFEN[SEATNUM];
-    wcscpy(tempFEN, FEN);
-    int len = wcslen(tempFEN), index = 0;
+    // 左右对称交换
+    char tempFEN[SEATNUM];
+    strcpy(tempFEN, fen);
+    int len = strlen(tempFEN), index = 0;
     switch (ct) {
     case EXCHANGE: // 交换颜色
         for (int i = 0; i < len; ++i) {
-            wchar_t c = tempFEN[i];
-            FEN[index++] = iswalpha(c) ? (isupper(c) ? tolower(c) : toupper(c)) : c;
+            char c = tempFEN[i];
+            fen[index++] = isalpha(c) ? (isupper(c) ? tolower(c) : toupper(c)) : c;
         }
         break;
     case ROTATE: // 旋转
         for (int i = len - 1; i >= 0; --i)
-            FEN[index++] = tempFEN[i];
+            fen[index++] = tempFEN[i];
         break;
     case SYMMETRY_H: // 左右对称交换
-        for (wchar_t *lineStart = tempFEN, *lineEnd = wcschr(lineStart, SPLITCHAR);;
-             lineStart = lineEnd + 1, lineEnd = wcschr(lineStart, SPLITCHAR)) {
+        for (char *lineStart = tempFEN, *lineEnd = strchr(lineStart, SplitChar);;
+             lineStart = lineEnd + 1, lineEnd = strchr(lineStart, SplitChar)) {
             for (int lineLen = (lineEnd ? lineEnd : tempFEN + len) - lineStart - 1;
                  lineLen >= 0; --lineLen)
-                FEN[index++] = *(lineStart + lineLen);
+                fen[index++] = *(lineStart + lineLen);
             if (lineEnd)
-                FEN[index++] = SPLITCHAR;
+                fen[index++] = SplitChar;
             else
                 break;
         }
         break;
     case SYMMETRY_V: // 上下对称交换
-        for (wchar_t *lineStart = wcsrchr(tempFEN, SPLITCHAR), *lineEnd = tempFEN + len;;
-             lineEnd = lineStart, *lineEnd = L'\x0', lineStart = wcsrchr(tempFEN, SPLITCHAR)) {
+        for (char *lineStart = strrchr(tempFEN, SplitChar), *lineEnd = tempFEN + len;;
+             lineEnd = lineStart, *lineEnd = '\x0', lineStart = strrchr(tempFEN, SplitChar)) {
             int offset = 1;
             if (lineStart == NULL) {
                 lineStart = tempFEN;
@@ -250,9 +252,9 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
             }
             for (int lineLen = lineEnd - lineStart - offset, i = 0;
                  i < lineLen; ++i)
-                FEN[index++] = *(lineStart + offset + i);
+                fen[index++] = *(lineStart + offset + i);
             if (lineStart != tempFEN)
-                FEN[index++] = SPLITCHAR;
+                fen[index++] = SplitChar;
             else
                 break;
         }
@@ -260,28 +262,7 @@ wchar_t* changeFEN(wchar_t* FEN, ChangeType ct)
     default:
         break;
     }
-    return FEN;
-}
 
-char* changeFEN_c(char* fen, ChangeType ct)
-{
-    if (ct != SYMMETRY_H)
-        return fen;
-
-    // 左右对称交换
-    char tempFEN[SEATNUM];
-    strcpy(tempFEN, fen);
-    int len = strlen(tempFEN), index = 0;
-    for (char *lineStart = tempFEN, *lineEnd = strchr(lineStart, SPLITCHAR);;
-         lineStart = lineEnd + 1, lineEnd = strchr(lineStart, SPLITCHAR)) {
-        for (int lineLen = (lineEnd ? lineEnd : tempFEN + len) - lineStart - 1;
-             lineLen >= 0; --lineLen)
-            fen[index++] = *(lineStart + lineLen);
-        if (lineEnd)
-            fen[index++] = '/';
-        else
-            break;
-    }
     return fen;
 }
 

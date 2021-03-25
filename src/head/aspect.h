@@ -16,7 +16,7 @@ void delAspects(Aspects aspects);
 int getAspectsLength(Aspects aspects);
 
 // 获取着法记录（或空记录）
-MoveReces getMoveReces(Aspects asps, const char* key, ChangeType* pct, PieceColor* pfcolor);
+MoveReces getMoveReces(Aspects asps, Board board, PieceColor* color, ChangeType* leftRightCt);
 
 // 存储文件到局面记录库
 void appendAspectsFromCMfile(Aspects aspects, const char* fileName);

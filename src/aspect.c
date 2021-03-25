@@ -124,35 +124,58 @@ static MoveReces putMoveReces__(Aspects asps, char* key)
     return mrs;
 }
 
-static void appendAspects__(Move move, Board board, Aspects asps)
+// 局面变量：走棋局面（统一红在底部，可左右对称变换）
+// 局面变量：走棋颜色（可交换）
+static char* getFEN_board_c__(Board board, PieceColor* color)
 {
     wchar_t FEN[SEATNUM];
     getFEN_board(FEN, board);
-    PieceColor color = getFromColor(move);
-    if (!isBottomSide(board, RED)) {
-        changeFEN(FEN, EXCHANGE); // 交换局面字符串
-        color = color == RED ? BLACK : RED; // 变换走棋颜色
-    }
 
     size_t size = wcstombs(NULL, FEN, SEATNUM) + 1;
     char* fen = malloc(size * sizeof(char));
     wcstombs(fen, FEN, size);
-
-    ChangeType ct = NOCHANGE;
-    int rowcols = getRowCols_m(move);
-    MoveReces mrs = getTable(asps->table, fen);
-    // 寻找左右对称局面
-    if (mrs == NULL) {
-        changeFEN_c(fen, (ct = SYMMETRY_H));
-        mrs = getTable(asps->table, fen);
-        if (mrs != NULL) 
-            rowcols = getRowCols_SYMMETRY_H(rowcols);
+    if (!isBottomSide(board, RED)) {
+        changeFEN_c(fen, EXCHANGE); // 交换局面字符串
+        *color = *color == RED ? BLACK : RED; // 变换走棋颜色
     }
+    return fen;
+}
+
+// 局面变量：走棋位置（可左右对称变换）
+static MoveReces getMoveReces__(Aspects asps, char* fen, ChangeType* ct)
+{
+    MoveReces mrs = getTable(asps->table, fen);
     if (mrs == NULL) {
-        if (ct == SYMMETRY_H)
-            changeFEN_c(fen, SYMMETRY_H); // 换回原局面
+        // 寻找左右对称局面
+        changeFEN_c(fen, (*ct = SYMMETRY_H));
+        mrs = getTable(asps->table, fen);
+        if (mrs == NULL)
+            changeFEN_c(fen, SYMMETRY_H);
+    }
+    return mrs;
+}
+
+MoveReces getMoveReces(Aspects asps, Board board, PieceColor* color, ChangeType* ct)
+{
+    char* fen = getFEN_board_c__(board, color);
+    MoveReces mrs = getMoveReces__(asps, fen, ct);
+    free(fen);
+    return mrs;
+}
+
+static void appendAspects__(Move move, Board board, Aspects asps)
+{
+    ChangeType ct = NOCHANGE;
+    PieceColor color = getFromColor(move);
+    char* fen = getFEN_board_c__(board, &color);
+    MoveReces mrs = getMoveReces__(asps, fen, &ct);
+
+    int rowcols = getRowCols_m(move);
+    if (ct == SYMMETRY_H && mrs != NULL)
+        rowcols = getRowCols_SYMMETRY_H(rowcols);
+    if (mrs == NULL)
         mrs = putMoveReces__(asps, fen);
-    } else
+    else
         free(fen);
 
     MoveRec mr = mrs->rootMR[color];
@@ -226,14 +249,14 @@ Aspects getAspectsFromAspsfile(const char* fileName)
 
 static void writefMoveRecesShow__(char* key, MoveReces mrs, void* fout)
 {
-    fprintf(fout, "\nFEN_%d:%s ", (int)strlen(key), key);
+    fprintf(fout, "\nFEN_%d:%s", (int)strlen(key), key);
     //fprintf(fout, "\nFEN:%s ", mrs->key);
 
     for (PieceColor color = RED; color < NOTCOLOR; ++color) {
-        fprintf(fout, "%d ", mrs->mrCount[color]);
+        fprintf(fout, "\t%d", mrs->mrCount[color]);
         MoveRec mr = mrs->rootMR[color];
         while (mr) {
-            fprintf(fout, "\t0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
+            fprintf(fout, " 0x%04x %d %d", mr->rowcols, mr->number, mr->weight);
             mr = mr->link;
         }
     }
@@ -254,12 +277,12 @@ void writeAspectsShow(char* fileName, CAspects asps)
 
 static void storeMoveRecesFEN__(char* key, MoveReces mrs, void* fout)
 {
-    fprintf(fout, "\n%s ", key);
+    fprintf(fout, "\n%s", key);
     for (PieceColor color = RED; color < NOTCOLOR; ++color) {
-        fprintf(fout, "%d ", mrs->mrCount[color]);
+        fprintf(fout, "\t%d", mrs->mrCount[color]);
         MoveRec mr = mrs->rootMR[color];
         while (mr) {
-            fprintf(fout, "0x%04x %d %d ", mr->rowcols, mr->number, mr->weight);
+            fprintf(fout, " 0x%04x %d %d", mr->rowcols, mr->number, mr->weight);
             mr = mr->link;
         }
     }
