@@ -3,6 +3,8 @@
 #include "head/piece.h"
 #include "head/tools.h"
 
+extern FILE* test_out;
+
 struct Move {
     Seat fseat, tseat; // 起止位置0x00
     Piece tpiece; // 目标位置棋子
@@ -166,18 +168,13 @@ PieceColor getFromColor(CMove move) { return getColor(getPiece_s(move->fseat)); 
 
 const wchar_t* getZhStr(CMove move) { return move->zhStr; }
 
-const wchar_t* getICCS_m(wchar_t* iccs, CMove move)
+const wchar_t* getICCS_m(wchar_t* iccs, CMove move, ChangeType ct)
 {
     if (isRootMove(move))
         iccs[0] = '\x0';
     else
-        getICCS_s(iccs, move->fseat, move->tseat);
+        getICCS_s(iccs, move->fseat, move->tseat, ct);
     return iccs;
-}
-
-const wchar_t* getICCS_mt(wchar_t* iccs, CMove move, Board board, ChangeType ct)
-{
-    return getICCS_s(iccs, getOtherSeat(board, move->fseat, ct), getOtherSeat(board, move->tseat, ct));
 }
 
 static void setMoveSeat_rc__(Move move, Board board, const wchar_t* rcStr)
@@ -214,14 +211,23 @@ Move addMove(Move preMove, Board board, const wchar_t* wstr, RecFormat fmt, wcha
         success = setMoveSeat_zh__(move, board, wstr);
         break;
     }
-    //* 检查添加着法的合法性，如果是XQF文件则不检测（疑难文件存有错误着法，不能通过检测！）
-    // 存有错误的XQF文件导出到其他格式，添加着法时将不能通过检测！
+
+    // 检查添加着法的合法性，如果是XQF文件则不检测（疑难文件存有错误着法，不能通过检测！）
     if (fmt != XQF)
         if (!success || !isCanMove(board, move->fseat, move->tseat)) {
+            /* 测试getEccoMyLinkedList_file(eccoWebFileName)时，不能调试, move可能为空！
+            wchar_t twstr[WIDEWCHARSIZE] = { 0 }, seatStr[WCHARSIZE];
+            wcscat(twstr, wstr);
+            wcscat(twstr, L"\n");
+            wcscat(twstr, getSeatString(seatStr, move->fseat));
+            wcscat(twstr, getSeatString(seatStr, move->tseat));
+            printBoard(board, -250, -250, twstr);
+            //fwprintf(test_out, L"\nline:%d %ls\n", __LINE__, wstr);
+            //*/
+
             delMove(move);
             return NULL; // 添加着法失败
         }
-    //*/
 
     // 以下在fmt==pgn_iccs时未成功？
     //doMove(move);
@@ -272,7 +278,7 @@ static wchar_t* getSimpleMoveStr__(wchar_t* wstr, CMove move)
     wchar_t iccs[6] = { 0 };
     if (move)
         swprintf(wstr, WCHARSIZE, L"%02x->%02x %ls %ls@%lc",
-            getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS_m(iccs, move), move->zhStr,
+            getRowCol_s(move->fseat), getRowCol_s(move->tseat), getICCS_m(iccs, move, NOCHANGE), move->zhStr,
             (!isBlankPiece(move->tpiece) ? getPieName(move->tpiece) : getBlankChar()));
     return wstr;
 }

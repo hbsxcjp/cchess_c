@@ -1,10 +1,12 @@
 #include "head/ecco.h"
 #include "head/board.h"
 #include "head/chessManual.h"
+#include "head/htmlfile.h"
 #include "head/move.h"
 #include "head/operatefile.h"
 #include "head/operatesqlite3.h"
 #include "head/pcre_wch.h"
+#include <math.h>
 
 #define BOUT_MAX 80
 #define INSERTBOUT_INDEX 10
@@ -13,7 +15,12 @@
 #define BOUTMOVEPART_NUM 2
 #define BOUTMOVEOR_NUM 2
 
-extern FILE* fout;
+extern FILE* test_out;
+
+extern const char* EXTNAMES[];
+extern const wchar_t* CMINFO_NAMES[];
+extern const int CMINFO_LEN;
+extern const wchar_t* FEN_INITVALUE;
 
 typedef struct BoutStr* BoutStr;
 struct BoutStr {
@@ -21,6 +28,7 @@ struct BoutStr {
     wchar_t* mvstr[PIECECOLORNUM][BOUTMOVEOR_NUM];
 };
 
+typedef struct Ecco* Ecco;
 struct Ecco {
     int orBoutNo[BOUTMOVEPART_NUM][2];
     MyLinkedList infoMyLinkedList;
@@ -75,7 +83,7 @@ static Ecco newEcco__(void)
     for (int p = 0; p < BOUTMOVEPART_NUM; ++p)
         for (int i = 0; i < 2; ++i)
             ecco->orBoutNo[p][i] = 0;
- 
+
     ecco->infoMyLinkedList = newInfoMyLinkedList();
     for (int i = 0; i < ECCOINFO_LEN; ++i)
         setInfoItem_ecco__(ecco, ECCOINFO_NAMES[i], L"");
@@ -98,84 +106,25 @@ static const wchar_t* getInfoValue_name_ecco__(Ecco ecco, const wchar_t* name)
     return getInfoValue_name(ecco->infoMyLinkedList, name);
 }
 
-const wchar_t* getEccoSn(Ecco ecco)
+static const wchar_t* getEccoSn__(Ecco ecco)
 {
     return getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX]);
 }
 
-const wchar_t* getEccoName(Ecco ecco)
+static const wchar_t* getEccoName__(Ecco ecco)
 {
     return getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[NAME_INDEX]);
 }
 
-static int addEccoMyLinkedList__(void* eccoMyLinkedList, int argc, char** argv, char** colNames)
-{
-    if (!argv)
-        return -1;
-
-    Ecco ecco = newEcco__();
-    for (int i = 0; i < argc; ++i) {
-        size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
-               size_v = mbstowcs(NULL, argv[i], 0) + 1;
-        wchar_t colName[size_n], colValue[size_v];
-        mbstowcs(colName, colNames[i], size_n);
-        mbstowcs(colValue, argv[i], size_v);
-        setInfoItem_ecco__(ecco, colName, colValue);
-
-        //fwprintf(fout, L"%ls: %ls\n", colName, colValue);
-    }
-    //fwprintf(fout, L"\n");
-
-    const wchar_t* regstr = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[REGSTR_INDEX]);
-    if (wcslen(regstr) > 0) {
-        const char* error;
-        int errorffset;
-        ecco->reg = pcrewch_compile(regstr, 0, &error, &errorffset, NULL);
-    }
-
-    addMyLinkedList_idx(eccoMyLinkedList, 0, ecco);
-    return 0; // 表示执行成功
-}
-
-MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName)
-{
-    MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
-    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
-    sprintf(sql, "SELECT * FROM %s "
-                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn ASC;",
-        lib_tblName);
-    int rc = sqlite3_exec(db, sql, addEccoMyLinkedList__, eccoMyLinkedList, &zErrMsg);
-    if (rc != SQLITE_OK) {
-        fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
-        sqlite3_free(zErrMsg);
-    }
-
-    assert(myLinkedList_size(eccoMyLinkedList) == 260);
-    return eccoMyLinkedList;
-}
-
-// 返回0:匹配成功
-static int compare_iccsStr__(Ecco ecco, wchar_t* iccsStr)
-{
-    int ovector[PCREARRAY_SIZE];
-    return (pcrewch_exec(ecco->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, PCREARRAY_SIZE) > 0 ? 0 : 1);
-}
-
-Ecco getEcco_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr)
-{
-    // 从前到后比较对象，获取符合条件的对象
-    return getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))compare_iccsStr__, iccsStr);
-}
-
 static int eccoSN_cmp__(Ecco ecco, const wchar_t* sn)
 {
-    return wcscmp(getEccoSn(ecco), sn);
+    return wcscmp(getEccoSn__(ecco), sn);
 }
 
 // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
-static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void* _0, void* _1)
+static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoList, void* _0, void* _1)
 {
-    const wchar_t *ecco_sn = getEccoSn(ecco),
+    const wchar_t *ecco_sn = getEccoSn__(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(ecco_sn) != 3 || wcslen(mvstrs) < 3)
         return;
@@ -195,7 +144,7 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
     } else
         return;
 
-    Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList, (int (*)(void*, void*))eccoSN_cmp__, (void*)sn);
+    Ecco tecco = getDataMyLinkedList_cond(eccoList, (int (*)(void*, void*))eccoSN_cmp__, (void*)sn);
     if (tecco == NULL)
         return;
 
@@ -204,14 +153,14 @@ static void setEcco_pre_mvstrs__(Ecco ecco, MyLinkedList eccoMyLinkedList, void*
     /*
     //if (mvstrs[0] == L'从') {
     static int no = 1;
-    fwprintf(fout, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
+    fwprintf(test_out, L"no:%d \nsn:%ls tpre:%ls\necco_sn:%ls pre:%ls\n",
         no++, sn, pre_mvstrs, ecco_sn, getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
     //}
     //*/
 }
 
-// 读取开局着法内容至数据表
-static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* wstring)
+// 读取开局着法内容
+static void setEcco_someField__(MyLinkedList eccoList, const wchar_t* wstring)
 {
     // 根据正则表达式分解字符串，获取字段内容
     const char* error;
@@ -221,16 +170,10 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
         pcrewch_compile(L"([A-E])．(\\S+)\\((共[\\s\\S]+?局)\\)",
             0, &error, &errorffset, NULL),
         // field: sn name nums mvstr B2. C0. D1. D2. D3. D4. \\s不包含"　"(全角空格)
-        //pcrewch_compile(L"([A-E]\\d)．(空|\\S+(?=\\(共))(?:(?![\\s　]+[A-E]\\d．)\\n|\\((共[\\s\\S]+?局)\\)"
-        //                "[\\s　]*([\\s\\S]*?)(?=[\\s　]*[A-E]\\d{2}．))",//(?![\\s\\n　]+[A-E]\\d．)
         pcrewch_compile(L"([A-E]\\d)(?:．|\\. )(?:空|(\\S+)\\((共[\\s\\S]+?局)\\)"
                         "[\\s\\n　]*([\\s\\S]*?))(?=[\\s\\n　]*[A-E]\\d0．)",
             0, &error, &errorffset, NULL),
         // field: sn name mvstr nums
-        //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
-        //                "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
-        //pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s　]+"
-        //                "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
         pcrewch_compile(L"([A-E]\\d{2})．(\\S+)[\\s\\n　]+"
                         "(?:(?![A-E]\\d|上一)([\\s\\S]*?)[\\s\\n　]*(无|共[\\s\\S]+?局)[\\s\\S]*?(?=上|[A-E]\\d{0,2}．))?",
             0, &error, &errorffset, NULL),
@@ -255,10 +198,10 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                     pcrewch_copy_substring(tempWstr, ovector, count, f + 1, wstr, WCHARSIZE);
                     //    L"SN", L"NAME", L"PRE_MVSTRS", L"MVSTRS", L"NUMS", L"REGSTR"
                     int idx = ((g == 2) ? (f > 1 ? f + 1 : f)
-                                          : (f > 1 ? (f == 2 ? NUMS_INDEX : MVSTRS_INDEX) : f));
+                                        : (f > 1 ? (f == 2 ? NUMS_INDEX : MVSTRS_INDEX) : f));
                     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[idx], wstr);
                 }
-                addMyLinkedList(eccoMyLinkedList, ecco);
+                addMyLinkedList(eccoList, ecco);
                 index++;
             } else {
                 wchar_t sn[10];
@@ -266,11 +209,11 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
                 pcrewch_copy_substring(tempWstr, ovector, count, 2, wstr, WCHARSIZE);
 
                 // C20 C30 C61 C72局面字符串存至g=1数组, 设置前置着法字符串
-                Ecco tecco = getDataMyLinkedList_cond(eccoMyLinkedList,
+                Ecco tecco = getDataMyLinkedList_cond(eccoList,
                     (int (*)(void*, void*))eccoSN_cmp__, sn);
                 if (tecco)
                     setInfoItem_ecco__(tecco, ECCOINFO_NAMES[MVSTRS_INDEX], wstr);
-                //fwprintf(fout, L"\nline:%d sn:%ls pre:%ls\n", __LINE__, sn,
+                //fwprintf(test_out, L"\nline:%d sn:%ls pre:%ls\n", __LINE__, sn,
                 //    getInfoValue_name_ecco__(tecco, ECCOINFO_NAMES[PRE_MVSTRS_INDEX]));
             }
 
@@ -281,8 +224,8 @@ static void setEcco_someField__(MyLinkedList eccoMyLinkedList, const wchar_t* ws
     }
 
     // 设置pre_mvstrs字段, 前置省略内容 有40+74=114项
-    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))setEcco_pre_mvstrs__,
-        eccoMyLinkedList, NULL, NULL);
+    traverseMyLinkedList(eccoList, (void (*)(void*, void*, void*, void*))setEcco_pre_mvstrs__,
+        eccoList, NULL, NULL);
 
     if (index != 555)
         printf("\nline:%d index:%d\n", __LINE__, index);
@@ -431,7 +374,7 @@ static void setEcco_boutStr_noOrder__(Ecco ecco, int firstBoutNo, void* reg_m, v
             removeMyLinkedList_idx(ecco->boutStrMyLinkedList, firstBoutStr_nextIdx);
 }
 
-// 获取回合着法字符串数组,
+// 获取回合着法字符串数组
 static void setEcco_boutStr__(Ecco ecco, const wchar_t* snStr, const wchar_t* mvstrs,
     void* reg_m, void* reg_bm, void* reg_bp, int partIndex)
 {
@@ -459,7 +402,7 @@ static void setEcco_boutStr__(Ecco ecco, const wchar_t* snStr, const wchar_t* mv
 
             wchar_t wstr[WCHARSIZE];
             pcrewch_copy_substring(tempWstr, ovector, count, i, wstr, WCHARSIZE);
-            //fwprintf(fout, L"\ti:%d %ls\n", i, wstr);
+            //fwprintf(test_out, L"\ti:%d %ls\n", i, wstr);
             PieceColor color = i / 5;
             if ((i == 2 || i == 5) && wcscmp(wstr, L"……") != 0) { // 回合的着法
                 // D41 该部分字段的着法与前置部分重复
@@ -518,7 +461,7 @@ static int wcscatIccses__(wchar_t* iccses, const wchar_t* mvstr, int index, Ches
     if (appendMove(cm, mvstr + 1, PGN_ZH, NULL, isOther && firstGroupSplit_success) == NULL) {
         if (index == 0)
             firstGroupSplit_success = false; //首着分组失败
-        //fwprintf(fout, L"\n\tFailed:%ls", mvstr);
+        //fwprintf(test_out, L"\n\tFailed:%ls", mvstr);
         return 0;
     }
 
@@ -533,7 +476,7 @@ static int wcscatIccses__(wchar_t* iccses, const wchar_t* mvstr, int index, Ches
     wchar_t iccs[MOVESTR_LEN + 1];
     wcscat(iccses, getCurMoveICCS_cm(iccs, cm, ct));
     firstGroupSplit_success = true; // 本着成功后重置状态
-    //fwprintf(fout, L"\n\tmvstr:%ls iccs:%ls", mvstr, iccs);
+    //fwprintf(test_out, L"\n\tmvstr:%ls iccs:%ls", mvstr, iccs);
 
     // 返回1：成功 返回2：成功且分组
     return 1 + split;
@@ -554,7 +497,7 @@ static int getIccses__(wchar_t* iccses, const wchar_t* mvstrs, ChessManual cm, C
     if (count > 1)
         wcscat(iccses, L")");
 
-    //fwprintf(fout, L"\n\tmvstrs:%ls %ls{%d}", mvstrs, iccses, groupCount);
+    //fwprintf(test_out, L"\n\tmvstrs:%ls %ls{%d}", mvstrs, iccses, groupCount);
     return groupCount;
 }
 
@@ -678,8 +621,8 @@ static void setRegStr__(Ecco ecco)
 
         combNum++;
         wcscat(combStr, L"(?:");
-        for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
-            //backFirst(cm); // 棋盘位置复原
+        // 考虑原始着法和水平对称着法两种情形
+        for (int ct = NOCHANGE; ct >= SYMMETRY_H; ct -= (NOCHANGE - SYMMETRY_H)) {
             ChessManual cm = newChessManual();
             wcscat(combStr, L"(?:^");
 
@@ -704,12 +647,12 @@ static void setRegStr__(Ecco ecco)
         wcscpy(regStr, combStr);
 
     setInfoItem_ecco__(ecco, ECCOINFO_NAMES[REGSTR_INDEX], regStr);
-    //fwprintf(fout, L"\nregStr:\n\t%ls", regStr);
+    //fwprintf(test_out, L"\nregStr:\n\t%ls", regStr);
 }
 
 static void setEcco_regstr__(Ecco ecco, void** regs, void* _0, void* _1)
 {
-    const wchar_t *sn = getEccoSn(ecco),
+    const wchar_t *sn = getEccoSn__(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(sn) != 3 || wcslen(mvstrs) < 1)
         return;
@@ -724,15 +667,15 @@ static void setEcco_regstr__(Ecco ecco, void** regs, void* _0, void* _1)
     setRegStr__(ecco);
 }
 
-static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
+static void setEcco_regstrField__(MyLinkedList eccoList)
 {
     const char* error;
     int errorffset;
     wchar_t ZhWChars[WCHARSIZE], mvstr[WCHARSIZE], mvStrs[WCHARSIZE],
         rich_mvStr[WIDEWCHARSIZE], bout_rich_mvStr[WIDEWCHARSIZE];
-    getZhWChars(ZhWChars);
 
-    // 着法字符组
+    // 着法中文字符组
+    getZhWChars(ZhWChars);
     swprintf(mvstr, WCHARSIZE, L"([%ls]{4})", ZhWChars);
 
     // 着法，含多选的复式着法
@@ -753,31 +696,18 @@ static void setEcco_regstrField__(MyLinkedList eccoMyLinkedList)
                         "|此前可走(马二进三)、(马八进七)、兵三进一和兵七进一",
             0, &error, &errorffset, NULL)
     };
-    //fwprintf(fout, L"%ls\n%ls\n%ls\n%ls\n\n", ZhWChars, mvStrs, rich_mvStr, bout_rich_mvStr);
+    //fwprintf(test_out, L"%ls\n%ls\n%ls\n%ls\n\n", ZhWChars, mvStrs, rich_mvStr, bout_rich_mvStr);
 
-    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))setEcco_regstr__,
+    traverseMyLinkedList(eccoList, (void (*)(void*, void*, void*, void*))setEcco_regstr__,
         (void*)regs, NULL, NULL);
 
     for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); ++i)
         pcrewch_free(regs[i]);
 }
 
-/*
-void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const wchar_t* ecco_sn)
+static void printBoutStr__(BoutStr boutStr, FILE* test_out, const wchar_t* blankStr, void* _1)
 {
-    char name[WCHARSIZE], destColName[WCHARSIZE], srcColName[WCHARSIZE], sn[WCHARSIZE];
-    wcstombs(sn, ecco_sn, WCHARSIZE);
-    wcstombs(srcColName, ECCOINFO_NAMES[SN_INDEX], WCHARSIZE);
-    wcstombs(destColName, ECCOINFO_NAMES[NAME_INDEX], WCHARSIZE);
-
-    sqlite3_getValue(name, db, lib_tblName, destColName, srcColName, sn);
-    mbstowcs(ecco_name, name, WCHARSIZE);
-}
-//*/
-
-static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr, void* _1)
-{
-    fwprintf(fout, L"\t\t%2d %ls／%ls %ls／%ls\n",
+    fwprintf(test_out, L"\t\t%2d %ls／%ls %ls／%ls\n",
         boutStr->boutNo,
         boutStr->mvstr[RED][0] ? boutStr->mvstr[RED][0] : blankStr,
         boutStr->mvstr[RED][1] ? boutStr->mvstr[RED][1] : blankStr,
@@ -785,38 +715,269 @@ static void printBoutStr__(BoutStr boutStr, FILE* fout, const wchar_t* blankStr,
         boutStr->mvstr[BLACK][1] ? boutStr->mvstr[BLACK][1] : blankStr);
 }
 
-static void printEccoStr__(Ecco ecco, FILE* fout, int* pno, void* _)
+static void printEccoStr__(Ecco ecco, FILE* test_out, int* pno, void* _)
 {
-    const wchar_t *sn = getEccoSn(ecco),
+    const wchar_t *sn = getEccoSn__(ecco),
                   *mvstrs = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX]);
     if (wcslen(sn) != 3 || wcslen(mvstrs) < 1)
         return;
 
-    fwprintf(fout, L"No:%d\n", (*pno)++);
-    //traverseMyLinkedList(ecco->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
-    //    fout, NULL, NULL);
-    printInfoMyLinkedList(fout, ecco->infoMyLinkedList);
+    fwprintf(test_out, L"No:%d\n", (*pno)++);
+    printInfoMyLinkedList(test_out, ecco->infoMyLinkedList);
 
-    fwprintf(fout, L"orBoutNo:");
+    fwprintf(test_out, L"orBoutNo:");
     for (int p = 0; p < BOUTMOVEPART_NUM; ++p) {
         for (int i = 0; i < 2; ++i)
-            fwprintf(fout, L" %d", ecco->orBoutNo[p][i]);
+            fwprintf(test_out, L" %d", ecco->orBoutNo[p][i]);
     }
-    fwprintf(fout, L"\n");
+    fwprintf(test_out, L"\n");
 
-    fwprintf(fout, L"boutStr:\n");
+    fwprintf(test_out, L"boutStr:\n");
     const wchar_t* blankStr = L"        ";
     traverseMyLinkedList(ecco->boutStrMyLinkedList, (void (*)(void*, void*, void*, void*))printBoutStr__,
-        fout, (void*)blankStr, NULL);
-    fwprintf(fout, L"\tsizeof(reg):%ld\n\n", sizeof(ecco->reg));
+        test_out, (void*)blankStr, NULL);
+    fwprintf(test_out, L"\tsizeof(reg):%ld\n\n", sizeof(ecco->reg));
 }
 
-void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList)
+static void printEccoMyLinkedList__(FILE* test_out, MyLinkedList eccoList)
 {
-    fwprintf(fout, L"eccoMyLinkedList:\n");
+    fwprintf(test_out, L"eccoList:\n");
     int no = 0;
-    traverseMyLinkedList(eccoMyLinkedList, (void (*)(void*, void*, void*, void*))printEccoStr__,
-        fout, &no, NULL);
+    traverseMyLinkedList(eccoList, (void (*)(void*, void*, void*, void*))printEccoStr__,
+        test_out, &no, NULL);
+}
+
+MyLinkedList getEccoMyLinkedList_file(const char* eccoWebFileName)
+{
+    FILE* fin = fopen(eccoWebFileName, "r");
+    wchar_t* eccoClearWstring = getWString(fin);
+    fclose(fin);
+
+    MyLinkedList eccoList = newMyLinkedList((void (*)(void*))delEcco__);
+    setEcco_someField__(eccoList, eccoClearWstring);
+    setEcco_regstrField__(eccoList);
+
+    printEccoMyLinkedList__(test_out, eccoList);
+    free(eccoClearWstring);
+    return eccoList;
+}
+
+static int addEccoMyLinkedList__(void* eccoList, int argc, char** argv, char** colNames)
+{
+    if (!argv)
+        return -1;
+
+    Ecco ecco = newEcco__();
+    for (int i = 0; i < argc; ++i) {
+        size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
+               size_v = mbstowcs(NULL, argv[i], 0) + 1;
+        wchar_t colName[size_n], colValue[size_v];
+        mbstowcs(colName, colNames[i], size_n);
+        mbstowcs(colValue, argv[i], size_v);
+        setInfoItem_ecco__(ecco, colName, colValue);
+
+        //fwprintf(test_out, L"%ls: %ls\n", colName, colValue);
+    }
+    //fwprintf(test_out, L"\n");
+
+    const wchar_t* regstr = getInfoValue_name_ecco__(ecco, ECCOINFO_NAMES[REGSTR_INDEX]);
+    if (wcslen(regstr) > 0) {
+        const char* error;
+        int errorffset;
+        ecco->reg = pcrewch_compile(regstr, 0, &error, &errorffset, NULL);
+    }
+
+    addMyLinkedList_idx(eccoList, 0, ecco);
+    return 0; // 表示执行成功
+}
+
+MyLinkedList getEccoMyLinkedList_db(const char* dbName, const char* lib_tblName)
+{
+    sqlite3* db = NULL;
+    if (sqlite3_open(dbName, &db)) {
+        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 0;
+    }
+
+    MyLinkedList eccoList = newMyLinkedList((void (*)(void*))delEcco__);
+    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "SELECT * FROM %s "
+                 "WHERE length(sn) == 3 AND length(regstr) > 0 ORDER BY sn ASC;",
+        lib_tblName);
+    if (sqlite3_exec(db, sql, addEccoMyLinkedList__, eccoList, &zErrMsg) != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", lib_tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
+    //printEccoMyLinkedList__(test_out, eccoList);
+    sqlite3_close(db);
+    assert(myLinkedList_size(eccoList) == 260); // 网站现已确定的开局数量
+    return eccoList;
+}
+
+static void setECCO_cm__(void* cm, void* eccoList, void* _0, void* _1)
+{
+    setECCO_cm(cm, eccoList);
+}
+
+static const wchar_t* getIccsStr__(wchar_t* wIccsStr, ChessManual cm)
+{
+    wchar_t iccs[6], redStr[WCHARSIZE] = { 0 }, blackStr[WCHARSIZE] = { 0 };
+    backFirst(cm);
+    Move firstMove = getNext(getRootMove(cm));
+    ChangeType ct = (firstMove == NULL || (getRow_rowcol(getFromRowCol_m(firstMove)) < BOARDROW / 2)
+            ? NOCHANGE
+            : SYMMETRY_H);
+    while (go(cm)) {
+        wcscat(redStr, getCurMoveICCS_cm(iccs, cm, ct));
+        if (go(cm))
+            wcscat(blackStr, getCurMoveICCS_cm(iccs, cm, ct));
+    }
+    backFirst(cm);
+    swprintf(wIccsStr, WIDEWCHARSIZE, L"%ls&%ls", redStr, blackStr);
+    return wIccsStr;
+}
+
+// 返回0:匹配成功
+static int compare_iccsStr__(Ecco ecco, wchar_t* iccsStr)
+{
+    int ovector[PCREARRAY_SIZE];
+    return (pcrewch_exec(ecco->reg, NULL, iccsStr, wcslen(iccsStr), 0, 0, ovector, PCREARRAY_SIZE) > 0 ? 0 : 1);
+}
+
+bool setECCO_cm(ChessManual cm, MyLinkedList eccoList)
+{
+    // 非全局棋谱不设置
+    if (wcscmp(getInfoValue_name_cm(cm, CMINFO_NAMES[FEN_INDEX]), FEN_INITVALUE) != 0)
+        return false;
+
+    wchar_t iccsStr[WIDEWCHARSIZE];
+    getIccsStr__(iccsStr, cm);
+    setInfoItem_cm(cm, CMINFO_NAMES[ICCSSTR_INDEX], iccsStr);
+
+    // 从前到后比较对象，获取符合条件的对象
+    Ecco ecco = getDataMyLinkedList_cond(eccoList, (int (*)(void*, void*))compare_iccsStr__, iccsStr);
+    if (ecco) {
+        setInfoItem_cm(cm, CMINFO_NAMES[ECCOSN_INDEX], getEccoSn__(ecco));
+        setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], getEccoName__(ecco));
+    }
+
+    return ecco;
+}
+
+static void printCmStr__(ChessManual cm, FILE* test_out, int* no, void* _)
+{
+    fwprintf(test_out, L"No:%d\n", (*no)++);
+    printInfoMyLinkedList(test_out, getInfoMyLinkedList_cm(cm));
+}
+
+static void printCmMyLinkedList__(FILE* test_out, MyLinkedList cmList)
+{
+    fwprintf(test_out, L"cmList:\n");
+    int no = 1;
+    traverseMyLinkedList(cmList, (void (*)(void*, void*, void*, void*))printCmStr__,
+        test_out, &no, NULL);
+}
+
+static void addCmMyLinkedList_file__(FileInfo fileInfo, MyLinkedList cmList)
+{
+    const char* fileName = fileInfo->name;
+    if (!isChessManualFile(fileName))
+        return;
+
+    addMyLinkedList(cmList, getChessManual_file(fileName));
+}
+
+MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLinkedList eccoList)
+{
+    MyLinkedList cmList = newMyLinkedList((void (*)(void*))delChessManual);
+
+    char fromDir[FILENAME_MAX];
+    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
+    operateDir(fromDir, (void (*)(void*, void*))addCmMyLinkedList_file__, cmList, true);
+
+    traverseMyLinkedList(cmList, setECCO_cm__, eccoList, NULL, NULL);
+
+    printCmMyLinkedList__(test_out, cmList);
+    return cmList;
+}
+
+MyLinkedList getCmMyLinkedList_webfile(const char* cmWebFileName)
+{
+    MyLinkedList cmList = newMyLinkedList((void (*)(void*))delChessManual);
+    FILE* fin = fopen(cmWebFileName, "r");
+    wchar_t lineStr[SUPERWIDEWCHARSIZE] = { 0 }, wstr[SUPERWIDEWCHARSIZE] = { 0 };
+    while (fgetws(lineStr, SUPERWIDEWCHARSIZE, fin)) {
+        if (lineStr[0] == L'\n') { // 判断是否换行符
+            ChessManual cm = newChessManual();
+            readInfo_PGN(cm, wstr);
+            addMyLinkedList(cmList, cm);
+            wcscpy(wstr, L"");
+        } else
+            wcscat(wstr, lineStr);
+    }
+    fclose(fin);
+
+    printCmMyLinkedList__(test_out, cmList);
+    return cmList;
+}
+
+static int addCmMyLinkedList_db__(void* cmList, int argc, char** argv, char** colNames)
+{
+    if (!argv)
+        return -1;
+
+    ChessManual cm = newChessManual();
+    for (int i = 0; i < argc; ++i) {
+        size_t size_n = mbstowcs(NULL, colNames[i], 0) + 1,
+               size_v = mbstowcs(NULL, argv[i], 0) + 1;
+        wchar_t colName[size_n], colValue[size_v];
+        mbstowcs(colName, colNames[i], size_n);
+        mbstowcs(colValue, argv[i], size_v);
+
+        setInfoItem_cm(cm, colName, colValue);
+    }
+
+    /* 验证读取棋谱的正确性
+    static int no = 1;
+    printCmStr__(cm, test_out, &no, NULL);
+
+    wchar_t movestr[SUPERWIDEWCHARSIZE];
+    wcscpy(movestr, getInfoValue_name_cm(cm, CMINFO_NAMES[MOVESTR_INDEX]));
+    readPGN_wstr(cm, movestr, PGN_ZH);
+    if (getNext(getRootMove(cm)))
+        setMoveNumZhStr(cm); // 驱动函数
+
+    //writePGN(test_out, cm, PGN_ZH);
+    //*/
+
+    addMyLinkedList(cmList, cm);
+    return 0; // 表示执行成功
+}
+
+MyLinkedList getCmMyLinkedList_db(const char* dbName, const char* man_tblName)
+{
+    sqlite3* db = NULL;
+    if (sqlite3_open(dbName, &db)) {
+        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 0;
+    }
+
+    MyLinkedList cmList = newMyLinkedList((void (*)(void*))delChessManual);
+    char sql[WIDEWCHARSIZE], *zErrMsg = 0;
+    sprintf(sql, "SELECT * FROM %s "
+                 "WHERE length(title) > 0;",
+        man_tblName);
+    if (sqlite3_exec(db, sql, addCmMyLinkedList_db__, cmList, &zErrMsg) != SQLITE_OK) {
+        fprintf(stderr, "\nTable %s get records error: %s", man_tblName, zErrMsg);
+        sqlite3_free(zErrMsg);
+    }
+
+    printCmMyLinkedList__(test_out, cmList);
+    sqlite3_close(db);
+    return cmList;
 }
 
 static MyLinkedList getInfoMyLinkedList_ecco__(Ecco eccoObj)
@@ -824,40 +985,216 @@ static MyLinkedList getInfoMyLinkedList_ecco__(Ecco eccoObj)
     return eccoObj->infoMyLinkedList;
 }
 
-int storeEccolib_xqbase(const char* dbName, const char* lib_tblName)
+int storeEccolib(const char* dbName, const char* lib_tblName, MyLinkedList eccoList)
 {
     sqlite3* db = NULL;
-    int result = 0, rc = sqlite3_open(dbName, &db);
-    if (rc) {
+    if (sqlite3_open(dbName, &db)) {
         fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
         sqlite3_close(db);
-        return result;
+        return 0;
     }
-
-    wchar_t* eccoClearWstring = getEccoLibWebClearWstring();
-    //assert(wcslen(eccoClearWstring) > 0);
-    //fwprintf(fout, eccoClearWstring);
-
-    MyLinkedList eccoMyLinkedList = newMyLinkedList((void (*)(void*))delEcco__);
-    Ecco ecco = newEcco__();
-    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[SN_INDEX], L"0");
-    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[NAME_INDEX], L"开局库原始文本————下载网页清理后的字符串文本");
-    setInfoItem_ecco__(ecco, ECCOINFO_NAMES[MVSTRS_INDEX], eccoClearWstring);
-    addMyLinkedList(eccoMyLinkedList, ecco);
-
-    setEcco_someField__(eccoMyLinkedList, eccoClearWstring);
-    setEcco_regstrField__(eccoMyLinkedList);
 
     // 存储对象
     if (sqlite3_existTable(db, lib_tblName))
         sqlite3_deleteTable(db, lib_tblName);
-    result = storeObjMyLinkedList(db, lib_tblName, eccoMyLinkedList,
-        (MyLinkedList(*)(void*))getInfoMyLinkedList_ecco__);
-
-    //printEccoMyLinkedList(fout, eccoMyLinkedList);
-    delMyLinkedList(eccoMyLinkedList);
-    free(eccoClearWstring);
+    int result = storeObjMyLinkedList(db, lib_tblName, eccoList, (MyLinkedList(*)(void*))getInfoMyLinkedList_ecco__);
 
     sqlite3_close(db);
     return result;
+}
+
+int storeChessManual(const char* dbName, const char* man_tblName, MyLinkedList cmList)
+{
+    sqlite3* db = NULL;
+    if (sqlite3_open(dbName, &db)) {
+        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 0;
+    }
+
+    int result = storeObjMyLinkedList(db, man_tblName, cmList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm);
+
+    sqlite3_close(db);
+    return result;
+}
+
+typedef struct NoMatchOffset* NoMatchOffset;
+struct NoMatchOffset {
+    int start;
+    int end;
+};
+
+static NoMatchOffset newNoMatchOffset__(int start, int end)
+{
+    NoMatchOffset noMatchOffset = malloc(sizeof(struct NoMatchOffset));
+    noMatchOffset->start = start;
+    noMatchOffset->end = end;
+
+    return noMatchOffset;
+}
+
+static MyLinkedList getNoMatchOffsetMyLinkedList__(const wchar_t* wstr, void* reg)
+{
+    MyLinkedList noMatchOffsetMyLinkedList = newMyLinkedList(free);
+
+    int ovector[PCREARRAY_SIZE], first = 0, last = wcslen(wstr);
+    while (first < last) {
+        const wchar_t* tempWstr = wstr + first;
+        int count = pcrewch_exec(reg, NULL, tempWstr, last - first, 0, 0, ovector, PCREARRAY_SIZE);
+        if (count <= 0)
+            break;
+
+        addMyLinkedList(noMatchOffsetMyLinkedList, newNoMatchOffset__(first, first + ovector[0]));
+        first += ovector[1];
+    }
+
+    return noMatchOffsetMyLinkedList;
+}
+
+/*
+static void printNoMatchOffset__(NoMatchOffset noMatchOffset, FILE* fout, int* pno, void* _)
+{
+    fwprintf(fout, L"No:%d %d-%d\n", (*pno)++, noMatchOffset->start, noMatchOffset->end);
+}
+
+static void printNoMatchOffsetMyLinkedList__(FILE* fout, MyLinkedList noMatchOffsetMyLinkedList)
+{
+    fwprintf(fout, L"noMatchOffsetMyLinkedList:\n");
+    int no = 0;
+    traverseMyLinkedList(noMatchOffsetMyLinkedList, (void (*)(void*, void*, void*, void*))printNoMatchOffset__,
+        fout, &no, NULL);
+}
+//*/
+
+static void wcscatDestStr__(NoMatchOffset noMatchOffset, wchar_t* destWstr, const wchar_t* wstr, void* _)
+{
+    wchar_t subStr[noMatchOffset->end - noMatchOffset->start + 1];
+    copySubStr(subStr, wstr, noMatchOffset->start, noMatchOffset->end);
+    wcscat(destWstr, subStr);
+}
+
+bool downEccoLibWeb(const char* eccoWebFileName)
+{
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t* webWstr = malloc(size * sizeof(wchar_t));
+    wchar_t *wurl = L"https://www.xqbase.com/ecco/ecco_%c.htm", wurl_x[WCHARSIZE];
+    for (wchar_t sn_0 = L'a'; sn_0 <= L'e'; ++sn_0) {
+        swprintf(wurl_x, WCHARSIZE, wurl, sn_0);
+        //fwprintf(test_out, L"%ls\n", wurl_x);
+
+        wchar_t* tempWstr = getWebWstr(wurl_x);
+        if (!tempWstr) {
+            fwprintf(test_out, L"\n页面没有找到：%ls\n", wurl_x);
+            continue;
+        }
+
+        supper_wcscat(&webWstr, &size, tempWstr);
+        free(tempWstr);
+    }
+
+    wchar_t* clearwstr = malloc((wcslen(webWstr) + 1) * sizeof(wchar_t));
+    const char* error;
+    int errorffset;
+    wchar_t* regStr[] = {
+        L"</?(?:div|font|img|strong|center|meta|dl|dt|table|tr|td|em|p|li|dir"
+        "|html|head|body|title|a|b|tbody|script|br|span)[^>]*>",
+        L"(?<=\\n|\\r)\\s+" //(?=\\n)
+    };
+    wchar_t* tempWstr = webWstr;
+    for (int i = 0; i < sizeof(regStr) / sizeof(regStr[0]); ++i) {
+        void* reg = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
+        MyLinkedList noMatchOffsetMyLinkedList = getNoMatchOffsetMyLinkedList__(tempWstr, reg);
+        wcscpy(clearwstr, L"");
+        traverseMyLinkedList(noMatchOffsetMyLinkedList, (void (*)(void*, void*, void*, void*))wcscatDestStr__,
+            clearwstr, (void*)tempWstr, NULL);
+
+        tempWstr = clearwstr;
+        //printNoMatchOffsetMyLinkedList__(test_out, noMatchOffsetMyLinkedList);
+        delMyLinkedList(noMatchOffsetMyLinkedList);
+        pcrewch_free(reg);
+    }
+
+    FILE* fout = fopen(eccoWebFileName, "w");
+    int len = fwprintf(fout, clearwstr);
+    fclose(fout);
+
+    free(webWstr);
+    free(clearwstr);
+    return len > 0;
+}
+
+bool downChessManualWeb(const char* cmWebFileName, int first, int last, int step)
+{
+    size_t size = SUPERWIDEWCHARSIZE;
+    wchar_t* webWstr = calloc(size, sizeof(wchar_t));
+
+    wchar_t* regStr[] = {
+        L"\\<title\\>(.*)\\</title\\>",
+        L"\\>([^\\>]+赛[^\\>]*)\\<",
+        L"\\>(\\d+年\\d+月\\d+日) ([^\\<]*)\\<",
+        L"\\>黑方 ([^\\<]*)\\<",
+        L"\\>红方 ([^\\<]*)\\<",
+        L"\\>([A-E]\\d{2})\\. ([^\\<]*)\\<",
+        L"\\<pre\\>\\s*(1\\.[\\s\\S]*?)\\((.+)\\)\\</pre\\>"
+    };
+    int regNum = sizeof(regStr) / sizeof(regStr[0]);
+    void** regs = malloc(regNum * sizeof(void*));
+    const char* error;
+    int errorffset;
+    for (int i = 0; i < regNum; ++i)
+        regs[i] = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
+
+    // 获取网页idUrl链表
+    wchar_t *wurl = L"https://www.xqbase.com/xqbase/?gameid=%d", wurl_x[WCHARSIZE];
+    for (int start = first, end = fmin(start + step, last + 1);
+         start < end;
+         start += step, end = fmin(end + step, last + 1)) {
+        for (int id = start; id < end; ++id) {
+            swprintf(wurl_x, WCHARSIZE, wurl, id);
+
+            int repeat = 0;
+            do {
+                wchar_t* wstr = getWebWstr(wurl_x);
+                if (wcslen(wstr) == 0) {
+                    fwprintf(test_out, L"Gameid: %6d 下载失败 %3d 次！\n", id, ++repeat);
+                } else {
+                    MyLinkedList infoMyLinkedList = newInfoMyLinkedList();
+                    setInfoItem(infoMyLinkedList, CMINFO_NAMES[SOURCE_INDEX], wurl_x);
+                    wchar_t value[SUPERWIDEWCHARSIZE];
+                    int ovector[PCREARRAY_SIZE], len = wcslen(wstr);
+                    for (int i = 0; i < regNum; ++i) {
+                        int count = pcrewch_exec(regs[i], NULL, wstr, len, 0, 0, ovector, PCREARRAY_SIZE);
+                        for (int c = 1; c < count; ++c) {
+                            pcrewch_copy_substring(wstr, ovector, count, c, value, SUPERWIDEWCHARSIZE);
+                            int index = (c == 1 ? (i < 3 ? i : (i < 5 ? i + 1 : (i == 5 ? ECCOSN_INDEX : MOVESTR_INDEX)))
+                                                : (i == 2 ? SITE_INDEX : (i == 5 ? ECCONAME_INDEX : RESULT_INDEX)));
+                            if (c == 1 && i == 6) {
+                                int idx = wcslen(value);
+                                while (--idx >= 0)
+                                    if (value[idx] == L'\r' || value[idx] == L'\n')
+                                        value[idx] = L' ';
+                            }
+                            setInfoItem(infoMyLinkedList, CMINFO_NAMES[index], value);
+                        }
+                    }
+
+                    writeInfo_PGN_infolist(&webWstr, &size, infoMyLinkedList);
+                    supper_wcscat(&webWstr, &size, L"\n");
+
+                    delMyLinkedList(infoMyLinkedList);
+                    free(wstr);
+                    break;
+                }
+            } while (true);
+        }
+
+        fwprintf(test_out, L"Gameid:%d-%d 下载棋谱完成！\n", start, end - 1);
+    }
+
+    FILE* fout = fopen(cmWebFileName, "w");
+    int len = fwprintf(fout, webWstr);
+    fclose(fout);
+
+    free(webWstr);
+    return len > 0;
 }

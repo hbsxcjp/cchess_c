@@ -3,12 +3,30 @@
 
 #include "base.h"
 #include "ecco.h"
-#include "htmlfile.h"
 #include "tools.h"
 
-extern const char* EXTNAMES[];
+typedef enum {
+    TITLE_INDEX,
+    EVENT_INDEX,
+    DATE_INDEX,
+    SITE_INDEX,
+    BLACK_INDEX,
+    RED_INDEX,
+    OPENING_INDEX,
+    WRITER_INDEX,
+    AUTHOR_INDEX,
+    TYPE_INDEX,
+    RESULT_INDEX,
+    VERSION_INDEX,
+    SOURCE_INDEX,
+    FEN_INDEX,
+    ICCSSTR_INDEX,
+    ECCOSN_INDEX,
+    ECCONAME_INDEX,
+    MOVESTR_INDEX
+} CMINFO_INDEX;
 
-extern FILE* fout;
+bool isChessManualFile(const char* fileName);
 
 // 新建chessManual
 ChessManual newChessManual(void);
@@ -22,7 +40,8 @@ ChessManual resetChessManual(ChessManual* cm, const char* fileName);
 void delChessManual(ChessManual cm);
 
 Move getRootMove(ChessManual cm);
-//const char* getFileName_cm(ChessManual cm);
+
+MyLinkedList getInfoMyLinkedList_cm(ChessManual cm);
 
 // 取得正则表达式所需的中文字符组
 wchar_t* getZhWChars(wchar_t* ZhWChars);
@@ -61,14 +80,24 @@ void delInfoItem_cm(ChessManual cm, const wchar_t* name);
 // 增删改move后，更新zhStr、行列数值
 void setMoveNumZhStr(ChessManual cm);
 
+// 将PGN_CC格式的info、move、remark信息字符串读入cm，返回已读字符串之后指针
+wchar_t* readInfo_PGN(ChessManual cm, wchar_t* wstr);
+
+// 读取字符串至cm
+void readPGN_wstr(ChessManual cm, wchar_t* wstr, RecFormat fmt);
+
 // 将PGN_CC格式的info、move、remark信息写入字符串
-void writeInfo_PGN(wchar_t** pinfoStr, ChessManual cm);
+void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, MyLinkedList infoMyLinkedList);
+void writeInfo_PGN(wchar_t** pinfoStr, size_t* psize, ChessManual cm);
 
 void writeMoveRemark_PGN_ICCSZH(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt);
 void writeMove_PGN_CC(wchar_t** pmoveStr, ChessManual cm);
 void writeRemark_PGN_CC(wchar_t** premStr, ChessManual cm);
 
 void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt);
+
+// cm写入文件
+void writePGN(FILE* fout, ChessManual cm, RecFormat fmt);
 
 // 从chessManual存储到文件，根据文件扩展名选择存储格式
 void writeChessManual(ChessManual cm, const char* fileName);
@@ -85,25 +114,6 @@ void transDir(const char* dirName, RecFormat fromfmt, RecFormat tofmt, bool isPr
 // 取得棋谱有关的数据
 void getChessManualNumStr(char* str, ChessManual cm);
 
-// 取得棋谱的拟匹配开局正则表达式的着法字符串(iccs)
-const wchar_t* getIccsStr(wchar_t* iccsStr, ChessManual cm);
-
 bool chessManual_equal(ChessManual cm0, ChessManual cm1);
-
-// 打印输出棋谱链表
-void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList);
-
-// 设置棋谱的开局编号
-bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList);
-
-// 获取棋谱对象链表
-MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLinkedList regObj_MyLinkedList);
-
-// 存储文件棋谱至数据库
-int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char* man_tblName,
-    const char* dirName, RecFormat fromfmt);
-
-// 存储网页棋谱至数据库(根据id顺序)
-int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, int first, int last, int step);
 
 #endif

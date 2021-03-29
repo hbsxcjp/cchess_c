@@ -4,25 +4,27 @@
 #include "base.h"
 #include "mylinkedlist.h"
 #include "sqlite3.h"
-//#include "tools.h"
 
-typedef struct Ecco* Ecco;
+// 获取开局对象链表
+MyLinkedList getEccoMyLinkedList_file(const char* eccoWebFileName);
+MyLinkedList getEccoMyLinkedList_db(const char* dbName, const char* lib_tblName);
 
-// 获取局面对象链表
-MyLinkedList getEccoMyLinkedList(sqlite3* db, const char* lib_tblName);
+// 设置棋谱对象的开局名称
+bool setECCO_cm(ChessManual cm, MyLinkedList eccoList);
 
-// 根据棋谱iccs着法字符串获取开局
-Ecco getEcco_iccsStr(MyLinkedList eccoMyLinkedList, wchar_t* iccsStr);
+// 获取棋谱对象链表
+MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLinkedList eccoList);
+MyLinkedList getCmMyLinkedList_webfile(const char* cmWebFileName);
+MyLinkedList getCmMyLinkedList_db(const char* dbName, const char* man_tblName);
 
-const wchar_t* getEccoSn(Ecco ecco);
+// 存储开局初始化数据至数据库（返回对象个数）
+int storeEccolib(const char* dbName, const char* lib_tblName, MyLinkedList eccoList);
+// 存储文件棋谱至数据库
+int storeChessManual(const char* dbName, const char* man_tblName, MyLinkedList cmList);
 
-const wchar_t* getEccoName(Ecco ecco);
-//void getEccoName(wchar_t* ecco_name, sqlite3* db, const char* lib_tblName, const wchar_t* ecco_sn);
-
-// 打印输出局面库链表
-void printEccoMyLinkedList(FILE* fout, MyLinkedList eccoMyLinkedList);
-
-// 存储开局初始化数据至数据库
-int storeEccolib_xqbase(const char* dbName, const char* lib_tblName);
+// 下载开局网页的纯净字符串
+bool downEccoLibWeb(const char* eccoWebFileName);
+// 下载棋谱网页的纯净字符串(根据id顺序)
+bool downChessManualWeb(const char* cmWebFileName, int first, int last, int step);
 
 #endif

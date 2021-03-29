@@ -103,7 +103,7 @@ void delAspects(Aspects asps)
     free(asps);
 }
 
-int getAspectsLength(Aspects asps)
+int getAspectsLength(CAspects asps)
 {
     return getTableLength(asps->table);
 }
@@ -142,7 +142,7 @@ static char* getFEN_board_c__(Board board, PieceColor* color)
 }
 
 // 局面变量：走棋位置（可左右对称变换）
-static MoveReces getMoveReces__(Aspects asps, char* fen, ChangeType* ct)
+static MoveReces getMoveReces__(CAspects asps, char* fen, ChangeType* ct)
 {
     MoveReces mrs = getTable(asps->table, fen);
     if (mrs == NULL) {
@@ -155,7 +155,7 @@ static MoveReces getMoveReces__(Aspects asps, char* fen, ChangeType* ct)
     return mrs;
 }
 
-MoveReces getMoveReces(Aspects asps, Board board, PieceColor* color, ChangeType* ct)
+MoveReces getMoveReces(CAspects asps, Board board, PieceColor* color, ChangeType* ct)
 {
     char* fen = getFEN_board_c__(board, color);
     MoveReces mrs = getMoveReces__(asps, fen, ct);
@@ -221,8 +221,10 @@ Aspects getAspectsFromAspsfile(const char* fileName)
     fscanf(fin, "%s", tag);
     assert(strcmp(tag, ASPLIB_MARK) == 0); // 检验文件标志
 
-    Aspects asps = newAspects(1024);
-    int mrCount[PIECECOLORNUM] = { 0, 0 }, rowcols = 0, number = 0, weight = 0;
+    int mrCount[PIECECOLORNUM] = { 0, 0 }, aspsCount = 0,
+        rowcols = 0, number = 0, weight = 0;
+    fscanf(fin, "%d", &aspsCount);
+    Aspects asps = newAspects(aspsCount);
     char* fen = malloc(SEATNUM * sizeof(char));
     while (fscanf(fin, "%s", fen) == 1) {
         MoveReces mrs = putMoveReces__(asps, fen);
@@ -291,7 +293,7 @@ static void storeMoveRecesFEN__(char* key, MoveReces mrs, void* fout)
 void storeAspectsFEN(char* fileName, CAspects asps)
 {
     FILE* fout = fopen(fileName, "w");
-    fprintf(fout, "%s", ASPLIB_MARK);
+    fprintf(fout, "%s %d", ASPLIB_MARK, getAspectsLength(asps));
     mapTable(asps->table, (void (*)(char*, void*, void*))storeMoveRecesFEN__, fout);
     fprintf(fout, "\n");
 

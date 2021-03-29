@@ -24,7 +24,8 @@ int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
 
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
-// 存储对象链表至数据库
+// 存储对象链表至数据库（返回对象个数）
 int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList,
     MyLinkedList (*getInfoMyLinkedList)(void*));
+    
 #endif

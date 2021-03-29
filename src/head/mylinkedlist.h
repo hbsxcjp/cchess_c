@@ -50,7 +50,7 @@ void removeMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*
 void setMyLinkedList_cond(MyLinkedList myLinkedList, int (*compareCond)(void*, void*),
     void* condition, void* newData);
 
-// 遍历全部对象，执行指定操作
+// 遍历全部对象，执行指定操作（返回执行对象的个数）
 int traverseMyLinkedList(MyLinkedList myLinkedList, void (*operatorData)(void*, void*, void*, void*),
     void* arg1, void* arg2, void* arg3);
 

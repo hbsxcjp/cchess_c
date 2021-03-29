@@ -13,10 +13,10 @@ Aspects newAspects(int size);
 
 void delAspects(Aspects aspects);
 
-int getAspectsLength(Aspects aspects);
+int getAspectsLength(CAspects aspects);
 
 // 获取着法记录（或空记录）
-MoveReces getMoveReces(Aspects asps, Board board, PieceColor* color, ChangeType* leftRightCt);
+MoveReces getMoveReces(CAspects asps, Board board, PieceColor* color, ChangeType* ct);
 
 // 存储文件到局面记录库
 void appendAspectsFromCMfile(Aspects aspects, const char* fileName);

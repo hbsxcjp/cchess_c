@@ -116,11 +116,12 @@ void changeBoard(Board board, ChangeType ct);
 
 // 设置着法的起止位置
 bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr);
+
 // 设置着法的中文字符串
 void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat);
 
 // 获取位置的iccs描述字符串
-const wchar_t* getICCS_s(wchar_t* iccs, Seat fseat, Seat tseat);
+const wchar_t* getICCS_s(wchar_t* iccs, Seat fseat, Seat tseat, ChangeType ct);
 
 // 取得表示位置字符串的名称
 wchar_t* getSeatString(wchar_t* seatStr, CSeat seat);

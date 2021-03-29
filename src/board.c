@@ -4,6 +4,8 @@
 #include "head/tools.h"
 #include <math.h>
 
+extern FILE* test_out;
+
 // 棋子马的移动方向
 typedef enum {
     SW,
@@ -35,9 +37,9 @@ static const int RowLowIndex_ = 0, RowLowMidIndex_ = 2, RowLowUpIndex_ = 4,
 // 着法相关的字符数组静态全局变量
 static const char SplitChar = '/'; // FEN的行分隔符;
 static const wchar_t SPLITCHAR = L'/'; // FEN的行分隔符;
-static const wchar_t PRECHAR[] = L"前中后";
-static const wchar_t MOVCHAR[] = L"退平进";
-static const wchar_t NUMWCHAR[PIECECOLORNUM][BOARDCOL + 1] = { L"一二三四五六七八九", L"１２３４５６７８９" };
+static const wchar_t* PRECHAR = L"前中后";
+static const wchar_t* MOVCHAR = L"退平进";
+static const wchar_t* NUMWCHAR[PIECECOLORNUM] = { L"一二三四五六七八九", L"１２３４５６７８９" };
 
 static bool isValidRow__(int row) { return row >= RowLowIndex_ && row <= RowUpIndex_; }
 static bool isValidCol__(int col) { return col >= ColLowIndex_ && col <= ColUpIndex_; }
@@ -97,7 +99,7 @@ static int getIndex_ch__(bool isBottom, int count, wchar_t wch)
     wchar_t* pwch = wcschr(PRECHAR, wch);
     if (pwch) {
         index = pwch - PRECHAR;
-        if (count == 2 && index == 2)
+        if (index == 2 && count == 2)
             index = 1;
     } else {
         pwch = wcschr(NUMWCHAR[RED], wch);
@@ -304,14 +306,12 @@ Seat getKingSeat(Board board, PieceColor color) { return getSeat_p(getKingPiece(
 
 //inline static bool isNameCol__(Seat seat, wchar_t name, int col) { return isName__(seat, name, col) && getCol_s(seat) == col; }
 
+// 按先行后列, 升序排列
 static int seatCmp__(const void* first, const void* second)
 {
     Seat aseat = (Seat)first, bseat = (Seat)second;
     int rowdiff = getRow_s(aseat) - getRow_s(bseat);
-    if (rowdiff == 0)
-        return getCol_s(aseat) - getCol_s(bseat);
-    else
-        return rowdiff;
+    return (rowdiff == 0) ? getCol_s(aseat) - getCol_s(bseat) : rowdiff;
 }
 
 int getLiveSeats_bc(Seat* seats, CBoard board, PieceColor color, bool filterStronge)
@@ -330,7 +330,7 @@ static int getLiveSeats_bcnc__(Seat* seats, Board board, PieceColor color, wchar
         else
             seats[index] = seats[--count];
     }
-    qsort(seats, index, sizeof(Seat*), seatCmp__);
+    qsort(seats, index, sizeof(Seat), seatCmp__);
     return index;
 }
 
@@ -349,18 +349,20 @@ static int getSortPawnLiveSeats__(Seat* seats, Board board, PieceColor color, wc
         int col = getCol_s(pawnSeats[i]);
         colSeats[col][colCount[col]++] = pawnSeats[i];
     }
+
+    // 不需要考虑isBottom的问题，留待后续计算index时再考虑。2021.3.29
     int count = 0;
-    if (isBottomSide(board, color)) {
-        for (int col = BOARDCOL - 1; col >= 0; --col)
-            if (colCount[col] > 1) // 筛除小于2个的列
-                for (int i = colCount[col] - 1; i >= 0; --i)
-                    seats[count++] = colSeats[col][i];
-    } else {
-        for (int col = 0; col < BOARDCOL; ++col)
-            if (colCount[col] > 1) // 筛除小于2个的列
-                for (int i = 0; i < colCount[col]; ++i)
-                    seats[count++] = colSeats[col][i];
-    }
+    for (int col = 0; col < BOARDCOL; ++col)
+        // 仅选数量大于2个的列
+        if (colCount[col] > 1)
+            for (int i = 0; i < colCount[col]; ++i) {
+                seats[count++] = colSeats[col][i];
+                //wchar_t seatStr[WIDEWCHARSIZE];
+                //fwprintf(test_out, L">%ls ", getSeatString(seatStr, colSeats[col][i]));
+            }
+
+    //wchar_t wstr[WIDEWCHARSIZE];
+    //fwprintf(test_out, L"\n%ls\n", getBoardString(wstr, board));
     return count;
 }
 
@@ -642,7 +644,9 @@ static bool isPassiveKilling__(Board board, PieceColor color)
 static bool isStatusIfMoved__(Board board, Seat fseat, Seat tseat,
     bool (*isFunc__)(Board board, PieceColor color), bool isFromColor)
 {
-    PieceColor color = getColor(getPiece_s(isFromColor ? fseat : tseat));
+    PieceColor color = getColor(getPiece_s(fseat));
+    if (!isFromColor)
+        color = getOtherColor(color);
     Piece eatPiece = movePiece(fseat, tseat, getBlankPiece());
     bool isStatus = isFunc__(board, color);
     movePiece(tseat, fseat, eatPiece);
@@ -818,12 +822,12 @@ bool isCanMove(Board board, Seat fseat, Seat tseat)
 
     /*
     wchar_t wstr[WIDEWCHARSIZE] = { 0 }, seatStr[WCHARSIZE];
-    for (int i = 0; i < amcount; ++i) {
+    wcscat(wstr, L"[");
+    for (int i = 0; i < count; ++i) {
         wcscat(wstr, getSeatString(seatStr, mseats[i]));
-        wcscat(wstr, L" ");
     }
-    wcscat(wstr, L"\n\n");
-    printBoard(board, mcount, amcount, wstr);
+    wcscat(wstr, L"]\n\n");
+    printBoard(board, count, -250, wstr);
     //*/
 
     return false;
@@ -902,10 +906,12 @@ bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
         index = getIndex_ch__(isBottom, count, zhStr[0]);
     }
 
-    //wchar_t wstr[30];
-    //for (int i = 0; i < count; ++i)
-    //    wprintf(L"%ls ", getSeatString(wstr, seats[i]));
-    //wprintf(L"\n%ls index: %d count: %d\n", zhStr, index, count);
+    /* 显示着法字符串
+    wchar_t wstr[WCHARSIZE];
+    for (int i = 0; i < count; ++i)
+        fwprintf(test_out, L"%ls ", getSeatString(wstr, seats[i]));
+    fwprintf(test_out, L"%ls index: %d count: %d\n", zhStr, index, count);
+    //*/
 
     if (index >= count) {
         wchar_t wstr[WIDEWCHARSIZE];
@@ -915,19 +921,23 @@ bool getSeats_zh(Seat* pfseat, Seat* ptseat, Board board, const wchar_t* zhStr)
     assert(index < count);
 
     *pfseat = seats[index];
-    int num = getNum__(color, zhStr[3]), toCol = getCol__(isBottom, num),
-        frow = getRow_s(*pfseat), fcol = getCol_s(*pfseat), colAway = abs(toCol - fcol); //  相距1或2列
-    //wprintf(L"%d %lc %d %d %d %d %d\n", __LINE__, name, frow, fcol, movDir, colAway, toCol);
+    int num = getNum__(color, zhStr[3]), tcol = getCol__(isBottom, num),
+        frow = getRow_s(*pfseat), fcol = getCol_s(*pfseat), colAway = abs(tcol - fcol); //  相距1或2列
+    //wprintf(L"%d %lc %d %d %d %d %d\n", __LINE__, name, frow, fcol, movDir, colAway, tcol);
     //fflush(stdout);
 
-    *ptseat = isLinePieceName(name) ? (movDir == 0 ? getSeat_rc(board, frow, toCol)
+    *ptseat = isLinePieceName(name) ? (movDir == 0 ? getSeat_rc(board, frow, tcol)
                                                    : getSeat_rc(board, frow + movDir * num, fcol))
                                     // 斜线走子：仕、相、马
-                                    : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), toCol);
+                                    : getSeat_rc(board, frow + movDir * (isKnightPieceName(name) ? (colAway == 1 ? 2 : 1) : colAway), tcol);
 
-    //*
+    //* 相互验证
     wchar_t tmpZhStr[6];
     getZhStr_seats(tmpZhStr, board, *pfseat, *ptseat);
+    if (wcscmp(zhStr, tmpZhStr) != 0) {
+        wchar_t wstr[WIDEWCHARSIZE];
+        fwprintf(test_out, L"\n%ls %ls\n%ls\n", zhStr, tmpZhStr, getBoardString(wstr, board));
+    }
     assert(wcscmp(zhStr, tmpZhStr) == 0);
     //*/
     return true;
@@ -969,13 +979,23 @@ void getZhStr_seats(wchar_t* zhStr, Board board, Seat fseat, Seat tseat)
     //*/
 }
 
-const wchar_t* getICCS_s(wchar_t* iccs, Seat fseat, Seat tseat)
+const wchar_t* getICCS_s(wchar_t* iccs, Seat fseat, Seat tseat, ChangeType ct)
 {
-    swprintf(iccs, 6, L"%lc%d%lc%d",
-        getCol_s(fseat) + L'a',
-        getRow_s(fseat),
-        getCol_s(tseat) + L'a',
-        getRow_s(tseat));
+    int frow = getRow_s(fseat), fcol = getCol_s(fseat),
+        trow = getRow_s(tseat), tcol = getCol_s(tseat);
+    // 水平对称或旋转
+    if (ct == SYMMETRY_H || ct == ROTATE) {
+        fcol = getOtherCol(fcol);
+        tcol = getOtherCol(tcol);
+    }
+    // 垂直对称或旋转
+    if (ct == SYMMETRY_V || ct == ROTATE) {
+        frow = getOtherRow(frow);
+        trow = getOtherRow(trow);
+    }
+    // 交换颜色不需变换
+
+    swprintf(iccs, 6, L"%lc%d%lc%d", fcol + L'a', frow, tcol + L'a', trow);
     return iccs;
 }
 

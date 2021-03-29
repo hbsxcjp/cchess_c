@@ -17,7 +17,10 @@
 #include <time.h>
 //#include "head/console.h"
 
+#define ECCO_IDMAX 12141
+
 extern FILE* test_out;
+extern const char* EXTNAMES[];
 
 static char* xqfFileName__ = "chessManual/01.xqf";
 
@@ -30,6 +33,12 @@ static const char* dirNames__[] = {
 
 static int dirSize__ = sizeof(dirNames__) / sizeof(dirNames__[0]);
 static int dirNum__ = 2; // 测试目录个数
+
+const char* eccoWebFileName = "eccoWebStr.txt";
+const char* cmWebFileName = "cmWebStr.txt";
+const char* dbName = "chess.db";
+const char* man_tblName = "manual";
+const char* lib_tblName = "ecco";
 
 static void test_md5(void)
 {
@@ -589,7 +598,6 @@ static CU_TestInfo tests_board[] = {
 static void test_chessManual_xqf(void)
 {
     char *str1 = "getChessManualNumStr: movCount:44 remCount:6 remLenMax:35 maxRow:22 maxCol:6\n",
-         *iccses = "f2g4g4e5g7f7e5g6&d0d9d9e9e8f7",
          *pgn_ccStr = "[TITLE \"第01局\"]\n"
                       "[EVENT \"\"]\n"
                       "[DATE \"\"]\n"
@@ -705,12 +713,6 @@ static void test_chessManual_xqf(void)
     //*/
 
     //*
-    char iccsStr[WIDEWCHARSIZE];
-    wchar_t wIccsStr[WIDEWCHARSIZE] = { 0 };
-    getIccsStr(wIccsStr, cm);
-    wcstombs(iccsStr, wIccsStr, wcstombs(NULL, wIccsStr, 0) + 1);
-    CU_ASSERT_STRING_EQUAL(iccses, iccsStr);
-
     for (int ct = EXCHANGE; ct <= SYMMETRY_V; ++ct) {
         changeChessManual(cm, ct);
         char fname[32];
@@ -773,40 +775,11 @@ static void test_chessManual_go(void)
     delChessManual(cm);
 }
 
-static void test_chessManual_sqlite(void)
-{
-    /*
-    int result = 0;
-    const char* dbName = "chess.db";
-    const char* man_tblName = "manual";
-    const char* lib_tblName = "ecco";
-    
-    // 初始化数据库
-    result = storeEccolib_xqbase(dbName, lib_tblName);
-    CU_ASSERT_DOUBLE_EQUAL(result, 555 + 1, 0.01);
-    //
-
-    // 存储网页棋谱至数据库
-    int first = 1, last = 150; //ECCO_IDMAX
-    result = storeChessManual_xqbase_range(dbName, man_tblName, first, last, 100);
-    CU_ASSERT_DOUBLE_EQUAL(result, last, 0.01);
-    //
-
-    // 读取目录文件存入数据库
-    const char* manualDirName = "chessManual/示例文件";
-    result = storeChessManual_dir(dbName, lib_tblName, man_tblName, manualDirName, XQF);
-    CU_ASSERT_DOUBLE_EQUAL(result, 34, 0.01);
-    //*/
-}
-
 static CU_TestInfo suite_chessManual[] = {
     { "test_chessManual_xqf", test_chessManual_xqf },
     { "test_chessManual_otherExt", test_chessManual_otherExt },
-    //*
     { "test_chessManual_dir", test_chessManual_dir },
     { "test_chessManual_go", test_chessManual_go },
-    { "test_chessManual_sqlite", test_chessManual_sqlite },
-    //*/
     CU_TEST_INFO_NULL,
 };
 
@@ -859,6 +832,60 @@ static CU_TestInfo suite_aspect[] = {
     CU_TEST_INFO_NULL,
 };
 
+static void test_ecco_lib(void)
+{
+    // 存储开局网页数据至文档
+    //CU_ASSERT_TRUE(downEccoLibWeb(eccoWebFileName));
+
+    // 初始化数据库
+    //MyLinkedList eccoList= getEccoMyLinkedList_file(eccoWebFileName);
+    //CU_ASSERT_DOUBLE_EQUAL(storeEccolib(dbName, lib_tblName, eccoList), 555, 0.01);
+    //delMyLinkedList(eccoList);
+}
+
+// 读取目录文件存入数据库
+static void test_ecco_dirName(void)
+{
+    /*
+    for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
+        MyLinkedList eccoList = getEccoMyLinkedList_db(dbName, lib_tblName);
+        MyLinkedList cmList = getCmMyLinkedList_dir(dirNames__[dir], XQF, eccoList);
+        //assert(0);
+        int result = storeChessManual(dbName, man_tblName, cmList);
+        delMyLinkedList(cmList);
+        delMyLinkedList(eccoList);
+        CU_ASSERT_DOUBLE_EQUAL(result, dir == 0 ? 34 : 107, 0.01); // 目录0:34 1:107
+    }
+    //*/
+}
+
+static void test_ecco_cmWebFile(void)
+{
+    /*/ 存储棋谱网页数据至文档
+    int first = 1, last = 50, step = 5; // ECCO_IDMAX
+    CU_ASSERT_TRUE(downChessManualWeb(cmWebFileName, first, last, step));
+
+    // 存储网页棋谱至数据库
+    MyLinkedList cmList = getCmMyLinkedList_webfile(cmWebFileName);
+    int result = storeChessManual(dbName, man_tblName, cmList);
+    delMyLinkedList(cmList);
+    CU_ASSERT_DOUBLE_EQUAL(result, last, 0.01);
+    //*/
+
+    /*
+    //MyLinkedList cmList1 = getCmMyLinkedList_db(dbName, man_tblName);
+    //CU_ASSERT_DOUBLE_EQUAL(myLinkedList_size(cmList1), ECCO_IDMAX, 0.01);
+    //delMyLinkedList(cmList1);
+    //*/
+}
+
+static CU_TestInfo suite_ecco[] = {
+    { "test_ecco_lib", test_ecco_lib },
+    { "test_ecco_dirName", test_ecco_dirName },
+    { "test_ecco_cmWebFile", test_ecco_cmWebFile },
+    CU_TEST_INFO_NULL,
+};
+
 static void test_play_file(void)
 {
     Play play = newPlay(xqfFileName__);
@@ -877,6 +904,7 @@ static CU_SuiteInfo suites[] = {
     { "suite_board", NULL, NULL, NULL, NULL, tests_board },
     { "suite_chessManual", NULL, NULL, NULL, NULL, suite_chessManual },
     { "suite_aspect", NULL, NULL, NULL, NULL, suite_aspect },
+    { "suite_ecco", NULL, NULL, NULL, NULL, suite_ecco },
     { "suite_play", NULL, NULL, NULL, NULL, suite_play },
     CU_SUITE_INFO_NULL,
 };

@@ -5,7 +5,6 @@
 #include "head/cJSON.h"
 #include "head/move.h"
 #include "head/operatefile.h"
-#include "head/operatesqlite3.h"
 #include "head/pcre_wch.h"
 #include "head/piece.h"
 #include <math.h>
@@ -31,41 +30,20 @@ const char* EXTNAMES[] = {
     ".xqf", ".bin", ".json", ".pgn_iccs", ".pgn_zh", ".pgn_cc"
 };
 
-static const wchar_t* CMINFO_NAMES[] = {
+const wchar_t* CMINFO_NAMES[] = {
     L"TITLE", L"EVENT", L"DATE", L"SITE", L"BLACK", L"RED",
     L"OPENING", L"WRITER", L"AUTHOR", L"TYPE", L"RESULT", L"VERSION",
     L"SOURCE", L"FEN", L"ICCSSTR", L"ECCO_SN", L"ECCO_NAME", L"MOVESTR"
 }; // 所有字段构成创建表的SQL语句长度不能超过256字符
+const int CMINFO_LEN = sizeof(CMINFO_NAMES) / sizeof(CMINFO_NAMES[0]);
 
-typedef enum {
-    TITLE_INDEX,
-    EVENT_INDEX,
-    DATE_INDEX,
-    SITE_INDEX,
-    BLACK_INDEX,
-    RED_INDEX,
-    OPENING_INDEX,
-    WRITER_INDEX,
-    AUTHOR_INDEX,
-    TYPE_INDEX,
-    RESULT_INDEX,
-    VERSION_INDEX,
-    SOURCE_INDEX,
-    FEN_INDEX,
-    ICCSSTR_INDEX,
-    ECCOSN_INDEX,
-    ECCONAME_INDEX,
-    MOVESTR_INDEX
-} CMINFO_INDEX;
-static const int CMINFO_LEN = sizeof(CMINFO_NAMES) / sizeof(CMINFO_NAMES[0]);
+const wchar_t* FEN_INITVALUE = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 
 static const char FILETAG[] = "learnchess";
-
 // 着法相关的字符数组静态全局变量
 static const wchar_t* PRECHAR = L"前中后";
 static const wchar_t* MOVCHAR = L"退平进";
 static const wchar_t* NUMWCHAR[PIECECOLORNUM] = { L"一二三四五六七八九", L"１２３４５６７８９" };
-static const wchar_t* FEN_INITVALUE = L"rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR";
 
 // 根据文件扩展名取得存储记录类型
 static RecFormat getRecFormat__(const char* ext)
@@ -82,7 +60,7 @@ static RecFormat getRecFormat__(const char* ext)
     return NOTFMT;
 }
 
-static bool fileIsRight__(const char* fileName)
+bool isChessManualFile(const char* fileName)
 {
     return fileName && getRecFormat__(getExtName(fileName)) != NOTFMT;
 }
@@ -142,6 +120,18 @@ void delChessManual(ChessManual cm)
 }
 
 Move getRootMove(ChessManual cm) { return cm->rootMove; }
+
+MyLinkedList getInfoMyLinkedList_cm(ChessManual cm)
+{
+    return cm->infoMyLinkedList;
+}
+
+wchar_t* getZhWChars(wchar_t* ZhWChars)
+{
+    swprintf(ZhWChars, WCHARSIZE, L"%ls%ls%ls%ls%ls",
+        PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
+    return ZhWChars;
+}
 
 static bool go__(ChessManual cm, Move curMove)
 {
@@ -274,6 +264,7 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
             doMove(cm->curMove);
         }
         //printBoard(cm->board, fmt, isOther, wstr);
+        
         return NULL;
     }
     assert(move != NULL);
@@ -283,7 +274,7 @@ Move appendMove(ChessManual cm, const wchar_t* wstr, RecFormat fmt, wchar_t* rem
 
 const wchar_t* getCurMoveICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
 {
-    return getICCS_mt(iccs, cm->curMove, cm->board, ct);
+    return getICCS_m(iccs, cm->curMove, ct);
 }
 
 void setInfoItem_cm(ChessManual cm, const wchar_t* name, const wchar_t* value)
@@ -406,7 +397,7 @@ static void readMove_XQF__(ChessManual cm, FILE* fin, bool isOther)
 
     int frow = fcolrow % 10, fcol = fcolrow / 10, trow = tcolrow % 10, tcol = tcolrow / 10;
     Move move;
-    if (isColRowValue(cm->curMove, frow, fcol, trow, tcol)) {        
+    if (isColRowValue(cm->curMove, frow, fcol, trow, tcol)) {
         move = cm->curMove;
         if (remark)
             setRemark(move, remark);
@@ -838,13 +829,13 @@ static void writeJSON__(FILE* fout, ChessManual cm)
     cJSON_Delete(manualJSON); // 释放自身及所有子对象
 }
 
-static wchar_t* readInfo_PGN__(ChessManual cm, wchar_t* fileWstring)
+wchar_t* readInfo_PGN(ChessManual cm, wchar_t* wstr)
 {
     const char* error;
     int erroffset = 0, infoCount = 0, ovector[PCREARRAY_SIZE];
     const wchar_t* infoPat = L"\\[(\\w+)\\s+\"([\\s\\S]*?)\"\\]";
     void* reg = pcrewch_compile(infoPat, 0, &error, &erroffset, NULL);
-    wchar_t* tempWstr = fileWstring;
+    wchar_t* tempWstr = wstr;
     while ((infoCount = pcrewch_exec(reg, NULL, tempWstr, wcslen(tempWstr), 0, 0, ovector, PCREARRAY_SIZE)) > 0) {
         wchar_t name[WCHARSIZE], value[WIDEWCHARSIZE];
         pcrewch_copy_substring(tempWstr, ovector, infoCount, 1, name, WIDEWCHARSIZE);
@@ -856,13 +847,6 @@ static wchar_t* readInfo_PGN__(ChessManual cm, wchar_t* fileWstring)
     pcrewch_free(reg);
 
     return tempWstr;
-}
-
-wchar_t* getZhWChars(wchar_t* ZhWChars)
-{
-    swprintf(ZhWChars, WCHARSIZE, L"%ls%ls%ls%ls%ls",
-        PRECHAR, getPieceNames(), MOVCHAR, NUMWCHAR[RED], NUMWCHAR[BLACK]);
-    return ZhWChars;
 }
 
 static void readMove_PGN_ICCSZH__(ChessManual cm, wchar_t* moveWstring, RecFormat fmt)
@@ -966,7 +950,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
     int rowIndex = 0,
         wchNum = wcschr(lineStart + 1, L'\n') - lineStart - 1,
         colNum = wchNum / (MOVESTR_LEN + 1);
-        
+
     //fwprintf(test_out, L"\nline:%d r:%d w:%d c:%d\n", __LINE__, rowIndex, wchNum, colNum);
     while (lineStart && (++lineStart)[0] && lineStart + wchNum <= lineEnd) {
         for (int col = 0; col < colNum; ++col) {
@@ -1011,10 +995,9 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
     delMyLinkedList(mvstrMyLinkedList);
 }
 
-static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
+void readPGN_wstr(ChessManual cm, wchar_t* wstr, RecFormat fmt)
 {
-    wchar_t *fileWstring = getWString(fin),
-            *moveWstring = readInfo_PGN__(cm, fileWstring);
+    wchar_t* moveWstring = readInfo_PGN(cm, wstr);
     //fwprintf(test_out, moveWstring);
 
     // PGN_ZH, PGN_CC在读取move之前需要先设置board
@@ -1024,8 +1007,13 @@ static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
         readMove_PGN_CC__(cm, moveWstring);
     else
         readMove_PGN_ICCSZH__(cm, moveWstring, fmt);
+}
 
-    free(fileWstring);
+static void readPGN__(ChessManual cm, FILE* fin, RecFormat fmt)
+{
+    wchar_t* wstr = getWString(fin);
+    readPGN_wstr(cm, wstr, fmt);
+    free(wstr);
 }
 
 static void writeRemark_PGN_ICCSZH__(wchar_t** pmoveStr, size_t* psize, CMove move)
@@ -1047,7 +1035,7 @@ static void writeMove_PGN_ICCSZH__(wchar_t** pmoveStr, size_t* psize, Move move,
         (isOther ? L"(" : L""),
         (isOther || !isEven ? boutNum : L" "),
         (isOther && isEven ? L"... " : L""),
-        (isPGN_ZH ? getZhStr(move) : getICCS_m(iccs, move)));
+        (isPGN_ZH ? getZhStr(move) : getICCS_m(iccs, move, NOCHANGE)));
     supper_wcscat(pmoveStr, psize, boutStr);
     writeRemark_PGN_ICCSZH__(pmoveStr, psize, move);
 
@@ -1100,12 +1088,15 @@ static void writeInfo_PGN__(Info info, wchar_t** pinfoStr, size_t* size, void* _
     supper_wcscat(pinfoStr, size, tmpWstr);
 }
 
-void writeInfo_PGN(wchar_t** pinfoStr, ChessManual cm)
+void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, MyLinkedList infoMyLinkedList)
 {
-    size_t size = WIDEWCHARSIZE;
-    *pinfoStr = calloc(size, sizeof(wchar_t));
-    traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_PGN__,
-        pinfoStr, &size, NULL);
+    traverseMyLinkedList(infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_PGN__,
+        pinfoStr, psize, NULL);
+}
+
+void writeInfo_PGN(wchar_t** pinfoStr, size_t* psize, ChessManual cm)
+{
+    writeInfo_PGN_infolist(pinfoStr, psize, cm->infoMyLinkedList);
 }
 
 void writeMove_PGN_CC(wchar_t** pmoveStr, ChessManual cm)
@@ -1155,8 +1146,11 @@ void writeMoveRemark_PGN_ICCSZH(wchar_t** pmoveStr, ChessManual cm, RecFormat fm
 
 void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt)
 {
-    wchar_t *infoStr = NULL, *moveStr = NULL, *remarkStr = NULL;
-    writeInfo_PGN(&infoStr, cm);
+    size_t size = WIDEWCHARSIZE;
+    wchar_t* infoStr = calloc(size, sizeof(wchar_t));
+    writeInfo_PGN(&infoStr, &size, cm);
+
+    wchar_t *moveStr = NULL, *remarkStr = NULL;
     if (fmt == PGN_CC) {
         writeMove_PGN_CC(&moveStr, cm);
         writeRemark_PGN_CC(&remarkStr, cm);
@@ -1177,7 +1171,7 @@ void writePGNtoWstr(wchar_t** pstr, ChessManual cm, RecFormat fmt)
         free(remarkStr);
 }
 
-static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
+void writePGN(FILE* fout, ChessManual cm, RecFormat fmt)
 {
     wchar_t* pstr = NULL;
     writePGNtoWstr(&pstr, cm, fmt);
@@ -1187,7 +1181,7 @@ static void writePGN__(FILE* fout, ChessManual cm, RecFormat fmt)
 
 static void readChessManual__(ChessManual cm, const char* fileName)
 {
-    if (!fileIsRight__(fileName)) {
+    if (!isChessManualFile(fileName)) {
         return;
     }
 
@@ -1237,7 +1231,7 @@ static void readChessManual__(ChessManual cm, const char* fileName)
 
 void writeChessManual(ChessManual cm, const char* fileName)
 {
-    if (!fileIsRight__(fileName))
+    if (!isChessManualFile(fileName))
         return;
 
     RecFormat fmt = getRecFormat__(getExtName(fileName));
@@ -1262,7 +1256,7 @@ void writeChessManual(ChessManual cm, const char* fileName)
         writeJSON__(fout, cm);
         break;
     default:
-        writePGN__(fout, cm, fmt);
+        writePGN(fout, cm, fmt);
         break;
     }
     fclose(fout);
@@ -1301,7 +1295,7 @@ void changeChessManual(ChessManual cm, ChangeType ct)
 static void transFile__(FileInfo fileInfo, OperateDirData odata)
 {
     const char* fileName = fileInfo->name;
-    if (!fileIsRight__(fileName))
+    if (!isChessManualFile(fileName))
         return;
 
     //printf("line:%d %s\n", __LINE__, fileName);
@@ -1377,20 +1371,6 @@ void getChessManualNumStr(char* str, ChessManual cm)
         __func__, cm->movCount_, cm->remCount_, cm->maxRemLen_, cm->maxRow_, cm->maxCol_);
 }
 
-const wchar_t* getIccsStr(wchar_t* wIccsStr, ChessManual cm)
-{
-    wchar_t iccs[6], redStr[WCHARSIZE] = { 0 }, blackStr[WCHARSIZE] = { 0 };
-    backFirst(cm);
-    while (go(cm)) {
-        wcscat(redStr, getCurMoveICCS_cm(iccs, cm, EXCHANGE));
-        if (go(cm))
-            wcscat(blackStr, getCurMoveICCS_cm(iccs, cm, EXCHANGE));
-    }
-    backFirst(cm);
-    swprintf(wIccsStr, WIDEWCHARSIZE, L"%ls&%ls", redStr, blackStr);
-    return wIccsStr;
-}
-
 bool chessManual_equal(ChessManual cm0, ChessManual cm1)
 {
     if (cm0 == NULL && cm1 == NULL)
@@ -1435,224 +1415,4 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     }
 
     return true;
-}
-
-static void printCmStr__(ChessManual cm, FILE* fout, int* no, void* _)
-{
-    fwprintf(fout, L"No:%d\n", (*no)++);
-    //traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo,
-    //    fout, NULL, NULL);
-    printInfoMyLinkedList(fout, cm->infoMyLinkedList);
-}
-
-void printCmMyLinkedList(FILE* fout, MyLinkedList cmMyLinkedList)
-{
-    fwprintf(fout, L"cmMyLinkedList:\n");
-    int no = 1;
-    traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))printCmStr__,
-        fout, &no, NULL);
-}
-
-bool setECCO_cm(ChessManual cm, MyLinkedList eccoMyLinkedList)
-{
-    // 非全局棋谱不设置
-    if (wcscmp(getInfoValue_name_cm(cm, CMINFO_NAMES[FEN_INDEX]), FEN_INITVALUE) != 0)
-        return false;
-
-    wchar_t iccsStr[WIDEWCHARSIZE];
-    getIccsStr(iccsStr, cm);
-    setInfoItem_cm(cm, CMINFO_NAMES[ICCSSTR_INDEX], iccsStr);
-
-    Ecco ecco = getEcco_iccsStr(eccoMyLinkedList, iccsStr);
-    if (ecco == NULL)
-        return false;
-    else {
-        setInfoItem_cm(cm, CMINFO_NAMES[ECCOSN_INDEX], getEccoSn(ecco));
-        setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], getEccoName(ecco));
-        return true;
-    }
-}
-
-static void setECCO_cm__(void* cm, void* eccoMyLinkedList, void* _0, void* _1)
-{
-    setECCO_cm(cm, eccoMyLinkedList);
-}
-
-static void addCM_LinkedList__(FileInfo fileInfo, MyLinkedList cmMyLinkedList)
-{
-    const char* fileName = fileInfo->name;
-    if (!fileIsRight__(fileName))
-        return;
-
-    addMyLinkedList(cmMyLinkedList, getChessManual_file(fileName));
-}
-
-MyLinkedList getCmMyLinkedList_dir(const char* dirName, RecFormat fromfmt, MyLinkedList eccoMyLinkedList)
-{
-    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
-
-    char fromDir[FILENAME_MAX];
-    sprintf(fromDir, "%s%s", dirName, EXTNAMES[fromfmt]);
-    operateDir(fromDir, (void (*)(void*, void*))addCM_LinkedList__, cmMyLinkedList, true);
-
-    traverseMyLinkedList(cmMyLinkedList, setECCO_cm__, eccoMyLinkedList, NULL, NULL);
-
-    return cmMyLinkedList;
-}
-
-/*
-static void setEccoNameStr__(ChessManual cm, sqlite3* db, const char* lib_tblName, void* _)
-{
-    const wchar_t* ecco_sn = getInfoValue_name_cm(cm, CMINFO_NAMES[ECCOSN_INDEX]);
-    if (wcslen(ecco_sn) < 1)
-        return;
-
-    wchar_t ecco_name[WCHARSIZE];
-    getEccoName(ecco_name, db, lib_tblName, ecco_sn);
-    setInfoItem_cm(cm, CMINFO_NAMES[ECCONAME_INDEX], ecco_name);
-}
-//*/
-/*
-        traverseMyLinkedList(cmMyLinkedList, (void (*)(void*, void*, void*, void*))setEccoNameStr__,
-            db, (void*)lib_tblName, NULL);
-        //*/
-
-static MyLinkedList getInfoMyLinkedList_cm__(ChessManual cm)
-{
-    return cm->infoMyLinkedList;
-}
-
-int storeChessManual_dir(const char* dbName, const char* lib_tblName, const char* man_tblName,
-    const char* dirName, RecFormat fromfmt)
-{
-    sqlite3* db = NULL;
-    int result = 0, rc = sqlite3_open(dbName, &db);
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return result;
-    }
-
-    MyLinkedList eccoMyLinkedList = getEccoMyLinkedList(db, lib_tblName);
-    MyLinkedList cmMyLinkedList = getCmMyLinkedList_dir(dirName, fromfmt, eccoMyLinkedList);
-    result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
-
-    //printEccoMyLinkedList(test_out, eccoMyLinkedList);
-    //printCmMyLinkedList(test_out, cmMyLinkedList);
-    delMyLinkedList(cmMyLinkedList);
-    delMyLinkedList(eccoMyLinkedList);
-
-    sqlite3_close(db);
-    return result;
-}
-
-static void addCm_xqbase_idUrl__(const wchar_t* idUrl, MyLinkedList cmMyLinkedList, void** regs, int* regNum)
-{
-    ChessManual cm = newChessManual();
-    setInfoItem_cm(cm, CMINFO_NAMES[SOURCE_INDEX], idUrl);
-
-    int repeat = 0;
-    do {
-        wchar_t* wstr = getWebWstr(idUrl);
-        if (!wstr)
-            continue;
-
-        wchar_t value[SUPERWIDEWCHARSIZE];
-        int ovector[PCREARRAY_SIZE], len = wcslen(wstr);
-        for (int i = 0; i < *regNum; ++i) {
-            int count = pcrewch_exec(regs[i], NULL, wstr, len, 0, 0, ovector, PCREARRAY_SIZE);
-            for (int c = 1; c < count; ++c) {
-                pcrewch_copy_substring(wstr, ovector, count, c, value, SUPERWIDEWCHARSIZE);
-                int index = (c == 1 ? (i < 3 ? i : (i < 5 ? i + 1 : (i == 5 ? ECCOSN_INDEX : MOVESTR_INDEX)))
-                                    : (i == 2 ? SITE_INDEX : (i == 5 ? ECCONAME_INDEX : RESULT_INDEX)));
-                if (c == 1 && i == 6) {
-                    int idx = wcslen(value);
-                    while (--idx >= 0)
-                        if (value[idx] == L'\r' || value[idx] == L'\n')
-                            value[idx] = L' ';
-                }
-                setInfoItem_cm(cm, CMINFO_NAMES[index], value);
-            }
-        }
-        free(wstr);
-        if (wcslen(getInfoValue_name_cm(cm, CMINFO_NAMES[TITLE_INDEX])) == 0) {
-            fwprintf(test_out, L"Gameid: %ls 下载失败 %3d 次！\n", wcschr(idUrl, L'=') + 1, ++repeat);
-        } else
-            break;
-    } while (true);
-    addMyLinkedList(cmMyLinkedList, cm);
-    /* 验证读取棋谱的正确性
-    static int no = 1;
-    printCmStr__(cm, test_out, &no, NULL);
-
-    wcscpy(value, getInfoValue_name_cm(cm, CMINFO_NAMES[MOVESTR_INDEX]));
-    readMove_PGN_ICCSZH__(cm, value, PGN_ZH);
-    if (getNext(cm->rootMove))
-        setMoveNumZhStr(cm); // 驱动函数
-
-    writePGN__(test_out, cm, PGN_ICCS);
-    writePGN__(test_out, cm, PGN_CC);
-    //*/
-}
-
-static int storeChessManual_idurl__(sqlite3* db, const char* man_tblName, void** regs, int* pregNum,
-    MyLinkedList idUrlMyLinkedList)
-{
-    int result = 0;
-    MyLinkedList cmMyLinkedList = newMyLinkedList((void (*)(void*))delChessManual);
-    traverseMyLinkedList(idUrlMyLinkedList, (void (*)(void*, void*, void*, void*))addCm_xqbase_idUrl__,
-        cmMyLinkedList, regs, pregNum);
-
-    // 存储对象
-    result = storeObjMyLinkedList(db, man_tblName, cmMyLinkedList, (MyLinkedList(*)(void*))getInfoMyLinkedList_cm__);
-
-    //printCmMyLinkedList(test_out, cmMyLinkedList);
-    delMyLinkedList(cmMyLinkedList);
-    return result;
-}
-
-int storeChessManual_xqbase_range(const char* dbName, const char* man_tblName, int first, int last, int step)
-{
-    sqlite3* db = NULL;
-    int rc = sqlite3_open(dbName, &db);
-    if (rc) {
-        fprintf(stderr, "\nCan't open database: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return 0;
-    }
-
-    // 获取棋谱cm链表
-    wchar_t* regStr[] = {
-        L"\\<title\\>(.*)\\</title\\>",
-        L"\\>([^\\>]+赛[^\\>]*)\\<",
-        L"\\>(\\d+年\\d+月\\d+日) ([^\\<]*)\\<",
-        L"\\>黑方 ([^\\<]*)\\<",
-        L"\\>红方 ([^\\<]*)\\<",
-        L"\\>([A-E]\\d{2})\\. ([^\\<]*)\\<",
-        L"\\<pre\\>\\s*(1\\.[\\s\\S]*?)\\((.+)\\)\\</pre\\>"
-    };
-    int regNum = sizeof(regStr) / sizeof(regStr[0]), result = 0;
-    void** regs = malloc(regNum * sizeof(void*));
-    const char* error;
-    int errorffset;
-    for (int i = 0; i < regNum; ++i)
-        regs[i] = pcrewch_compile(regStr[i], 0, &error, &errorffset, NULL);
-
-    // 获取网页idUrl链表
-    for (int start = first, end = fmin(start + step, last + 1);
-         start < end;
-         start += step, end = fmin(end + step, last + 1)) {
-        MyLinkedList idUrlMyLinkedList = getIdUrlMyLinkedList_xqbase_range(start, end);
-
-        result += storeChessManual_idurl__(db, man_tblName, regs, &regNum, idUrlMyLinkedList);
-
-        delMyLinkedList(idUrlMyLinkedList);
-        fwprintf(test_out, L"Gameid:%5d-%5d 下载棋谱完成！\n", start, end - 1);
-    }
-
-    for (int i = 0; i < regNum; ++i)
-        pcrewch_free(regs[i]);
-    free(regs);
-    sqlite3_close(db);
-    return result;
 }

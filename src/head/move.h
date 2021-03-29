@@ -52,10 +52,9 @@ int getRowCols_SYMMETRY_H(int rowcols);
 PieceColor getFromColor(CMove move);
 
 const wchar_t* getZhStr(CMove move);
+
 // 获取iccs着法描述
-const wchar_t* getICCS_m(wchar_t* iccs, CMove move);
-// 获取棋盘转换后的iccs着法描述
-const wchar_t* getICCS_mt(wchar_t* iccs, CMove move, Board board, ChangeType ct);
+const wchar_t* getICCS_m(wchar_t* iccs, CMove move, ChangeType ct);
 
 // 检测某个着法的行列值
 // (可用于检测XQF文件存储时的重复着法错误)
