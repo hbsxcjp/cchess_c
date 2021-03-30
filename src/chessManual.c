@@ -16,7 +16,7 @@ extern FILE* test_out;
 struct ChessManual {
     Board board;
     Move rootMove, curMove;
-    MyLinkedList infoMyLinkedList;
+    LinkedList infoLinkedList;
     int movCount_, remCount_, maxRemLen_, maxRow_, maxCol_;
 };
 
@@ -86,7 +86,7 @@ ChessManual newChessManual(void)
     cm->board = newBoard();
     cm->rootMove = newMove();
     cm->curMove = cm->rootMove;
-    cm->infoMyLinkedList = newInfoMyLinkedList();
+    cm->infoLinkedList = newInfoLinkedList();
     for (int i = 0; i < CMINFO_LEN; ++i)
         setInfoItem_cm(cm, CMINFO_NAMES[i], L"");
     cm->movCount_ = cm->remCount_ = cm->maxRemLen_ = cm->maxRow_ = cm->maxCol_ = 0;
@@ -113,7 +113,7 @@ void delChessManual(ChessManual cm)
     if (cm == NULL)
         return;
 
-    delMyLinkedList(cm->infoMyLinkedList);
+    delLinkedList(cm->infoLinkedList);
     delMove(cm->rootMove);
     delBoard(cm->board);
     free(cm);
@@ -121,9 +121,9 @@ void delChessManual(ChessManual cm)
 
 Move getRootMove(ChessManual cm) { return cm->rootMove; }
 
-MyLinkedList getInfoMyLinkedList_cm(ChessManual cm)
+LinkedList getInfoLinkedList_cm(ChessManual cm)
 {
-    return cm->infoMyLinkedList;
+    return cm->infoLinkedList;
 }
 
 wchar_t* getZhWChars(wchar_t* ZhWChars)
@@ -279,17 +279,17 @@ const wchar_t* getCurMoveICCS_cm(wchar_t* iccs, ChessManual cm, ChangeType ct)
 
 void setInfoItem_cm(ChessManual cm, const wchar_t* name, const wchar_t* value)
 {
-    setInfoItem(cm->infoMyLinkedList, name, value);
+    setInfoItem(cm->infoLinkedList, name, value);
 }
 
 const wchar_t* getInfoValue_name_cm(ChessManual cm, const wchar_t* name)
 {
-    return getInfoValue_name(cm->infoMyLinkedList, name);
+    return getInfoValue_name(cm->infoLinkedList, name);
 }
 
 void delInfoItem_cm(ChessManual cm, const wchar_t* name)
 {
-    delInfoItem(cm->infoMyLinkedList, name);
+    delInfoItem(cm->infoLinkedList, name);
 }
 
 static void setMoveNumZhStr__(ChessManual cm, Move move)
@@ -674,7 +674,7 @@ static void writeInfo_BIN__(Info info, FILE* fout, void* _0, void* _1)
 static void writeBIN__(FILE* fout, ChessManual cm)
 {
     fwrite(FILETAG, sizeof(char), sizeof(FILETAG), fout);
-    char infoCount = myLinkedList_size(cm->infoMyLinkedList);
+    char infoCount = linkedList_size(cm->infoLinkedList);
 
     char tag = ((infoCount > 0 ? 0x10 : 0x00)
         | (getRemark(cm->rootMove) ? 0x20 : 0x00)
@@ -682,7 +682,7 @@ static void writeBIN__(FILE* fout, ChessManual cm)
     fwrite(&tag, sizeof(char), 1, fout);
     if (tag & 0x10) {
         fwrite(&infoCount, sizeof(char), 1, fout);
-        traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_BIN__,
+        traverseLinkedList(cm->infoLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_BIN__,
             fout, NULL, NULL);
     }
 
@@ -810,7 +810,7 @@ static void writeJSON__(FILE* fout, ChessManual cm)
           *infoJSON = cJSON_CreateArray(),
           *rootmoveJSON = cJSON_CreateObject();
 
-    traverseMyLinkedList(cm->infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_JSON__,
+    traverseLinkedList(cm->infoLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_JSON__,
         infoJSON, NULL, NULL);
     cJSON_AddItemToObject(manualJSON, "info", infoJSON);
 
@@ -898,42 +898,42 @@ static void readMove_PGN_ICCSZH__(ChessManual cm, wchar_t* moveWstring, RecForma
     pcrewch_free(moveReg);
 }
 
-static wchar_t* getRemark_PGN_CC__(MyLinkedList mvstrMyLinkedList, int row, int col)
+static wchar_t* getRemark_PGN_CC__(LinkedList mvstrLinkedList, int row, int col)
 {
     wchar_t name[WCHARSIZE];
     swprintf(name, WCHARSIZE, L"(%d,%d)", row, col);
-    const wchar_t* value = getInfoValue_name(mvstrMyLinkedList, name);
+    const wchar_t* value = getInfoValue_name(mvstrLinkedList, name);
     if (value)
         return getSubStr(value, 0, wcslen(value));
 
     return NULL;
 }
 
-static void addMove_PGN_CC__(ChessManual cm, MyLinkedList mvstrMyLinkedList,
+static void addMove_PGN_CC__(ChessManual cm, LinkedList mvstrLinkedList,
     int rowNum, int row, int col, bool isOther)
 {
     wchar_t name[WCHARSIZE] = { 0 };
     swprintf(name, WCHARSIZE, L"%d,%d", row, col);
-    const wchar_t* mvstr = getInfoValue_name(mvstrMyLinkedList, name);
+    const wchar_t* mvstr = getInfoValue_name(mvstrLinkedList, name);
     if (mvstr == NULL || mvstr[0] == L'　')
         return;
 
     while (mvstr[0] == L'…') {
         swprintf(name, WCHARSIZE, L"%d,%d", row, ++col);
-        mvstr = getInfoValue_name(mvstrMyLinkedList, name);
+        mvstr = getInfoValue_name(mvstrLinkedList, name);
     }
     assert(mvstr);
 
     wchar_t zhStr[MOVESTR_LEN + 1];
     copySubStr(zhStr, mvstr, 0, MOVESTR_LEN);
-    Move move = appendMove(cm, zhStr, PGN_CC, getRemark_PGN_CC__(mvstrMyLinkedList, row, col), isOther);
+    Move move = appendMove(cm, zhStr, PGN_CC, getRemark_PGN_CC__(mvstrLinkedList, row, col), isOther);
 
     if (mvstr[MOVESTR_LEN] == L'…')
-        addMove_PGN_CC__(cm, mvstrMyLinkedList, rowNum, row, col + 1, true);
+        addMove_PGN_CC__(cm, mvstrLinkedList, rowNum, row, col + 1, true);
 
     backTo(cm, move);
     if (getNextNo(move) < rowNum - 1)
-        addMove_PGN_CC__(cm, mvstrMyLinkedList, rowNum, row + 1, col, false);
+        addMove_PGN_CC__(cm, mvstrLinkedList, rowNum, row + 1, col, false);
 }
 
 static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
@@ -942,7 +942,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
         return;
 
     // 读取着法字符串
-    MyLinkedList mvstrMyLinkedList = newInfoMyLinkedList();
+    LinkedList mvstrLinkedList = newInfoLinkedList();
     wchar_t name[WCHARSIZE], value[WCHARSIZE],
         *moveWstrEnd = moveWstring + (wcslen(moveWstring) - 1),
         *lineStart = wcschr(moveWstring + 1, L'\n'),
@@ -957,7 +957,7 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
             int subStart = col * (MOVESTR_LEN + 1);
             swprintf(name, WCHARSIZE, L"%d,%d", rowIndex, col);
             copySubStr(value, lineStart, subStart, subStart + MOVESTR_LEN + 1);
-            setInfoItem(mvstrMyLinkedList, name, value);
+            setInfoItem(mvstrLinkedList, name, value);
         }
         ++rowIndex;
         lineStart = wcschr(lineStart, L'\n'); // 弃掉间隔行
@@ -978,21 +978,21 @@ static void readMove_PGN_CC__(ChessManual cm, wchar_t* moveWstring)
 
         pcrewch_copy_substring(lineEnd, ovector, remCount, 1, name, WIDEWCHARSIZE);
         pcrewch_copy_substring(lineEnd, ovector, remCount, 2, value, WIDEWCHARSIZE);
-        setInfoItem(mvstrMyLinkedList, name, value);
+        setInfoItem(mvstrLinkedList, name, value);
         lineEnd += ovector[1];
     }
 
-    setRemark(cm->rootMove, getRemark_PGN_CC__(mvstrMyLinkedList, 0, 0));
+    setRemark(cm->rootMove, getRemark_PGN_CC__(mvstrLinkedList, 0, 0));
     if (rowIndex > 0)
-        addMove_PGN_CC__(cm, mvstrMyLinkedList, rowIndex, 1, 0, false);
+        addMove_PGN_CC__(cm, mvstrLinkedList, rowIndex, 1, 0, false);
     backFirst(cm);
 
-    //traverseMyLinkedList(mvstrMyLinkedList, (void (*)(void*, void*, void*, void*))printInfo, test_out, NULL, NULL);
-    //printInfoMyLinkedList(test_out, mvstrMyLinkedList);
+    //traverseLinkedList(mvstrLinkedList, (void (*)(void*, void*, void*, void*))printInfo, test_out, NULL, NULL);
+    //printInfoLinkedList(test_out, mvstrLinkedList);
 
     pcrewch_free(remReg);
     pcrewch_free(moveReg);
-    delMyLinkedList(mvstrMyLinkedList);
+    delLinkedList(mvstrLinkedList);
 }
 
 void readPGN_wstr(ChessManual cm, wchar_t* wstr, RecFormat fmt)
@@ -1088,15 +1088,15 @@ static void writeInfo_PGN__(Info info, wchar_t** pinfoStr, size_t* size, void* _
     supper_wcscat(pinfoStr, size, tmpWstr);
 }
 
-void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, MyLinkedList infoMyLinkedList)
+void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, LinkedList infoLinkedList)
 {
-    traverseMyLinkedList(infoMyLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_PGN__,
+    traverseLinkedList(infoLinkedList, (void (*)(void*, void*, void*, void*))writeInfo_PGN__,
         pinfoStr, psize, NULL);
 }
 
 void writeInfo_PGN(wchar_t** pinfoStr, size_t* psize, ChessManual cm)
 {
-    writeInfo_PGN_infolist(pinfoStr, psize, cm->infoMyLinkedList);
+    writeInfo_PGN_infolist(pinfoStr, psize, cm->infoLinkedList);
 }
 
 void writeMove_PGN_CC(wchar_t** pmoveStr, ChessManual cm)
@@ -1397,7 +1397,7 @@ bool chessManual_equal(ChessManual cm0, ChessManual cm1)
     }
 
     /*
-    if (!myLinkedList_equal(cm0->infoMyLinkedList, cm1->infoMyLinkedList,
+    if (!linkedList_equal(cm0->infoLinkedList, cm1->infoLinkedList,
             (int (*)(void*, void*))infoCmp)) {
         printf("\n!(info0 && info1) %d %s", __LINE__, __FILE__);
         return false;

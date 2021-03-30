@@ -1,6 +1,6 @@
 #include "head/operatefile.h"
 #include "head/base.h"
-#include "head/mylinkedlist.h"
+#include "head/linkedlist.h"
 #include "head/tools.h"
 
 
@@ -149,14 +149,14 @@ static void delFileInfo__(FileInfo fileInfo)
     free(fileInfo);
 }
 
-static void addFI_LinkedList__(FileInfo fileInfo, MyLinkedList fi_LinkedList)
+static void addFI_LinkedList__(FileInfo fileInfo, LinkedList fi_LinkedList)
 {
-    addMyLinkedList(fi_LinkedList, newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size));
+    addLinkedList(fi_LinkedList, newFileInfo__(fileInfo->name, fileInfo->attrib, fileInfo->size));
 }
 
-MyLinkedList getFileInfo_MyLinkedList(const char* dirName, bool recursive)
+LinkedList getFileInfo_LinkedList(const char* dirName, bool recursive)
 {
-    MyLinkedList fi_LinkedList = newMyLinkedList((void (*)(void*))delFileInfo__);
+    LinkedList fi_LinkedList = newLinkedList((void (*)(void*))delFileInfo__);
     operateDir(dirName, (void (*)(void*, void*))addFI_LinkedList__, fi_LinkedList, recursive);
 
     return fi_LinkedList;
@@ -172,12 +172,12 @@ void writeFileInfos(FILE* fout, const char* dirName)
 {
     fprintf(fout, "\n");
 
-    MyLinkedList fi_LinkedList = getFileInfo_MyLinkedList(dirName, true);
-    traverseMyLinkedList(fi_LinkedList, (void (*)(void*, void*, void*, void*))printfFileInfo__,
+    LinkedList fi_LinkedList = getFileInfo_LinkedList(dirName, true);
+    traverseLinkedList(fi_LinkedList, (void (*)(void*, void*, void*, void*))printfFileInfo__,
         fout, NULL, NULL);
 
-    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, myLinkedList_size(fi_LinkedList));
-    delMyLinkedList(fi_LinkedList);
+    fprintf(fout, "%s 包含: %d个文件。\n\n", dirName, linkedList_size(fi_LinkedList));
+    delLinkedList(fi_LinkedList);
 }
 
 void operateDir(const char* dirName, void operateFile(void*, void*), void* ptr, bool recursive)

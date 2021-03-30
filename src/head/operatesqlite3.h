@@ -1,7 +1,7 @@
 #ifndef OPERATESQLITE3_H
 #define OPERATESQLITE3_H
 
-#include "mylinkedlist.h"
+#include "linkedlist.h"
 #include "sqlite3.h"
 #include <stdbool.h>
 #include <stddef.h>
@@ -25,7 +25,6 @@ int sqlite3_getValue(char* destColValue, sqlite3* db, const char* tblName,
 int sqlite3_exec_showErrMsg(sqlite3* db, const char* sql);
 
 // 存储对象链表至数据库（返回对象个数）
-int storeObjMyLinkedList(sqlite3* db, const char* tblName, MyLinkedList objMyLinkedList,
-    MyLinkedList (*getInfoMyLinkedList)(void*));
-    
+int storeObjLinkedList(sqlite3* db, const char* tblName, LinkedList objLinkedList, LinkedList (*getInfoLinkedList)(void*));
+
 #endif

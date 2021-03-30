@@ -41,7 +41,7 @@ void delChessManual(ChessManual cm);
 
 Move getRootMove(ChessManual cm);
 
-MyLinkedList getInfoMyLinkedList_cm(ChessManual cm);
+LinkedList getInfoLinkedList_cm(ChessManual cm);
 
 // 取得正则表达式所需的中文字符组
 wchar_t* getZhWChars(wchar_t* ZhWChars);
@@ -87,7 +87,7 @@ wchar_t* readInfo_PGN(ChessManual cm, wchar_t* wstr);
 void readPGN_wstr(ChessManual cm, wchar_t* wstr, RecFormat fmt);
 
 // 将PGN_CC格式的info、move、remark信息写入字符串
-void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, MyLinkedList infoMyLinkedList);
+void writeInfo_PGN_infolist(wchar_t** pinfoStr, size_t* psize, LinkedList infoLinkedList);
 void writeInfo_PGN(wchar_t** pinfoStr, size_t* psize, ChessManual cm);
 
 void writeMoveRemark_PGN_ICCSZH(wchar_t** pmoveStr, ChessManual cm, RecFormat fmt);

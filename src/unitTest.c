@@ -17,8 +17,6 @@
 #include <time.h>
 //#include "head/console.h"
 
-#define ECCO_IDMAX 12141
-
 extern FILE* test_out;
 extern const char* EXTNAMES[];
 
@@ -837,10 +835,12 @@ static void test_ecco_lib(void)
     // 存储开局网页数据至文档
     //CU_ASSERT_TRUE(downEccoLibWeb(eccoWebFileName));
 
-    // 初始化数据库
-    //MyLinkedList eccoList= getEccoMyLinkedList_file(eccoWebFileName);
-    //CU_ASSERT_DOUBLE_EQUAL(storeEccolib(dbName, lib_tblName, eccoList), 555, 0.01);
-    //delMyLinkedList(eccoList);
+    /*/ 初始化数据库
+    LinkedList eccoList = getEccoLinkedList_file(eccoWebFileName);
+    int result = storeLinkedList(dbName, lib_tblName, eccoList, (LinkedList(*)(void*))getInfoLinkedList_ecco, true);
+    CU_ASSERT_DOUBLE_EQUAL(result, 555, 0.01);
+    delLinkedList(eccoList);
+    //*/
 }
 
 // 读取目录文件存入数据库
@@ -848,34 +848,36 @@ static void test_ecco_dirName(void)
 {
     /*
     for (int dir = 0; dir < dirSize__ && dir < dirNum__; ++dir) {
-        MyLinkedList eccoList = getEccoMyLinkedList_db(dbName, lib_tblName);
-        MyLinkedList cmList = getCmMyLinkedList_dir(dirNames__[dir], XQF, eccoList);
-        //assert(0);
-        int result = storeChessManual(dbName, man_tblName, cmList);
-        delMyLinkedList(cmList);
-        delMyLinkedList(eccoList);
+        LinkedList eccoList = getEccoLinkedList_db(dbName, lib_tblName);
+        LinkedList cmList = getCmLinkedList_dir(dirNames__[dir], XQF, eccoList);
+        int result = storeLinkedList(dbName, man_tblName, cmList, (LinkedList(*)(void*))getInfoLinkedList_cm, false);
+        delLinkedList(cmList);
+        delLinkedList(eccoList);
         CU_ASSERT_DOUBLE_EQUAL(result, dir == 0 ? 34 : 107, 0.01); // 目录0:34 1:107
     }
     //*/
 }
 
+#define ECCO_IDMAX 12141
 static void test_ecco_cmWebFile(void)
 {
     /*/ 存储棋谱网页数据至文档
     int first = 1, last = 50, step = 5; // ECCO_IDMAX
     CU_ASSERT_TRUE(downChessManualWeb(cmWebFileName, first, last, step));
+    //*/
 
-    // 存储网页棋谱至数据库
-    MyLinkedList cmList = getCmMyLinkedList_webfile(cmWebFileName);
-    int result = storeChessManual(dbName, man_tblName, cmList);
-    delMyLinkedList(cmList);
+    /*/ 存储网页棋谱至数据库
+    LinkedList cmList = getCmLinkedList_webfile(cmWebFileName);
+    int result = storeLinkedList(dbName, man_tblName, cmList, (LinkedList(*)(void*))getInfoLinkedList_cm, false);
+    delLinkedList(cmList);
     CU_ASSERT_DOUBLE_EQUAL(result, last, 0.01);
     //*/
 
     /*
-    //MyLinkedList cmList1 = getCmMyLinkedList_db(dbName, man_tblName);
-    //CU_ASSERT_DOUBLE_EQUAL(myLinkedList_size(cmList1), ECCO_IDMAX, 0.01);
-    //delMyLinkedList(cmList1);
+    LinkedList cmList1 = getCmLinkedList_db(dbName, man_tblName);
+    CU_ASSERT_DOUBLE_EQUAL(linkedList_size(cmList1), ECCO_IDMAX, 0.01);
+    // 尚未验证开局编号名称是否相符
+    delLinkedList(cmList1);
     //*/
 }
 
